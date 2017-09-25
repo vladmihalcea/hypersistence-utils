@@ -32,7 +32,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         return new PostgreSQLDataSourceProvider() {
             @Override
             public String hibernateDialect() {
-                return PostgreSQL94ArrayDialect.class.getName();
+                return PostgreSQL9ArrayDialect.class.getName();
             }
         };
     }
