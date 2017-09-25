@@ -13,14 +13,8 @@ import org.hibernate.ejb.HibernatePersistence;
 import org.hibernate.engine.transaction.spi.LocalStatus;
 import org.hibernate.integrator.spi.Integrator;
 import org.hibernate.jdbc.Work;
-import org.hibernate.metamodel.spi.TypeContributions;
-import org.hibernate.metamodel.spi.TypeContributor;
 import org.hibernate.service.BootstrapServiceRegistryBuilder;
-import org.hibernate.service.ServiceRegistry;
-import org.hibernate.type.BasicType;
 import org.hibernate.type.Type;
-import org.hibernate.usertype.CompositeUserType;
-import org.hibernate.usertype.UserType;
 import org.junit.After;
 import org.junit.Before;
 import org.slf4j.Logger;
@@ -29,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
 import javax.persistence.spi.PersistenceUnitInfo;
 import javax.sql.DataSource;
 import java.io.Closeable;
@@ -147,24 +140,6 @@ public abstract class AbstractTest {
         if (interceptor != null) {
             configuration.setInterceptor(interceptor);
         }
-
-        final List<Type> additionalTypes = additionalTypes();
-        if (additionalTypes != null) {
-            configuration.registerTypeContributor(new TypeContributor() {
-                @Override
-                public void contribute(TypeContributions typeContributions, ServiceRegistry serviceRegistry) {
-                    for (Type type : additionalTypes) {
-                        if (type instanceof BasicType) {
-                            typeContributions.contributeType((BasicType) type);
-                        } else if (type instanceof UserType) {
-                            typeContributions.contributeType((UserType) type, new String[]{type.getName()});
-                        } else if (type instanceof CompositeUserType) {
-                            typeContributions.contributeType((CompositeUserType) type, new String[]{type.getName()});
-                        }
-                    }
-                }
-            });
-        }
         configuration.setProperties(properties);
         return configuration.buildSessionFactory(
                 new BootstrapServiceRegistryBuilder()
@@ -178,10 +153,6 @@ public abstract class AbstractTest {
 
         HibernatePersistence hibernatePersistence = new HibernatePersistence();
         return hibernatePersistence.createContainerEntityManagerFactory(persistenceUnitInfo, configuration);
-    }
-
-    protected Integrator integrator() {
-        return null;
     }
 
     protected PersistenceUnitInfoImpl persistenceUnitInfo(String name) {
@@ -234,11 +205,7 @@ public abstract class AbstractTest {
     protected DataSourceProvider dataSourceProvider() {
         return new HSQLDBDataSourceProvider();
     }
-
-    protected List<Type> additionalTypes() {
-        return null;
-    }
-
+    
     protected <T> T doInHibernate(HibernateTransactionFunction<T> callable) {
         T result = null;
         Session session = null;
