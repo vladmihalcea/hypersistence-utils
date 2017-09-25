@@ -1,8 +1,8 @@
 package com.vladmihalcea.hibernate.type.json;
 
-import com.vladmihalcea.hibernate.type.json.model.BaseEntity;
-import com.vladmihalcea.hibernate.type.json.model.Location;
-import com.vladmihalcea.hibernate.type.json.model.Ticket;
+import com.vladmihalcea.hibernate.type.model.BaseEntity;
+import com.vladmihalcea.hibernate.type.model.Location;
+import com.vladmihalcea.hibernate.type.model.Ticket;
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
 import org.hibernate.annotations.Type;
 import org.junit.Test;

@@ -1,4 +1,4 @@
-package com.vladmihalcea.hibernate.type.json.model;
+package com.vladmihalcea.hibernate.type.model;
 
 import java.io.Serializable;
 

@@ -1,9 +1,9 @@
 package com.vladmihalcea.hibernate.type.json;
 
-import com.vladmihalcea.hibernate.type.json.model.Event;
-import com.vladmihalcea.hibernate.type.json.model.Location;
-import com.vladmihalcea.hibernate.type.json.model.Participant;
-import com.vladmihalcea.hibernate.type.json.model.Ticket;
+import com.vladmihalcea.hibernate.type.model.Event;
+import com.vladmihalcea.hibernate.type.model.Location;
+import com.vladmihalcea.hibernate.type.model.Participant;
+import com.vladmihalcea.hibernate.type.model.Ticket;
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
 import org.junit.Test;
 

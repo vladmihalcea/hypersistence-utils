@@ -1,8 +1,8 @@
 package com.vladmihalcea.hibernate.type.json;
 
-import com.vladmihalcea.hibernate.type.json.model.BaseEntity;
-import com.vladmihalcea.hibernate.type.json.model.Location;
-import com.vladmihalcea.hibernate.type.json.model.Ticket;
+import com.vladmihalcea.hibernate.type.model.BaseEntity;
+import com.vladmihalcea.hibernate.type.model.Location;
+import com.vladmihalcea.hibernate.type.model.Ticket;
 import com.vladmihalcea.hibernate.type.util.AbstractMySQLIntegrationTest;
 import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
 import org.hibernate.annotations.Type;
