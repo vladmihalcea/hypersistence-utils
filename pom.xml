@@ -37,9 +37,9 @@
     </developers>
 
     <scm>
-        <developerConnection>scm:git@github.com:vladmihalcea/hibernate-types.git</developerConnection>
-        <url>scm:git@github.com:vladmihalcea/hibernate-types.git</url>
-        <connection>scm:git@github.com:vladmihalcea/hibernate-types.git</connection>
+        <developerConnection>scm:git:git@github.com:vladmihalcea/hibernate-types.git</developerConnection>
+        <url>scm:git:git@github.com:vladmihalcea/hibernate-types.git</url>
+        <connection>scm:git:git@github.com:vladmihalcea/hibernate-types.git</connection>
         <tag>HEAD</tag>
     </scm>
 
