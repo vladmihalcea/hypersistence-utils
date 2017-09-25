@@ -1,6 +1,6 @@
 [![License](https://img.shields.io/github/license/vladmihalcea/hibernate-types.svg)](https://raw.githubusercontent.com/vladmihalcea/hibernate-types/master/LICENSE)
-[![Maven Central](https://img.shields.io/maven-central/v/com.vladmihalcea.hibernate-types/hibernate-types-parent.svg)](https://maven-badges.herokuapp.com/maven-central/com.vladmihalcea.hibernate-types/hibernate-types-parent)
-[![JavaDoc](https://javadoc-emblem.rhcloud.com/doc/com.vladmihalcea.hibernate-types/hibernate-types-parent/badge.svg?color=blue)](http://www.javadoc.io/doc/com.vladmihalcea.hibernate-types/hibernate-types-core)
+[![Maven Central](https://img.shields.io/maven-central/v/com.vladmihalcea/hibernate-types-parent.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.vladmihalcea%22)
+[![JavaDoc](https://javadoc-emblem.rhcloud.com/doc/com.vladmihalcea/hibernate-types-parent/badge.svg?color=blue)](http://www.javadoc.io/doc/com.vladmihalcea/hibernate-types-52)
 
 ### Introduction
 
