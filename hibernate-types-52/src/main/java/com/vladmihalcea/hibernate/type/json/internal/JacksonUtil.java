@@ -11,7 +11,7 @@ import java.io.IOException;
  */
 public class JacksonUtil {
 
-    public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().findAndRegisterModules();
 
     public static <T> T fromString(String string, Class<T> clazz) {
         try {
