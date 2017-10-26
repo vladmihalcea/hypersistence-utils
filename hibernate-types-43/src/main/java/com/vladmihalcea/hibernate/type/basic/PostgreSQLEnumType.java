@@ -1,7 +1,7 @@
 package com.vladmihalcea.hibernate.type.basic;
 
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.engine.spi.SessionImplementor;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -18,7 +18,7 @@ public class PostgreSQLEnumType extends org.hibernate.type.EnumType {
             PreparedStatement st,
             Object value,
             int index,
-            SharedSessionContractImplementor session)
+            SessionImplementor session)
             throws HibernateException, SQLException {
         if (value == null) {
             st.setNull(index, Types.OTHER);
