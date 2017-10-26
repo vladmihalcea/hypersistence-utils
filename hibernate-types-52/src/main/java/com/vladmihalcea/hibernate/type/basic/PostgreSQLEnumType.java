@@ -10,7 +10,7 @@ import java.sql.Types;
 /**
  * Maps a Java Enum to a PostgreSQL ENUM column type.
  *
- * @see <a href="https://vladmihalcea.com/2017/09/19/the-best-way-to-map-an-enum-type-with-jpa-and-hibernate/">this article</a> for more info.
+ * For more details about how to use it, check out <a href="https://vladmihalcea.com/2017/09/19/the-best-way-to-map-an-enum-type-with-jpa-and-hibernate/">this article</a> for more info.
  *
  * @author Vlad Mihalcea
  */

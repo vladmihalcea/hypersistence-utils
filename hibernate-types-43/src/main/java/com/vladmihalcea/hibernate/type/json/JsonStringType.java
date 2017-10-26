@@ -10,7 +10,7 @@ import java.util.Properties;
 /**
  * Maps any given Java object on a string-based JSON column type.
  *
- *  @see <a href="https://vladmihalcea.com/2016/06/20/how-to-map-json-objects-using-generic-hibernate-types/">this article</a> for more info.
+ * For more details about how to use it, check out <a href="https://vladmihalcea.com/2016/06/20/how-to-map-json-objects-using-generic-hibernate-types/">this article</a> for more info.
  *
  * @author Vlad Mihalcea
  */

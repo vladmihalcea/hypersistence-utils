@@ -11,7 +11,7 @@ import java.sql.Types;
 /**
  * Maps a Character to a nullable CHAR column type.
  *
- *  @see <a href="https://vladmihalcea.com/2016/09/22/how-to-implement-a-custom-basic-type-using-hibernate-usertype/">this article</a> for more info.
+ * For more details about how to use it, check out <a href="https://vladmihalcea.com/2016/09/22/how-to-implement-a-custom-basic-type-using-hibernate-usertype/">this article</a> for more info.
  *
  * @author Vlad Mihalcea
  */

@@ -10,7 +10,7 @@ import java.util.Properties;
 /**
  * Maps an int[] array on a PostgreSQL ARRAY type.
  *
- *  @see <a href="https://vladmihalcea.com/2017/06/21/how-to-map-java-and-sql-arrays-with-jpa-and-hibernate/">this article</a> for more info.
+ * For more details about how to use it, check out <a href="https://vladmihalcea.com/2017/06/21/how-to-map-java-and-sql-arrays-with-jpa-and-hibernate/">this article</a> for more info.
  *
  * @author Vlad Mihalcea
  */
