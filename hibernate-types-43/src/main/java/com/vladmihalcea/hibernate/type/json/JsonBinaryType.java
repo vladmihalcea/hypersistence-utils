@@ -9,8 +9,8 @@ import java.util.Properties;
 
 /**
  * Maps any given Java object on a binary JSON column type.
- *
- * For more details about how to use it, check out <a href="https://vladmihalcea.com/2016/06/20/how-to-map-json-objects-using-generic-hibernate-types/">this article</a> for more info.
+ * <p>
+ * For more details about how to use it, check out <a href="https://vladmihalcea.com/2016/06/20/how-to-map-json-objects-using-generic-hibernate-types/">this article</a> on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
  *
  * @author Vlad Mihalcea
  */

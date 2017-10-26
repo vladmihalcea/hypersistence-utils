@@ -8,9 +8,9 @@ import java.sql.SQLException;
 import java.sql.Types;
 
 /**
- * Maps a Java Enum to a PostgreSQL ENUM column type.
- *
- * For more details about how to use it, check out <a href="https://vladmihalcea.com/2017/09/19/the-best-way-to-map-an-enum-type-with-jpa-and-hibernate/">this article</a> for more info.
+ * Maps an {@link Enum} to a PostgreSQL ENUM column type.
+ * <p>
+ * For more details about how to use it, check out <a href="https://vladmihalcea.com/2017/09/19/the-best-way-to-map-an-enum-type-with-jpa-and-hibernate/">this article</a> on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
  *
  * @author Vlad Mihalcea
  */

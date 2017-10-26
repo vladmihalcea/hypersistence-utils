@@ -8,9 +8,9 @@ import org.hibernate.usertype.DynamicParameterizedType;
 import java.util.Properties;
 
 /**
- * Maps a String[] array on a PostgreSQL ARRAY type.
- *
- * For more details about how to use it, check out <a href="https://vladmihalcea.com/2017/06/21/how-to-map-java-and-sql-arrays-with-jpa-and-hibernate/">this article</a> for more info.
+ * Maps an {@code String[]} array on a PostgreSQL ARRAY type.
+ * <p>
+ * For more details about how to use it, check out <a href="https://vladmihalcea.com/2017/06/21/how-to-map-java-and-sql-arrays-with-jpa-and-hibernate/">this article</a> on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
  *
  * @author Vlad Mihalcea
  */
