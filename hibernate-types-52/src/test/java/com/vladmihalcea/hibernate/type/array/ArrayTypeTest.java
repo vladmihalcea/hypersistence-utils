@@ -21,7 +21,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
     @Override
     protected Class<?>[] entities() {
         return new Class<?>[]{
-                Event.class,
+            Event.class,
         };
     }
 
@@ -48,6 +48,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             event.setSensorValues(new int[]{12, 756});
             entityManager.persist(event);
         });
+
         doInJPA(entityManager -> {
             Event event = entityManager.find(Event.class, 1L);
 

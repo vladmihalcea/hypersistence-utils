@@ -62,6 +62,7 @@ public class PostgreSQLJsonBinaryTypeTest extends AbstractPostgreSQLIntegrationT
             eventHolder.set(event);
             participantHolder.set(participant);
         });
+
         doInJPA(entityManager -> {
             Event event = entityManager.find(Event.class, eventHolder.get().getId());
             assertEquals("Cluj-Napoca", event.getLocation().getCity());
@@ -70,17 +71,11 @@ public class PostgreSQLJsonBinaryTypeTest extends AbstractPostgreSQLIntegrationT
             assertEquals("ABC123", participant.getTicket().getRegistrationCode());
 
             List<String> participants = entityManager.createNativeQuery(
-                    "select jsonb_pretty(p.ticket) " +
-                            "from participant p " +
-                            "where p.ticket ->> 'price' > '10'")
-                    .getResultList();
-
-            participants = entityManager.createNativeQuery(
-                    "select jsonb_pretty(p.ticket) " +
-                            "from participant p " +
-                            "where p.ticket ->> 'price' > :price")
-                    .setParameter("price", "10")
-                    .getResultList();
+                "select jsonb_pretty(p.ticket) " +
+                "from participant p " +
+                "where p.ticket ->> 'price' > :price")
+            .setParameter("price", "10")
+            .getResultList();
 
             event.getLocation().setCity("Constanța");
             assertEquals(Integer.valueOf(0), event.getVersion());
@@ -89,6 +84,7 @@ public class PostgreSQLJsonBinaryTypeTest extends AbstractPostgreSQLIntegrationT
 
             assertEquals(1, participants.size());
         });
+
         doInJPA(entityManager -> {
             Event event = entityManager.find(Event.class, eventHolder.get().getId());
             event.getLocation().setCity(null);
@@ -96,6 +92,7 @@ public class PostgreSQLJsonBinaryTypeTest extends AbstractPostgreSQLIntegrationT
             entityManager.flush();
             assertEquals(Integer.valueOf(2), event.getVersion());
         });
+
         doInJPA(entityManager -> {
             Event event = entityManager.find(Event.class, eventHolder.get().getId());
             event.setLocation(null);
