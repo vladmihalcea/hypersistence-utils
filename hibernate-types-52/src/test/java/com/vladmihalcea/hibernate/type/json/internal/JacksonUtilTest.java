@@ -69,6 +69,7 @@ public class JacksonUtilTest {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
+
             MyEntity myEntity = (MyEntity) o;
             return Objects.equals(value, myEntity.value) &&
                     Objects.equals(pojos, myEntity.pojos);

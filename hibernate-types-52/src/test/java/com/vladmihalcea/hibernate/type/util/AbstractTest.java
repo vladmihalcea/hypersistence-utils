@@ -159,6 +159,21 @@ public abstract class AbstractTest {
         metadataBuilder.enableNewIdentifierGeneratorSupport(true);
         metadataBuilder.applyImplicitNamingStrategy(ImplicitNamingStrategyLegacyJpaImpl.INSTANCE);
 
+        final List<Type> additionalTypes = additionalTypes();
+        if (additionalTypes != null) {
+            additionalTypes.stream().forEach(type -> {
+                metadataBuilder.applyTypes((typeContributions, serviceRegistry1) -> {
+                    if(type instanceof BasicType) {
+                        typeContributions.contributeType((BasicType) type);
+                    } else if (type instanceof UserType ){
+                        typeContributions.contributeType((UserType) type);
+                    } else if (type instanceof CompositeUserType) {
+                        typeContributions.contributeType((CompositeUserType) type);
+                    }
+                });
+            });
+        }
+
         MetadataImplementor metadata = (MetadataImplementor) metadataBuilder.build();
 
         final SessionFactoryBuilder sfb = metadata.getSessionFactoryBuilder();

@@ -1,8 +1,8 @@
 package com.vladmihalcea.hibernate.type.json;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.vladmihalcea.hibernate.type.json.internal.JsonStringSqlTypeDescriptor;
 import com.vladmihalcea.hibernate.type.json.internal.JsonNodeTypeDescriptor;
+import com.vladmihalcea.hibernate.type.json.internal.JsonStringSqlTypeDescriptor;
 import org.hibernate.type.AbstractSingleColumnStandardBasicType;
 
 /**

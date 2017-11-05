@@ -1,7 +1,10 @@
 package com.vladmihalcea.hibernate.type.json;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vladmihalcea.hibernate.type.json.internal.JsonBinarySqlTypeDescriptor;
 import com.vladmihalcea.hibernate.type.json.internal.JsonTypeDescriptor;
+import com.vladmihalcea.hibernate.type.util.ObjectMapperWrapper;
+import com.vladmihalcea.hibernate.type.util.PropertyLoader;
 import org.hibernate.type.AbstractSingleColumnStandardBasicType;
 import org.hibernate.usertype.DynamicParameterizedType;
 
@@ -20,7 +23,24 @@ public class JsonBinaryType
     public static final JsonBinaryType INSTANCE = new JsonBinaryType();
 
     public JsonBinaryType() {
-        super(JsonBinarySqlTypeDescriptor.INSTANCE, new JsonTypeDescriptor());
+        super(
+            JsonBinarySqlTypeDescriptor.INSTANCE,
+            new JsonTypeDescriptor(PropertyLoader.INSTANCE.getObjectMapperWrapper())
+        );
+    }
+
+    public JsonBinaryType(ObjectMapper objectMapper) {
+        super(
+            JsonBinarySqlTypeDescriptor.INSTANCE,
+            new JsonTypeDescriptor(new ObjectMapperWrapper(objectMapper))
+        );
+    }
+
+    public JsonBinaryType(ObjectMapper objectMapper, Class javaType) {
+        super(
+            JsonBinarySqlTypeDescriptor.INSTANCE,
+            new JsonTypeDescriptor(new ObjectMapperWrapper(objectMapper), javaType)
+        );
     }
 
     public String getName() {

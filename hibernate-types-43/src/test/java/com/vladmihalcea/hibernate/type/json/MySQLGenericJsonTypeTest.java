@@ -1,6 +1,5 @@
 package com.vladmihalcea.hibernate.type.json;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
 import com.vladmihalcea.hibernate.type.model.Location;
 import com.vladmihalcea.hibernate.type.model.Ticket;
@@ -79,13 +78,7 @@ public class MySQLGenericJsonTypeTest extends AbstractMySQLIntegrationTest {
         private Location location;
 
         @Type(
-            type = "json",
-            parameters = {
-                @org.hibernate.annotations.Parameter(
-                    name = TypeReferenceFactory.FACTORY_CLASS,
-                    value = "com.vladmihalcea.hibernate.type.json.MySQLGenericJsonTypeTest$AlternativeLocationsTypeReference"
-                )
-            }
+            type = "json"
         )
         @Column(columnDefinition = "json")
         private List<Location> alternativeLocations;
@@ -132,13 +125,6 @@ public class MySQLGenericJsonTypeTest extends AbstractMySQLIntegrationTest {
 
         public void setEvent(Event event) {
             this.event = event;
-        }
-    }
-
-    public static class AlternativeLocationsTypeReference implements TypeReferenceFactory {
-        @Override
-        public TypeReference<?> newTypeReference() {
-            return new TypeReference<List<Location>>() {};
         }
     }
 }

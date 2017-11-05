@@ -1,11 +1,9 @@
 package com.vladmihalcea.hibernate.type.json;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
 import com.vladmihalcea.hibernate.type.model.Location;
 import com.vladmihalcea.hibernate.type.model.Ticket;
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
-import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
 
@@ -128,5 +126,4 @@ public class PostgreSQLGenericJsonBinaryTypeTest extends AbstractPostgreSQLInteg
             this.event = event;
         }
     }
-
 }

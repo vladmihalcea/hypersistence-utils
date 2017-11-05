@@ -1,15 +1,16 @@
 package com.vladmihalcea.hibernate.type.json;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
 import com.vladmihalcea.hibernate.type.model.Location;
-import com.vladmihalcea.hibernate.type.model.Ticket;
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
 import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -83,13 +84,7 @@ public class PostgreSQLGenericJsonBinaryTypeTest extends AbstractPostgreSQLInteg
         private Location location;
 
         @Type(
-            type = "jsonb",
-            parameters = {
-                @org.hibernate.annotations.Parameter(
-                    name = TypeReferenceFactory.FACTORY_CLASS,
-                    value = "com.vladmihalcea.hibernate.type.json.PostgreSQLGenericJsonBinaryTypeTest$AlternativeLocationsTypeReference"
-                )
-            }
+            type = "jsonb"
         )
         @Column(columnDefinition = "jsonb")
         private List<Location> alternativeLocations = new ArrayList<Location>();
@@ -108,13 +103,6 @@ public class PostgreSQLGenericJsonBinaryTypeTest extends AbstractPostgreSQLInteg
 
         public void setAlternativeLocations(List<Location> alternativeLocations) {
             this.alternativeLocations = alternativeLocations;
-        }
-    }
-
-    public static class AlternativeLocationsTypeReference implements TypeReferenceFactory {
-        @Override
-        public TypeReference<?> newTypeReference() {
-            return new TypeReference<List<Location>>() {};
         }
     }
 }

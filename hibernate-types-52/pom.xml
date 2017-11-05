@@ -81,21 +81,4 @@
         </plugins>
     </build>
 
-    <profiles>
-        <profile>
-            <id>travis</id>
-            <activation>
-                <property>
-                    <name>env.TRAVIS</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <properties>
-                <jdk.version>8</jdk.version>
-                <jdk>${env.JAVA_HOME_8}</jdk>
-                <forkMode>always</forkMode>
-            </properties>
-        </profile>
-    </profiles>
-
 </project>

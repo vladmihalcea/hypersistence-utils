@@ -1,5 +1,6 @@
 package com.vladmihalcea.hibernate.type.json.internal;
 
+import com.vladmihalcea.hibernate.type.util.ObjectMapperWrapper;
 import com.vladmihalcea.hibernate.type.util.ReflectionUtils;
 import org.hibernate.annotations.common.reflection.XProperty;
 import org.hibernate.annotations.common.reflection.java.JavaXMember;
@@ -19,13 +20,36 @@ public class JsonTypeDescriptor
 
     private Type type;
 
+    private ObjectMapperWrapper objectMapperWrapper;
+
     public JsonTypeDescriptor() {
         super(Object.class, new MutableMutabilityPlan<Object>() {
             @Override
             protected Object deepCopyNotNull(Object value) {
-                return JacksonUtil.clone(value);
+                return ObjectMapperWrapper.INSTANCE.clone(value);
             }
         });
+    }
+
+    public JsonTypeDescriptor(final ObjectMapperWrapper objectMapperWrapper) {
+        super(Object.class, new MutableMutabilityPlan<Object>() {
+            @Override
+            protected Object deepCopyNotNull(Object value) {
+                return objectMapperWrapper.clone(value);
+            }
+        });
+        this.objectMapperWrapper = objectMapperWrapper;
+    }
+
+    public JsonTypeDescriptor(final ObjectMapperWrapper objectMapperWrapper, Type type) {
+        super(Object.class, new MutableMutabilityPlan<Object>() {
+            @Override
+            protected Object deepCopyNotNull(Object value) {
+                return objectMapperWrapper.clone(value);
+            }
+        });
+        this.objectMapperWrapper = objectMapperWrapper;
+        this.type = type;
     }
 
     @Override
@@ -49,18 +73,18 @@ public class JsonTypeDescriptor
         if (one instanceof String && another instanceof String) {
             return one.equals(another);
         }
-        return JacksonUtil.toJsonNode(JacksonUtil.toString(one)).equals(
-                JacksonUtil.toJsonNode(JacksonUtil.toString(another)));
+        return objectMapperWrapper.toJsonNode(objectMapperWrapper.toString(one)).equals(
+                objectMapperWrapper.toJsonNode(objectMapperWrapper.toString(another)));
     }
 
     @Override
     public String toString(Object value) {
-        return JacksonUtil.toString(value);
+        return objectMapperWrapper.toString(value);
     }
 
     @Override
     public Object fromString(String string) {
-        return JacksonUtil.fromString(string, type);
+        return objectMapperWrapper.fromString(string, type);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -73,7 +97,7 @@ public class JsonTypeDescriptor
             return (X) toString(value);
         }
         if (Object.class.isAssignableFrom(type)) {
-            return (X) JacksonUtil.toJsonNode(toString(value));
+            return (X) objectMapperWrapper.toJsonNode(toString(value));
         }
         throw unknownUnwrap(type);
     }

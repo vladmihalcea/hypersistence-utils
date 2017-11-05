@@ -1,13 +1,10 @@
 package com.vladmihalcea.hibernate.type.json;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
 import com.vladmihalcea.hibernate.type.model.Location;
 import com.vladmihalcea.hibernate.type.model.Ticket;
 import com.vladmihalcea.hibernate.type.util.AbstractMySQLIntegrationTest;
-import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 import org.junit.Test;
 
 import javax.persistence.Column;
@@ -122,5 +119,4 @@ public class MySQLGenericJsonTypeTest extends AbstractMySQLIntegrationTest {
             this.event = event;
         }
     }
-
 }
