@@ -16,6 +16,8 @@ import java.sql.Types;
  */
 public class PostgreSQLEnumType extends org.hibernate.type.EnumType {
 
+    public static final PostgreSQLEnumType INSTANCE = new PostgreSQLEnumType();
+
     public void nullSafeSet(
             PreparedStatement st,
             Object value,

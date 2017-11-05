@@ -18,6 +18,8 @@ public class IntArrayType
         extends AbstractSingleColumnStandardBasicType<int[]>
         implements DynamicParameterizedType {
 
+    public static final IntArrayType INSTANCE = new IntArrayType();
+
     public IntArrayType() {
         super(ArraySqlTypeDescriptor.INSTANCE, IntArrayTypeDescriptor.INSTANCE);
     }

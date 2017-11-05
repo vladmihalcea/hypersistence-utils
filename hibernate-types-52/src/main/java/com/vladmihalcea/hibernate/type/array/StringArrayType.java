@@ -18,6 +18,8 @@ public class StringArrayType
         extends AbstractSingleColumnStandardBasicType<String[]>
         implements DynamicParameterizedType {
 
+    public static final StringArrayType INSTANCE = new StringArrayType();
+
     public StringArrayType() {
         super(ArraySqlTypeDescriptor.INSTANCE, StringArrayTypeDescriptor.INSTANCE);
     }

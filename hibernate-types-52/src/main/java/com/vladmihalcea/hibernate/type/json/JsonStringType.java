@@ -17,6 +17,8 @@ import java.util.Properties;
 public class JsonStringType
         extends AbstractSingleColumnStandardBasicType<Object> implements DynamicParameterizedType {
 
+    public static final JsonStringType INSTANCE = new JsonStringType();
+
     public JsonStringType() {
         super(JsonStringSqlTypeDescriptor.INSTANCE, new JsonTypeDescriptor());
     }

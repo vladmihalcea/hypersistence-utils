@@ -17,6 +17,8 @@ import java.sql.Types;
  */
 public class NullableCharacterType extends ImmutableType<Character> {
 
+    public static final NullableCharacterType INSTANCE = new NullableCharacterType();
+
     public NullableCharacterType() {
         super(Character.class);
     }
