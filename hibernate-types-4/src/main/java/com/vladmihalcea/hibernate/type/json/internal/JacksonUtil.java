@@ -3,8 +3,10 @@ package com.vladmihalcea.hibernate.type.json.internal;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hibernate.internal.util.SerializationHelper;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * @author Vlad Mihalcea
@@ -38,6 +40,8 @@ public class JacksonUtil {
     }
 
     public static <T> T clone(T value) {
-        return fromString(toString(value), (Class<T>) value.getClass());
+        return (value instanceof Serializable) ?
+                (T) SerializationHelper.clone((Serializable) value) :
+                fromString(toString(value), (Class<T>) value.getClass());
     }
 }
