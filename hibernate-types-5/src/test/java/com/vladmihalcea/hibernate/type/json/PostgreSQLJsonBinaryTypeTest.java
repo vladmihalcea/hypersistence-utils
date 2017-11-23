@@ -78,17 +78,11 @@ public class PostgreSQLJsonBinaryTypeTest extends AbstractPostgreSQLIntegrationT
                 assertEquals("ABC123", participant.getTicket().getRegistrationCode());
 
                 List<String> participants = entityManager.createNativeQuery(
-                        "select jsonb_pretty(p.ticket) " +
-                                "from participant p " +
-                                "where p.ticket ->> 'price' > '10'")
-                        .getResultList();
-
-                participants = entityManager.createNativeQuery(
-                        "select jsonb_pretty(p.ticket) " +
-                                "from participant p " +
-                                "where p.ticket ->> 'price' > :price")
-                        .setParameter("price", "10")
-                        .getResultList();
+                    "select jsonb_pretty(p.ticket) " +
+                    "from participant p " +
+                    "where p.ticket ->> 'price' > :price")
+                .setParameter("price", "10")
+                .getResultList();
 
                 event.getLocation().setCity("Constanța");
                 assertEquals(Integer.valueOf(0), event.getVersion());

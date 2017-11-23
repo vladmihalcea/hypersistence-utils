@@ -1,11 +1,16 @@
 package com.vladmihalcea.hibernate.type.json.internal;
 
+import com.vladmihalcea.hibernate.type.json.TypeReferenceFactory;
+import org.hibernate.HibernateException;
+import org.hibernate.internal.util.ReflectHelper;
 import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.type.descriptor.java.AbstractTypeDescriptor;
 import org.hibernate.type.descriptor.java.MutableMutabilityPlan;
 import org.hibernate.usertype.DynamicParameterizedType;
 
 import java.util.Properties;
+
+import static com.vladmihalcea.hibernate.type.json.TypeReferenceFactory.FACTORY_CLASS;
 
 /**
  * @author Vlad Mihalcea
@@ -14,6 +19,8 @@ public class JsonTypeDescriptor
         extends AbstractTypeDescriptor<Object> implements DynamicParameterizedType {
 
     private Class<?> jsonObjectClass;
+
+    private JsonStringSerializer<Object> jsonStringSerializer;
 
     public JsonTypeDescriptor() {
         super(Object.class, new MutableMutabilityPlan<Object>() {
@@ -27,7 +34,21 @@ public class JsonTypeDescriptor
     @Override
     public void setParameterValues(Properties parameters) {
         jsonObjectClass = ((ParameterType) parameters.get(PARAMETER_TYPE)).getReturnedClass();
-
+        final String typeRef = parameters.getProperty(FACTORY_CLASS);
+        if (typeRef == null) {
+            jsonStringSerializer = new ClassJsonStringSerializer(jsonObjectClass);
+        } else {
+            try {
+                final TypeReferenceFactory factory = (TypeReferenceFactory) ReflectHelper.classForName(typeRef, getClass()).newInstance();
+                jsonStringSerializer = new TypeReferenceJsonStringSerializer(factory.newTypeReference());
+            } catch (InstantiationException e) {
+                throw new HibernateException("Cannot generate TypeReferenceFactory class " + typeRef, e);
+            } catch (IllegalAccessException e) {
+                throw new HibernateException("Cannot generate TypeReferenceFactory class " + typeRef, e);
+            } catch (ClassNotFoundException e) {
+                throw new HibernateException("Cannot generate TypeReferenceFactory class " + typeRef, e);
+            }
+        }
     }
 
     @Override
@@ -49,7 +70,7 @@ public class JsonTypeDescriptor
 
     @Override
     public Object fromString(String string) {
-        return JacksonUtil.fromString(string, jsonObjectClass);
+        return jsonStringSerializer.fromString(string);
     }
 
     @SuppressWarnings({"unchecked"})
