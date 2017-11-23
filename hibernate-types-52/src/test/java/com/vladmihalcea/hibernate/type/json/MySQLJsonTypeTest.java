@@ -4,6 +4,7 @@ import com.vladmihalcea.hibernate.type.model.BaseEntity;
 import com.vladmihalcea.hibernate.type.model.Location;
 import com.vladmihalcea.hibernate.type.model.Ticket;
 import com.vladmihalcea.hibernate.type.util.AbstractMySQLIntegrationTest;
+import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
 
@@ -11,6 +12,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -53,6 +55,7 @@ public class MySQLJsonTypeTest extends AbstractMySQLIntegrationTest {
             Event event = new Event();
             event.setId(1L);
             event.setLocation(location);
+            event.setAlternativeLocations(Arrays.asList(location));
             entityManager.persist(event);
 
             Ticket ticket = new Ticket();
@@ -72,6 +75,7 @@ public class MySQLJsonTypeTest extends AbstractMySQLIntegrationTest {
         doInJPA(entityManager -> {
             Event event = entityManager.find(Event.class, eventHolder.get().getId());
             assertEquals("Cluj-Napoca", event.getLocation().getCity());
+            assertEquals("Cluj-Napoca", event.getAlternativeLocations().get(0).getCity());
 
             Participant participant = entityManager.find(Participant.class, participantHolder.get().getId());
             assertEquals("ABC123", participant.getTicket().getRegistrationCode());
@@ -97,12 +101,24 @@ public class MySQLJsonTypeTest extends AbstractMySQLIntegrationTest {
         @Column(columnDefinition = "json")
         private Location location;
 
+        @Type(type = "json")
+        @Column(columnDefinition = "json")
+        private List<Location> alternativeLocations;
+
         public Location getLocation() {
             return location;
         }
 
         public void setLocation(Location location) {
             this.location = location;
+        }
+
+        public List<Location> getAlternativeLocations() {
+            return alternativeLocations;
+        }
+
+        public void setAlternativeLocations(List<Location> alternativeLocations) {
+            this.alternativeLocations = alternativeLocations;
         }
     }
 
