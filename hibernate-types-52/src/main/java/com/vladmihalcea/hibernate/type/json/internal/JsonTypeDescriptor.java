@@ -1,6 +1,5 @@
 package com.vladmihalcea.hibernate.type.json.internal;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.vladmihalcea.hibernate.type.json.TypeReferenceFactory;
 import org.hibernate.HibernateException;
 import org.hibernate.internal.util.ReflectHelper;

@@ -1,6 +1,9 @@
 package com.vladmihalcea.hibernate.type.json.internal;
 
-
+/**
+ *
+ * @author Fabio Grucci
+ */
 public class ClassJsonSerializer<T> implements JsonSerializer<T> {
 
     private final Class<T> clazz;
