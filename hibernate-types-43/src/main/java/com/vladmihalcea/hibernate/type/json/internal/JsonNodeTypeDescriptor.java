@@ -1,6 +1,9 @@
 package com.vladmihalcea.hibernate.type.json.internal;
 
 import com.fasterxml.jackson.databind.JsonNode;
+
+import java.io.Serializable;
+
 import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.type.descriptor.java.AbstractTypeDescriptor;
 import org.hibernate.type.descriptor.java.MutableMutabilityPlan;
@@ -15,6 +18,17 @@ public class JsonNodeTypeDescriptor
 
     public JsonNodeTypeDescriptor() {
         super(JsonNode.class, new MutableMutabilityPlan<JsonNode>() {
+
+            @Override
+            public Serializable disassemble(JsonNode value) {
+                return JacksonUtil.toString(value);
+            }
+
+            @Override
+            public JsonNode assemble(Serializable cached) {
+                return JacksonUtil.toJsonNode((String) cached);
+            }
+
             @Override
             protected JsonNode deepCopyNotNull(JsonNode value) {
                 return JacksonUtil.clone(value);
