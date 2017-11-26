@@ -209,6 +209,11 @@ public abstract class AbstractTest {
         }
         properties.put("hibernate.generate_statistics", Boolean.TRUE.toString());
         //properties.put("hibernate.ejb.metamodel.population", "disabled");
+        properties.setProperty("hibernate.cache.use_second_level_cache", "true");
+        properties.setProperty("hibernate.cache.use_query_cache", "true");
+        properties.setProperty("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.EhCacheRegionFactory");
+        properties.setProperty("hibernate.cache.query_cache_factory", "org.hibernate.cache.internal.StandardQueryCacheFactory");
+
         additionalProperties(properties);
         return properties;
     }
