@@ -5,6 +5,8 @@ import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.type.descriptor.java.AbstractTypeDescriptor;
 import org.hibernate.type.descriptor.java.MutableMutabilityPlan;
 
+import java.io.Serializable;
+
 /**
  * @author Vlad Mihalcea
  */
@@ -15,6 +17,17 @@ public class JsonNodeTypeDescriptor
 
     public JsonNodeTypeDescriptor() {
         super(JsonNode.class, new MutableMutabilityPlan<JsonNode>() {
+
+            @Override
+            public Serializable disassemble(JsonNode value) {
+                return JacksonUtil.toString(value);
+            }
+
+            @Override
+            public JsonNode assemble(Serializable cached) {
+                return JacksonUtil.toJsonNode((String) cached);
+            }
+
             @Override
             protected JsonNode deepCopyNotNull(JsonNode value) {
                 return JacksonUtil.clone(value);
