@@ -1,9 +1,11 @@
 package com.vladmihalcea.hibernate.type.json;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
 import com.vladmihalcea.hibernate.type.model.Location;
 import com.vladmihalcea.hibernate.type.model.Ticket;
 import com.vladmihalcea.hibernate.type.util.AbstractMySQLIntegrationTest;
+import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
 
@@ -11,6 +13,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -53,6 +56,7 @@ public class MySQLJsonTypeTest extends AbstractMySQLIntegrationTest {
             Event event = new Event();
             event.setId(1L);
             event.setLocation(location);
+            event.setAlternativeLocations(Arrays.asList(location));
             entityManager.persist(event);
 
             Ticket ticket = new Ticket();
@@ -89,6 +93,30 @@ public class MySQLJsonTypeTest extends AbstractMySQLIntegrationTest {
         });
     }
 
+    @Test
+    public void testGenericsSupport() {
+        final AtomicReference<Event> eventHolder = new AtomicReference<>();
+
+        doInJPA(entityManager -> {
+            Location location = new Location();
+            location.setCountry("Romania");
+            location.setCity("Cluj-Napoca");
+
+            Event event = new Event();
+            event.setId(1L);
+            event.setAlternativeLocations(Arrays.asList(location));
+            entityManager.persist(event);
+
+            eventHolder.set(event);
+        });
+        doInJPA(entityManager -> {
+            Event event = entityManager.find(Event.class, eventHolder.get().getId());
+            assertEquals(1, event.getAlternativeLocations().size());
+            assertEquals("Cluj-Napoca", event.getAlternativeLocations().get(0).getCity());
+            assertEquals("Romania", event.getAlternativeLocations().get(0).getCountry());
+        });
+    }
+
     @Entity(name = "Event")
     @Table(name = "event")
     public static class Event extends BaseEntity {
@@ -97,12 +125,31 @@ public class MySQLJsonTypeTest extends AbstractMySQLIntegrationTest {
         @Column(columnDefinition = "json")
         private Location location;
 
+        @Type(type = "json", parameters = {@Parameter(name = TypeReferenceFactory.FACTORY_CLASS, value = "com.vladmihalcea.hibernate.type.json.MySQLJsonTypeTest$Event$AlternativeLocationsTypeReference")})
+        @Column(columnDefinition = "json")
+        private List<Location> alternativeLocations;
+
         public Location getLocation() {
             return location;
         }
 
         public void setLocation(Location location) {
             this.location = location;
+        }
+
+        public List<Location> getAlternativeLocations() {
+            return alternativeLocations;
+        }
+
+        public void setAlternativeLocations(List<Location> alternativeLocations) {
+            this.alternativeLocations = alternativeLocations;
+        }
+
+        public static class AlternativeLocationsTypeReference implements TypeReferenceFactory {
+            @Override
+            public TypeReference<?> newTypeReference() {
+                return new TypeReference<List<Location>>() {};
+            }
         }
     }
 

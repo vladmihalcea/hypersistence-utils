@@ -1,6 +1,7 @@
 package com.vladmihalcea.hibernate.type.json.internal;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.internal.util.SerializationHelper;
@@ -20,6 +21,14 @@ public class JacksonUtil {
             return OBJECT_MAPPER.readValue(string, clazz);
         } catch (IOException e) {
             throw new IllegalArgumentException("The given string value: " + string + " cannot be transformed to Json object");
+        }
+    }
+
+    public static <T> T fromString(String string, TypeReference<T> typeReference) {
+        try {
+            return OBJECT_MAPPER.readValue(string, typeReference);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("The given string value: " + string + " cannot be transformed to Json object", e);
         }
     }
 
