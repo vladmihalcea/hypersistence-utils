@@ -76,7 +76,6 @@ public class MySQLJsonTypeTest extends AbstractMySQLIntegrationTest {
         doInJPA(entityManager -> {
             Event event = entityManager.find(Event.class, eventHolder.get().getId());
             assertEquals("Cluj-Napoca", event.getLocation().getCity());
-            assertEquals("Cluj-Napoca", event.getAlternativeLocations().get(0).getCity());
 
             Participant participant = entityManager.find(Participant.class, participantHolder.get().getId());
             assertEquals("ABC123", participant.getTicket().getRegistrationCode());
@@ -91,6 +90,30 @@ public class MySQLJsonTypeTest extends AbstractMySQLIntegrationTest {
             entityManager.flush();
 
             assertEquals(1, participants.size());
+        });
+    }
+
+    @Test
+    public void testGenericsSupport() {
+        final AtomicReference<Event> eventHolder = new AtomicReference<>();
+
+        doInJPA(entityManager -> {
+            Location location = new Location();
+            location.setCountry("Romania");
+            location.setCity("Cluj-Napoca");
+
+            Event event = new Event();
+            event.setId(1L);
+            event.setAlternativeLocations(Arrays.asList(location));
+            entityManager.persist(event);
+
+            eventHolder.set(event);
+        });
+        doInJPA(entityManager -> {
+            Event event = entityManager.find(Event.class, eventHolder.get().getId());
+            assertEquals(1, event.getAlternativeLocations().size());
+            assertEquals("Cluj-Napoca", event.getAlternativeLocations().get(0).getCity());
+            assertEquals("Romania", event.getAlternativeLocations().get(0).getCountry());
         });
     }
 
