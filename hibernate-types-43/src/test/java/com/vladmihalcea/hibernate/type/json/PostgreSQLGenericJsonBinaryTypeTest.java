@@ -10,6 +10,7 @@ import org.hibernate.annotations.Type;
 import org.junit.Test;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -24,8 +25,7 @@ public class PostgreSQLGenericJsonBinaryTypeTest extends AbstractPostgreSQLInteg
     @Override
     protected Class<?>[] entities() {
         return new Class<?>[]{
-                Event.class,
-                Participant.class
+            Event.class
         };
     }
 
@@ -37,16 +37,26 @@ public class PostgreSQLGenericJsonBinaryTypeTest extends AbstractPostgreSQLInteg
 
             @Override
             public Void apply(EntityManager entityManager) {
-            Location location = new Location();
-            location.setCountry("Romania");
-            location.setCity("Cluj-Napoca");
+                Location cluj = new Location();
+                cluj.setCountry("Romania");
+                cluj.setCity("Cluj-Napoca");
 
-            Event event = new Event();
-            event.setId(1L);
-            event.setAlternativeLocations(Arrays.asList(location));
-            entityManager.persist(event);
+                Location newYork = new Location();
+                newYork.setCountry("US");
+                newYork.setCity("New-York");
 
-            eventHolder.set(event);
+                Location london = new Location();
+                london.setCountry("UK");
+                london.setCity("London");
+
+                Event event = new Event();
+                event.setId(1L);
+                event.setLocation(cluj);
+                event.setAlternativeLocations(Arrays.asList(newYork, london));
+
+                entityManager.persist(event);
+
+                eventHolder.set(event);
             return null;
             }
         });
@@ -54,9 +64,10 @@ public class PostgreSQLGenericJsonBinaryTypeTest extends AbstractPostgreSQLInteg
             @Override
             public Void apply(EntityManager entityManager) {
             Event event = entityManager.find(Event.class, eventHolder.get().getId());
-            assertEquals(1, event.getAlternativeLocations().size());
-            assertEquals("Cluj-Napoca", event.getAlternativeLocations().get(0).getCity());
-            assertEquals("Romania", event.getAlternativeLocations().get(0).getCountry());
+            assertEquals(2, event.getAlternativeLocations().size());
+
+            assertEquals("New-York", event.getAlternativeLocations().get(0).getCity());
+            assertEquals("London", event.getAlternativeLocations().get(1).getCity());
             return null;
             }
         });
@@ -81,7 +92,7 @@ public class PostgreSQLGenericJsonBinaryTypeTest extends AbstractPostgreSQLInteg
             }
         )
         @Column(columnDefinition = "jsonb")
-        private List<Location> alternativeLocations;
+        private List<Location> alternativeLocations = new ArrayList<Location>();
 
         public Location getLocation() {
             return location;
@@ -97,34 +108,6 @@ public class PostgreSQLGenericJsonBinaryTypeTest extends AbstractPostgreSQLInteg
 
         public void setAlternativeLocations(List<Location> alternativeLocations) {
             this.alternativeLocations = alternativeLocations;
-        }
-    }
-
-    @Entity(name = "Participant")
-    @Table(name = "participant")
-    public static class Participant extends BaseEntity {
-
-        @Type(type = "jsonb")
-        @Column(columnDefinition = "jsonb")
-        private Ticket ticket;
-
-        @ManyToOne
-        private Event event;
-
-        public Ticket getTicket() {
-            return ticket;
-        }
-
-        public void setTicket(Ticket ticket) {
-            this.ticket = ticket;
-        }
-
-        public Event getEvent() {
-            return event;
-        }
-
-        public void setEvent(Event event) {
-            this.event = event;
         }
     }
 

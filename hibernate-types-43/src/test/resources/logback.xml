@@ -12,7 +12,7 @@
     </appender>
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>DEBUG</level>
+            <level>TRACE</level>
         </filter>
         <encoder>
             <Pattern>%-5p [%t]: %c{1} - %m%n</Pattern>
@@ -21,6 +21,9 @@
     </appender>
 
     <logger name="com.vladmihalcea" level="debug"/>
+
+    <logger name="org.hibernate.type.descriptor.sql" level="trace"/>
+
     <root>
         <appender-ref ref="file"/>
         <appender-ref ref="console"/>

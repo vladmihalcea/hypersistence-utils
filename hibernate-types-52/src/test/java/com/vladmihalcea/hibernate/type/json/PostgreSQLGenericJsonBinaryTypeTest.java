@@ -37,22 +37,35 @@ public class PostgreSQLGenericJsonBinaryTypeTest extends AbstractPostgreSQLInteg
         final AtomicReference<Event> eventHolder = new AtomicReference<>();
 
         doInJPA(entityManager -> {
-            Location location = new Location();
-            location.setCountry("Romania");
-            location.setCity("Cluj-Napoca");
+            Location cluj = new Location();
+            cluj.setCountry("Romania");
+            cluj.setCity("Cluj-Napoca");
+
+            Location newYork = new Location();
+            newYork.setCountry("US");
+            newYork.setCity("New-York");
+
+            Location london = new Location();
+            london.setCountry("UK");
+            london.setCity("London");
 
             Event event = new Event();
             event.setId(1L);
-            event.setAlternativeLocations(Arrays.asList(location));
+            event.setLocation(cluj);
+            event.setAlternativeLocations(Arrays.asList(newYork, london));
+
             entityManager.persist(event);
 
             eventHolder.set(event);
         });
         doInJPA(entityManager -> {
             Event event = entityManager.find(Event.class, eventHolder.get().getId());
-            assertEquals(1, event.getAlternativeLocations().size());
-            assertEquals("Cluj-Napoca", event.getAlternativeLocations().get(0).getCity());
-            assertEquals("Romania", event.getAlternativeLocations().get(0).getCountry());
+
+            assertEquals("Cluj-Napoca", event.getLocation().getCity());
+
+            assertEquals(2, event.getAlternativeLocations().size());
+            assertEquals("New-York", event.getAlternativeLocations().get(0).getCity());
+            assertEquals("London", event.getAlternativeLocations().get(1).getCity());
         });
     }
 
