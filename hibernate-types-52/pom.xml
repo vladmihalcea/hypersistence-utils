@@ -58,6 +58,8 @@
         <postgresql.version>9.4-1202-jdbc41</postgresql.version>
         <datasource-proxy.version>1.3.3</datasource-proxy.version>
 
+        <jackson.version>2.9.0</jackson.version>
+
         <jdk.version>8</jdk.version>
         <jdk>${env.JAVA_HOME_8}</jdk>
     </properties>
