@@ -55,6 +55,9 @@ public class JsonTypeDescriptor
         if (one == null || another == null) {
             return false;
         }
+        if (one instanceof String && another instanceof String) {
+            return one.equals(another);
+        }
         return JacksonUtil.toJsonNode(JacksonUtil.toString(one)).equals(
                 JacksonUtil.toJsonNode(JacksonUtil.toString(another)));
     }
