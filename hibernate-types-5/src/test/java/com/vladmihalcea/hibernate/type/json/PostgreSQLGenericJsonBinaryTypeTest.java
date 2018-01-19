@@ -1,6 +1,5 @@
 package com.vladmihalcea.hibernate.type.json;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
 import com.vladmihalcea.hibernate.type.model.Location;
 import com.vladmihalcea.hibernate.type.model.Ticket;
@@ -72,13 +71,7 @@ public class PostgreSQLGenericJsonBinaryTypeTest extends AbstractPostgreSQLInteg
         private Location location;
 
         @Type(
-            type = "jsonb",
-            parameters = {
-                @org.hibernate.annotations.Parameter(
-                    name = TypeReferenceFactory.FACTORY_CLASS,
-                    value = "com.vladmihalcea.hibernate.type.json.PostgreSQLGenericJsonBinaryTypeTest$AlternativeLocationsTypeReference"
-                )
-            }
+            type = "jsonb"
         )
         @Column(columnDefinition = "jsonb")
         private List<Location> alternativeLocations;
@@ -125,13 +118,6 @@ public class PostgreSQLGenericJsonBinaryTypeTest extends AbstractPostgreSQLInteg
 
         public void setEvent(Event event) {
             this.event = event;
-        }
-    }
-
-    public static class AlternativeLocationsTypeReference implements TypeReferenceFactory {
-        @Override
-        public TypeReference<?> newTypeReference() {
-            return new TypeReference<List<Location>>() {};
         }
     }
 }

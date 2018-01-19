@@ -94,9 +94,22 @@ public final class ReflectionUtils {
      */
     public static Method getMethod(Object target, String methodName, Class... parameterTypes) {
         try {
-            return target.getClass().getMethod(methodName, parameterTypes);
+            return getMethod(target.getClass(), methodName, parameterTypes);
         } catch (NoSuchMethodException e) {
             throw handleException(methodName, e);
+        }
+    }
+
+    public static Method getMethod(Class targetClass, String methodName, Class... parameterTypes) throws NoSuchMethodException {
+        try {
+            return targetClass.getDeclaredMethod(methodName, parameterTypes);
+        } catch (NoSuchMethodException e) {
+            if(!targetClass.getSuperclass().equals(Object.class)) {
+                return getMethod(targetClass.getSuperclass(), methodName, parameterTypes);
+            }
+            else {
+                throw e;
+            }
         }
     }
 
