@@ -1,13 +1,14 @@
 package com.vladmihalcea.hibernate.type.json.internal;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hibernate.internal.util.SerializationHelper;
-
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.Type;
+
+import org.hibernate.internal.util.SerializationHelper;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author Vlad Mihalcea
@@ -24,9 +25,9 @@ public class JacksonUtil {
         }
     }
 
-    public static <T> T fromString(String string, TypeReference<T> typeReference) {
+    public static <T> T fromString(String string, Type type) {
         try {
-            return OBJECT_MAPPER.readValue(string, typeReference);
+            return OBJECT_MAPPER.readValue(string, OBJECT_MAPPER.getTypeFactory().constructType(type));
         } catch (IOException e) {
             throw new IllegalArgumentException("The given string value: " + string + " cannot be transformed to Json object", e);
         }
