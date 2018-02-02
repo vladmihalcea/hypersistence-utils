@@ -79,13 +79,7 @@ public class PostgreSQLGenericJsonBinaryTypeTest extends AbstractPostgreSQLInteg
         private Location location;
 
         @Type(
-            type = "jsonb",
-            parameters = {
-                @Parameter(
-                    name = TypeReferenceFactory.FACTORY_CLASS,
-                    value = "com.vladmihalcea.hibernate.type.json.PostgreSQLGenericJsonBinaryTypeTest$AlternativeLocationsTypeReference"
-                )
-            }
+            type = "jsonb"
         )
         @Column(columnDefinition = "jsonb")
         private List<Location> alternativeLocations;
@@ -135,10 +129,4 @@ public class PostgreSQLGenericJsonBinaryTypeTest extends AbstractPostgreSQLInteg
         }
     }
 
-    public static class AlternativeLocationsTypeReference implements TypeReferenceFactory {
-        @Override
-        public TypeReference<?> newTypeReference() {
-            return new TypeReference<List<Location>>() {};
-        }
-    }
 }

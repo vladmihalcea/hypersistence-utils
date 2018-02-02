@@ -73,13 +73,7 @@ public class MySQLGenericJsonTypeTest extends AbstractMySQLIntegrationTest {
         private Location location;
 
         @Type(
-            type = "json",
-            parameters = {
-                @Parameter(
-                    name = TypeReferenceFactory.FACTORY_CLASS,
-                    value = "com.vladmihalcea.hibernate.type.json.MySQLGenericJsonTypeTest$AlternativeLocationsTypeReference"
-                )
-            }
+            type = "json"
         )
         @Column(columnDefinition = "json")
         private List<Location> alternativeLocations;
@@ -129,12 +123,4 @@ public class MySQLGenericJsonTypeTest extends AbstractMySQLIntegrationTest {
         }
     }
 
-    public static class AlternativeLocationsTypeReference implements TypeReferenceFactory {
-
-        @Override
-        public TypeReference<?> newTypeReference() {
-            return new TypeReference<List<Location>>() {
-            };
-        }
-    }
 }
