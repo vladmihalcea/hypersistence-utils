@@ -24,3 +24,50 @@ hs_err_pid*
 .idea/
 target/
 *.iml
+
+# Eclipse workspace
+.metadata/
+
+# Eclipse Settings directory
+.settings/
+
+# Eclipse Java project classpath
+.classpath
+
+# Eclipse Project file
+.project
+
+# Eclipse PyDev project
+.pydevproject
+
+# Eclipse Checkstyle plugin configuration
+.checkstyle
+
+# Eclipse PMD plugin configuration
+.eclipse-pmd
+.pmd
+
+# Eclipse (R)emote (S)ervers (E)xtensions
+RemoteSystemsTempFiles/
+
+# Eclipse application servers
+Servers/
+
+# Eclipse code recommenders
+.recommenders/
+
+# Eclipse tool builders configurations overrides
+.externalToolBuilders/
+
+# Eclipse Spring Tools Suite
+.springBeans
+
+# Eclipse Java annotation processor (APT)
+.factorypath
+
+# Files open for VI
+*.swp
+
+# IntelliJ workspace
+.idea
+
