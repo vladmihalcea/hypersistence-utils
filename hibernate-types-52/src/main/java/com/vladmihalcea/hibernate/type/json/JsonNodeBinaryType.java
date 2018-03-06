@@ -1,9 +1,11 @@
 package com.vladmihalcea.hibernate.type.json;
 
+import org.hibernate.type.AbstractSingleColumnStandardBasicType;
+
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vladmihalcea.hibernate.type.json.internal.JsonBinarySqlTypeDescriptor;
 import com.vladmihalcea.hibernate.type.json.internal.JsonNodeTypeDescriptor;
-import org.hibernate.type.AbstractSingleColumnStandardBasicType;
 
 /**
  * Maps a Jackson {@link JsonNode} on a binary JSON column type.
@@ -16,9 +18,13 @@ public class JsonNodeBinaryType
         extends AbstractSingleColumnStandardBasicType<JsonNode> {
 
     public static final JsonNodeBinaryType INSTANCE = new JsonNodeBinaryType();
-    
+
     public JsonNodeBinaryType() {
         super(JsonBinarySqlTypeDescriptor.INSTANCE, JsonNodeTypeDescriptor.INSTANCE);
+    }
+
+    public JsonNodeBinaryType(ObjectMapper mapper) {
+    	super(JsonBinarySqlTypeDescriptor.INSTANCE, new JsonNodeTypeDescriptor(mapper));
     }
 
     public String getName() {
