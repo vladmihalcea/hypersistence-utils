@@ -1,11 +1,14 @@
 package com.vladmihalcea.hibernate.type.json;
 
-import com.vladmihalcea.hibernate.type.json.internal.JsonStringSqlTypeDescriptor;
-import com.vladmihalcea.hibernate.type.json.internal.JsonTypeDescriptor;
+import java.util.Properties;
+
 import org.hibernate.type.AbstractSingleColumnStandardBasicType;
 import org.hibernate.usertype.DynamicParameterizedType;
 
-import java.util.Properties;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vladmihalcea.hibernate.type.json.internal.JacksonUtil;
+import com.vladmihalcea.hibernate.type.json.internal.JsonStringSqlTypeDescriptor;
+import com.vladmihalcea.hibernate.type.json.internal.JsonTypeDescriptor;
 
 /**
  * Maps any given Java object on a string-based JSON column type.
@@ -20,7 +23,11 @@ public class JsonStringType
     public static final JsonStringType INSTANCE = new JsonStringType();
 
     public JsonStringType() {
-        super(JsonStringSqlTypeDescriptor.INSTANCE, new JsonTypeDescriptor());
+    	this(JacksonUtil.OBJECT_MAPPER);
+    }
+
+    public JsonStringType(ObjectMapper mapper) {
+        super(JsonStringSqlTypeDescriptor.INSTANCE, new JsonTypeDescriptor(mapper));
     }
 
     public String getName() {

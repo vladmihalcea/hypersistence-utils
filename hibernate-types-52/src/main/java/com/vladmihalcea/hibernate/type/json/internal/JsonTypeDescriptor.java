@@ -1,6 +1,9 @@
 package com.vladmihalcea.hibernate.type.json.internal;
 
-import com.vladmihalcea.hibernate.type.util.ReflectionUtils;
+import java.lang.reflect.Type;
+import java.util.Objects;
+import java.util.Properties;
+
 import org.hibernate.annotations.common.reflection.XProperty;
 import org.hibernate.annotations.common.reflection.java.JavaXMember;
 import org.hibernate.type.descriptor.WrapperOptions;
@@ -8,8 +11,9 @@ import org.hibernate.type.descriptor.java.AbstractTypeDescriptor;
 import org.hibernate.type.descriptor.java.MutableMutabilityPlan;
 import org.hibernate.usertype.DynamicParameterizedType;
 
-import java.lang.reflect.Type;
-import java.util.Properties;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vladmihalcea.hibernate.type.util.ReflectionUtils;
 
 /**
  * @author Vlad Mihalcea
@@ -17,20 +21,26 @@ import java.util.Properties;
 public class JsonTypeDescriptor
         extends AbstractTypeDescriptor<Object> implements DynamicParameterizedType {
 
-    private Type type;
+    protected final ObjectMapper mapperInstance;
+    protected Type type;
 
     public JsonTypeDescriptor() {
+        this(JacksonUtil.OBJECT_MAPPER);
+    }
+
+    public JsonTypeDescriptor(ObjectMapper mapper) {
         super(Object.class, new MutableMutabilityPlan<Object>() {
             @Override
             protected Object deepCopyNotNull(Object value) {
-                return JacksonUtil.clone(value);
+                return JacksonUtil.clone(mapper, value);
             }
         });
+        this.mapperInstance = Objects.requireNonNull(mapper, "No object mapper provided");
     }
 
     @Override
     public void setParameterValues(Properties parameters) {
-        final XProperty xProperty = (XProperty) parameters.get(DynamicParameterizedType.XPROPERTY);
+        XProperty xProperty = (XProperty) parameters.get(DynamicParameterizedType.XPROPERTY);
         if (xProperty instanceof JavaXMember) {
             type = ReflectionUtils.invokeGetter(xProperty, "javaType");
         } else {
@@ -43,38 +53,50 @@ public class JsonTypeDescriptor
         if (one == another) {
             return true;
         }
-        if (one == null || another == null) {
+
+        if ((one == null) || (another == null)) {
             return false;
         }
-        if (one instanceof String && another instanceof String) {
+
+        if ((one instanceof String) && (another instanceof String)) {
             return one.equals(another);
         }
-        return JacksonUtil.toJsonNode(JacksonUtil.toString(one)).equals(
-                JacksonUtil.toJsonNode(JacksonUtil.toString(another)));
+
+        String oneString = JacksonUtil.toString(mapperInstance, one);
+        JsonNode oneNode = JacksonUtil.toJsonNode(mapperInstance, oneString);
+        String anotherString = JacksonUtil.toString(mapperInstance, another);
+        JsonNode anotherNode = JacksonUtil.toJsonNode(mapperInstance, anotherString);
+        return Objects.equals(oneNode, anotherNode);
     }
 
     @Override
     public String toString(Object value) {
-        return JacksonUtil.toString(value);
+        return JacksonUtil.toString(mapperInstance, value);
     }
 
     @Override
     public Object fromString(String string) {
-        return JacksonUtil.fromString(string, type);
+        return JacksonUtil.fromString(mapperInstance, string, type);
     }
 
-    @SuppressWarnings({"unchecked"})
     @Override
     public <X> X unwrap(Object value, Class<X> type, WrapperOptions options) {
         if (value == null) {
             return null;
         }
         if (String.class.isAssignableFrom(type)) {
-            return (X) toString(value);
+            String str = toString(value);
+            return type.cast(str);
         }
         if (Object.class.isAssignableFrom(type)) {
-            return (X) JacksonUtil.toJsonNode(toString(value));
+            String str = toString(value);
+            /*
+             * NOTE: do not cast it using type.cast(...) for safety reasons - since
+             * we only ask Object.class.isAssignableFrom(type) - which means "everybody"
+             */
+            return (X) JacksonUtil.toJsonNode(mapperInstance, str);
         }
+
         throw unknownUnwrap(type);
     }
 
@@ -85,5 +107,4 @@ public class JsonTypeDescriptor
         }
         return fromString(value.toString());
     }
-
 }
