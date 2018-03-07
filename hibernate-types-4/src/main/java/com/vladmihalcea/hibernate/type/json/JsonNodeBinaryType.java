@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vladmihalcea.hibernate.type.json.internal.JsonBinarySqlTypeDescriptor;
 import com.vladmihalcea.hibernate.type.json.internal.JsonNodeTypeDescriptor;
 import com.vladmihalcea.hibernate.type.util.ObjectMapperWrapper;
-import com.vladmihalcea.hibernate.type.util.PropertyLoader;
+import com.vladmihalcea.hibernate.type.util.Configuration;
 import org.hibernate.type.AbstractSingleColumnStandardBasicType;
 
 /**
@@ -23,7 +23,7 @@ public class JsonNodeBinaryType
     public JsonNodeBinaryType() {
         super(
             JsonBinarySqlTypeDescriptor.INSTANCE,
-            new JsonNodeTypeDescriptor(PropertyLoader.INSTANCE.getObjectMapperWrapper())
+            new JsonNodeTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper())
         );
     }
 

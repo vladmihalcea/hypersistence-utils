@@ -1,25 +1,29 @@
 package com.vladmihalcea.hibernate.type.json.loader;
 
-import com.vladmihalcea.hibernate.type.model.BaseEntity;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
-import com.vladmihalcea.hibernate.type.util.PropertyLoader;
 import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
 import org.hibernate.annotations.Type;
+import org.hibernate.boot.model.TypeContributions;
+import org.hibernate.boot.model.TypeContributor;
+import org.hibernate.jpa.boot.spi.TypeContributorList;
+import org.hibernate.service.ServiceRegistry;
 import org.junit.Test;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
 
 /**
  * @author Vlad Mihalcea
  */
-public class PostgreSQLJsonBinaryTypeTestPropertyLoaderTest extends AbstractPostgreSQLIntegrationTest {
+public class PostgreSQLJsonBinaryTypeProgrammaticConfigurationTest extends AbstractPostgreSQLIntegrationTest {
 
     @Override
     protected Class<?>[] entities() {
@@ -29,18 +33,25 @@ public class PostgreSQLJsonBinaryTypeTestPropertyLoaderTest extends AbstractPost
     }
 
     @Override
-    public void init() {
-        System.setProperty(
-            PropertyLoader.PROPERTIES_FILE_PATH,
-                "PostgreSQLJsonNodeBinaryType.properties"
-        );
-        super.init();
-    }
+    protected void additionalProperties(Properties properties) {
+        CustomObjectMapperSupplier customObjectMapperSupplier = new CustomObjectMapperSupplier();
+        final JsonBinaryType jsonBinaryType = new JsonBinaryType(customObjectMapperSupplier.get(), Location.class);
 
-    @Override
-    public void destroy() {
-        super.destroy();
-        System.getProperties().remove(PropertyLoader.PROPERTIES_FILE_PATH);
+        properties.put( "hibernate.type_contributors", new TypeContributorList() {
+            @Override
+            public List<TypeContributor> getTypeContributors() {
+                List<TypeContributor> typeContributors = new ArrayList<TypeContributor>();
+                typeContributors.add(new TypeContributor() {
+                    @Override
+                    public void contribute(TypeContributions typeContributions, ServiceRegistry serviceRegistry) {
+                        typeContributions.contributeType(
+                            jsonBinaryType, "location"
+                        );
+                    }
+                });
+                return typeContributors;
+            }
+        });
     }
 
     @Test
@@ -77,11 +88,22 @@ public class PostgreSQLJsonBinaryTypeTestPropertyLoaderTest extends AbstractPost
 
     @Entity(name = "Event")
     @Table(name = "event")
-    public static class Event extends BaseEntity {
+    public static class Event {
 
-        @Type(type = "jsonb")
+        @Id
+        private Long id;
+
+        @Type(type = "location")
         @Column(columnDefinition = "jsonb")
         private Location location;
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
 
         public Location getLocation() {
             return location;

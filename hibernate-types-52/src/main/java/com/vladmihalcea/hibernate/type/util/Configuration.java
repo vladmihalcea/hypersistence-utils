@@ -1,6 +1,7 @@
 package com.vladmihalcea.hibernate.type.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hibernate.cfg.Environment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,17 +13,21 @@ import java.net.URL;
 import java.util.Properties;
 
 /**
- * <code>PropertyLoader</code> - The Property Loader allows declarative configuration through the <code>hibernate-types.properties</code> file.
- * It loads the {@link Properties} configuration file and it's then used to create all required properties.
+ * <code>Configuration</code> - It allows declarative configuration through the <code>hibernate.properties</code> file
+ * or the <code>hibernate-types.properties</code> file.
+ *
+ * The properties from <code>hibernate-types.properties</code> can override the ones from the <code>hibernate.properties</code> file.
+ *
+ * It loads the {@link Properties} configuration file and makes them available to other components.
  *
  * @author Vlad Mihalcea
  * @since 2.1.0
  */
-public class PropertyLoader {
+public class Configuration {
 
-    public static final PropertyLoader INSTANCE = new PropertyLoader();
+    public static final Configuration INSTANCE = new Configuration();
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PropertyLoader.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Configuration.class);
 
     public static final String PROPERTIES_FILE_PATH = "hibernate-types.properties.path";
     public static final String PROPERTIES_FILE_NAME = "hibernate-types.properties";
@@ -44,13 +49,13 @@ public class PropertyLoader {
         }
     }
 
-    private final Properties properties = new Properties();
+    private final Properties properties = Environment.getProperties();
 
-    public PropertyLoader() {
+    public Configuration() {
         load();
     }
 
-    public PropertyLoader(Properties overridingProperties) {
+    public Configuration(Properties overridingProperties) {
         this();
         properties.putAll(overridingProperties);
     }
@@ -114,6 +119,15 @@ public class PropertyLoader {
     }
 
     /**
+     * Get all properties.
+     *
+     * @return properties.
+     */
+    public Properties getProperties() {
+        return properties;
+    }
+
+    /**
      * Get {@link ObjectMapperWrapper} reference
      *
      * @return {@link ObjectMapperWrapper} reference
@@ -131,6 +145,51 @@ public class PropertyLoader {
             }
         }
         return ObjectMapperWrapper.INSTANCE;
+    }
+
+    /**
+     * Get Integer property value
+     *
+     * @param propertyKey property key
+     * @return Integer property value
+     */
+    public Integer integerProperty(PropertyKey propertyKey) {
+        Integer value = null;
+        String property = properties.getProperty(propertyKey.getKey());
+        if (property != null) {
+            value = Integer.valueOf(property);
+        }
+        return value;
+    }
+
+    /**
+     * Get Long property value
+     *
+     * @param propertyKey property key
+     * @return Long property value
+     */
+    public Long longProperty(PropertyKey propertyKey) {
+        Long value = null;
+        String property = properties.getProperty(propertyKey.getKey());
+        if (property != null) {
+            value = Long.valueOf(property);
+        }
+        return value;
+    }
+
+    /**
+     * Get Boolean property value
+     *
+     * @param propertyKey property key
+     * @return Boolean property value
+     */
+    public Boolean booleanProperty(PropertyKey propertyKey) {
+        Boolean value = null;
+        String property = properties.getProperty(propertyKey.getKey());
+        if (property != null) {
+            value = Boolean.valueOf(property);
+        }
+        return value;
     }
 
     /**
@@ -157,50 +216,5 @@ public class PropertyLoader {
             }
         }
         return object;
-    }
-
-    /**
-     * Get Integer property value
-     *
-     * @param propertyKey property key
-     * @return Integer property value
-     */
-    private Integer integerProperty(PropertyKey propertyKey) {
-        Integer value = null;
-        String property = properties.getProperty(propertyKey.getKey());
-        if (property != null) {
-            value = Integer.valueOf(property);
-        }
-        return value;
-    }
-
-    /**
-     * Get Long property value
-     *
-     * @param propertyKey property key
-     * @return Long property value
-     */
-    private Long longProperty(PropertyKey propertyKey) {
-        Long value = null;
-        String property = properties.getProperty(propertyKey.getKey());
-        if (property != null) {
-            value = Long.valueOf(property);
-        }
-        return value;
-    }
-
-    /**
-     * Get Boolean property value
-     *
-     * @param propertyKey property key
-     * @return Boolean property value
-     */
-    private Boolean booleanProperty(PropertyKey propertyKey) {
-        Boolean value = null;
-        String property = properties.getProperty(propertyKey.getKey());
-        if (property != null) {
-            value = Boolean.valueOf(property);
-        }
-        return value;
     }
 }

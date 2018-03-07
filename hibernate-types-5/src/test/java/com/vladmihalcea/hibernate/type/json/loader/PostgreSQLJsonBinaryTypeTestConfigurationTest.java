@@ -2,7 +2,7 @@ package com.vladmihalcea.hibernate.type.json.loader;
 
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
-import com.vladmihalcea.hibernate.type.util.PropertyLoader;
+import com.vladmihalcea.hibernate.type.util.Configuration;
 import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Vlad Mihalcea
  */
-public class PostgreSQLJsonBinaryTypeTestPropertyLoaderTest extends AbstractPostgreSQLIntegrationTest {
+public class PostgreSQLJsonBinaryTypeTestConfigurationTest extends AbstractPostgreSQLIntegrationTest {
 
     @Override
     protected Class<?>[] entities() {
@@ -31,7 +31,7 @@ public class PostgreSQLJsonBinaryTypeTestPropertyLoaderTest extends AbstractPost
     @Override
     public void init() {
         System.setProperty(
-            PropertyLoader.PROPERTIES_FILE_PATH,
+            Configuration.PROPERTIES_FILE_PATH,
                 "PostgreSQLJsonNodeBinaryType.properties"
         );
         super.init();
@@ -40,7 +40,7 @@ public class PostgreSQLJsonBinaryTypeTestPropertyLoaderTest extends AbstractPost
     @Override
     public void destroy() {
         super.destroy();
-        System.getProperties().remove(PropertyLoader.PROPERTIES_FILE_PATH);
+        System.getProperties().remove(Configuration.PROPERTIES_FILE_PATH);
     }
 
     @Test
