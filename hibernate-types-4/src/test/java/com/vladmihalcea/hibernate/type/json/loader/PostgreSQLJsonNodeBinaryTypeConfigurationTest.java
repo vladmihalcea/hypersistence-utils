@@ -22,4 +22,9 @@ public class PostgreSQLJsonNodeBinaryTypeConfigurationTest extends PostgreSQLJso
         super.destroy();
         System.getProperties().remove(Configuration.PROPERTIES_FILE_PATH);
     }
+
+    @Override
+    protected String initialPrice() {
+        return "44.991234567";
+    }
 }

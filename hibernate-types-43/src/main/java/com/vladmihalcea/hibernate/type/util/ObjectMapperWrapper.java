@@ -22,12 +22,12 @@ public class ObjectMapperWrapper {
 
     private final ObjectMapper objectMapper;
 
-    public ObjectMapperWrapper(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
-
     public ObjectMapperWrapper() {
         this.objectMapper = new ObjectMapper().findAndRegisterModules();
+    }
+
+    public ObjectMapperWrapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
     }
 
     public ObjectMapper getObjectMapper() {

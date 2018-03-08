@@ -36,13 +36,14 @@ public class PostgreSQLJsonNodeBinaryTypeTest extends AbstractPostgreSQLIntegrat
                     "   \"title\": \"High-Performance Java Persistence\"," +
                     "   \"author\": \"Vlad Mihalcea\"," +
                     "   \"publisher\": \"Amazon\"," +
-                    "   \"price\": 44.99" +
+                    "   \"price\": " + initialPrice() +
                     "}"
                 )
             );
 
             entityManager.persist(book);
         });
+
         doInJPA(entityManager -> {
             Session session = entityManager.unwrap(Session.class);
             Book book = session
@@ -54,15 +55,23 @@ public class PostgreSQLJsonNodeBinaryTypeTest extends AbstractPostgreSQLIntegrat
             book.setProperties(
                     JacksonUtil.toJsonNode(
                             "{" +
-                                    "   \"title\": \"High-Performance Java Persistence\"," +
-                                    "   \"author\": \"Vlad Mihalcea\"," +
-                                    "   \"publisher\": \"Amazon\"," +
-                                    "   \"price\": 44.99," +
-                                    "   \"url\": \"https://www.amazon.com/High-Performance-Java-Persistence-Vlad-Mihalcea/dp/973022823X/\"" +
-                                    "}"
+                            "   \"title\": \"High-Performance Java Persistence\"," +
+                            "   \"author\": \"Vlad Mihalcea\"," +
+                            "   \"publisher\": \"Amazon\"," +
+                            "   \"price\": " + expectedPrice() + "," +
+                            "   \"url\": \"https://www.amazon.com/High-Performance-Java-Persistence-Vlad-Mihalcea/dp/973022823X/\"" +
+                            "}"
                     )
             );
         });
+    }
+
+    protected String initialPrice() {
+        return "44.99";
+    }
+
+    protected String expectedPrice() {
+        return "44.99";
     }
 
     @Entity(name = "Book")

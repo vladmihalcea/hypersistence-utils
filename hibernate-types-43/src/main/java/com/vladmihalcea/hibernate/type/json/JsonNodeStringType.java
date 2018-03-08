@@ -1,8 +1,11 @@
 package com.vladmihalcea.hibernate.type.json;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vladmihalcea.hibernate.type.json.internal.JsonNodeTypeDescriptor;
 import com.vladmihalcea.hibernate.type.json.internal.JsonStringSqlTypeDescriptor;
+import com.vladmihalcea.hibernate.type.util.Configuration;
+import com.vladmihalcea.hibernate.type.util.ObjectMapperWrapper;
 import org.hibernate.type.AbstractSingleColumnStandardBasicType;
 
 /**
@@ -18,9 +21,25 @@ public class JsonNodeStringType
     public static final JsonNodeStringType INSTANCE = new JsonNodeStringType();
 
     public JsonNodeStringType() {
-        super(JsonStringSqlTypeDescriptor.INSTANCE, JsonNodeTypeDescriptor.INSTANCE);
+        super(
+                JsonStringSqlTypeDescriptor.INSTANCE,
+                new JsonNodeTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper())
+        );
     }
 
+    public JsonNodeStringType(ObjectMapper objectMapper) {
+        super(
+                JsonStringSqlTypeDescriptor.INSTANCE,
+                new JsonNodeTypeDescriptor(new ObjectMapperWrapper(objectMapper))
+        );
+    }
+
+    public JsonNodeStringType(ObjectMapperWrapper objectMapperWrapper) {
+        super(
+                JsonStringSqlTypeDescriptor.INSTANCE,
+                new JsonNodeTypeDescriptor(objectMapperWrapper)
+        );
+    }
     @Override
     public String getName() {
         return "jsonb-node";

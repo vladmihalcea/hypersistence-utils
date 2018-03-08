@@ -22,15 +22,22 @@ public class JsonNodeBinaryType
 
     public JsonNodeBinaryType() {
         super(
-            JsonBinarySqlTypeDescriptor.INSTANCE,
-            new JsonNodeTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper())
+                JsonBinarySqlTypeDescriptor.INSTANCE,
+                new JsonNodeTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper())
         );
     }
 
     public JsonNodeBinaryType(ObjectMapper objectMapper) {
         super(
-            JsonBinarySqlTypeDescriptor.INSTANCE,
-            new JsonNodeTypeDescriptor(new ObjectMapperWrapper(objectMapper))
+                JsonBinarySqlTypeDescriptor.INSTANCE,
+                new JsonNodeTypeDescriptor(new ObjectMapperWrapper(objectMapper))
+        );
+    }
+
+    public JsonNodeBinaryType(ObjectMapperWrapper objectMapperWrapper) {
+        super(
+                JsonBinarySqlTypeDescriptor.INSTANCE,
+                new JsonNodeTypeDescriptor(objectMapperWrapper)
         );
     }
 

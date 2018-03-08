@@ -143,6 +143,10 @@ public class Configuration {
                     return new ObjectMapperWrapper(objectMapper);
                 }
             }
+            else if (objectMapperPropertyInstance instanceof ObjectMapper) {
+                ObjectMapper objectMapper = (ObjectMapper) objectMapperPropertyInstance;
+                return new ObjectMapperWrapper(objectMapper);
+            }
         }
         return ObjectMapperWrapper.INSTANCE;
     }

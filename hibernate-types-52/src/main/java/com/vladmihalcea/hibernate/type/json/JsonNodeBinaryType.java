@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vladmihalcea.hibernate.type.json.internal.JsonBinarySqlTypeDescriptor;
 import com.vladmihalcea.hibernate.type.json.internal.JsonNodeTypeDescriptor;
-import com.vladmihalcea.hibernate.type.util.ObjectMapperWrapper;
 import com.vladmihalcea.hibernate.type.util.Configuration;
+import com.vladmihalcea.hibernate.type.util.ObjectMapperWrapper;
 import org.hibernate.type.AbstractSingleColumnStandardBasicType;
 
 /**
@@ -22,20 +22,26 @@ public class JsonNodeBinaryType
 
     public JsonNodeBinaryType() {
         super(
-            JsonBinarySqlTypeDescriptor.INSTANCE,
-            new JsonNodeTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper())
+                JsonBinarySqlTypeDescriptor.INSTANCE,
+                new JsonNodeTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper())
         );
     }
 
     public JsonNodeBinaryType(ObjectMapper objectMapper) {
         super(
-            JsonBinarySqlTypeDescriptor.INSTANCE,
-            new JsonNodeTypeDescriptor(new ObjectMapperWrapper(objectMapper))
+                JsonBinarySqlTypeDescriptor.INSTANCE,
+                new JsonNodeTypeDescriptor(new ObjectMapperWrapper(objectMapper))
+        );
+    }
+
+    public JsonNodeBinaryType(ObjectMapperWrapper objectMapperWrapper) {
+        super(
+                JsonBinarySqlTypeDescriptor.INSTANCE,
+                new JsonNodeTypeDescriptor(objectMapperWrapper)
         );
     }
 
     public String getName() {
         return "jsonb-node";
     }
-
 }

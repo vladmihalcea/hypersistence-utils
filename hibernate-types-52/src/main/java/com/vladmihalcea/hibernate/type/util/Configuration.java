@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
+import java.util.function.Supplier;
 
 /**
  * <code>Configuration</code> - It allows declarative configuration through the <code>hibernate.properties</code> file
@@ -142,6 +143,14 @@ public class Configuration {
                 if(objectMapper != null) {
                     return new ObjectMapperWrapper(objectMapper);
                 }
+            }
+            else if (objectMapperPropertyInstance instanceof Supplier) {
+                Supplier<ObjectMapper> objectMapperSupplier = (Supplier<ObjectMapper>) objectMapperPropertyInstance;
+                return new ObjectMapperWrapper(objectMapperSupplier.get());
+            }
+            else if (objectMapperPropertyInstance instanceof ObjectMapper) {
+                ObjectMapper objectMapper = (ObjectMapper) objectMapperPropertyInstance;
+                return new ObjectMapperWrapper(objectMapper);
             }
         }
         return ObjectMapperWrapper.INSTANCE;

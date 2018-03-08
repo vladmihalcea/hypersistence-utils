@@ -24,22 +24,36 @@ public class JsonStringType
 
     public JsonStringType() {
         super(
-            JsonStringSqlTypeDescriptor.INSTANCE,
-            new JsonTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper())
+                JsonStringSqlTypeDescriptor.INSTANCE,
+                new JsonTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper())
         );
     }
 
     public JsonStringType(ObjectMapper objectMapper) {
         super(
-            JsonStringSqlTypeDescriptor.INSTANCE,
-            new JsonTypeDescriptor(new ObjectMapperWrapper(objectMapper))
+                JsonStringSqlTypeDescriptor.INSTANCE,
+                new JsonTypeDescriptor(new ObjectMapperWrapper(objectMapper))
+        );
+    }
+
+    public JsonStringType(ObjectMapperWrapper objectMapperWrapper) {
+        super(
+                JsonStringSqlTypeDescriptor.INSTANCE,
+                new JsonTypeDescriptor(objectMapperWrapper)
         );
     }
 
     public JsonStringType(ObjectMapper objectMapper, Class javaType) {
         super(
-            JsonStringSqlTypeDescriptor.INSTANCE,
-            new JsonTypeDescriptor(new ObjectMapperWrapper(objectMapper), javaType)
+                JsonStringSqlTypeDescriptor.INSTANCE,
+                new JsonTypeDescriptor(new ObjectMapperWrapper(objectMapper), javaType)
+        );
+    }
+
+    public JsonStringType(ObjectMapperWrapper objectMapperWrapper, Class javaType) {
+        super(
+                JsonStringSqlTypeDescriptor.INSTANCE,
+                new JsonTypeDescriptor(objectMapperWrapper, javaType)
         );
     }
 

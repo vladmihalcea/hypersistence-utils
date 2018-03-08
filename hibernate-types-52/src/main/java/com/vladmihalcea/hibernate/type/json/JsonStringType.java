@@ -3,8 +3,8 @@ package com.vladmihalcea.hibernate.type.json;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vladmihalcea.hibernate.type.json.internal.JsonStringSqlTypeDescriptor;
 import com.vladmihalcea.hibernate.type.json.internal.JsonTypeDescriptor;
-import com.vladmihalcea.hibernate.type.util.ObjectMapperWrapper;
 import com.vladmihalcea.hibernate.type.util.Configuration;
+import com.vladmihalcea.hibernate.type.util.ObjectMapperWrapper;
 import org.hibernate.type.AbstractSingleColumnStandardBasicType;
 import org.hibernate.usertype.DynamicParameterizedType;
 
@@ -24,22 +24,36 @@ public class JsonStringType
 
     public JsonStringType() {
         super(
-            JsonStringSqlTypeDescriptor.INSTANCE,
-            new JsonTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper())
+                JsonStringSqlTypeDescriptor.INSTANCE,
+                new JsonTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper())
         );
     }
 
     public JsonStringType(ObjectMapper objectMapper) {
         super(
-            JsonStringSqlTypeDescriptor.INSTANCE,
-            new JsonTypeDescriptor(new ObjectMapperWrapper(objectMapper))
+                JsonStringSqlTypeDescriptor.INSTANCE,
+                new JsonTypeDescriptor(new ObjectMapperWrapper(objectMapper))
+        );
+    }
+
+    public JsonStringType(ObjectMapperWrapper objectMapperWrapper) {
+        super(
+                JsonStringSqlTypeDescriptor.INSTANCE,
+                new JsonTypeDescriptor(objectMapperWrapper)
         );
     }
 
     public JsonStringType(ObjectMapper objectMapper, Class javaType) {
         super(
-            JsonStringSqlTypeDescriptor.INSTANCE,
-            new JsonTypeDescriptor(new ObjectMapperWrapper(objectMapper), javaType)
+                JsonStringSqlTypeDescriptor.INSTANCE,
+                new JsonTypeDescriptor(new ObjectMapperWrapper(objectMapper), javaType)
+        );
+    }
+
+    public JsonStringType(ObjectMapperWrapper objectMapperWrapper, Class javaType) {
+        super(
+                JsonStringSqlTypeDescriptor.INSTANCE,
+                new JsonTypeDescriptor(objectMapperWrapper, javaType)
         );
     }
 

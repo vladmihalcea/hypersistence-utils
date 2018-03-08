@@ -24,22 +24,36 @@ public class JsonBinaryType
 
     public JsonBinaryType() {
         super(
-            JsonBinarySqlTypeDescriptor.INSTANCE,
-            new JsonTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper())
+                JsonBinarySqlTypeDescriptor.INSTANCE,
+                new JsonTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper())
         );
     }
 
     public JsonBinaryType(ObjectMapper objectMapper) {
         super(
-            JsonBinarySqlTypeDescriptor.INSTANCE,
-            new JsonTypeDescriptor(new ObjectMapperWrapper(objectMapper))
+                JsonBinarySqlTypeDescriptor.INSTANCE,
+                new JsonTypeDescriptor(new ObjectMapperWrapper(objectMapper))
+        );
+    }
+
+    public JsonBinaryType(ObjectMapperWrapper objectMapperWrapper) {
+        super(
+                JsonBinarySqlTypeDescriptor.INSTANCE,
+                new JsonTypeDescriptor(objectMapperWrapper)
         );
     }
 
     public JsonBinaryType(ObjectMapper objectMapper, Class javaType) {
         super(
-            JsonBinarySqlTypeDescriptor.INSTANCE,
-            new JsonTypeDescriptor(new ObjectMapperWrapper(objectMapper), javaType)
+                JsonBinarySqlTypeDescriptor.INSTANCE,
+                new JsonTypeDescriptor(new ObjectMapperWrapper(objectMapper), javaType)
+        );
+    }
+
+    public JsonBinaryType(ObjectMapperWrapper objectMapperWrapper, Class javaType) {
+        super(
+                JsonBinarySqlTypeDescriptor.INSTANCE,
+                new JsonTypeDescriptor(objectMapperWrapper, javaType)
         );
     }
 
