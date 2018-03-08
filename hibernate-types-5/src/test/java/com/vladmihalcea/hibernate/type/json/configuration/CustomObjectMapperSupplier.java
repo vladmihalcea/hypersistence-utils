@@ -1,4 +1,4 @@
-package com.vladmihalcea.hibernate.type.json.loader;
+package com.vladmihalcea.hibernate.type.json.configuration;
 
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,4 +21,5 @@ public class CustomObjectMapperSupplier implements ObjectMapperSupplier {
         objectMapper.registerModule(simpleModule);
         return objectMapper;
     }
+
 }

@@ -1,4 +1,4 @@
-package com.vladmihalcea.hibernate.type.json.loader;
+package com.vladmihalcea.hibernate.type.json.configuration;
 
 import com.vladmihalcea.hibernate.type.json.PostgreSQLJsonNodeBinaryTypeTest;
 import com.vladmihalcea.hibernate.type.util.Configuration;

@@ -12,6 +12,8 @@ import org.junit.Test;
 
 import javax.persistence.*;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * @author Vlad Mihalcea
  */
@@ -60,6 +62,8 @@ public class PostgreSQLJsonNodeBinaryTypeTest extends AbstractPostgreSQLIntegrat
                         .load("978-9730228236");
 
                 LOGGER.info("Book details: {}", book.getProperties());
+
+                assertEquals(expectedPrice(), book.getProperties().get("price").asText());
 
                 book.setProperties(
                         JacksonUtil.toJsonNode(

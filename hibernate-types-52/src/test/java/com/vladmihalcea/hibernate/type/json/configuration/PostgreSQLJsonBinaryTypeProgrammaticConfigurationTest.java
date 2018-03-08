@@ -1,8 +1,5 @@
-package com.vladmihalcea.hibernate.type.json.loader;
+package com.vladmihalcea.hibernate.type.json.configuration;
 
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
 import org.hibernate.annotations.Type;
@@ -17,14 +14,13 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Properties;
-import java.util.TimeZone;
 
 import static org.junit.Assert.assertEquals;
 
 /**
  * @author Vlad Mihalcea
  */
-public class PostgreSQLJsonBinaryTypeProgrammaticConfigurationSupplierTest extends AbstractPostgreSQLIntegrationTest {
+public class PostgreSQLJsonBinaryTypeProgrammaticConfigurationTest extends AbstractPostgreSQLIntegrationTest {
 
     @Override
     protected Class<?>[] entities() {
@@ -35,13 +31,8 @@ public class PostgreSQLJsonBinaryTypeProgrammaticConfigurationSupplierTest exten
 
     @Override
     protected void additionalProperties(Properties properties) {
-        ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
-        objectMapper.setTimeZone(TimeZone.getTimeZone("GMT"));
-        SimpleModule simpleModule = new SimpleModule("SimpleModule", new Version(1, 0, 0, null, null, null));
-        simpleModule.addSerializer(new MoneySerializer());
-        objectMapper.registerModule(simpleModule);
-
-        JsonBinaryType jsonBinaryType = new JsonBinaryType(objectMapper, Location.class);
+        CustomObjectMapperSupplier customObjectMapperSupplier = new CustomObjectMapperSupplier();
+        JsonBinaryType jsonBinaryType = new JsonBinaryType(customObjectMapperSupplier.get(), Location.class);
 
         properties.put("hibernate.type_contributors",
             (TypeContributorList) () -> Collections.singletonList(

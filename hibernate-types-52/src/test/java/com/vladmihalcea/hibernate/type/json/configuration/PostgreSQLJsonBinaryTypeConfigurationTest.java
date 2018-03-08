@@ -1,47 +1,44 @@
-package com.vladmihalcea.hibernate.type.json.loader;
+package com.vladmihalcea.hibernate.type.json.configuration;
 
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import com.vladmihalcea.hibernate.type.model.BaseEntity;
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
+import com.vladmihalcea.hibernate.type.util.Configuration;
 import org.hibernate.annotations.Type;
-import org.hibernate.jpa.boot.spi.TypeContributorList;
 import org.junit.Test;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
 
 /**
  * @author Vlad Mihalcea
  */
-public class PostgreSQLJsonBinaryTypeProgrammaticConfigurationTest extends AbstractPostgreSQLIntegrationTest {
+public class PostgreSQLJsonBinaryTypeConfigurationTest extends AbstractPostgreSQLIntegrationTest {
 
     @Override
     protected Class<?>[] entities() {
         return new Class<?>[]{
-                Event.class,
+            Event.class,
         };
     }
 
     @Override
-    protected void additionalProperties(Properties properties) {
-        CustomObjectMapperSupplier customObjectMapperSupplier = new CustomObjectMapperSupplier();
-        JsonBinaryType jsonBinaryType = new JsonBinaryType(customObjectMapperSupplier.get(), Location.class);
-
-        properties.put("hibernate.type_contributors",
-            (TypeContributorList) () -> Collections.singletonList(
-                (typeContributions, serviceRegistry) ->
-                    typeContributions.contributeType(
-                        jsonBinaryType, "location"
-                    )
-            )
+    public void init() {
+        System.setProperty(
+            Configuration.PROPERTIES_FILE_PATH,
+                "PostgreSQLJsonNodeBinaryType.properties"
         );
+        super.init();
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        System.getProperties().remove(Configuration.PROPERTIES_FILE_PATH);
     }
 
     @Test
@@ -66,22 +63,11 @@ public class PostgreSQLJsonBinaryTypeProgrammaticConfigurationTest extends Abstr
 
     @Entity(name = "Event")
     @Table(name = "event")
-    public static class Event {
+    public static class Event extends BaseEntity {
 
-        @Id
-        private Long id;
-
-        @Type(type = "location")
+        @Type(type = "jsonb")
         @Column(columnDefinition = "jsonb")
         private Location location;
-
-        public Long getId() {
-            return id;
-        }
-
-        public void setId(Long id) {
-            this.id = id;
-        }
 
         public Location getLocation() {
             return location;

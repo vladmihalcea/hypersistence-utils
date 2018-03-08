@@ -1,44 +1,56 @@
-package com.vladmihalcea.hibernate.type.json.loader;
+package com.vladmihalcea.hibernate.type.json.configuration;
 
-import com.vladmihalcea.hibernate.type.model.BaseEntity;
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
-import com.vladmihalcea.hibernate.type.util.Configuration;
 import org.hibernate.annotations.Type;
+import org.hibernate.jpa.boot.spi.TypeContributorList;
 import org.junit.Test;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.Properties;
+import java.util.TimeZone;
 
 import static org.junit.Assert.assertEquals;
 
 /**
  * @author Vlad Mihalcea
  */
-public class PostgreSQLJsonBinaryTypeConfigurationTest extends AbstractPostgreSQLIntegrationTest {
+public class PostgreSQLJsonBinaryTypeProgrammaticConfigurationSupplierTest extends AbstractPostgreSQLIntegrationTest {
 
     @Override
     protected Class<?>[] entities() {
         return new Class<?>[]{
-            Event.class,
+                Event.class,
         };
     }
 
     @Override
-    public void init() {
-        System.setProperty(
-            Configuration.PROPERTIES_FILE_PATH,
-                "PostgreSQLJsonNodeBinaryType.properties"
-        );
-        super.init();
-    }
+    protected void additionalProperties(Properties properties) {
+        ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
+        objectMapper.setTimeZone(TimeZone.getTimeZone("GMT"));
+        SimpleModule simpleModule = new SimpleModule("SimpleModule", new Version(1, 0, 0, null, null, null));
+        simpleModule.addSerializer(new MoneySerializer());
+        objectMapper.registerModule(simpleModule);
 
-    @Override
-    public void destroy() {
-        super.destroy();
-        System.getProperties().remove(Configuration.PROPERTIES_FILE_PATH);
+        JsonBinaryType jsonBinaryType = new JsonBinaryType(objectMapper, Location.class);
+
+        properties.put("hibernate.type_contributors",
+            (TypeContributorList) () -> Collections.singletonList(
+                (typeContributions, serviceRegistry) ->
+                    typeContributions.contributeType(
+                        jsonBinaryType, "location"
+                    )
+            )
+        );
     }
 
     @Test
@@ -63,11 +75,22 @@ public class PostgreSQLJsonBinaryTypeConfigurationTest extends AbstractPostgreSQ
 
     @Entity(name = "Event")
     @Table(name = "event")
-    public static class Event extends BaseEntity {
+    public static class Event {
 
-        @Type(type = "jsonb")
+        @Id
+        private Long id;
+
+        @Type(type = "location")
         @Column(columnDefinition = "jsonb")
         private Location location;
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
 
         public Location getLocation() {
             return location;
