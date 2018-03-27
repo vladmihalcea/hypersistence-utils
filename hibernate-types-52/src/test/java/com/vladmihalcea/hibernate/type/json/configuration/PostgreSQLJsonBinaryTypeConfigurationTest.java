@@ -30,7 +30,7 @@ public class PostgreSQLJsonBinaryTypeConfigurationTest extends AbstractPostgreSQ
     public void init() {
         System.setProperty(
             Configuration.PROPERTIES_FILE_PATH,
-                "PostgreSQLJsonNodeBinaryType.properties"
+                "PostgreSQLJsonBinaryTypeConfigurationTest.properties"
         );
         super.init();
     }

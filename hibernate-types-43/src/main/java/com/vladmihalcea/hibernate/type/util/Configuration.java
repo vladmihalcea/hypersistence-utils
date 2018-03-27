@@ -36,7 +36,8 @@ public class Configuration {
      * Each Property has a well-defined key.
      */
     public enum PropertyKey {
-        JACKSON_OBJECT_MAPPER("hibernate.types.jackson.object.mapper");
+        JACKSON_OBJECT_MAPPER("hibernate.types.jackson.object.mapper"),
+        JSON_SERIALIZER("hibernate.types.json.serializer");
 
         private final String key;
 
@@ -104,8 +105,8 @@ public class Configuration {
                             propertiesFileUrl = f.toURI().toURL();
                         } catch (MalformedURLException e) {
                             LOGGER.error(
-                                    "The property " + propertiesFilePath + " can't be resolved to either a URL, " +
-                                            "a classpath resource or a File"
+                                "The property " + propertiesFilePath + " can't be resolved to either a URL, " +
+                                "a classpath resource or a File"
                             );
                         }
                     }
@@ -135,20 +136,39 @@ public class Configuration {
     public ObjectMapperWrapper getObjectMapperWrapper() {
         Object objectMapperPropertyInstance = instantiateClass(PropertyKey.JACKSON_OBJECT_MAPPER);
 
-        if (objectMapperPropertyInstance != null) {
+        ObjectMapperWrapper objectMapperWrapper = new ObjectMapperWrapper();
 
+        if (objectMapperPropertyInstance != null) {
             if(objectMapperPropertyInstance instanceof ObjectMapperSupplier) {
                 ObjectMapper objectMapper = ((ObjectMapperSupplier) objectMapperPropertyInstance).get();
                 if(objectMapper != null) {
-                    return new ObjectMapperWrapper(objectMapper);
+                    objectMapperWrapper = new ObjectMapperWrapper(objectMapper);
                 }
             }
             else if (objectMapperPropertyInstance instanceof ObjectMapper) {
                 ObjectMapper objectMapper = (ObjectMapper) objectMapperPropertyInstance;
-                return new ObjectMapperWrapper(objectMapper);
+                objectMapperWrapper = new ObjectMapperWrapper(objectMapper);
             }
         }
-        return ObjectMapperWrapper.INSTANCE;
+
+        Object jsonSerializerPropertyInstance = instantiateClass(PropertyKey.JSON_SERIALIZER);
+
+        if (jsonSerializerPropertyInstance != null) {
+            JsonSerializer jsonSerializer = null;
+
+            if(jsonSerializerPropertyInstance instanceof JsonSerializerSupplier) {
+                jsonSerializer = ((JsonSerializerSupplier) jsonSerializerPropertyInstance).get();
+            }
+            else if (jsonSerializerPropertyInstance instanceof JsonSerializer) {
+                jsonSerializer = (JsonSerializer) jsonSerializerPropertyInstance;
+            }
+
+            if (jsonSerializer != null) {
+                objectMapperWrapper.setJsonSerializer(jsonSerializer);
+            }
+        }
+
+        return objectMapperWrapper;
     }
 
     /**
@@ -194,6 +214,25 @@ public class Configuration {
             value = Boolean.valueOf(property);
         }
         return value;
+    }
+
+    /**
+     * Get Class property value
+     *
+     * @param propertyKey property key
+     * @return Class property value
+     */
+    public <T> Class<T> classProperty(PropertyKey propertyKey) {
+        Class<T> clazz = null;
+        String property = properties.getProperty(propertyKey.getKey());
+        if (property != null) {
+            try {
+                return ClassLoaderUtils.loadClass(property);
+            } catch (ClassNotFoundException e) {
+                LOGGER.error("Couldn't load the " + property + " class given by the " + propertyKey + " property", e);
+            }
+        }
+        return clazz;
     }
 
     /**

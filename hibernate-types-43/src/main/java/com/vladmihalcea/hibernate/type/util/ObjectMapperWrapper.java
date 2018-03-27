@@ -3,12 +3,9 @@ package com.vladmihalcea.hibernate.type.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hibernate.internal.util.SerializationHelper;
-
-import java.io.Serializable;
-import java.lang.reflect.Type;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 
 /**
  * Wraps a Jackson {@link ObjectMapper} so that you can supply your own {@link ObjectMapper} reference.
@@ -22,12 +19,18 @@ public class ObjectMapperWrapper {
 
     private final ObjectMapper objectMapper;
 
+    private JsonSerializer jsonSerializer = new ObjectMapperJsonSerializer(this);
+
     public ObjectMapperWrapper() {
         this.objectMapper = new ObjectMapper().findAndRegisterModules();
     }
 
     public ObjectMapperWrapper(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
+    }
+
+    public void setJsonSerializer(JsonSerializer jsonSerializer) {
+        this.jsonSerializer = jsonSerializer;
     }
 
     public ObjectMapper getObjectMapper() {
@@ -67,8 +70,6 @@ public class ObjectMapperWrapper {
     }
 
     public <T> T clone(T value) {
-        return (value instanceof Serializable) ?
-                (T) SerializationHelper.clone((Serializable) value) :
-                fromString(toString(value), (Class<T>) value.getClass());
+        return jsonSerializer.clone(value);
     }
 }

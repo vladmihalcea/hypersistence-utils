@@ -32,7 +32,7 @@ public class PostgreSQLJsonBinaryTypeTestConfigurationTest extends AbstractPostg
     public void init() {
         System.setProperty(
             Configuration.PROPERTIES_FILE_PATH,
-                "PostgreSQLJsonNodeBinaryType.properties"
+                "PostgreSQLJsonBinaryTypeConfigurationTest.properties"
         );
         super.init();
     }

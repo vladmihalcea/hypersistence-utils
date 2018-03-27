@@ -1,5 +1,6 @@
-package com.vladmihalcea.hibernate.type.json.configuration;
+package com.vladmihalcea.hibernate.type.json;
 
+import com.vladmihalcea.hibernate.type.json.configuration.CustomJsonSerializer;
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
 import com.vladmihalcea.hibernate.type.util.Configuration;
@@ -14,12 +15,12 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * @author Vlad Mihalcea
  */
-public class PostgreSQLJsonBinaryTypeTestConfigurationTest extends AbstractPostgreSQLIntegrationTest {
+public class PostgreSQLJsonBinaryTypeCustomJsonSerializerConfigurationTest extends AbstractPostgreSQLIntegrationTest {
 
     @Override
     protected Class<?>[] entities() {
@@ -32,7 +33,7 @@ public class PostgreSQLJsonBinaryTypeTestConfigurationTest extends AbstractPostg
     public void init() {
         System.setProperty(
             Configuration.PROPERTIES_FILE_PATH,
-                "PostgreSQLJsonBinaryTypeConfigurationTest.properties"
+                "PostgreSQLJsonBinaryTypeCustomJsonSerializerConfigurationTest.properties"
         );
         super.init();
     }
@@ -45,6 +46,8 @@ public class PostgreSQLJsonBinaryTypeTestConfigurationTest extends AbstractPostg
 
     @Test
     public void test() {
+        assertFalse(CustomJsonSerializer.isCalled());
+
         doInJPA(new JPATransactionFunction<Void>() {
 
             @Override
@@ -63,16 +66,22 @@ public class PostgreSQLJsonBinaryTypeTestConfigurationTest extends AbstractPostg
             }
         });
 
+        assertTrue(CustomJsonSerializer.isCalled());
+        CustomJsonSerializer.reset();
+        assertFalse(CustomJsonSerializer.isCalled());
+
         doInJPA(new JPATransactionFunction<Void>() {
 
             @Override
             public Void apply(EntityManager entityManager) {
                 Event event = entityManager.find(Event.class, 1L);
-                assertEquals("2.25", event.getLocation().getReference().toString());
+                assertEquals("2.25262562526626", event.getLocation().getReference().toString());
 
                 return null;
             }
         });
+
+        assertTrue(CustomJsonSerializer.isCalled());
     }
 
     @Entity(name = "Event")
