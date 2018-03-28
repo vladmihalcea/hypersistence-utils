@@ -18,10 +18,6 @@ The Hibernate Types repository gives you extra types that are not supported by t
 * [`Character` to nullable CHAR column](https://vladmihalcea.com/how-to-implement-a-custom-basic-type-using-hibernate-usertype/)
 * [`ImmutableType` utility to simplify `UserType` implementations](https://vladmihalcea.com/how-to-implement-a-custom-basic-type-using-hibernate-usertype/)
 
-### Support the developement of this project
-
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UPNA5U4W5Z2TC)
-
 ### Installation
 
 Depending on the Hibernate version you are using, you need to following dependency:
