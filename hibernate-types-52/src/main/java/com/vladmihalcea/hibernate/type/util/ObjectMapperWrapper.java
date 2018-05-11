@@ -41,7 +41,7 @@ public class ObjectMapperWrapper {
         try {
             return objectMapper.readValue(string, clazz);
         } catch (IOException e) {
-            throw new IllegalArgumentException("The given string value: " + string + " cannot be transformed to Json object");
+            throw new IllegalArgumentException("The given string value: " + string + " cannot be transformed to Json object", e);
         }
     }
 
@@ -57,7 +57,7 @@ public class ObjectMapperWrapper {
         try {
             return objectMapper.writeValueAsString(value);
         } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("The given Json object value: " + value + " cannot be transformed to a String");
+            throw new IllegalArgumentException("The given Json object value: " + value + " cannot be transformed to a String", e);
         }
     }
 
