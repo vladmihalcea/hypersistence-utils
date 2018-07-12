@@ -22,7 +22,7 @@ The Hibernate Types repository gives you extra types that are not supported by t
 
 Depending on the Hibernate version you are using, you need to following dependency:
 
-#### Hibernate 5.2
+#### Hibernate 5.4, 5.3 and 5.2
 
     <dependency>
         <groupId>com.vladmihalcea</groupId>
