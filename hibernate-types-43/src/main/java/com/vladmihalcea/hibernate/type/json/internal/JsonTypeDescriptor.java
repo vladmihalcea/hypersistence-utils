@@ -9,6 +9,7 @@ import org.hibernate.type.descriptor.java.AbstractTypeDescriptor;
 import org.hibernate.type.descriptor.java.MutableMutabilityPlan;
 import org.hibernate.usertype.DynamicParameterizedType;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Properties;
 
@@ -84,6 +85,9 @@ public class JsonTypeDescriptor
 
     @Override
     public Object fromString(String string) {
+        if (String.class.isAssignableFrom(typeToClass())) {
+            return string;
+        }
         return objectMapperWrapper.fromString(string, type);
     }
 
@@ -97,7 +101,8 @@ public class JsonTypeDescriptor
             return (X) toString(value);
         }
         if (Object.class.isAssignableFrom(type)) {
-            return (X) objectMapperWrapper.toJsonNode(toString(value));
+            String stringValue = (value instanceof String) ? (String) value : toString(value);
+            return (X) objectMapperWrapper.toJsonNode(stringValue);
         }
         throw unknownUnwrap(type);
     }
@@ -110,4 +115,11 @@ public class JsonTypeDescriptor
         return fromString(value.toString());
     }
 
+    private Class typeToClass() {
+        Type classType = type;
+        if(type instanceof ParameterizedType) {
+            classType = ((ParameterizedType) type).getRawType();
+        }
+        return (Class) classType;
+    }
 }
