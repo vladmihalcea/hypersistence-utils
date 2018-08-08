@@ -84,6 +84,9 @@ public class JsonTypeDescriptor
 
     @Override
     public Object fromString(String string) {
+        if (String.class.isAssignableFrom((Class) type)) {
+            return string;
+        }
         return objectMapperWrapper.fromString(string, type);
     }
 
@@ -95,6 +98,9 @@ public class JsonTypeDescriptor
         }
         if (String.class.isAssignableFrom(type)) {
             return (X) toString(value);
+        }
+        if (Object.class.isAssignableFrom(type) && value instanceof String) {
+            return (X) objectMapperWrapper.toJsonNode((String) value);
         }
         if (Object.class.isAssignableFrom(type)) {
             return (X) objectMapperWrapper.toJsonNode(toString(value));

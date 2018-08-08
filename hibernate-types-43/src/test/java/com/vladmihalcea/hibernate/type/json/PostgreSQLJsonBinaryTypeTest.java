@@ -1,5 +1,6 @@
 package com.vladmihalcea.hibernate.type.json;
 
+import com.vladmihalcea.hibernate.type.json.internal.JacksonUtil;
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
 import com.vladmihalcea.hibernate.type.model.Location;
 import com.vladmihalcea.hibernate.type.model.Ticket;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Vlad Mihalcea
@@ -57,6 +59,7 @@ public class PostgreSQLJsonBinaryTypeTest extends AbstractPostgreSQLIntegrationT
                 participant.setId(1L);
                 participant.setTicket(ticket);
                 participant.setEvent(event);
+                participant.setMetaData(JacksonUtil.toString(location));
 
                 entityManager.persist(participant);
 
@@ -84,12 +87,19 @@ public class PostgreSQLJsonBinaryTypeTest extends AbstractPostgreSQLIntegrationT
                 .setParameter("price", "10")
                 .getResultList();
 
+                List<String> countries = entityManager.createNativeQuery(
+                        "select p.metadata ->> 'country' " +
+                                "from participant p ")
+                        .getResultList();
+
                 event.getLocation().setCity("Constanța");
                 assertEquals(Integer.valueOf(0), event.getVersion());
                 entityManager.flush();
                 assertEquals(Integer.valueOf(1), event.getVersion());
 
                 assertEquals(1, participants.size());
+                assertEquals(1, countries.size());
+                assertNotNull(countries.get(0));
 
                 return null;
             }
@@ -152,6 +162,10 @@ public class PostgreSQLJsonBinaryTypeTest extends AbstractPostgreSQLIntegrationT
         @ManyToOne
         private Event event;
 
+        @Type(type = "jsonb")
+        @Column(columnDefinition = "jsonb")
+        private String metaData;
+
         public Ticket getTicket() {
             return ticket;
         }
@@ -166,6 +180,14 @@ public class PostgreSQLJsonBinaryTypeTest extends AbstractPostgreSQLIntegrationT
 
         public void setEvent(Event event) {
             this.event = event;
+        }
+
+        public String getMetaData() {
+            return metaData;
+        }
+
+        public void setMetaData(String metaData) {
+            this.metaData = metaData;
         }
     }
 }
