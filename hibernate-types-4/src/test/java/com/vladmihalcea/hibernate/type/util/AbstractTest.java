@@ -60,11 +60,16 @@ public abstract class AbstractTest {
 
     @Before
     public void init() {
-        if (nativeHibernateSessionFactoryBootstrap()) {
+        if(nativeHibernateSessionFactoryBootstrap()) {
             sf = newSessionFactory();
         } else {
             emf = newEntityManagerFactory();
         }
+        afterInit();
+    }
+
+    protected void afterInit() {
+
     }
 
     @After
