@@ -22,7 +22,7 @@
 
     <logger name="com.vladmihalcea" level="debug"/>
 
-    <logger name="org.hibernate.type.descriptor.sql" level="trace"/>
+    <logger name="org.hibernate.type.descriptor.sql" level="debug"/>
 
     <root>
         <appender-ref ref="file"/>

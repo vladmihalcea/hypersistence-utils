@@ -7,6 +7,12 @@ import java.net.UnknownHostException;
 import java.util.Objects;
 
 /**
+ * The {@link Inet} object type is used to represent an IP address.
+ * <p>
+ * For more details about how to use it,
+ * check out <a href="https://vladmihalcea.com/postgresql-inet-type-hibernate/">this article</a>
+ * on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
+ *
  * @author Vlad Mihalcea
  */
 public class Inet implements Serializable {

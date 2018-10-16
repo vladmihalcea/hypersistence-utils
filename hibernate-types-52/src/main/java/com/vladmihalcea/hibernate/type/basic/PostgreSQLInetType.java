@@ -10,6 +10,12 @@ import java.sql.SQLException;
 import java.sql.Types;
 
 /**
+ * Maps an {@link Inet} object type to a PostgreSQL INET column type.
+ * <p>
+ * For more details about how to use it,
+ * check out <a href="https://vladmihalcea.com/postgresql-inet-type-hibernate/">this article</a>
+ * on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
+ *
  * @author Vlad Mihalcea
  */
 public class PostgreSQLInetType extends ImmutableType<Inet> {
