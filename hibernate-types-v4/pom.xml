@@ -8,12 +8,12 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>hibernate-types-43</artifactId>
+    <artifactId>hibernate-types-v4</artifactId>
     <version>2.3.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>hibernate-types-43</name>
-    <description>Hibernate 4.3 extra Types.</description>
+    <name>hibernate-types-v4</name>
+    <description>Hibernate 4 extra Types.</description>
 
     <dependencies>
 
@@ -54,7 +54,7 @@
     </dependencies>
 
     <properties>
-        <hibernate.version>4.3.11.Final</hibernate.version>
+        <hibernate.version>4.2.21.Final</hibernate.version>
         <postgresql.version>9.4-1202-jdbc4</postgresql.version>
     </properties>
 
