@@ -1,0 +1,90 @@
+Version 2.3.2 - October 18, 2018
+================================================================================
+
+Add the Java 9 automatic module name to the MANIFEST file.
+
+Migrate hibernate-types-52 to Jackson 2.9.7.
+
+Version 2.3.1 - October 16, 2018
+================================================================================
+
+Add support for the java.util.YearMonth which can be persisted as a DATE or INTEGER column.
+
+Version 2.3.0 - September 06, 2018
+================================================================================
+
+Add support for the PostgreSQL INET column type.
+
+Version 2.2.3 - September 06, 2018
+================================================================================
+
+Fix issue #39 caused by marshalling a String using Jackson.
+
+Version 2.2.2 - June 03, 2018
+================================================================================
+
+Allow the JSON to be extracted either via the ResultSet#getObject or ResultSet#getString based on the underlying SQL type descriptor.
+
+Version 2.2.1 - May 12, 2018
+================================================================================
+
+Pass the original IOException when throwing the IllegalArgumentException from ObjectMapperWrapper#readValue and ObjectMapperWrapper#writeValueAsString.
+
+Version 2.2.0 - March 27, 2018
+================================================================================
+
+Fix issue #21 which allows you to customize the deep copy mechanism via the JsonSerializer interface supplied by the hibernate.types.json.serializer configuration property.
+
+Version 2.1.1 - March 08, 2018
+================================================================================
+
+Allows using the ObjectMapperWrapper in JSON types and pass a custom ObjectMapper via the hibernate.types.jackson.object.mapper configuration property.
+
+Refactor internal PropertyLoader to Configuration and make it work with hibernate.properties as well.
+
+Version 2.1.0 - March 07, 2018
+================================================================================
+
+Fix issue #3 which allows providing an external ObjectMapper.
+
+Add the cause to the IllegalArgumentException thrown by JacksonUtil.
+
+Version 2.0.0 - February 02, 2018
+================================================================================
+
+Refactor support for List, Set, Map to be saved as JSON using a simplified mechanism which no longer requires the TypeReferenceJsonStringSerializer. For this reason, this version breaks backward compatibility.
+
+Optimize String equality checks in JsonTypeDescriptor.
+
+Migrate hibernate-types-52 to Jackson 2.9.0.
+
+Version 1.2.0 - November 28, 2018
+================================================================================
+
+Fix issue #11 which adds support for List, Set, Map to be saved as JSON via TypeReferenceJsonStringSerializer.
+
+Fix issue #14 related to a Serialization problem when using JsonNodeBinaryType and Hibernate 2nd-level cache.
+
+Version 1.1.2 - November 11, 2018
+================================================================================
+
+Fix issue #8 which allows the JacksonUtil#clone to use SerializationHelper.clone when the Object implements Serializable.
+
+Add an INSTANCE constant to existing Types.
+
+Version 1.1.1 - October 26, 2018
+================================================================================
+
+Update JavaDocs to reference documentation.
+
+Version 1.1.0 - October 26, 2018
+================================================================================
+
+Add support for PostgreSQL Enum Type.
+
+Use ObjectMapper#findAndRegisterModules() for the default ObjectMapper.
+
+Version 1.0.0 - September 25, 2018
+================================================================================
+
+Initial release which adds the JSON, Array, Nullable Character and ImmutableType support.
