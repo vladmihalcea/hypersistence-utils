@@ -38,7 +38,7 @@ public class PostgreSQLJsonNodeBinaryTypeTest extends AbstractPostgreSQLIntegrat
                     "   \"title\": \"High-Performance Java Persistence\"," +
                     "   \"author\": \"Vlad Mihalcea\"," +
                     "   \"publisher\": \"Amazon\"," +
-                    "   \"price\": " + initialPrice() +
+                    "   \"price\": 44.99" +
                     "}"
                 )
             );
@@ -57,15 +57,15 @@ public class PostgreSQLJsonNodeBinaryTypeTest extends AbstractPostgreSQLIntegrat
             assertEquals(expectedPrice(), book.getProperties().get("price").asText());
 
             book.setProperties(
-                    JacksonUtil.toJsonNode(
-                            "{" +
-                            "   \"title\": \"High-Performance Java Persistence\"," +
-                            "   \"author\": \"Vlad Mihalcea\"," +
-                            "   \"publisher\": \"Amazon\"," +
-                            "   \"price\": " + expectedPrice() + "," +
-                            "   \"url\": \"https://www.amazon.com/High-Performance-Java-Persistence-Vlad-Mihalcea/dp/973022823X/\"" +
-                            "}"
-                    )
+                JacksonUtil.toJsonNode(
+                    "{" +
+                    "   \"title\": \"High-Performance Java Persistence\"," +
+                    "   \"author\": \"Vlad Mihalcea\"," +
+                    "   \"publisher\": \"Amazon\"," +
+                    "   \"price\": 44.99," +
+                    "   \"url\": \"https://www.amazon.com/High-Performance-Java-Persistence-Vlad-Mihalcea/dp/973022823X/\"" +
+                    "}"
+                )
             );
         });
     }
