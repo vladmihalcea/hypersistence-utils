@@ -38,7 +38,7 @@ Depending on the Hibernate version you are using, you need to following dependen
     <dependency>
         <groupId>com.vladmihalcea</groupId>
         <artifactId>hibernate-types-52</artifactId>
-        <version>2.3.2</version>
+        <version>2.3.3</version>
     </dependency>
 
 #### Hibernate 5.1 and 5.0
@@ -46,7 +46,7 @@ Depending on the Hibernate version you are using, you need to following dependen
     <dependency>
         <groupId>com.vladmihalcea</groupId>
         <artifactId>hibernate-types-5</artifactId>
-        <version>2.3.2</version>
+        <version>2.3.3</version>
     </dependency>
     
 #### Hibernate 4.3
@@ -54,7 +54,7 @@ Depending on the Hibernate version you are using, you need to following dependen
     <dependency>
         <groupId>com.vladmihalcea</groupId>
         <artifactId>hibernate-types-43</artifactId>
-        <version>2.3.2</version>
+        <version>2.3.3</version>
     </dependency>
 
 #### Hibernate 4.2 and 4.1
@@ -62,7 +62,7 @@ Depending on the Hibernate version you are using, you need to following dependen
     <dependency>
         <groupId>com.vladmihalcea</groupId>
         <artifactId>hibernate-types-4</artifactId>
-        <version>2.3.2</version>
+        <version>2.3.3</version>
     </dependency>
 
 ### If you like it, you are going to love my book as well! 
