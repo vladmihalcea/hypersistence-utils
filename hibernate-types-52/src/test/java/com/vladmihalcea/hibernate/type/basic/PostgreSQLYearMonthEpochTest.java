@@ -4,10 +4,16 @@ import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.TypeDef;
+import org.hibernate.cfg.AvailableSettings;
+import org.hibernate.query.NativeQuery;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.persistence.*;
 import java.time.YearMonth;
+import java.util.List;
+import java.util.Properties;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
@@ -21,6 +27,11 @@ public class PostgreSQLYearMonthEpochTest extends AbstractPostgreSQLIntegrationT
         return new Class<?>[]{
                 Book.class
         };
+    }
+
+    @Override
+    protected void additionalProperties(Properties properties) {
+        properties.put(AvailableSettings.STATEMENT_BATCH_SIZE, 50);
     }
 
     @Test
@@ -59,9 +70,54 @@ public class PostgreSQLYearMonthEpochTest extends AbstractPostgreSQLIntegrationT
         });
     }
 
+    @Test
+    @Ignore
+    public void testIndexing() {
+        doInJPA(entityManager -> {
+
+            YearMonth yearMonth = YearMonth.of(1970, 1);
+
+            for (int i = 0; i < 5000; i++) {
+                yearMonth = yearMonth.plusMonths(1);
+
+                Book book = new Book();
+                book.setTitle(
+                        String.format(
+                                "IT industry newsletter - %s edition", yearMonth
+                        )
+                );
+                book.setPublishedOn(yearMonth);
+
+                entityManager.persist(book);
+            }
+        });
+
+        List<String> executionPlanLines = doInJPA(entityManager -> {
+            return entityManager.createNativeQuery(
+                    "EXPLAIN ANALYZE " +
+                            "SELECT " +
+                            "    b.published_on " +
+                            "FROM " +
+                            "    book b " +
+                            "WHERE " +
+                            "   b.published_on BETWEEN :startYearMonth AND :endYearMonth ")
+                    .unwrap(NativeQuery.class)
+                    .setParameter("startYearMonth", YearMonth.of(2010, 12), YearMonthEpochType.INSTANCE)
+                    .setParameter("endYearMonth", YearMonth.of(2018, 1), YearMonthEpochType.INSTANCE)
+                    .getResultList();
+        });
+
+        LOGGER.info("Execution plan: \n{}", executionPlanLines.stream().collect(Collectors.joining("\n")));
+    }
 
     @Entity(name = "Book")
-    @Table(name = "book")
+    @Table(
+            name = "book",
+            indexes = @Index(
+                    name = "idx_book_published_on",
+                    columnList = "published_on"
+            )
+    )
     @TypeDef(typeClass = YearMonthEpochType.class, defaultForType = YearMonth.class)
     public static class Book {
 
