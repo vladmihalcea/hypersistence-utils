@@ -4,7 +4,9 @@
 
 ### Introduction
 
-The Hibernate Types repository gives you extra types that are not supported by the Hibernate ORM core.
+The Hibernate Types repository gives you extra types and general purpose utilities that are not supported by the Hibernate ORM core. 
+
+The main advantage of this project is that it supports a broad range of Hibernate versions, spanning from Hibernate 4.1 to Hibernate 5.4.
 
 ### Features
 
