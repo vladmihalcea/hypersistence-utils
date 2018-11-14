@@ -1,3 +1,9 @@
+Version 2.3.4 - November 14, 2018
+================================================================================
+
+Add CamelCaseToSnakeCaseNamingStrategy so that we can automatically map the cameCase JPA properties
+to snake_case database identifiers.
+
 Version 2.3.3 - October 23, 2018
 ================================================================================
 
