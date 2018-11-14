@@ -3,6 +3,10 @@ package com.vladmihalcea.hibernate.type.util;
 import org.hibernate.cfg.DefaultNamingStrategy;
 
 /**
+ * Maps the JPA camelCase properties to snake_case database identifiers.
+ * <p>
+ * For more details about how to use it, check out <a href="https://vladmihalcea.com/map-camel-case-properties-snake-case-column-names-hibernate/">this article</a> on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
+ *
  * @author Vlad Mihalcea
  */
 public class CamelCaseToSnakeCaseNamingStrategy extends DefaultNamingStrategy {

@@ -5,6 +5,10 @@ import org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl;
 import org.hibernate.engine.jdbc.env.spi.JdbcEnvironment;
 
 /**
+ * Maps the JPA camelCase properties to snake_case database identifiers.
+ * <p>
+ * For more details about how to use it, check out <a href="https://vladmihalcea.com/map-camel-case-properties-snake-case-column-names-hibernate/">this article</a> on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
+ *
  * @author Vlad Mihalcea
  */
 public class CamelCaseToSnakeCaseNamingStrategy extends PhysicalNamingStrategyStandardImpl {
@@ -47,7 +51,7 @@ public class CamelCaseToSnakeCaseNamingStrategy extends PhysicalNamingStrategySt
         String formattedName = name.replaceAll(CAMEL_CASE_REGEX, SNAKE_CASE_PATTERN).toLowerCase();
 
             return !formattedName.equals(name) ?
-                    Identifier.toIdentifier(formattedName.toLowerCase(), identifier.isQuoted()) :
+                    Identifier.toIdentifier(formattedName, identifier.isQuoted()) :
                     identifier;
         } else {
             return null;
