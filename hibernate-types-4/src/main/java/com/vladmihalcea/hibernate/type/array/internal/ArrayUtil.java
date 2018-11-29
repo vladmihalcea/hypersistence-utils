@@ -1,5 +1,6 @@
 package com.vladmihalcea.hibernate.type.array.internal;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 
 /**
@@ -154,6 +155,12 @@ public class ArrayUtil {
                 array[i] = objectArray[i] != null ? (Character) objectArray[i] : 0;
             }
             return (T) array;
+        } else if (Enum[].class.isAssignableFrom(arrayClass)) {
+          T array = arrayClass.cast(Array.newInstance(arrayClass.getComponentType(), objectArray.length));
+          for (int i = 0; i < objectArray.length; i++) {
+              Array.set(array, i, objectArray[i] != null ? Enum.valueOf((Class) arrayClass.getComponentType(), (String) objectArray[i]) : null);
+          }
+          return array;
         } else {
             return (T) objectArray;
         }
