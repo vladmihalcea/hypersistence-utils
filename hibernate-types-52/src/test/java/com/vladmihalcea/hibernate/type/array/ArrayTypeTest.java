@@ -10,8 +10,14 @@ import org.junit.Test;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.sql.DataSource;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.fail;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * @author Vlad Mihalcea
@@ -24,6 +30,27 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             Event.class,
         };
     }
+    
+    @Override
+    public void init() {
+      DataSource dataSource = newDataSource();
+      try (Connection connection = dataSource.getConnection()) {
+          try (Statement statement = connection.createStatement()) {
+              try {
+                  statement.executeUpdate(
+                          "DROP TYPE sensor_state CASCADE"
+                  );
+              } catch (SQLException ignore) {
+              }
+              statement.executeUpdate(
+                      "CREATE TYPE sensor_state AS ENUM ('ONLINE', 'OFFLINE', 'UNKNOWN')"
+              );
+          }
+      } catch (SQLException e) {
+          fail(e.getMessage());
+      }
+      super.init();
+  }
 
     @Override
     protected DataSourceProvider dataSourceProvider() {
@@ -46,6 +73,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             event.setId(1L);
             event.setSensorNames(new String[]{"Temperature", "Pressure"});
             event.setSensorValues(new int[]{12, 756});
+            event.setSensorStates(new SensorState[] {SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN});
             entityManager.persist(event);
         });
 
@@ -54,6 +82,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
             assertArrayEquals(new String[]{"Temperature", "Pressure"}, event.getSensorNames());
             assertArrayEquals(new int[]{12, 756}, event.getSensorValues());
+            assertArrayEquals(new SensorState[]{SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN}, event.getSensorStates());
         });
     }
 
@@ -68,6 +97,10 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         @Type(type = "int-array")
         @Column(name = "sensor_values", columnDefinition = "integer[]")
         private int[] sensorValues;
+        
+        @Type( type = "sensor-state-array")
+        @Column(name = "sensor_states", columnDefinition = "sensor_state[]")
+        private SensorState[] sensorStates;
 
         public String[] getSensorNames() {
             return sensorNames;
@@ -84,6 +117,19 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         public void setSensorValues(int[] sensorValues) {
             this.sensorValues = sensorValues;
         }
+
+        public SensorState[] getSensorStates() {
+          return sensorStates;
+        }
+
+        public void setSensorStates(SensorState[] sensorStates) {
+          this.sensorStates = sensorStates;
+        }
+        
+    }
+    
+    public enum SensorState {
+      ONLINE, OFFLINE, UNKNOWN;
     }
 
 }
