@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 /**
- * Maps an {@link Range} object type to a PostgreSQL <a href="https://www.postgresql.org/docs/current/rangetypes.html">range</a>
- * column types.
+ * Maps a {@link Range} object type to a PostgreSQL <a href="https://www.postgresql.org/docs/current/rangetypes.html">range</a>
+ * column type.
  * <p>
  * Supported range types:
  * <ul>
