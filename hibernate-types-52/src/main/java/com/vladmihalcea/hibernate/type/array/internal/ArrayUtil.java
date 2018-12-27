@@ -158,7 +158,7 @@ public class ArrayUtil {
         } else if (Enum[].class.isAssignableFrom(arrayClass)) {
           T array = arrayClass.cast(Array.newInstance(arrayClass.getComponentType(), objectArray.length));
           for (int i = 0; i < objectArray.length; i++) {
-              Array.set(array, i, objectArray[i] != null ? Enum.valueOf((Class) arrayClass.getComponentType(), (String) objectArray[i]) : null);
+              Array.set(array, i, objectArray[i] != null ? Enum.valueOf((Class) arrayClass.getComponentType(), objectArray[i].toString()) : null);
           }
           return array;
         } else {
