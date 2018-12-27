@@ -158,7 +158,12 @@ public class ArrayUtil {
         } else if (Enum[].class.isAssignableFrom(arrayClass)) {
           T array = arrayClass.cast(Array.newInstance(arrayClass.getComponentType(), objectArray.length));
           for (int i = 0; i < objectArray.length; i++) {
-              Array.set(array, i, objectArray[i] != null ? Enum.valueOf((Class) arrayClass.getComponentType(), (String) objectArray[i]) : null);
+              Object objectValue = objectArray[i];
+              if (objectValue != null) {
+                  String stringValue = (objectValue instanceof String) ? (String) objectValue : String.valueOf(objectValue);
+                  objectValue = Enum.valueOf((Class) arrayClass.getComponentType(), stringValue);
+              }
+              Array.set(array, i, objectValue);
           }
           return array;
         } else {
