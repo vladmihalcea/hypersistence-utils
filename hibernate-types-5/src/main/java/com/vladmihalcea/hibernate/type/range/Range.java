@@ -2,6 +2,7 @@ package com.vladmihalcea.hibernate.type.range;
 
 import com.vladmihalcea.hibernate.type.util.Objects;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
@@ -17,7 +18,7 @@ import java.util.Arrays;
  *
  * @author Edgar Asatryan
  */
-public final class Range<T extends Comparable> {
+public final class Range<T extends Comparable> implements Serializable {
 
     private static final int LOWER_INCLUSIVE = 1 << 1;
     private static final int LOWER_EXCLUSIVE = 1 << 2;

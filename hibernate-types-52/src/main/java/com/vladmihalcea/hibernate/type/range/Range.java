@@ -1,5 +1,6 @@
 package com.vladmihalcea.hibernate.type.range;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,7 +22,7 @@ import java.util.function.Function;
  *
  * @author Edgar Asatryan
  */
-public final class Range<T extends Comparable> {
+public final class Range<T extends Comparable> implements Serializable {
     private static final DateTimeFormatter LOCAL_DATE_TIME = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss[.SSSSSS]");
     private static final DateTimeFormatter ZONE_DATE_TIME = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss[.SSSSSS]X");
 
