@@ -12,8 +12,8 @@ import java.util.Arrays;
  * bounds on both sides.
  *
  * <p>
- * The class has some very simple methods for usability. For example {@link #contains(T)} method can tell user whether
- * this range contains argument or not. The {@link #contains(Range)} helps to find out whether this range fully
+ * The class has some very simple methods for usability. For example {@link Range#contains(Comparable)} method can tell user whether
+ * this range contains argument or not. The {@link Range#contains(Range)} helps to find out whether this range fully
  * enclosing argument or not.
  *
  * @author Edgar Asatryan
@@ -47,9 +47,9 @@ public final class Range<T extends Comparable> implements Serializable {
      * Creates the closed range with provided bounds.
      * <p>
      * The mathematical equivalent will be:
-     * <pre>
+     * <pre>{@code
      *     [a, b] = {x | a <= x <= b}
-     * </pre>.
+     * }</pre>.
      *
      * @param lower The lower bound, never null.
      * @param upper The upper bound, never null.
@@ -68,9 +68,9 @@ public final class Range<T extends Comparable> implements Serializable {
      * Creates the open range with provided bounds.
      * <p>
      * The mathematical equivalent will be:
-     * <pre>
+     * <pre>{@code
      *     (a, b) = {x | a < x < b}
-     * </pre>
+     * }</pre>
      *
      * @param lower The lower bound, never null.
      * @param upper The upper bound, never null.
@@ -89,9 +89,9 @@ public final class Range<T extends Comparable> implements Serializable {
      * Creates the left-open, right-closed range with provided bounds.
      * <p>
      * The mathematical equivalent will be:
-     * <pre>
+     * <pre>{@code
      *     (a, b] = {x | a < x <= b}
-     * </pre>
+     * }</pre>
      *
      * @param lower The lower bound, never null.
      * @param upper The upper bound, never null.
@@ -110,9 +110,9 @@ public final class Range<T extends Comparable> implements Serializable {
      * Creates the left-closed, right-open range with provided bounds.
      * <p>
      * The mathematical equivalent will be:
-     * <pre>
+     * <pre>{@code
      *     [a, b) = {x | a <= x < b}
-     * </pre>
+     * }</pre>
      *
      * @param lower The lower bound, never null.
      * @param upper The upper bound, never null.
@@ -131,9 +131,9 @@ public final class Range<T extends Comparable> implements Serializable {
      * Creates the left-bounded, left-open and right-unbounded range with provided lower bound.
      * <p>
      * The mathematical equivalent will be:
-     * <pre>
+     * <pre>{@code
      *     (a, +∞) = {x | x > a}
-     * </pre>
+     * }</pre>
      *
      * @param lower The lower bound, never null.
      * @param <T>   The type of bounds.
@@ -150,9 +150,9 @@ public final class Range<T extends Comparable> implements Serializable {
      * Creates the left-bounded, left-closed and right-unbounded range with provided lower bound.
      * <p>
      * The mathematical equivalent will be:
-     * <pre>
+     * <pre>{@code
      *     [a, +∞) = {x | x >= a}
-     * </pre>
+     * }</pre>
      *
      * @param lower The lower bound, never null.
      * @param <T>   The type of bounds.
@@ -169,9 +169,9 @@ public final class Range<T extends Comparable> implements Serializable {
      * Creates the left-unbounded, right-bounded and right-open range with provided upper bound.
      * <p>
      * The mathematical equivalent will be:
-     * <pre>
+     * <pre>{@code
      *     (-∞, b) = {x | x < b}
-     * </pre>
+     * }</pre>
      *
      * @param upper The upper bound, never null.
      * @param <T>   The type of bounds.
@@ -188,9 +188,9 @@ public final class Range<T extends Comparable> implements Serializable {
      * Creates the left-unbounded, right-bounded and right-closed range with provided upper bound.
      * <p>
      * The mathematical equivalent will be:
-     * <pre>
+     * <pre>{@code
      *     (-∞, b] = {x | x =< b}
-     * </pre>
+     * }</pre>
      *
      * @param upper The upper bound, never null.
      * @param <T>   The type of bounds.
@@ -207,9 +207,9 @@ public final class Range<T extends Comparable> implements Serializable {
      * Creates the unbounded at both ends range with provided upper bound.
      * <p>
      * The mathematical equivalent will be:
-     * <pre>
+     * <pre>{@code
      *     (-∞, +∞) = ℝ
-     * </pre>
+     * }</pre>
      *
      * @param cls The range class, never null.
      * @param <T> The type of bounds.
@@ -259,12 +259,12 @@ public final class Range<T extends Comparable> implements Serializable {
 
     /**
      * Creates the {@code BigDecimal} range from provided string:
-     * <pre>
+     * <pre>{@code
      *     Range<BigDecimal> closed = Range.bigDecimalRange("[0.1,1.1]");
      *     Range<BigDecimal> halfOpen = Range.bigDecimalRange("(0.1,1.1]");
      *     Range<BigDecimal> open = Range.bigDecimalRange("(0.1,1.1)");
      *     Range<BigDecimal> leftUnbounded = Range.bigDecimalRange("(,1.1)");
-     * </pre>
+     * }</pre>
      *
      * @param range The range string, for example {@literal "[5.5,7.8]"}.
      *
@@ -283,13 +283,13 @@ public final class Range<T extends Comparable> implements Serializable {
 
     /**
      * Creates the {@code Integer} range from provided string:
-     * <pre>
+     * <pre>{@code
      *     Range<Integer> closed = Range.integerRange("[1,5]");
      *     Range<Integer> halfOpen = Range.integerRange("(-1,1]");
      *     Range<Integer> open = Range.integerRange("(1,2)");
      *     Range<Integer> leftUnbounded = Range.integerRange("(,10)");
      *     Range<Integer> unbounded = Range.integerRange("(,)");
-     * </pre>
+     * }</pre>
      *
      * @param range The range string, for example {@literal "[5,7]"}.
      *
@@ -308,13 +308,13 @@ public final class Range<T extends Comparable> implements Serializable {
 
     /**
      * Creates the {@code Long} range from provided string:
-     * <pre>
+     * <pre>{@code
      *     Range<Long> closed = Range.longRange("[1,5]");
      *     Range<Long> halfOpen = Range.longRange("(-1,1]");
      *     Range<Long> open = Range.longRange("(1,2)");
      *     Range<Long> leftUnbounded = Range.longRange("(,10)");
      *     Range<Long> unbounded = Range.longRange("(,)");
-     * </pre>
+     * }</pre>
      *
      * @param range The range string, for example {@literal "[5,7]"}.
      *
@@ -407,7 +407,7 @@ public final class Range<T extends Comparable> implements Serializable {
      * Determines whether this range contains this point or not.
      * <p>
      * For example:
-     * <pre>
+     * <pre>{@code
      *     assertTrue(integerRange("[1,2]").contains(1))
      *     assertTrue(integerRange("[1,2]").contains(2))
      *     assertTrue(integerRange("[-1,1]").contains(0))
@@ -417,7 +417,7 @@ public final class Range<T extends Comparable> implements Serializable {
      *     assertFalse(integerRange("(1,2]").contains(1))
      *     assertFalse(integerRange("(1,2]").contains(3))
      *     assertFalse(integerRange("[-1,1]").contains(0))
-     * </pre>
+     * }</pre>
      *
      * @param point The point to check.
      *
@@ -447,13 +447,13 @@ public final class Range<T extends Comparable> implements Serializable {
      * Determines whether this range contains this point or not.
      * <p>
      * For example:
-     * <pre>
+     * <pre>{@code
      *     assertTrue(integerRange("[-2,2]").contains(integerRange("[-1,1]")))
      *     assertTrue(integerRange("(,)").contains(integerRange("(,)"))
      *
      *     assertFalse(integerRange("[-2,2)").contains(integerRange("[-1,2]")))
      *     assertFalse(integerRange("(-2,2]").contains(1))
-     * </pre>
+     * }</pre>
      *
      * @param range The range to check.
      *

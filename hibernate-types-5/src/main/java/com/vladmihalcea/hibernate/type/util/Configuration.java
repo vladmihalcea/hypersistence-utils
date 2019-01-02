@@ -220,6 +220,7 @@ public class Configuration {
      * Get Class property value
      *
      * @param propertyKey property key
+     * @param <T> class generic type
      * @return Class property value
      */
     public <T> Class<T> classProperty(PropertyKey propertyKey) {

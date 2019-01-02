@@ -27,7 +27,7 @@ public final class ReflectionUtils {
      * Instantiate object
      *
      * @param className Class for object to instantiate
-     * @param <T>       field type
+     * @param <T> field type
      * @return field value
      */
     public static <T> T newInstance(String className) {
@@ -163,8 +163,10 @@ public final class ReflectionUtils {
     /**
      * Invoke target method
      *
-     * @param method     method to invoke
+     * @param target target object whose method we are invoking
+     * @param method method to invoke
      * @param parameters method parameters
+     * @param <T> return value object type
      * @return return value
      */
     public static <T> T invoke(Object target, Method method, Object... parameters) {
@@ -185,6 +187,8 @@ public final class ReflectionUtils {
      *
      * @param target   target object
      * @param property property
+     * @param <T> return value object type
+     * @return return value
      */
     public static <T> T invokeGetter(Object target, String property) {
         Method setter = getGetter(target, property);
@@ -254,9 +258,10 @@ public final class ReflectionUtils {
     /**
      * Invoke static Class method
      *
-     * @param method        method to invoke
-     * @param parameters    method parameters
-     * @return              return value
+     * @param method method to invoke
+     * @param parameters method parameters
+     * @param <T> return value object type
+     * @return return value
      */
     public static <T> T invokeStatic(Method method, Object... parameters) {
         try {
@@ -275,6 +280,7 @@ public final class ReflectionUtils {
      * Invoke setter method with the given parameter
      *
      * @param className class name to be retrieved
+     * @param <T> return value object type
      * @return Java {@link Class} object instance
      */
     public static <T> Class<T> getClass(String className) {
