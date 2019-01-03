@@ -26,7 +26,7 @@ import javax.persistence.Version;
 /**
  * @author Vlad Mihalcea
  */
-public class MySQLGenericConfigJsonTypeTest extends AbstractMySQLIntegrationTest {
+public class MySQLParametrizedJsonTypeTest extends AbstractMySQLIntegrationTest {
 
     @Override
     protected Class<?>[] entities() {
@@ -45,20 +45,14 @@ public class MySQLGenericConfigJsonTypeTest extends AbstractMySQLIntegrationTest
     @Override
     protected List<org.hibernate.type.Type> additionalTypes() {
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.enableDefaultTyping();
-
-        Type type = createParameterizedType(HashMap.class, new Class[] { String.class, Object.class }, null);
-
-        JsonStringType jsonStringType = new JsonStringType(objectMapper, type);
-        return Collections.singletonList(jsonStringType);
+        ParametrizedJsonStringType jsonType = new ParametrizedJsonStringType("json-hashmap", HashMap.class, new Class[] { String.class, Object.class });
+        return Collections.singletonList(jsonType);
     }
 
     @Override
     protected boolean nativeHibernateSessionFactoryBootstrap() {
         return true;
     }
-
 
     @Test
     public void test() {
@@ -83,52 +77,74 @@ public class MySQLGenericConfigJsonTypeTest extends AbstractMySQLIntegrationTest
         });
     }
 
-    private static ParameterizedType createParameterizedType(final Type rawType, final Type[] actualTypeArguments, final Type ownerType) {
-        return new ParameterizedType() {
+    public static class ParametrizedJsonStringType extends JsonStringType {
 
-            @Override
-            public Type[] getActualTypeArguments() {
-                return actualTypeArguments;
-            }
+        private String name;
 
-            @Override
-            public Type getRawType() {
-                return rawType;
-            }
+        public ParametrizedJsonStringType(String name, final Type rawType, final Type[] actualTypeArguments) {
+            super(createObjectMapper(), createParameterizedType(rawType, actualTypeArguments, null));
+            this.name = name;
+        }
 
-            @Override
-            public Type getOwnerType() {
-                return ownerType;
-            }
+        @Override
+        public String getName() {
+            return name;
+        }
 
-            @Override
-            public boolean equals(Object obj) {
-                if (!(obj instanceof ParameterizedType)) {
-                    return false;
+        private static ObjectMapper createObjectMapper() {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.enableDefaultTyping();
+            return objectMapper;
+        }
+
+        private static ParameterizedType createParameterizedType(final Type rawType, final Type[] actualTypeArguments, final Type ownerType) {
+            return new ParameterizedType() {
+
+                @Override
+                public Type[] getActualTypeArguments() {
+                    return actualTypeArguments;
                 }
-                ParameterizedType other = (ParameterizedType) obj;
-                return Arrays.equals(getActualTypeArguments(), other.getActualTypeArguments()) && safeEquals(getRawType(), other.getRawType()) && safeEquals(getOwnerType(), other.getOwnerType());
-            }
 
-            @Override
-            public int hashCode() {
-                return safeHashCode(getActualTypeArguments()) ^ safeHashCode(getRawType()) ^ safeHashCode(getOwnerType());
-            }
-        };
-    }
+                @Override
+                public Type getRawType() {
+                    return rawType;
+                }
 
-    private static boolean safeEquals(Type t1, Type t2) {
-        if (t1 == null) {
-            return t2 == null;
+                @Override
+                public Type getOwnerType() {
+                    return ownerType;
+                }
+
+                @Override
+                public boolean equals(Object obj) {
+                    if (!(obj instanceof ParameterizedType)) {
+                        return false;
+                    }
+                    ParameterizedType other = (ParameterizedType) obj;
+                    return Arrays.equals(getActualTypeArguments(), other.getActualTypeArguments()) && safeEquals(getRawType(), other.getRawType()) && safeEquals(getOwnerType(), other.getOwnerType());
+                }
+
+                @Override
+                public int hashCode() {
+                    return safeHashCode(getActualTypeArguments()) ^ safeHashCode(getRawType()) ^ safeHashCode(getOwnerType());
+                }
+            };
         }
-        return t1.equals(t2);
-    }
 
-    private static int safeHashCode(Object o) {
-        if (o == null) {
-            return 1;
+        private static boolean safeEquals(Type t1, Type t2) {
+            if (t1 == null) {
+                return t2 == null;
+            }
+            return t1.equals(t2);
         }
-        return o.hashCode();
+
+        private static int safeHashCode(Object o) {
+            if (o == null) {
+                return 1;
+            }
+            return o.hashCode();
+        }
+
     }
 
     @Entity(name = "PropertyHolder")
@@ -141,7 +157,7 @@ public class MySQLGenericConfigJsonTypeTest extends AbstractMySQLIntegrationTest
         @Version
         private Integer version;
 
-        @org.hibernate.annotations.Type(type = "json")
+        @org.hibernate.annotations.Type(type = "json-hashmap")
         @Column(columnDefinition = "json")
         private Map<String, Object> props = new HashMap<>();
 
