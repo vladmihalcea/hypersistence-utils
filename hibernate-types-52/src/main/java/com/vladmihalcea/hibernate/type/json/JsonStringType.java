@@ -5,9 +5,11 @@ import com.vladmihalcea.hibernate.type.json.internal.JsonStringSqlTypeDescriptor
 import com.vladmihalcea.hibernate.type.json.internal.JsonTypeDescriptor;
 import com.vladmihalcea.hibernate.type.util.Configuration;
 import com.vladmihalcea.hibernate.type.util.ObjectMapperWrapper;
+
 import org.hibernate.type.AbstractSingleColumnStandardBasicType;
 import org.hibernate.usertype.DynamicParameterizedType;
 
+import java.lang.reflect.Type;
 import java.util.Properties;
 
 /**
@@ -43,20 +45,21 @@ public class JsonStringType
         );
     }
 
-    public JsonStringType(ObjectMapper objectMapper, Class javaType) {
+    public JsonStringType(ObjectMapper objectMapper, Type javaType) {
         super(
                 JsonStringSqlTypeDescriptor.INSTANCE,
                 new JsonTypeDescriptor(new ObjectMapperWrapper(objectMapper), javaType)
         );
     }
 
-    public JsonStringType(ObjectMapperWrapper objectMapperWrapper, Class javaType) {
+    public JsonStringType(ObjectMapperWrapper objectMapperWrapper, Type javaType) {
         super(
                 JsonStringSqlTypeDescriptor.INSTANCE,
                 new JsonTypeDescriptor(objectMapperWrapper, javaType)
         );
     }
 
+    @Override
     public String getName() {
         return "json";
     }

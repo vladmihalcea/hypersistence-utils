@@ -8,6 +8,7 @@ import com.vladmihalcea.hibernate.type.util.Configuration;
 import org.hibernate.type.AbstractSingleColumnStandardBasicType;
 import org.hibernate.usertype.DynamicParameterizedType;
 
+import java.lang.reflect.Type;
 import java.util.Properties;
 
 /**
@@ -43,14 +44,14 @@ public class JsonBinaryType
         );
     }
 
-    public JsonBinaryType(ObjectMapper objectMapper, Class javaType) {
+    public JsonBinaryType(ObjectMapper objectMapper, Type javaType) {
         super(
                 JsonBinarySqlTypeDescriptor.INSTANCE,
                 new JsonTypeDescriptor(new ObjectMapperWrapper(objectMapper), javaType)
         );
     }
 
-    public JsonBinaryType(ObjectMapperWrapper objectMapperWrapper, Class javaType) {
+    public JsonBinaryType(ObjectMapperWrapper objectMapperWrapper, Type javaType) {
         super(
                 JsonBinarySqlTypeDescriptor.INSTANCE,
                 new JsonTypeDescriptor(objectMapperWrapper, javaType)

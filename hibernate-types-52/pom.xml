@@ -66,6 +66,7 @@
         <postgresql.version>9.4-1202-jdbc41</postgresql.version>
         <datasource-proxy.version>1.3.3</datasource-proxy.version>
 
+        <mysql.version>8.0.13</mysql.version>
         <jackson.version>2.9.8</jackson.version>
 
         <jdk.version>8</jdk.version>

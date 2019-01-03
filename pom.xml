@@ -284,7 +284,7 @@
         <junit.version>4.8.1</junit.version>
         <hsqldb.version>2.2.8</hsqldb.version>
 
-        <mysql.version>5.1.38</mysql.version>
+        <mysql.version>5.1.47</mysql.version>
 
     </properties>
 
