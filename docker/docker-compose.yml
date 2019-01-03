@@ -1,0 +1,33 @@
+version: '3.2'
+
+services:
+  postgresql-hibernate:
+    image: postgres:11.1
+    container_name: postgresql-hibernate-types
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    volumes:
+      - ./postgresql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "1"
+
+  mysql-hibernate:
+    image: mysql:5.7
+    container_name: mysql-hibernate-types
+    restart: unless-stopped
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+    volumes :
+      - ./mysql/etc/mysql/conf.d:/etc/mysql/conf.d
+      - ./mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "1"
