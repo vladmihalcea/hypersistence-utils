@@ -32,6 +32,7 @@ public class PostgreSQLJsonBinaryTypeConfigurationTest extends AbstractPostgreSQ
             Configuration.PROPERTIES_FILE_PATH,
                 "PostgreSQLJsonBinaryTypeConfigurationTest.properties"
         );
+        reinitializeConfigurationSingleton(Configuration.INSTANCE);
         super.init();
     }
 
@@ -57,7 +58,9 @@ public class PostgreSQLJsonBinaryTypeConfigurationTest extends AbstractPostgreSQ
 
         doInJPA(entityManager -> {
             Event event = entityManager.find(Event.class, 1L);
-            assertEquals("2.25", event.getLocation().getReference().toString());
+            BigDecimal actualToCompare = event.getLocation().getReference().setScale(2, BigDecimal.ROUND_HALF_UP);
+            BigDecimal expectedToCompare = new BigDecimal("2.25").setScale(2, BigDecimal.ROUND_HALF_UP);
+            assertEquals(actualToCompare, expectedToCompare);
         });
     }
 

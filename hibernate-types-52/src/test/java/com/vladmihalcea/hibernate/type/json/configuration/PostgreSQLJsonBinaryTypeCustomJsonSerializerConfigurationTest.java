@@ -34,6 +34,7 @@ public class PostgreSQLJsonBinaryTypeCustomJsonSerializerConfigurationTest exten
             Configuration.PROPERTIES_FILE_PATH,
                 "PostgreSQLJsonBinaryTypeCustomJsonSerializerConfigurationTest.properties"
         );
+        reinitializeConfigurationSingleton(Configuration.INSTANCE);
         super.init();
     }
 
@@ -65,7 +66,9 @@ public class PostgreSQLJsonBinaryTypeCustomJsonSerializerConfigurationTest exten
 
         doInJPA(entityManager -> {
             Event event = entityManager.find(Event.class, 1L);
-            assertEquals("2.25262562526626", event.getLocation().getReference().toString());
+            BigDecimal actualToCompare = event.getLocation().getReference().setScale(2, BigDecimal.ROUND_HALF_UP);
+            BigDecimal expectedToCompare = new BigDecimal("2.25").setScale(2, BigDecimal.ROUND_HALF_UP);
+            assertEquals(actualToCompare, expectedToCompare);
         });
 
         assertTrue(CustomJsonSerializer.isCalled());

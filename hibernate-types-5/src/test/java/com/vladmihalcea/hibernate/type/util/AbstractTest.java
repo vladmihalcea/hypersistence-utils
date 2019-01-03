@@ -42,6 +42,7 @@ import javax.persistence.spi.PersistenceUnitInfo;
 import javax.sql.DataSource;
 import java.io.Closeable;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
@@ -523,6 +524,21 @@ public abstract class AbstractTest {
             if (session != null) {
                 session.close();
             }
+        }
+    }
+
+    /**
+     * Configuration singleton may "unsuccessfully" cache old value due random JUnit's test run order,
+     * so we need handle to "reinitialize" it.
+     * @param instance
+     */
+    protected void reinitializeConfigurationSingleton(com.vladmihalcea.hibernate.type.util.Configuration instance) {
+        try {
+            Method method = instance.getClass().getDeclaredMethod("load");
+            method.setAccessible(true);
+            Object r = method.invoke(instance);
+        } catch (Exception e) {
+            LOGGER.error("Error during reinitializing configuration singleton", e);
         }
     }
 }
