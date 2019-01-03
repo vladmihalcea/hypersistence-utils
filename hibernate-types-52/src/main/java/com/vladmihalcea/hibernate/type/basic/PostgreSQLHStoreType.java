@@ -14,8 +14,13 @@ import java.util.Map;
 /**
  * Maps a {@link Map} object type to a PostgreSQL <a href="https://www.postgresql.org/docs/current/hstore.html">hstore</a>
  * column type.
+ * <p>
+ * For more details about how to use it,
+ * check out <a href="https://vladmihalcea.com/map-postgresql-hstore-jpa-entity-property-hibernate/">this article</a>
+ * on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
  *
  * @author Edgar Asatryan
+ * @author Vlad Mihalcea
  */
 public class PostgreSQLHStoreType extends ImmutableType<Map> {
 
