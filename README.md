@@ -99,3 +99,20 @@ Depending on the Hibernate version you are using, you need to following dependen
 * SLF4J
 * Jackson Databind
 
+## How to quickly start test environment
+```bash
+cd docker
+docker-compose up -d
+```
+
+## How to quickly access to database logs
+```bash
+docker logs -f mysql-hibernate-types
+docker logs -f postgresql-hibernate-types
+```
+
+## How to quickly terminate test environment
+```bash
+cd docker
+docker-compose down -v
+```
