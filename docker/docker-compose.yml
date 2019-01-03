@@ -1,0 +1,17 @@
+version: '3.2'
+
+services:
+  postgresql:
+    image: postgres:11.1
+    hostname: postgresql
+    container_name: postgresql-hibernate-types
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    volumes:
+      - ./postgresql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "1"
