@@ -2,6 +2,9 @@ package com.vladmihalcea.hibernate.type.basic;
 
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
 import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
+import org.hibernate.Session;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.junit.Test;
 
@@ -18,13 +21,14 @@ import static org.junit.Assert.fail;
 
 /**
  * @author Edgar Asatryan
+ * @author Vlad Mihalcea
  */
 public class PostgreSQLHStoreTypeTest extends AbstractPostgreSQLIntegrationTest {
 
     @Override
     protected Class<?>[] entities() {
         return new Class<?>[]{
-                TestHstoreEntity.class
+                Book.class
         };
     }
 
@@ -61,55 +65,68 @@ public class PostgreSQLHStoreTypeTest extends AbstractPostgreSQLIntegrationTest 
 
     @Test
     public void test() {
-        final Map<String, String> attributes = new HashMap<String, String>();
-        attributes.put("a", "1");
-        attributes.put("b", "2");
-        attributes.put("c", "3");
-
-        final TestHstoreEntity entity = doInJPA(new JPATransactionFunction<TestHstoreEntity>() {
+        doInJPA(new JPATransactionFunction<Void>() {
             @Override
-            public TestHstoreEntity apply(EntityManager entityManager) {
-                entityManager.persist(new TestHstoreEntity());
+            public Void apply(EntityManager entityManager) {
+                Book book = new Book();
+                book.setIsbn("978-9730228236");
+                book.getProperties().put("title", "High-Performance Java Persistence");
+                book.getProperties().put("author", "Vlad Mihalcea");
+                book.getProperties().put("publisher", "Amazon");
+                book.getProperties().put("price", "$44.95");
 
-                TestHstoreEntity e = new TestHstoreEntity();
+                entityManager.persist(book);
 
-                e.setAttributes(attributes);
-                entityManager.persist(e);
-
-                return e;
+                return null;
             }
         });
 
         doInJPA(new JPATransactionFunction<Void>() {
             @Override
             public Void apply(EntityManager entityManager) {
-                TestHstoreEntity e = entityManager.find(TestHstoreEntity.class, entity.id);
+                Book book = entityManager.unwrap(Session.class)
+                    .bySimpleNaturalId(Book.class)
+                    .load("978-9730228236");
 
-                assertEquals(attributes, e.getAttributes());
+                assertEquals("High-Performance Java Persistence", book.getProperties().get("title"));
+                assertEquals("Vlad Mihalcea", book.getProperties().get("author"));
 
                 return null;
             }
         });
     }
 
-    @Entity(name = "TestHstoreEntity")
-    @Table(name = "test_hstore")
-    @TypeDef(name = "hstore45", typeClass = PostgreSQLHStoreType.class, defaultForType = Map.class)
-    public static class TestHstoreEntity {
+    @Entity(name = "Book")
+    @Table(name = "book")
+    @TypeDef(name = "hstore", typeClass = PostgreSQLHStoreType.class)
+    public static class Book {
 
         @Id
         @GeneratedValue
         private Long id;
 
-        @Column(name = "attributes", columnDefinition = "hstore")
-        private Map<String, String> attributes;
+        @NaturalId
+        @Column(length = 15)
+        private String isbn;
 
-        Map<String, String> getAttributes() {
-            return attributes;
+        @Type(type = "hstore")
+        @Column(columnDefinition = "hstore")
+        private Map<String, String> properties = new HashMap<String, String>();
+
+        public String getIsbn() {
+            return isbn;
         }
 
-        void setAttributes(Map<String, String> attributes) {
-            this.attributes = attributes;
+        public void setIsbn(String isbn) {
+            this.isbn = isbn;
+        }
+
+        public Map<String, String> getProperties() {
+            return properties;
+        }
+
+        public void setProperties(Map<String, String> properties) {
+            this.properties = properties;
         }
     }
 }

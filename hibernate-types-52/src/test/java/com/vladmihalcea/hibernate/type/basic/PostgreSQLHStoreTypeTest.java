@@ -1,6 +1,9 @@
 package com.vladmihalcea.hibernate.type.basic;
 
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
+import org.hibernate.Session;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.junit.Test;
 
@@ -13,18 +16,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 /**
  * @author Edgar Asatryan
+ * @author Vlad Mihalcea
  */
 public class PostgreSQLHStoreTypeTest extends AbstractPostgreSQLIntegrationTest {
 
     @Override
     protected Class<?>[] entities() {
         return new Class<?>[]{
-                TestHstoreEntity.class
+            Book.class
         };
     }
 
@@ -42,47 +45,59 @@ public class PostgreSQLHStoreTypeTest extends AbstractPostgreSQLIntegrationTest 
 
     @Test
     public void test() {
-        Map<String, String> attributes = new HashMap<>();
-        attributes.put("a", "1");
-        attributes.put("b", "2");
-        attributes.put("c", "3");
 
-        TestHstoreEntity entity = doInJPA(entityManager -> {
-            entityManager.persist(new TestHstoreEntity());
-
-            TestHstoreEntity e = new TestHstoreEntity();
-
-            e.setAttributes(attributes);
-            entityManager.persist(e);
-
-            return e;
+        doInJPA(entityManager -> {
+            Book book = new Book();
+            book.setIsbn("978-9730228236");
+            book.getProperties().put("title", "High-Performance Java Persistence");
+            book.getProperties().put("author", "Vlad Mihalcea");
+            book.getProperties().put("publisher", "Amazon");
+            book.getProperties().put("price", "$44.95");
+            
+            entityManager.persist(book);
         });
 
         doInJPA(entityManager -> {
-            TestHstoreEntity e = entityManager.find(TestHstoreEntity.class, entity.id);
+            Book book = entityManager.unwrap(Session.class)
+                .bySimpleNaturalId(Book.class)
+                .load("978-9730228236");
 
-            assertEquals(attributes, e.getAttributes());
+            assertEquals("High-Performance Java Persistence", book.getProperties().get("title"));
+            assertEquals("Vlad Mihalcea", book.getProperties().get("author"));
         });
     }
 
-    @Entity(name = "TestHstoreEntity")
-    @Table(name = "test_hstore")
-    @TypeDef(name = "hstore45", typeClass = PostgreSQLHStoreType.class, defaultForType = Map.class)
-    public static class TestHstoreEntity {
+    @Entity(name = "Book")
+    @Table(name = "book")
+    @TypeDef(name = "hstore", typeClass = PostgreSQLHStoreType.class)
+    public static class Book {
 
         @Id
         @GeneratedValue
         private Long id;
 
-        @Column(name = "attributes", columnDefinition = "hstore")
-        private Map<String, String> attributes;
+        @NaturalId
+        @Column(length = 15)
+        private String isbn;
 
-        Map<String, String> getAttributes() {
-            return attributes;
+        @Type(type = "hstore")
+        @Column(columnDefinition = "hstore")
+        private Map<String, String> properties = new HashMap<>();
+
+        public String getIsbn() {
+            return isbn;
         }
 
-        void setAttributes(Map<String, String> attributes) {
-            this.attributes = attributes;
+        public void setIsbn(String isbn) {
+            this.isbn = isbn;
+        }
+
+        public Map<String, String> getProperties() {
+            return properties;
+        }
+
+        public void setProperties(Map<String, String> properties) {
+            this.properties = properties;
         }
     }
 }
