@@ -64,7 +64,7 @@
     <properties>
         <hibernate.version>4.2.21.Final</hibernate.version>
         <postgresql.version>9.4-1202-jdbc4</postgresql.version>
-        <jackson.version>2.7.9.4</jackson.version>
+        <jackson.version>2.7.9.5</jackson.version>
     </properties>
 
     <build>
