@@ -5,6 +5,7 @@ import com.vladmihalcea.hibernate.type.util.ExceptionUtil;
 import com.vladmihalcea.hibernate.type.util.providers.DataSourceProvider;
 import com.vladmihalcea.hibernate.type.util.providers.PostgreSQLDataSourceProvider;
 import org.hibernate.annotations.TypeDef;
+import org.hibernate.jpa.TypedParameterValue;
 import org.hibernate.query.Query;
 import org.junit.Test;
 
@@ -98,7 +99,7 @@ public class BindArrayTypeQueryParameterTest extends AbstractPostgreSQLIntegrati
     }
 
     @Test
-    public void testJPQLWithExplicitParaeterTypeBinding() {
+    public void testJPQLWithExplicitParameterTypeBinding() {
         doInJPA(entityManager -> {
             Event event = (Event) entityManager
             .createQuery(
@@ -112,7 +113,22 @@ public class BindArrayTypeQueryParameterTest extends AbstractPostgreSQLIntegrati
 
             assertArrayEquals(new int[]{1, 2, 3}, event.getValues());
         });
+    }
 
+    @Test
+    public void testJPQLWithTypedParameterValue() {
+        doInJPA(entityManager -> {
+            Event event = entityManager
+            .createQuery(
+                "select e " +
+                "from Event e " +
+                "where " +
+                "   fn_array_contains(e.values, :arrayValues) = true", Event.class)
+            .setParameter("arrayValues", new TypedParameterValue(IntArrayType.INSTANCE, new int[]{2, 3}))
+            .getSingleResult();
+
+            assertArrayEquals(new int[]{1, 2, 3}, event.getValues());
+        });
     }
 
     @Test
