@@ -26,8 +26,13 @@ import java.time.ZonedDateTime;
  * <li>tstzrange</li>
  * <li>daterange</li>
  * </ul>
+ * <p>
+ * For more details about how to use it,
+ * check out <a href="https://vladmihalcea.com/map-postgresql-range-column-type-jpa-hibernate/">this article</a>
+ * on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
  *
  * @author Edgar Asatryan
+ * @author Vlad Mihalcea
  */
 public class PostgreSQLRangeType extends ImmutableType<Range> {
 

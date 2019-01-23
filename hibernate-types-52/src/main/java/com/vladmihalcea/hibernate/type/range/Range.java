@@ -19,8 +19,13 @@ import java.util.function.Function;
  * The class has some very simple methods for usability. For example {@link Range#contains(Comparable)} method can tell user whether
  * this range contains argument or not. The {@link Range#contains(Range)} helps to find out whether this range fully
  * enclosing argument or not.
+ * <p>
+ * For more details about how to use it,
+ * check out <a href="https://vladmihalcea.com/map-postgresql-range-column-type-jpa-hibernate/">this article</a>
+ * on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
  *
  * @author Edgar Asatryan
+ * @author Vlad Mihalcea
  */
 public final class Range<T extends Comparable> implements Serializable {
     private static final DateTimeFormatter LOCAL_DATE_TIME = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss[.SSSSSS]");
