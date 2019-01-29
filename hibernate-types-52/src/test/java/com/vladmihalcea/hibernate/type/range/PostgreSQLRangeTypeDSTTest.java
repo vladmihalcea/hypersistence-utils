@@ -20,57 +20,36 @@ import static org.junit.Assert.assertEquals;
  */
 public class PostgreSQLRangeTypeDSTTest extends AbstractPostgreSQLIntegrationTest {
 
-    private final Range<BigDecimal> numeric = Range.bigDecimalRange("[0.5,0.89]");
-
-    private final Range<Long> int8Range = Range.longRange("[0,18)");
-
-    private final Range<Integer> int4Range = infinite(Integer.class);
-
-    private final Range<LocalDateTime> localDateTimeRange = Range.localDateTimeRange("[2014-04-28 16:00:49,2015-04-28 16:00:49]");
-
+    // updated to cross DST boundary (31/9/2018)
     private final Range<ZonedDateTime> tsTz = zonedDateTimeRange("[\"2018-05-03T10:15:30+12:00\",\"2018-12-03T10:15:30+12:00\"]");
-
-    private final Range<LocalDate> dateRange = Range.localDateRange("[1992-01-13,1995-01-13)");
 
     @Override
     protected Class<?>[] entities() {
         return new Class[]{
-                Restriction.class
+            Restriction.class
         };
     }
 
     @Test
     public void test() {
-        Restriction ageRestrictionInt = doInJPA(entityManager -> {
-            entityManager.persist(new Restriction());
-
+        doInJPA(entityManager -> {
             Restriction restriction = new Restriction();
-            restriction.setRangeInt(int4Range);
-            restriction.setRangeLong(int8Range);
-            restriction.setRangeBigDecimal(numeric);
-            restriction.setRangeLocalDateTime(localDateTimeRange);
+            restriction.setId(1L);
             restriction.setRangeZonedDateTime(tsTz);
-            restriction.setLocalDateRange(dateRange);
             entityManager.persist(restriction);
 
             return restriction;
         });
 
         doInJPA(entityManager -> {
-            Restriction ar = entityManager.find(Restriction.class, ageRestrictionInt.getId());
-
-            assertEquals(int4Range, ar.getRangeInt());
-            assertEquals(int8Range, ar.getRangeLong());
-            assertEquals(numeric, ar.getRangeBigDecimal());
-            assertEquals(localDateTimeRange, ar.getLocalDateTimeRange());
-            assertEquals(dateRange, ar.getLocalDateRange());
+            Restriction ar = entityManager.find(Restriction.class, 1L);
 
             ZoneId zone = ar.getRangeZonedDateTime().lower().getZone();
 
             ZonedDateTime lower = tsTz.lower().withZoneSameInstant(zone);
-            ZonedDateTime upper = tsTz.upper().withZoneSameInstant(zone);
 
-            assertEquals(ar.getRangeZonedDateTime(), Range.closed(lower, upper));
+            assertEquals(lower, ar.getRangeZonedDateTime().lower());
+            assertEquals(LocalDateTime.parse("2018-12-03T10:15:30").atZone(ZoneId.systemDefault()).getOffset(), ar.getRangeZonedDateTime().upper().getOffset());
         });
     }
 
@@ -80,61 +59,17 @@ public class PostgreSQLRangeTypeDSTTest extends AbstractPostgreSQLIntegrationTes
     public static class Restriction {
 
         @Id
-        @GeneratedValue
         private Long id;
-
-        @Column(name = "r_int", columnDefinition = "int4Range")
-        private Range<Integer> rangeInt;
-
-        @Column(name = "r_long", columnDefinition = "int8range")
-        private Range<Long> rangeLong;
-
-        @Column(name = "r_numeric", columnDefinition = "numrange")
-        private Range<BigDecimal> rangeBigDecimal;
-
-        @Column(name = "r_tsrange", columnDefinition = "tsrange")
-        private Range<LocalDateTime> rangeLocalDateTime;
 
         @Column(name = "r_tstzrange", columnDefinition = "tstzrange")
         private Range<ZonedDateTime> rangeZonedDateTime;
-
-        @Column(name = "r_daterange", columnDefinition = "daterange")
-        private Range<LocalDate> localDateRange;
 
         public Long getId() {
             return id;
         }
 
-        public Range<Long> getRangeLong() {
-            return rangeLong;
-        }
-
-        public void setRangeLong(Range<Long> rangeLong) {
-            this.rangeLong = rangeLong;
-        }
-
-        public Range<Integer> getRangeInt() {
-            return rangeInt;
-        }
-
-        public void setRangeInt(Range<Integer> rangeInt) {
-            this.rangeInt = rangeInt;
-        }
-
-        public Range<BigDecimal> getRangeBigDecimal() {
-            return rangeBigDecimal;
-        }
-
-        public void setRangeBigDecimal(Range<BigDecimal> rangeBigDecimal) {
-            this.rangeBigDecimal = rangeBigDecimal;
-        }
-
-        public Range<LocalDateTime> getLocalDateTimeRange() {
-            return rangeLocalDateTime;
-        }
-
-        public void setRangeLocalDateTime(Range<LocalDateTime> rangeLocalDateTime) {
-            this.rangeLocalDateTime = rangeLocalDateTime;
+        public void setId(Long id) {
+            this.id = id;
         }
 
         public Range<ZonedDateTime> getRangeZonedDateTime() {
@@ -143,14 +78,6 @@ public class PostgreSQLRangeTypeDSTTest extends AbstractPostgreSQLIntegrationTes
 
         public void setRangeZonedDateTime(Range<ZonedDateTime> rangeZonedDateTime) {
             this.rangeZonedDateTime = rangeZonedDateTime;
-        }
-
-        public Range<LocalDate> getLocalDateRange() {
-            return localDateRange;
-        }
-
-        public void setLocalDateRange(Range<LocalDate> localDateRange) {
-            this.localDateRange = localDateRange;
         }
     }
 }

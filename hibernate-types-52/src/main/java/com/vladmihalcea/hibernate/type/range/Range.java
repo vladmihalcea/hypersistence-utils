@@ -2,9 +2,7 @@ package com.vladmihalcea.hibernate.type.range;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Objects;
@@ -400,11 +398,25 @@ public final class Range<T extends Comparable> implements Serializable {
     public static Range<ZonedDateTime> zonedDateTimeRange(String rangeStr) {
         Range<ZonedDateTime> range = ofString(rangeStr, parseZonedDateTime().compose(unquote()), ZonedDateTime.class);
         if (range.hasLowerBound() && range.hasUpperBound()) {
-            if (!range.lower().getZone().equals(range.upper().getZone())) {
-                throw new IllegalArgumentException("The upper and lower bounds must be in same time zone!");
+            ZoneId lowerZone = range.lower().getZone();
+            ZoneId upperZone = range.upper().getZone();
+            if (!lowerZone.equals(upperZone)) {
+                Duration lowerDst = ZoneId.systemDefault().getRules().getDaylightSavings(range.lower().toInstant());
+                Duration upperDst = ZoneId.systemDefault().getRules().getDaylightSavings(range.upper().toInstant());
+                long dstSeconds = upperDst.minus(lowerDst).getSeconds();
+                if(dstSeconds < 0 ) {
+                    dstSeconds *= -1;
+                }
+                long zoneDriftSeconds = ((ZoneOffset) lowerZone).getTotalSeconds() - ((ZoneOffset) upperZone).getTotalSeconds();
+                if (zoneDriftSeconds < 0) {
+                    zoneDriftSeconds *= -1;
+                }
+
+                if (dstSeconds != zoneDriftSeconds) {
+                    throw new IllegalArgumentException("The upper and lower bounds must be in same time zone!");
+                }
             }
         }
-
         return range;
     }
 
