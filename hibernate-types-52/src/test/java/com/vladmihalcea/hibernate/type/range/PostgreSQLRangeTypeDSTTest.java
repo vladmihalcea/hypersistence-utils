@@ -28,6 +28,7 @@ public class PostgreSQLRangeTypeDSTTest extends AbstractPostgreSQLIntegrationTes
 
     private final Range<LocalDateTime> localDateTimeRange = Range.localDateTimeRange("[2014-04-28 16:00:49,2015-04-28 16:00:49]");
 
+    // updated to cross DST boundary (31/9/2018)
     private final Range<ZonedDateTime> tsTz = zonedDateTimeRange("[\"2018-05-03T10:15:30+12:00\",\"2018-12-03T10:15:30+12:00\"]");
 
     private final Range<LocalDate> dateRange = Range.localDateRange("[1992-01-13,1995-01-13)");
