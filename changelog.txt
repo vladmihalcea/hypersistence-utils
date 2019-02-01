@@ -1,3 +1,10 @@
+Version 2.4.1 - January 01, 2019
+================================================================================
+
+Fix issue with ZonedDateTimeRanges and DST.
+
+Change constructor type args from Class to Type for JSON Types so it's easier to register them dynamically.
+
 Version 2.4.0 - January 02, 2019
 ================================================================================
 
