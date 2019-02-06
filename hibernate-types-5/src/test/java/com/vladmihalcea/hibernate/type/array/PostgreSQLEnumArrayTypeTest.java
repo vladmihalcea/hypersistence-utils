@@ -7,9 +7,14 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import javax.persistence.*;
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * @author Nikita Konev
@@ -21,6 +26,38 @@ public class PostgreSQLEnumArrayTypeTest extends AbstractPostgreSQLIntegrationTe
         return new Class<?>[]{
                 UserAccount.class
         };
+    }
+
+    @Before
+    public void init() {
+        DataSource dataSource = newDataSource();
+        Connection connection = null;
+        try {
+            connection = dataSource.getConnection();
+            Statement statement = null;
+            try {
+                statement = connection.createStatement();
+                statement.executeUpdate("DROP SCHEMA IF EXISTS auth CASCADE;");
+                statement.executeUpdate("CREATE SCHEMA IF NOT EXISTS auth;");
+                statement.executeUpdate("DROP TYPE IF EXISTS auth.user_role;");
+                statement.executeUpdate("CREATE TYPE auth.user_role AS ENUM ('ROLE_ADMIN', 'ROLE_USER');");
+            } finally {
+                if (statement!=null){
+                    statement.close();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection!=null){
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        super.init();
     }
 
     @Test
