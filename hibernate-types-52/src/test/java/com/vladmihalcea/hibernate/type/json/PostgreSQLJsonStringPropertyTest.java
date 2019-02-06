@@ -27,26 +27,24 @@ public class PostgreSQLJsonStringPropertyTest extends AbstractPostgreSQLIntegrat
     public void test() {
 
         doInJPA(entityManager -> {
-
-            Book book = new Book();
-            book.setIsbn("978-9730228236");
-            book.setProperties(
-                "{" +
-                "   \"title\": \"High-Performance Java Persistence\"," +
-                "   \"author\": \"Vlad Mihalcea\"," +
-                "   \"publisher\": \"Amazon\"," +
-                "   \"price\": 44.99" +
-                "}"
+            entityManager.persist(
+                new Book()
+                    .setIsbn("978-9730228236")
+                    .setProperties(
+                        "{" +
+                        "   \"title\": \"High-Performance Java Persistence\"," +
+                        "   \"author\": \"Vlad Mihalcea\"," +
+                        "   \"publisher\": \"Amazon\"," +
+                        "   \"price\": 44.99" +
+                        "}"
+                    )
             );
-
-            entityManager.persist(book);
         });
 
         doInJPA(entityManager -> {
-            Session session = entityManager.unwrap(Session.class);
-            Book book = session
-                    .bySimpleNaturalId(Book.class)
-                    .load("978-9730228236");
+            Book book = entityManager.unwrap(Session.class)
+                .bySimpleNaturalId(Book.class)
+                .load("978-9730228236");
 
             LOGGER.info("Book details: {}", book.getProperties());
 
@@ -84,16 +82,18 @@ public class PostgreSQLJsonStringPropertyTest extends AbstractPostgreSQLIntegrat
             return isbn;
         }
 
-        public void setIsbn(String isbn) {
+        public Book setIsbn(String isbn) {
             this.isbn = isbn;
+            return this;
         }
 
         public String getProperties() {
             return properties;
         }
 
-        public void setProperties(String properties) {
+        public Book setProperties(String properties) {
             this.properties = properties;
+            return this;
         }
     }
 }
