@@ -73,7 +73,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             event.setId(1L);
             event.setSensorNames(new String[]{"Temperature", "Pressure"});
             event.setSensorValues(new int[]{12, 756});
-            event.setSensorLongValues(new long[]{42, 9223372036854775800});
+            event.setSensorLongValues(new long[]{42L, 9223372036854775800L});
             event.setSensorStates(new SensorState[]{SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN});
             entityManager.persist(event);
         });
@@ -83,7 +83,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
             assertArrayEquals(new String[]{"Temperature", "Pressure"}, event.getSensorNames());
             assertArrayEquals(new int[]{12, 756}, event.getSensorValues());
-                assertArrayEquals(new long[]{42, 9223372036854775800}, event.getSensorLongValues());
+                assertArrayEquals(new long[]{42L, 9223372036854775800L}, event.getSensorLongValues());
             assertArrayEquals(new SensorState[]{SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN}, event.getSensorStates());
         });
     }
