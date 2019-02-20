@@ -73,6 +73,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             event.setId(1L);
             event.setSensorNames(new String[]{"Temperature", "Pressure"});
             event.setSensorValues(new int[]{12, 756});
+            event.setSensorLongValues(new long[]{42L, 9223372036854775800L});
             event.setSensorStates(new SensorState[]{SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN});
             entityManager.persist(event);
         });
@@ -82,6 +83,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
             assertArrayEquals(new String[]{"Temperature", "Pressure"}, event.getSensorNames());
             assertArrayEquals(new int[]{12, 756}, event.getSensorValues());
+                assertArrayEquals(new long[]{42L, 9223372036854775800L}, event.getSensorLongValues());
             assertArrayEquals(new SensorState[]{SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN}, event.getSensorStates());
         });
     }
@@ -101,6 +103,10 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         @Column(name = "sensor_values", columnDefinition = "integer[]")
         private int[] sensorValues;
 
+        @Type(type = "long-array")
+        @Column(name = "sensor_long_values", columnDefinition = "bigint[]")
+        private long[] sensorLongValues;
+        
         @Type(type = "sensor-state-array")
         @Column(name = "sensor_states", columnDefinition = "sensor_state[]")
         private SensorState[] sensorStates;
@@ -121,6 +127,14 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             this.sensorValues = sensorValues;
         }
 
+        public long[] getSensorLongValues() {
+            return sensorLongValues;
+        }
+
+        public void setSensorLongValues(long[] sensorLongValues) {
+            this.sensorLongValues = sensorLongValues;
+        }
+        
         public SensorState[] getSensorStates() {
             return sensorStates;
         }
