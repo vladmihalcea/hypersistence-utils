@@ -1,4 +1,9 @@
-Version 2.4.1 - January 01, 2019
+Version 2.4.2 - February 26, 2019
+================================================================================
+
+Add a LongArrayType to support long[] array mappings.
+
+Version 2.4.1 - February 01, 2019
 ================================================================================
 
 Fix issue with ZonedDateTimeRanges and DST.
