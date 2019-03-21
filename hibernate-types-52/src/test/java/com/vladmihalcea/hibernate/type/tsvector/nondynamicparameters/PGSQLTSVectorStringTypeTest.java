@@ -1,4 +1,4 @@
-package com.vladmihalcea.hibernate.type.tsvector;
+package com.vladmihalcea.hibernate.type.tsvector.nondynamicparameters;
 
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
 import org.junit.Test;
@@ -8,9 +8,9 @@ import java.sql.ResultSet;
 import static org.junit.Assert.assertEquals;
 
 /**
- * @author bitluke
+ * @author Lukman Adekunle
  */
-public class PostgresSQLTSVectorTypeTest extends AbstractPostgreSQLIntegrationTest {
+public class PGSQLTSVectorStringTypeTest extends AbstractPostgreSQLIntegrationTest {
 
     private Document _document;
     private String _initialTokens;
@@ -37,7 +37,9 @@ public class PostgresSQLTSVectorTypeTest extends AbstractPostgreSQLIntegrationTe
         _document = doInJPA(entityManager -> {
             Document document = new Document();
             document.setDocText(_initialDocumentText);
-            document.setTsVector(new TSVector(_initialTokens));
+            PGTSVector tsVector = new PGTSVector();
+            tsVector.setValue(_initialTokens);
+            document.setTsVector(tsVector);
             entityManager.persist(document);
             return document;
         });
@@ -49,16 +51,18 @@ public class PostgresSQLTSVectorTypeTest extends AbstractPostgreSQLIntegrationTe
             Document document = entityManager.find(Document.class, _document.getId());
 
             assertEquals(_initialDocumentText, document.getDocText());
-            assertEquals(_initialTokens, document.getTsVector().getTokens());
+            assertEquals(_initialTokens, document.getTsVector().getValue());
 
             document.setDocText(_updatedDocumentText);
-            document.setTsVector(new TSVector(_updatedTokens));
+            PGTSVector tsVector = new PGTSVector();
+            tsVector.setValue(_updatedTokens);
+            document.setTsVector(tsVector);
 
             return document;
         });
 
         assertEquals(_updatedDocumentText, updatedDocument.getDocText());
-        assertEquals(_updatedTokens, updatedDocument.getTsVector().getTokens());
+        assertEquals(_initialTokens, _document.getTsVector().getValue());
     }
 
     @Test
@@ -69,7 +73,7 @@ public class PostgresSQLTSVectorTypeTest extends AbstractPostgreSQLIntegrationTe
                     .getSingleResult();
 
             assertEquals(_initialDocumentText, document.getDocText());
-            assertEquals(_initialTokens, document.getTsVector().getTokens());
+            assertEquals(_initialTokens, document.getTsVector().getValue());
         });
     }
 
@@ -81,7 +85,7 @@ public class PostgresSQLTSVectorTypeTest extends AbstractPostgreSQLIntegrationTe
                     .getSingleResult();
 
             assertEquals(_initialDocumentText, doc.getDocText());
-            assertEquals(_initialTokens, doc.getTsVector().getTokens());
+            assertEquals(_initialTokens, doc.getTsVector().getValue());
         });
     }
 

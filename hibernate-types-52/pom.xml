@@ -49,7 +49,6 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>${postgresql.version}</version>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -70,7 +69,7 @@
         <jackson.version>2.9.8</jackson.version>
 
         <jdk.version>8</jdk.version>
-        <jdk>${env.JAVA_HOME_8}</jdk>
+        <!--<jdk>${env.JAVA_HOME}</jdk>-->
     </properties>
 
     <build>
