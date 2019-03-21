@@ -69,7 +69,7 @@
         <jackson.version>2.9.8</jackson.version>
 
         <jdk.version>8</jdk.version>
-        <!--<jdk>${env.JAVA_HOME}</jdk>-->
+        <jdk>${env.JAVA_HOME}</jdk>
     </properties>
 
     <build>
