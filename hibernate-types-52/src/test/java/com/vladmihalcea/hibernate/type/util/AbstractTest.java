@@ -10,6 +10,8 @@ import org.hibernate.Transaction;
 import org.hibernate.boot.MetadataBuilder;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.SessionFactoryBuilder;
+import org.hibernate.boot.model.TypeContributions;
+import org.hibernate.boot.model.TypeContributor;
 import org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl;
 import org.hibernate.boot.registry.BootstrapServiceRegistry;
 import org.hibernate.boot.registry.BootstrapServiceRegistryBuilder;
@@ -22,6 +24,8 @@ import org.hibernate.integrator.spi.Integrator;
 import org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl;
 import org.hibernate.jpa.boot.internal.PersistenceUnitInfoDescriptor;
 import org.hibernate.jpa.boot.spi.IntegratorProvider;
+import org.hibernate.jpa.boot.spi.TypeContributorList;
+import org.hibernate.service.ServiceRegistry;
 import org.hibernate.type.BasicType;
 import org.hibernate.type.Type;
 import org.hibernate.usertype.CompositeUserType;
@@ -241,6 +245,26 @@ public abstract class AbstractTest {
         Integrator integrator = integrator();
         if (integrator != null) {
             configuration.put("hibernate.integrator_provider", (IntegratorProvider) () -> Collections.singletonList(integrator));
+        }
+
+        final List<Type> additionalTypes = additionalTypes();
+        if (additionalTypes != null) {
+            configuration.put("hibernate.type_contributors", (TypeContributorList) () -> {
+                List<TypeContributor> typeContributors = new ArrayList<>();
+
+                for (Type additionalType : additionalTypes) {
+                    if (additionalType instanceof BasicType) {
+                        typeContributors.add((typeContributions, serviceRegistry) -> typeContributions.contributeType((BasicType) additionalType));
+
+
+                    } else if (additionalType instanceof UserType) {
+                        typeContributors.add((typeContributions, serviceRegistry) -> typeContributions.contributeType((UserType) additionalType));
+                    } else if (additionalType instanceof CompositeUserType) {
+                        typeContributors.add((typeContributions, serviceRegistry) -> typeContributions.contributeType((CompositeUserType) additionalType));
+                    }
+                }
+                return typeContributors;
+            });
         }
 
         EntityManagerFactoryBuilderImpl entityManagerFactoryBuilder = new EntityManagerFactoryBuilderImpl(

@@ -7,12 +7,11 @@ import com.vladmihalcea.hibernate.type.util.providers.PostgreSQLDataSourceProvid
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
-import org.hibernate.boot.spi.MetadataBuilderContributor;
 import org.junit.Test;
 
 import javax.persistence.*;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
 
@@ -39,12 +38,10 @@ public class ArrayTypeNativeQueryTest extends AbstractPostgreSQLIntegrationTest 
     }
 
     @Override
-    protected void additionalProperties(Properties properties) {
-        properties.put("hibernate.metadata_builder_contributor",
-                (MetadataBuilderContributor) metadataBuilder ->
-                        metadataBuilder
-                            .applyBasicType(StringArrayType.INSTANCE)
-                            .applyBasicType(IntArrayType.INSTANCE)
+    protected List<org.hibernate.type.Type> additionalTypes() {
+        return Arrays.asList(
+                StringArrayType.INSTANCE,
+                IntArrayType.INSTANCE
         );
     }
 
