@@ -12,13 +12,14 @@ import org.junit.Test;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Tuple;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * @author Vlad Mihalcea
@@ -85,6 +86,21 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             assertArrayEquals(new int[]{12, 756}, event.getSensorValues());
                 assertArrayEquals(new long[]{42L, 9223372036854775800L}, event.getSensorLongValues());
             assertArrayEquals(new SensorState[]{SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN}, event.getSensorStates());
+        });
+
+        doInJPA(entityManager -> {
+            List<Event> events = entityManager.createNativeQuery(
+                "select " +
+                "   id, " +
+                "   sensor_names, " +
+                "   sensor_values " +
+                "from event ", Tuple.class)
+            .unwrap(org.hibernate.query.NativeQuery.class)
+            .addScalar("sensor_names", StringArrayType.INSTANCE)
+            .addScalar("sensor_values", IntArrayType.INSTANCE)
+            .getResultList();
+
+            assertEquals(2, events.size());
         });
     }
 
