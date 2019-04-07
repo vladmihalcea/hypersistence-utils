@@ -28,7 +28,7 @@ public class EnumArrayType
     private String name;
 
     public EnumArrayType() {
-        super(ArraySqlTypeDescriptor.INSTANCE, EnumArrayTypeDescriptor.INSTANCE);
+        super(ArraySqlTypeDescriptor.INSTANCE, new EnumArrayTypeDescriptor());
     }
 
     public String getName() {

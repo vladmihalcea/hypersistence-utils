@@ -4,9 +4,9 @@ import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
 import javax.persistence.*;
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -17,9 +17,9 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.fail;
 
 /**
- * @author Nikita Konev
+ * @author Vlad Mihalcea
  */
-public class PostgreSQLEnumArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
+public class PostgreSQLMultipleEnumArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
     @Override
     protected Class<?>[] entities() {
@@ -31,10 +31,25 @@ public class PostgreSQLEnumArrayTypeTest extends AbstractPostgreSQLIntegrationTe
     @Before
     public void init() {
         DataSource dataSource = newDataSource();
+
         try (Connection connection = dataSource.getConnection()) {
             try (Statement statement = connection.createStatement()){
                 statement.executeUpdate("DROP TYPE IF EXISTS user_role;");
                 statement.executeUpdate("CREATE TYPE user_role AS ENUM ('ROLE_ADMIN', 'ROLE_USER');");
+            }
+        } catch (SQLException e) {
+            fail(e.getMessage());
+        }
+
+        try (Connection connection = dataSource.getConnection()) {
+            try (Statement statement = connection.createStatement()){
+                statement.executeUpdate("DROP TYPE IF EXISTS user_role;");
+                statement.executeUpdate("CREATE TYPE user_role AS ENUM ('ROLE_ADMIN', 'ROLE_USER');");
+            }
+
+            try (Statement statement = connection.createStatement()){
+                statement.executeUpdate("DROP TYPE IF EXISTS user_type;");
+                statement.executeUpdate("CREATE TYPE user_type AS ENUM ('SUPER_USER', 'REGULAR');");
             }
         } catch (SQLException e) {
             fail(e.getMessage());
@@ -44,12 +59,21 @@ public class PostgreSQLEnumArrayTypeTest extends AbstractPostgreSQLIntegrationTe
 
     @Test
     public void test() {
-        UserRole[] userRoles = {UserRole.ROLE_ADMIN, UserRole.ROLE_USER};
+        final UserRole[] userRoles = {
+                UserRole.ROLE_ADMIN,
+                UserRole.ROLE_USER
+        };
+
+        final UserType[] userTypes = {
+                UserType.SUPER_USER,
+                UserType.REGULAR
+        };
 
         doInJPA(entityManager -> {
             UserAccount account = new UserAccount();
             account.setUsername("vladmihalcea.com");
             account.setRoles(userRoles);
+            account.setTypes(userTypes);
             entityManager.persist(account);
         });
 
@@ -63,6 +87,7 @@ public class PostgreSQLEnumArrayTypeTest extends AbstractPostgreSQLIntegrationTe
             .getSingleResult();
 
             assertArrayEquals(userRoles, singleResult.getRoles());
+            assertArrayEquals(userTypes, singleResult.getTypes());
         });
     }
 
@@ -71,18 +96,24 @@ public class PostgreSQLEnumArrayTypeTest extends AbstractPostgreSQLIntegrationTe
         ROLE_USER,
     }
 
+    public enum UserType {
+        SUPER_USER,
+        REGULAR,
+    }
+
     @TypeDefs({
-        @TypeDef(
-            name = "pgsql_array",
-            typeClass = EnumArrayType.class
-        )
+            @TypeDef(
+                    name = "pgsql_array",
+                    typeClass = EnumArrayType.class
+            )
+
     })
     @Entity(name = "UserAccountEntity")
     @Table(name = "users")
     public static class UserAccount {
 
         @Id
-        @GeneratedValue
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
 
         private String username;
@@ -99,6 +130,19 @@ public class PostgreSQLEnumArrayTypeTest extends AbstractPostgreSQLIntegrationTe
             columnDefinition = "user_role[]"
         )
         private UserRole roles[];
+
+        @Type(
+            type = "pgsql_array",
+            parameters = @org.hibernate.annotations.Parameter(
+                name = "sql_array_type",
+                value = "user_type"
+            )
+        )
+        @Column(
+            name = "types",
+            columnDefinition = "user_type[]"
+        )
+        private UserType types[];
 
         public Long getId() {
             return id;
@@ -122,6 +166,14 @@ public class PostgreSQLEnumArrayTypeTest extends AbstractPostgreSQLIntegrationTe
 
         public void setRoles(UserRole[] roles) {
             this.roles = roles;
+        }
+
+        public UserType[] getTypes() {
+            return types;
+        }
+
+        public void setTypes(UserType[] types) {
+            this.types = types;
         }
     }
 }

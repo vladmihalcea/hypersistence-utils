@@ -11,8 +11,6 @@ import com.vladmihalcea.hibernate.type.array.EnumArrayType;
 public class EnumArrayTypeDescriptor
         extends AbstractArrayTypeDescriptor<Enum[]> {
 
-    public static final EnumArrayTypeDescriptor INSTANCE = new EnumArrayTypeDescriptor();
-
     private String sqlArrayType;
 
     public EnumArrayTypeDescriptor() {

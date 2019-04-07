@@ -5,7 +5,6 @@ import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,9 +18,9 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.fail;
 
 /**
- * @author Nikita Konev
+ * @author Vlad Mihalcea
  */
-public class PostgreSQLEnumArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
+public class PostgreSQLMultipleEnumArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
     @Override
     protected Class<?>[] entities() {
@@ -46,6 +45,15 @@ public class PostgreSQLEnumArrayTypeTest extends AbstractPostgreSQLIntegrationTe
                     statement.close();
                 }
             }
+            try {
+                statement = connection.createStatement();
+                statement.executeUpdate("DROP TYPE IF EXISTS user_type;");
+                statement.executeUpdate("CREATE TYPE user_type AS ENUM ('SUPER_USER', 'REGULAR');");
+            } finally {
+                if (statement!=null){
+                    statement.close();
+                }
+            }
         } catch (SQLException e) {
             fail(e.getMessage());
         } finally {
@@ -62,7 +70,15 @@ public class PostgreSQLEnumArrayTypeTest extends AbstractPostgreSQLIntegrationTe
 
     @Test
     public void test() {
-        final UserRole[] userRoles = {UserRole.ROLE_ADMIN, UserRole.ROLE_USER};
+        final UserRole[] userRoles = {
+                UserRole.ROLE_ADMIN,
+                UserRole.ROLE_USER
+        };
+
+        final UserType[] userTypes = {
+                UserType.SUPER_USER,
+                UserType.REGULAR
+        };
 
         doInJPA(new JPATransactionFunction<Void>() {
             @Override
@@ -70,6 +86,7 @@ public class PostgreSQLEnumArrayTypeTest extends AbstractPostgreSQLIntegrationTe
                 UserAccount account = new UserAccount();
                 account.setUsername("vladmihalcea.com");
                 account.setRoles(userRoles);
+                account.setTypes(userTypes);
                 entityManager.persist(account);
                 return null;
             }
@@ -87,6 +104,7 @@ public class PostgreSQLEnumArrayTypeTest extends AbstractPostgreSQLIntegrationTe
                 .getSingleResult();
 
                 assertArrayEquals(userRoles, singleResult.getRoles());
+                assertArrayEquals(userTypes, singleResult.getTypes());
                 return null;
             }
         });
@@ -95,6 +113,11 @@ public class PostgreSQLEnumArrayTypeTest extends AbstractPostgreSQLIntegrationTe
     public enum UserRole {
         ROLE_ADMIN,
         ROLE_USER,
+    }
+
+    public enum UserType {
+        SUPER_USER,
+        REGULAR,
     }
 
     @TypeDefs({
@@ -109,7 +132,7 @@ public class PostgreSQLEnumArrayTypeTest extends AbstractPostgreSQLIntegrationTe
     public static class UserAccount {
 
         @Id
-        @GeneratedValue
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
 
         private String username;
@@ -122,10 +145,23 @@ public class PostgreSQLEnumArrayTypeTest extends AbstractPostgreSQLIntegrationTe
             )
         )
         @Column(
-                name = "roles",
-                columnDefinition = "user_role[]"
+            name = "roles",
+            columnDefinition = "user_role[]"
         )
         private UserRole roles[];
+
+        @Type(
+            type = "pgsql_array",
+            parameters = @org.hibernate.annotations.Parameter(
+                name = "sql_array_type",
+                value = "user_type"
+            )
+        )
+        @Column(
+            name = "types",
+            columnDefinition = "user_type[]"
+        )
+        private UserType types[];
 
         public Long getId() {
             return id;
@@ -149,6 +185,14 @@ public class PostgreSQLEnumArrayTypeTest extends AbstractPostgreSQLIntegrationTe
 
         public void setRoles(UserRole[] roles) {
             this.roles = roles;
+        }
+
+        public UserType[] getTypes() {
+            return types;
+        }
+
+        public void setTypes(UserType[] types) {
+            this.types = types;
         }
     }
 }

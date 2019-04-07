@@ -34,7 +34,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 Event.class,
         };
     }
-    
+
     @Override
     public void init() {
       DataSource dataSource = newDataSource();

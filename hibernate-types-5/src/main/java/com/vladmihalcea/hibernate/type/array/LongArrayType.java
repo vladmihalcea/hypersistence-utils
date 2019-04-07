@@ -24,7 +24,7 @@ public class LongArrayType
     public static final LongArrayType INSTANCE = new LongArrayType();
 
     public LongArrayType() {
-		super(ArraySqlTypeDescriptor.INSTANCE, LongArrayTypeDescriptor.INSTANCE);
+		super(ArraySqlTypeDescriptor.INSTANCE, new LongArrayTypeDescriptor());
     }
 
     @Override

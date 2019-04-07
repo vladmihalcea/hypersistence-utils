@@ -75,7 +75,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
           }
       }
       super.init();
-  }
+    }
 
     @Override
     protected DataSourceProvider dataSourceProvider() {

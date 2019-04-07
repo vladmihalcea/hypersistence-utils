@@ -21,7 +21,7 @@ public class StringArrayType
     public static final StringArrayType INSTANCE = new StringArrayType();
 
     public StringArrayType() {
-        super(ArraySqlTypeDescriptor.INSTANCE, StringArrayTypeDescriptor.INSTANCE);
+        super(ArraySqlTypeDescriptor.INSTANCE, new StringArrayTypeDescriptor());
     }
 
     public String getName() {

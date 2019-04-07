@@ -6,8 +6,6 @@ package com.vladmihalcea.hibernate.type.array.internal;
 public class LongArrayTypeDescriptor
 		extends AbstractArrayTypeDescriptor<long[]> {
 
-    public static final LongArrayTypeDescriptor INSTANCE = new LongArrayTypeDescriptor();
-
     public LongArrayTypeDescriptor() {
 		super(long[].class);
     }
