@@ -2,7 +2,7 @@ package com.vladmihalcea.hibernate.type.basic;
 
 import com.vladmihalcea.hibernate.type.ImmutableType;
 import com.vladmihalcea.hibernate.type.util.ReflectionUtils;
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.engine.spi.SessionImplementor;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,7 +15,7 @@ import java.sql.Types;
  * @author Vlad Mihalcea
  * @author Philip Riecks
  */
-public class PostgreSQLTSVectorType  extends ImmutableType<String> {
+public class PostgreSQLTSVectorType extends ImmutableType<String> {
 
     public PostgreSQLTSVectorType() {
         super(String.class);
@@ -27,13 +27,13 @@ public class PostgreSQLTSVectorType  extends ImmutableType<String> {
     }
 
     @Override
-    protected String get(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
+    protected String get(ResultSet rs, String[] names, SessionImplementor session, Object owner)
             throws SQLException {
         return rs.getString(names[0]);
     }
 
     @Override
-    protected void set(PreparedStatement st, String value, int index, SharedSessionContractImplementor session)
+    protected void set(PreparedStatement st, String value, int index, SessionImplementor session)
             throws SQLException {
         if (value == null) {
             st.setNull(index, Types.OTHER);
