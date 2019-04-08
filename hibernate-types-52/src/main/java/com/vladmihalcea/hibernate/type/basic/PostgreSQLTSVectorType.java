@@ -1,13 +1,11 @@
 package com.vladmihalcea.hibernate.type.basic;
 
-import com.vladmihalcea.hibernate.type.ImmutableType;
-import com.vladmihalcea.hibernate.type.util.ReflectionUtils;
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import com.vladmihalcea.hibernate.type.basic.internal.PostgreSQLTSVectorSqlTypeDescriptor;
+import com.vladmihalcea.hibernate.type.basic.internal.PostgreSQLTSVectorTypeDescriptor;
+import org.hibernate.type.AbstractSingleColumnStandardBasicType;
+import org.hibernate.usertype.DynamicParameterizedType;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.util.Properties;
 
 /**
  * Maps a {@link String} object type to a PostgreSQL TSVector column type.
@@ -15,33 +13,23 @@ import java.sql.Types;
  * @author Vlad Mihalcea
  * @author Philip Riecks
  */
-public class PostgreSQLTSVectorType  extends ImmutableType<String> {
+public class PostgreSQLTSVectorType
+        extends AbstractSingleColumnStandardBasicType<String> implements DynamicParameterizedType {
+
+    public static final PostgreSQLTSVectorType INSTANCE = new PostgreSQLTSVectorType();
+
 
     public PostgreSQLTSVectorType() {
-        super(String.class);
+        super(PostgreSQLTSVectorSqlTypeDescriptor.INSTANCE,  new PostgreSQLTSVectorTypeDescriptor());
     }
 
     @Override
-    public int[] sqlTypes() {
-        return new int[] { Types.OTHER };
+    public String getName() {
+        return "tsvector";
     }
 
     @Override
-    protected String get(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
-            throws SQLException {
-        return rs.getString(names[0]);
-    }
-
-    @Override
-    protected void set(PreparedStatement st, String value, int index, SharedSessionContractImplementor session)
-            throws SQLException {
-        if (value == null) {
-            st.setNull(index, Types.OTHER);
-        } else {
-            Object holder = ReflectionUtils.newInstance("org.postgresql.util.PGobject");
-            ReflectionUtils.invokeSetter(holder, "type", "tsvector");
-            ReflectionUtils.invokeSetter(holder, "value", value);
-            st.setObject(index, holder);
-        }
+    public void setParameterValues(Properties parameters) {
+        ((PostgreSQLTSVectorTypeDescriptor) getJavaTypeDescriptor()).setParameterValues(parameters);
     }
 }
