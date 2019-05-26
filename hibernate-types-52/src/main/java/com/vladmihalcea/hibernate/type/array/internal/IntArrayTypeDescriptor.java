@@ -6,8 +6,6 @@ package com.vladmihalcea.hibernate.type.array.internal;
 public class IntArrayTypeDescriptor
         extends AbstractArrayTypeDescriptor<int[]> {
 
-    public static final IntArrayTypeDescriptor INSTANCE = new IntArrayTypeDescriptor();
-
     public IntArrayTypeDescriptor() {
         super(int[].class);
     }

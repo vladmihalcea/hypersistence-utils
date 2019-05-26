@@ -41,8 +41,7 @@ public class EhcacheMySQLJsonBinaryTypeTest extends AbstractMySQLIntegrationTest
     protected void additionalProperties(Properties properties) {
         properties.setProperty("hibernate.cache.use_second_level_cache", "true");
         properties.setProperty("hibernate.cache.use_query_cache", "true");
-        properties.setProperty("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.EhCacheRegionFactory");
-        properties.setProperty("hibernate.cache.query_cache_factory", "org.hibernate.cache.internal.StandardQueryCacheFactory");
+        properties.setProperty("hibernate.cache.region.factory_class", "ehcache");
     }
 
     @Test

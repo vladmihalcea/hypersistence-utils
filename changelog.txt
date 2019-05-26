@@ -1,4 +1,17 @@
-Version 2.4.1 - January 01, 2019
+Version 2.4.3 - April 07, 2019
+================================================================================
+
+Adjustment in ZoneDateTime pattern for 1-6 nanoseconds digits.
+
+Array types use a singleton Java descriptors and that prevents them from being
+initialized separately using dynamic parameters.
+
+Version 2.4.2 - February 26, 2019
+================================================================================
+
+Add a LongArrayType to support long[] array mappings.
+
+Version 2.4.1 - February 01, 2019
 ================================================================================
 
 Fix issue with ZonedDateTimeRanges and DST.

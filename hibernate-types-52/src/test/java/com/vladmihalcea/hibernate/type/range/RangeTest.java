@@ -1,11 +1,13 @@
 package com.vladmihalcea.hibernate.type.range;
 
-import org.junit.Test;
-
 import static com.vladmihalcea.hibernate.type.range.Range.integerRange;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.notNull;
+
+import org.junit.Test;
 
 /**
  * @author Edgar Asatryan
@@ -40,5 +42,15 @@ public class RangeTest {
         assertThat(integerRange("(,5)").contains(integerRange("(,4)")), is(true));
         assertThat(integerRange("(,)").contains(integerRange("(6,)")), is(true));
         assertThat(integerRange("(,)").contains(integerRange("(,6)")), is(true));
+    }
+    
+    @Test
+    public void zonedDateTimeTest() {
+    	assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.1-06,)"));
+    	assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.12-06,)"));
+    	assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.123-06,)"));
+    	assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.1234-06,)"));
+    	assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.12345-06,)"));
+    	assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.123456-06,)"));
     }
 }
