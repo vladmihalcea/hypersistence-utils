@@ -1,8 +1,8 @@
 package com.vladmihalcea.hibernate.type.basic;
 
 import com.vladmihalcea.hibernate.type.ImmutableType;
-import com.vladmihalcea.hibernate.type.util.ReflectionUtils;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.postgresql.util.PGobject;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -40,9 +40,9 @@ public class PostgreSQLInetType extends ImmutableType<Inet> {
         if (value == null) {
             st.setNull(index, Types.OTHER);
         } else {
-            Object holder = ReflectionUtils.newInstance("org.postgresql.util.PGobject");
-            ReflectionUtils.invokeSetter(holder, "type", "inet");
-            ReflectionUtils.invokeSetter(holder, "value", value.getAddress());
+            PGobject holder = new PGobject();
+            holder.setType("inet");
+            holder.setValue(value.getAddress());
             st.setObject(index, holder);
         }
     }

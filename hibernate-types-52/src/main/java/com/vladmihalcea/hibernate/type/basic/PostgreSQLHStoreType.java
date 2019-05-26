@@ -1,10 +1,10 @@
 package com.vladmihalcea.hibernate.type.basic;
 
 import com.vladmihalcea.hibernate.type.ImmutableType;
-import com.vladmihalcea.hibernate.type.util.ReflectionUtils;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.postgresql.util.HStoreConverter;
+import org.postgresql.util.PGobject;
 
-import java.lang.reflect.Method;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -43,24 +43,9 @@ public class PostgreSQLHStoreType extends ImmutableType<Map> {
         if (value == null) {
             st.setNull(index, Types.OTHER);
         } else {
-            Object holder = ReflectionUtils.newInstance("org.postgresql.util.PGobject");
-            ReflectionUtils.invokeSetter(
-                holder,
-                "type",
-                "hstore"
-            );
-
-            Class targetClass = ReflectionUtils.getClass("org.postgresql.util.HStoreConverter");
-            Method mapToStringMethod = ReflectionUtils.getMethod(targetClass, "toString", Map.class);
-
-            ReflectionUtils.invokeSetter(
-                holder,
-                "value",
-                ReflectionUtils.invokeStatic(
-                    mapToStringMethod,
-                    value
-                )
-            );
+            PGobject holder = new PGobject();
+            holder.setType("hstore");
+            holder.setValue(HStoreConverter.toString(value));
 
             st.setObject(index, holder);
         }
