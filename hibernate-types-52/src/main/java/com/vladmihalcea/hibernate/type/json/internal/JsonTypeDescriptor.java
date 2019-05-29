@@ -11,6 +11,8 @@ import org.hibernate.usertype.DynamicParameterizedType;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -73,6 +75,9 @@ public class JsonTypeDescriptor
         }
         if (one instanceof String && another instanceof String) {
             return one.equals(another);
+        }
+        if (one instanceof Collection && another instanceof Collection) {
+            return Objects.equals(one, another);
         }
         return objectMapperWrapper.toJsonNode(objectMapperWrapper.toString(one)).equals(
                 objectMapperWrapper.toJsonNode(objectMapperWrapper.toString(another)));
