@@ -1,3 +1,14 @@
+Version 2.4.4 - June 06, 2019
+================================================================================
+
+Update Javadoc to specify which JSON types are suitable for PostgreSQL and MySQL.
+
+Add ZoneIdType to map the java.time.ZoneId to a VARCHAR-based column.
+
+Replace reflection usage in PostgreSQL Types with Driver-specific API calls.
+
+In case the JSON attribute is a java.util.Set, an additional SQL UPDATE is executed when persisting the entity.
+
 Version 2.4.3 - April 07, 2019
 ================================================================================
 
