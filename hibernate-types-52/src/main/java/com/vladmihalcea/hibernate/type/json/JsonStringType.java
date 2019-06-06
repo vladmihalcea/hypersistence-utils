@@ -13,7 +13,7 @@ import java.lang.reflect.Type;
 import java.util.Properties;
 
 /**
- * Maps any given Java object on a string-based JSON column type.
+ * Maps any given Java object on a JSON column type that is managed via {@link java.sql.PreparedStatement#setString(int, String)} at JDBC Driver level. For instance, if you are using MySQL, you should be using this {@link JsonStringType} to map the {@code json} column type.
  * <p>
  * For more details about how to use it, check out <a href="https://vladmihalcea.com/how-to-map-json-objects-using-generic-hibernate-types/">this article</a> on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
  *
