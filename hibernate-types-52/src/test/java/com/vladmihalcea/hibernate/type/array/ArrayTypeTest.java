@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.Assert.*;
 
@@ -47,6 +48,9 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             statement.executeUpdate(
                 "CREATE TYPE sensor_state AS ENUM ('ONLINE', 'OFFLINE', 'UNKNOWN')"
             );
+            statement.executeUpdate(
+                "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\""
+            );
         } catch (SQLException e) {
             fail(e.getMessage());
         }
@@ -72,6 +76,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
             Event event = new Event();
             event.setId(1L);
+            event.setSensorIds(new UUID[]{UUID.fromString("c65a3bcb-8b36-46d4-bddb-ae96ad016eb1"), UUID.fromString("72e95717-5294-4c15-aa64-a3631cf9a800")});
             event.setSensorNames(new String[]{"Temperature", "Pressure"});
             event.setSensorValues(new int[]{12, 756});
             event.setSensorLongValues(new long[]{42L, 9223372036854775800L});
@@ -82,6 +87,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         doInJPA(entityManager -> {
             Event event = entityManager.find(Event.class, 1L);
 
+            assertArrayEquals(new UUID[]{UUID.fromString("c65a3bcb-8b36-46d4-bddb-ae96ad016eb1"), UUID.fromString("72e95717-5294-4c15-aa64-a3631cf9a800")}, event.getSensorIds());
             assertArrayEquals(new String[]{"Temperature", "Pressure"}, event.getSensorNames());
             assertArrayEquals(new int[]{12, 756}, event.getSensorValues());
                 assertArrayEquals(new long[]{42L, 9223372036854775800L}, event.getSensorLongValues());
@@ -92,10 +98,12 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             List<Event> events = entityManager.createNativeQuery(
                 "select " +
                 "   id, " +
+                "   sensor_ids, " +
                 "   sensor_names, " +
                 "   sensor_values " +
                 "from event ", Tuple.class)
             .unwrap(org.hibernate.query.NativeQuery.class)
+            .addScalar("sensor_ids", UUIDArrayType.INSTANCE)
             .addScalar("sensor_names", StringArrayType.INSTANCE)
             .addScalar("sensor_values", IntArrayType.INSTANCE)
             .getResultList();
@@ -110,6 +118,9 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
     )
     @Table(name = "event")
     public static class Event extends BaseEntity {
+        @Type(type = "uuid-array")
+        @Column(name = "sensor_ids", columnDefinition = "uuid[]")
+        private UUID[] sensorIds;
 
         @Type(type = "string-array")
         @Column(name = "sensor_names", columnDefinition = "text[]")
@@ -159,6 +170,13 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             this.sensorStates = sensorStates;
         }
 
+        public UUID[] getSensorIds() {
+            return sensorIds;
+        }
+
+        public void setSensorIds(UUID[] sensorIds) {
+            this.sensorIds = sensorIds;
+        }
     }
 
     public enum SensorState {
