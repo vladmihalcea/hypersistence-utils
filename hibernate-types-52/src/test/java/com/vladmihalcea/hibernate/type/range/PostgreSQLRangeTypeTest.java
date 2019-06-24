@@ -14,6 +14,7 @@ import java.time.ZonedDateTime;
 import static com.vladmihalcea.hibernate.type.range.Range.infinite;
 import static com.vladmihalcea.hibernate.type.range.Range.zonedDateTimeRange;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author Edgar Asatryan
@@ -71,6 +72,27 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
             ZonedDateTime upper = tsTz.upper().withZoneSameInstant(zone);
 
             assertEquals(ar.getRangeZonedDateTime(), Range.closed(lower, upper));
+        });
+    }
+
+    @Test
+    public void testNullRange() {
+        Restriction ageRestrictionInt = doInJPA(entityManager -> {
+            Restriction restriction = new Restriction();
+            entityManager.persist(restriction);
+
+            return restriction;
+        });
+
+        doInJPA(entityManager -> {
+            Restriction ar = entityManager.find(Restriction.class, ageRestrictionInt.getId());
+
+            assertNull(ar.getRangeInt());
+            assertNull(ar.getRangeLong());
+            assertNull(ar.getRangeBigDecimal());
+            assertNull(ar.getLocalDateTimeRange());
+            assertNull(ar.getLocalDateRange());
+            assertNull(ar.getRangeZonedDateTime());
         });
     }
 

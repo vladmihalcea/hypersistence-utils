@@ -45,6 +45,11 @@ public class PostgreSQLRangeType extends ImmutableType<Range> {
     @Override
     protected Range get(ResultSet rs, String[] names, SessionImplementor session, Object owner) throws SQLException {
         PGobject pgObject = (PGobject) rs.getObject(names[0]);
+
+        if (pgObject == null) {
+            return null;
+        }
+
         String type = pgObject.getType();
         String value = pgObject.getValue();
 

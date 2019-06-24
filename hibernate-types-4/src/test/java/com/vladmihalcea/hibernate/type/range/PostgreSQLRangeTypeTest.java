@@ -2,6 +2,7 @@ package com.vladmihalcea.hibernate.type.range;
 
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
 import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
+import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionVoidFunction;
 import org.hibernate.annotations.TypeDef;
 import org.junit.Test;
 
@@ -10,6 +11,7 @@ import java.math.BigDecimal;
 
 import static com.vladmihalcea.hibernate.type.range.Range.infinite;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author Edgar Asatryan
@@ -59,6 +61,30 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
                 assertEquals(numeric, ar.getRangeBigDecimal());
 
                 return null;
+            }
+        });
+    }
+
+    @Test
+    public void testNullRange() {
+        final Restriction ageRestrictionInt = doInJPA(new JPATransactionFunction<Restriction>() {
+            @Override
+            public Restriction apply(EntityManager entityManager) {
+                Restriction restriction = new Restriction();
+                entityManager.persist(restriction);
+
+                return restriction;
+            }
+        });
+
+        doInJPA(new JPATransactionVoidFunction() {
+            @Override
+            public void accept(EntityManager entityManager) {
+                Restriction ar = entityManager.find(Restriction.class, ageRestrictionInt.getId());
+
+                assertNull(ar.getRangeInt());
+                assertNull(ar.getRangeLong());
+                assertNull(ar.getRangeBigDecimal());
             }
         });
     }
