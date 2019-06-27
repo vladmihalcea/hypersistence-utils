@@ -22,6 +22,7 @@ import static org.junit.Assert.fail;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.UUID;
 
 /**
  * @author Vlad Mihalcea
@@ -52,6 +53,9 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
               }
               statement.executeUpdate(
                       "CREATE TYPE sensor_state AS ENUM ('ONLINE', 'OFFLINE', 'UNKNOWN')"
+              );
+              statement.executeUpdate(
+                  "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\""
               );
           }
           finally {
@@ -99,6 +103,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
                 Event event = new Event();
                 event.setId(1L);
+                event.setSensorIds(new UUID[]{UUID.fromString("c65a3bcb-8b36-46d4-bddb-ae96ad016eb1"), UUID.fromString("72e95717-5294-4c15-aa64-a3631cf9a800")});
                 event.setSensorNames(new String[]{"Temperature", "Pressure"});
                 event.setSensorValues(new int[]{12, 756});
                 event.setSensorLongValues(new long[]{42L, 9223372036854775800L});
@@ -114,6 +119,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             public Void apply(EntityManager entityManager) {
                 Event event = entityManager.find(Event.class, 1L);
 
+                assertArrayEquals(new UUID[]{UUID.fromString("c65a3bcb-8b36-46d4-bddb-ae96ad016eb1"), UUID.fromString("72e95717-5294-4c15-aa64-a3631cf9a800")}, event.getSensorIds());
                 assertArrayEquals(new String[]{"Temperature", "Pressure"}, event.getSensorNames());
                 assertArrayEquals(new int[]{12, 756}, event.getSensorValues());
                 assertArrayEquals(new long[]{42L, 9223372036854775800L}, event.getSensorLongValues());
@@ -130,6 +136,9 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         @Parameter(name = EnumArrayType.SQL_ARRAY_TYPE, value = "sensor_state")}
     )
     public static class Event extends BaseEntity {
+        @Type(type = "uuid-array")
+        @Column(name = "sensor_ids", columnDefinition = "uuid[]")
+        private UUID[] sensorIds;
 
         @Type(type = "string-array")
         @Column(name = "sensor_names", columnDefinition = "text[]")
@@ -146,6 +155,14 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         @Type( type = "sensor-state-array")
         @Column(name = "sensor_states", columnDefinition = "sensor_state[]")
         private SensorState[] sensorStates;
+
+        public UUID[] getSensorIds() {
+            return sensorIds;
+        }
+
+        public void setSensorIds(UUID[] sensorIds) {
+            this.sensorIds = sensorIds;
+        }
 
         public String[] getSensorNames() {
             return sensorNames;

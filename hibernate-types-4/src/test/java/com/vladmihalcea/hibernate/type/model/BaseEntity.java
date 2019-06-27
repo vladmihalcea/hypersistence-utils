@@ -1,13 +1,12 @@
 package com.vladmihalcea.hibernate.type.model;
 
-import com.vladmihalcea.hibernate.type.array.EnumArrayType;
 import com.vladmihalcea.hibernate.type.array.IntArrayType;
 import com.vladmihalcea.hibernate.type.array.LongArrayType;
 import com.vladmihalcea.hibernate.type.array.StringArrayType;
+import com.vladmihalcea.hibernate.type.array.UUIDArrayType;
 import com.vladmihalcea.hibernate.type.json.JsonNodeBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonNodeStringType;
 
-import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
@@ -19,6 +18,7 @@ import javax.persistence.Version;
  * @author Vlad Mihalcea
  */
 @TypeDefs({
+        @TypeDef(name = "uuid-array", typeClass = UUIDArrayType.class),
         @TypeDef(name = "string-array", typeClass = StringArrayType.class),
         @TypeDef(name = "int-array", typeClass = IntArrayType.class),
         @TypeDef(name = "long-array", typeClass = LongArrayType.class),
