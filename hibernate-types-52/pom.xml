@@ -3,13 +3,13 @@
     <parent>
         <groupId>com.vladmihalcea</groupId>
         <artifactId>hibernate-types-parent</artifactId>
-        <version>2.4.5-SNAPSHOT</version>
+        <version>2.5.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>hibernate-types-52</artifactId>
-    <version>2.4.5-SNAPSHOT</version>
+    <version>2.5.0</version>
     <packaging>jar</packaging>
 
     <name>hibernate-types-52</name>
