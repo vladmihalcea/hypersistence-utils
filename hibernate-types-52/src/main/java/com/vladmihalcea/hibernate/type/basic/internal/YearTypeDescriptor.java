@@ -3,11 +3,7 @@ package com.vladmihalcea.hibernate.type.basic.internal;
 import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.type.descriptor.java.AbstractTypeDescriptor;
 
-import java.time.Instant;
 import java.time.Year;
-import java.time.Year;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.Objects;
 
 /**

@@ -2,6 +2,7 @@ package com.vladmihalcea.hibernate.type.json.internal;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.vladmihalcea.hibernate.type.util.ObjectMapperWrapper;
+
 import java.lang.reflect.Type;
 
 /**

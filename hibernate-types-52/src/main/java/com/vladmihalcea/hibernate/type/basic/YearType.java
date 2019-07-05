@@ -1,7 +1,8 @@
 package com.vladmihalcea.hibernate.type.basic;
 
+import com.vladmihalcea.hibernate.type.AbstractHibernateType;
 import com.vladmihalcea.hibernate.type.basic.internal.YearTypeDescriptor;
-import org.hibernate.type.AbstractSingleColumnStandardBasicType;
+import com.vladmihalcea.hibernate.type.util.Configuration;
 import org.hibernate.type.descriptor.sql.SmallIntTypeDescriptor;
 
 import java.time.Year;
@@ -14,14 +15,22 @@ import java.time.Year;
  * @author Vlad Mihalcea
  */
 public class YearType
-        extends AbstractSingleColumnStandardBasicType<Year> {
+        extends AbstractHibernateType<Year> {
 
     public static final YearType INSTANCE = new YearType();
 
     public YearType() {
         super(
-                SmallIntTypeDescriptor.INSTANCE,
-                YearTypeDescriptor.INSTANCE
+            SmallIntTypeDescriptor.INSTANCE,
+            YearTypeDescriptor.INSTANCE
+        );
+    }
+
+    public YearType(Configuration configuration) {
+        super(
+            SmallIntTypeDescriptor.INSTANCE,
+            YearTypeDescriptor.INSTANCE,
+            configuration
         );
     }
 

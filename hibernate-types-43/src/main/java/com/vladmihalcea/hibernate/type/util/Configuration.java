@@ -25,9 +25,9 @@ import java.util.Properties;
  */
 public class Configuration {
 
-    public static final Configuration INSTANCE = new Configuration();
-
     private static final Logger LOGGER = LoggerFactory.getLogger(Configuration.class);
+
+    public static final Configuration INSTANCE = new Configuration();
 
     public static final String PROPERTIES_FILE_PATH = "hibernate-types.properties.path";
     public static final String PROPERTIES_FILE_NAME = "hibernate-types.properties";
@@ -37,7 +37,8 @@ public class Configuration {
      */
     public enum PropertyKey {
         JACKSON_OBJECT_MAPPER("hibernate.types.jackson.object.mapper"),
-        JSON_SERIALIZER("hibernate.types.json.serializer");
+        JSON_SERIALIZER("hibernate.types.json.serializer"),
+        PRINT_BANNER("hibernate.types.print.banner");
 
         private final String key;
 
@@ -54,11 +55,7 @@ public class Configuration {
 
     public Configuration() {
         load();
-    }
-
-    public Configuration(Properties overridingProperties) {
-        this();
-        properties.putAll(overridingProperties);
+        printBanner();
     }
 
     /**
@@ -260,5 +257,36 @@ public class Configuration {
             }
         }
         return object;
+    }
+
+    /**
+     * Print the banner into the log.
+     */
+    private void printBanner() {
+        String printBannerValue = properties.getProperty(PropertyKey.PRINT_BANNER.getKey());
+        if(printBannerValue != null && !Boolean.valueOf(printBannerValue)) {
+            return;
+        }
+        LOGGER.info(" _    _                           _     _                      ");
+        LOGGER.info("| |  | |                         (_)   | |                     ");
+        LOGGER.info("| |__| |_   _ _ __   ___ _ __ ___ _ ___| |_ ___ _ __   ___ ___ ");
+        LOGGER.info("|  __  | | | | '_ \\ / _ \\ '__/ __| / __| __/ _ \\ '_ \\ / __/ _ \\");
+        LOGGER.info("| |  | | |_| | |_) |  __/ |  \\__ \\ \\__ \\ ||  __/ | | | (_|  __/");
+        LOGGER.info("|_|  |_|\\__, | .__/ \\___|_|  |___/_|___/\\__\\___|_| |_|\\___\\___|");
+        LOGGER.info("         __/ | |                                               ");
+        LOGGER.info("        |___/|_|                                               ");
+        LOGGER.info("		                                                        ");
+        LOGGER.info("           ____        _   _           _                       ");
+        LOGGER.info("          / __ \\      | | (_)         (_)                      ");
+        LOGGER.info("         | |  | |_ __ | |_ _ _ __ ___  _ _______ _ __          ");
+        LOGGER.info("         | |  | | '_ \\| __| | '_ ` _ \\| |_  / _ \\ '__|         ");
+        LOGGER.info("         | |__| | |_) | |_| | | | | | | |/ /  __/ |             ");
+        LOGGER.info("          \\____/| .__/ \\__|_|_| |_| |_|_/___\\___|_|             ");
+        LOGGER.info("          	    | |                                              ");
+        LOGGER.info("         	    |_|                                              ");
+        LOGGER.info("                                                                ");
+
+        LOGGER.info("Use Hypersistence Optimizer to speed up your Hibernate application.");
+        LOGGER.info("For more details, go to https://vladmihalcea.com/hypersistence-optimizer/");
     }
 }

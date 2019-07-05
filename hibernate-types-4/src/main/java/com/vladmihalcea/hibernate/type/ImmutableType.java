@@ -1,5 +1,6 @@
 package com.vladmihalcea.hibernate.type;
 
+import com.vladmihalcea.hibernate.type.util.Configuration;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.usertype.UserType;
 
@@ -15,10 +16,38 @@ import java.sql.SQLException;
  */
 public abstract class ImmutableType<T> implements UserType {
 
+    private final Configuration configuration;
+
     private final Class<T> clazz;
 
+    /**
+     * Initialization constructor taking the {@link Class}
+     * and using the default {@link Configuration} object.
+     *
+     * @param clazz the entity attribute {@link Class} type to be handled
+     */
     protected ImmutableType(Class<T> clazz) {
         this.clazz = clazz;
+        this.configuration = Configuration.INSTANCE;
+    }
+
+    /**
+     * Initialization constructor taking the {@link Class} and {@link Configuration} objects.
+     *
+     * @param clazz the entity attribute {@link Class} type to be handled
+     * @param configuration custom {@link Configuration} object.
+     */
+    protected ImmutableType(Class<T> clazz, Configuration configuration) {
+        this.clazz = clazz;
+        this.configuration = configuration;
+    }
+
+    /**
+     * Get the current {@link Configuration} object.
+     * @return the current {@link Configuration} object.
+     */
+    protected Configuration getConfiguration() {
+        return configuration;
     }
 
     @Override

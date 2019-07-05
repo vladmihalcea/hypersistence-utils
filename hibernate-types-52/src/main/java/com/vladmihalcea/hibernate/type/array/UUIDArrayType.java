@@ -1,14 +1,13 @@
 package com.vladmihalcea.hibernate.type.array;
 
-import java.util.Properties;
-import java.util.UUID;
-
-import org.hibernate.type.AbstractSingleColumnStandardBasicType;
+import com.vladmihalcea.hibernate.type.AbstractHibernateType;
+import com.vladmihalcea.hibernate.type.array.internal.ArraySqlTypeDescriptor;
+import com.vladmihalcea.hibernate.type.array.internal.UUIDArrayTypeDescriptor;
+import com.vladmihalcea.hibernate.type.util.Configuration;
 import org.hibernate.usertype.DynamicParameterizedType;
 
-import com.vladmihalcea.hibernate.type.array.internal.ArraySqlTypeDescriptor;
-import com.vladmihalcea.hibernate.type.array.internal.StringArrayTypeDescriptor;
-import com.vladmihalcea.hibernate.type.array.internal.UUIDArrayTypeDescriptor;
+import java.util.Properties;
+import java.util.UUID;
 
 /**
  * Maps an {@code UUID[]} array on a PostgreSQL ARRAY type.
@@ -18,13 +17,24 @@ import com.vladmihalcea.hibernate.type.array.internal.UUIDArrayTypeDescriptor;
  * @author Rafael Acevedo
  */
 public class UUIDArrayType
-        extends AbstractSingleColumnStandardBasicType<UUID[]>
+        extends AbstractHibernateType<UUID[]>
         implements DynamicParameterizedType {
 
     public static final UUIDArrayType INSTANCE = new UUIDArrayType();
 
     public UUIDArrayType() {
-        super(ArraySqlTypeDescriptor.INSTANCE, new UUIDArrayTypeDescriptor());
+        super(
+            ArraySqlTypeDescriptor.INSTANCE,
+            new UUIDArrayTypeDescriptor()
+        );
+    }
+
+    public UUIDArrayType(Configuration configuration) {
+        super(
+            ArraySqlTypeDescriptor.INSTANCE,
+            new UUIDArrayTypeDescriptor(),
+            configuration
+        );
     }
 
     public String getName() {

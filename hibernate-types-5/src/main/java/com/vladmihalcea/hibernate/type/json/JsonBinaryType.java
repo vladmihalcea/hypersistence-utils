@@ -1,11 +1,11 @@
 package com.vladmihalcea.hibernate.type.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vladmihalcea.hibernate.type.AbstractHibernateType;
 import com.vladmihalcea.hibernate.type.json.internal.JsonBinarySqlTypeDescriptor;
 import com.vladmihalcea.hibernate.type.json.internal.JsonTypeDescriptor;
-import com.vladmihalcea.hibernate.type.util.ObjectMapperWrapper;
 import com.vladmihalcea.hibernate.type.util.Configuration;
-import org.hibernate.type.AbstractSingleColumnStandardBasicType;
+import com.vladmihalcea.hibernate.type.util.ObjectMapperWrapper;
 import org.hibernate.usertype.DynamicParameterizedType;
 
 import java.lang.reflect.Type;
@@ -19,42 +19,50 @@ import java.util.Properties;
  * @author Vlad Mihalcea
  */
 public class JsonBinaryType
-        extends AbstractSingleColumnStandardBasicType<Object> implements DynamicParameterizedType {
+        extends AbstractHibernateType<Object> implements DynamicParameterizedType {
 
     public static final JsonBinaryType INSTANCE = new JsonBinaryType();
 
     public JsonBinaryType() {
         super(
-                JsonBinarySqlTypeDescriptor.INSTANCE,
-                new JsonTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper())
+            JsonBinarySqlTypeDescriptor.INSTANCE,
+            new JsonTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper())
+        );
+    }
+
+    public JsonBinaryType(Configuration configuration) {
+        super(
+            JsonBinarySqlTypeDescriptor.INSTANCE,
+            new JsonTypeDescriptor(configuration.getObjectMapperWrapper()),
+            configuration
         );
     }
 
     public JsonBinaryType(ObjectMapper objectMapper) {
         super(
-                JsonBinarySqlTypeDescriptor.INSTANCE,
-                new JsonTypeDescriptor(new ObjectMapperWrapper(objectMapper))
+            JsonBinarySqlTypeDescriptor.INSTANCE,
+            new JsonTypeDescriptor(new ObjectMapperWrapper(objectMapper))
         );
     }
 
     public JsonBinaryType(ObjectMapperWrapper objectMapperWrapper) {
         super(
-                JsonBinarySqlTypeDescriptor.INSTANCE,
-                new JsonTypeDescriptor(objectMapperWrapper)
+            JsonBinarySqlTypeDescriptor.INSTANCE,
+            new JsonTypeDescriptor(objectMapperWrapper)
         );
     }
 
     public JsonBinaryType(ObjectMapper objectMapper, Type javaType) {
         super(
-                JsonBinarySqlTypeDescriptor.INSTANCE,
-                new JsonTypeDescriptor(new ObjectMapperWrapper(objectMapper), javaType)
+            JsonBinarySqlTypeDescriptor.INSTANCE,
+            new JsonTypeDescriptor(new ObjectMapperWrapper(objectMapper), javaType)
         );
     }
 
     public JsonBinaryType(ObjectMapperWrapper objectMapperWrapper, Type javaType) {
         super(
-                JsonBinarySqlTypeDescriptor.INSTANCE,
-                new JsonTypeDescriptor(objectMapperWrapper, javaType)
+            JsonBinarySqlTypeDescriptor.INSTANCE,
+            new JsonTypeDescriptor(objectMapperWrapper, javaType)
         );
     }
 

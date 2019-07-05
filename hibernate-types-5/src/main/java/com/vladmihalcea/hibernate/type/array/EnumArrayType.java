@@ -1,9 +1,10 @@
 package com.vladmihalcea.hibernate.type.array;
 
+import com.vladmihalcea.hibernate.type.AbstractHibernateType;
 import com.vladmihalcea.hibernate.type.array.internal.ArraySqlTypeDescriptor;
 import com.vladmihalcea.hibernate.type.array.internal.EnumArrayTypeDescriptor;
+import com.vladmihalcea.hibernate.type.util.Configuration;
 import org.hibernate.annotations.Type;
-import org.hibernate.type.AbstractSingleColumnStandardBasicType;
 import org.hibernate.usertype.DynamicParameterizedType;
 
 import java.lang.annotation.Annotation;
@@ -18,7 +19,7 @@ import java.util.Properties;
  * @author Vlad Mihalcea
  */
 public class EnumArrayType
-        extends AbstractSingleColumnStandardBasicType<Enum[]>
+        extends AbstractHibernateType<Enum[]>
         implements DynamicParameterizedType {
 
     public static final EnumArrayType INSTANCE = new EnumArrayType();
@@ -28,7 +29,18 @@ public class EnumArrayType
     private String name;
 
     public EnumArrayType() {
-        super(ArraySqlTypeDescriptor.INSTANCE, new EnumArrayTypeDescriptor());
+        super(
+            ArraySqlTypeDescriptor.INSTANCE,
+            new EnumArrayTypeDescriptor()
+        );
+    }
+
+    public EnumArrayType(Configuration configuration) {
+        super(
+            ArraySqlTypeDescriptor.INSTANCE,
+            new EnumArrayTypeDescriptor(),
+            configuration
+        );
     }
 
     public String getName() {

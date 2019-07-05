@@ -1,7 +1,5 @@
 package com.vladmihalcea.hibernate.type.util;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 /**
  * Supplies a custom reference of a Jackson {@link JsonSerializer}
  *

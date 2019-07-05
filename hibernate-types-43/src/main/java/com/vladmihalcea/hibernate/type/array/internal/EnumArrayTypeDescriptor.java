@@ -1,8 +1,8 @@
 package com.vladmihalcea.hibernate.type.array.internal;
 
-import java.util.Properties;
-
 import com.vladmihalcea.hibernate.type.array.EnumArrayType;
+
+import java.util.Properties;
 
 /**
  * @author Nazir El-Kayssi

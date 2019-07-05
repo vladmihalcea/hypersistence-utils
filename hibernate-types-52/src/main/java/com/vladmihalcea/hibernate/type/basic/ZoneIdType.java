@@ -1,7 +1,8 @@
 package com.vladmihalcea.hibernate.type.basic;
 
+import com.vladmihalcea.hibernate.type.AbstractHibernateType;
 import com.vladmihalcea.hibernate.type.basic.internal.ZoneIdTypeDescriptor;
-import org.hibernate.type.AbstractSingleColumnStandardBasicType;
+import com.vladmihalcea.hibernate.type.util.Configuration;
 import org.hibernate.type.descriptor.sql.VarcharTypeDescriptor;
 
 import java.time.ZoneId;
@@ -11,12 +12,23 @@ import java.time.ZoneId;
  *
  * @author stonio
  */
-public class ZoneIdType extends AbstractSingleColumnStandardBasicType<ZoneId> {
+public class ZoneIdType extends AbstractHibernateType<ZoneId> {
 
     public static final ZoneIdType INSTANCE = new ZoneIdType();
 
     public ZoneIdType() {
-        super(VarcharTypeDescriptor.INSTANCE, ZoneIdTypeDescriptor.INSTANCE);
+        super(
+            VarcharTypeDescriptor.INSTANCE,
+            ZoneIdTypeDescriptor.INSTANCE
+        );
+    }
+
+    public ZoneIdType(Configuration configuration) {
+        super(
+            VarcharTypeDescriptor.INSTANCE,
+            ZoneIdTypeDescriptor.INSTANCE,
+            configuration
+        );
     }
 
     @Override

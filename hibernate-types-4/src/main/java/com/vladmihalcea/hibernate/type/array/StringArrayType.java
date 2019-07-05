@@ -1,8 +1,9 @@
 package com.vladmihalcea.hibernate.type.array;
 
+import com.vladmihalcea.hibernate.type.AbstractHibernateType;
 import com.vladmihalcea.hibernate.type.array.internal.ArraySqlTypeDescriptor;
 import com.vladmihalcea.hibernate.type.array.internal.StringArrayTypeDescriptor;
-import org.hibernate.type.AbstractSingleColumnStandardBasicType;
+import com.vladmihalcea.hibernate.type.util.Configuration;
 import org.hibernate.usertype.DynamicParameterizedType;
 
 import java.util.Properties;
@@ -15,13 +16,24 @@ import java.util.Properties;
  * @author Vlad Mihalcea
  */
 public class StringArrayType
-        extends AbstractSingleColumnStandardBasicType<String[]>
+        extends AbstractHibernateType<String[]>
         implements DynamicParameterizedType {
 
     public static final StringArrayType INSTANCE = new StringArrayType();
 
     public StringArrayType() {
-        super(ArraySqlTypeDescriptor.INSTANCE, new StringArrayTypeDescriptor());
+        super(
+            ArraySqlTypeDescriptor.INSTANCE,
+            new StringArrayTypeDescriptor()
+        );
+    }
+
+    public StringArrayType(Configuration configuration) {
+        super(
+            ArraySqlTypeDescriptor.INSTANCE,
+            new StringArrayTypeDescriptor(),
+            configuration
+        );
     }
 
     public String getName() {

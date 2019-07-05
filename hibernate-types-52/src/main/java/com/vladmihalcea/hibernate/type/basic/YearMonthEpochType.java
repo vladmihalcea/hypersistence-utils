@@ -1,7 +1,8 @@
 package com.vladmihalcea.hibernate.type.basic;
 
+import com.vladmihalcea.hibernate.type.AbstractHibernateType;
 import com.vladmihalcea.hibernate.type.basic.internal.YearMonthEpochTypeDescriptor;
-import org.hibernate.type.AbstractSingleColumnStandardBasicType;
+import com.vladmihalcea.hibernate.type.util.Configuration;
 import org.hibernate.type.descriptor.sql.SmallIntTypeDescriptor;
 
 import java.time.YearMonth;
@@ -13,14 +14,22 @@ import java.time.YearMonth;
  * @author Vlad Mihalcea
  */
 public class YearMonthEpochType
-        extends AbstractSingleColumnStandardBasicType<YearMonth> {
+        extends AbstractHibernateType<YearMonth> {
 
     public static final YearMonthEpochType INSTANCE = new YearMonthEpochType();
 
     public YearMonthEpochType() {
         super(
-                SmallIntTypeDescriptor.INSTANCE,
-                YearMonthEpochTypeDescriptor.INSTANCE
+            SmallIntTypeDescriptor.INSTANCE,
+            YearMonthEpochTypeDescriptor.INSTANCE
+        );
+    }
+
+    public YearMonthEpochType(Configuration configuration) {
+        super(
+            SmallIntTypeDescriptor.INSTANCE,
+            YearMonthEpochTypeDescriptor.INSTANCE,
+            configuration
         );
     }
 

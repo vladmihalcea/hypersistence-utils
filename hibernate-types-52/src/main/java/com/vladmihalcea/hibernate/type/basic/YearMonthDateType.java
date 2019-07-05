@@ -1,7 +1,8 @@
 package com.vladmihalcea.hibernate.type.basic;
 
+import com.vladmihalcea.hibernate.type.AbstractHibernateType;
 import com.vladmihalcea.hibernate.type.basic.internal.YearMonthTypeDescriptor;
-import org.hibernate.type.AbstractSingleColumnStandardBasicType;
+import com.vladmihalcea.hibernate.type.util.Configuration;
 import org.hibernate.type.descriptor.sql.DateTypeDescriptor;
 
 import java.time.YearMonth;
@@ -14,14 +15,22 @@ import java.time.YearMonth;
  * @author Vlad Mihalcea
  */
 public class YearMonthDateType
-        extends AbstractSingleColumnStandardBasicType<YearMonth> {
+        extends AbstractHibernateType<YearMonth> {
 
     public static final YearMonthDateType INSTANCE = new YearMonthDateType();
 
     public YearMonthDateType() {
         super(
-                DateTypeDescriptor.INSTANCE,
-                YearMonthTypeDescriptor.INSTANCE
+            DateTypeDescriptor.INSTANCE,
+            YearMonthTypeDescriptor.INSTANCE
+        );
+    }
+
+    public YearMonthDateType(Configuration configuration) {
+        super(
+            DateTypeDescriptor.INSTANCE,
+            YearMonthTypeDescriptor.INSTANCE,
+            configuration
         );
     }
 

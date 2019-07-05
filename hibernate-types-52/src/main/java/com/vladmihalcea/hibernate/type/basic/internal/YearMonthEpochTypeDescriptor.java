@@ -4,8 +4,9 @@ import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.type.descriptor.java.AbstractTypeDescriptor;
 
 import java.math.BigInteger;
-import java.time.*;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.YearMonth;
 import java.util.Objects;
 
 /**

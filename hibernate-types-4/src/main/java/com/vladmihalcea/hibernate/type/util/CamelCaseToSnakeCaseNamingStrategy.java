@@ -17,6 +17,24 @@ public class CamelCaseToSnakeCaseNamingStrategy extends DefaultNamingStrategy {
 
     public static final String SNAKE_CASE_PATTERN = "$1\\_$2";
 
+    private final Configuration configuration;
+
+    /**
+     * Initialization constructor taking the default {@link Configuration} object.
+     */
+    public CamelCaseToSnakeCaseNamingStrategy() {
+        this.configuration = Configuration.INSTANCE;
+    }
+
+    /**
+     * Initialization constructor taking the {@link Class} and {@link Configuration} objects.
+     *
+     * @param configuration custom {@link Configuration} object.
+     */
+    public CamelCaseToSnakeCaseNamingStrategy(Configuration configuration) {
+        this.configuration = configuration;
+    }
+
     @Override
     public String classToTableName(String className) {
         return formatIdentifier(super.classToTableName(className));
