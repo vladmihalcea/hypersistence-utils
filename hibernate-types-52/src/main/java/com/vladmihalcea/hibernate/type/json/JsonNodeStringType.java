@@ -3,6 +3,7 @@ package com.vladmihalcea.hibernate.type.json;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vladmihalcea.hibernate.type.AbstractHibernateType;
+import com.vladmihalcea.hibernate.type.json.internal.JacksonUtil;
 import com.vladmihalcea.hibernate.type.json.internal.JsonNodeTypeDescriptor;
 import com.vladmihalcea.hibernate.type.json.internal.JsonStringSqlTypeDescriptor;
 import com.vladmihalcea.hibernate.type.util.Configuration;
@@ -22,14 +23,14 @@ public class JsonNodeStringType extends AbstractHibernateType<JsonNode> {
     public JsonNodeStringType() {
         super(
             JsonStringSqlTypeDescriptor.INSTANCE,
-            new JsonNodeTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper())
+            new JsonNodeTypeDescriptor(JacksonUtil.getObjectMapperWrapper(Configuration.INSTANCE))
         );
     }
 
     public JsonNodeStringType(Configuration configuration) {
         super(
             JsonStringSqlTypeDescriptor.INSTANCE,
-            new JsonNodeTypeDescriptor(configuration.getObjectMapperWrapper()),
+            new JsonNodeTypeDescriptor(JacksonUtil.getObjectMapperWrapper(configuration)),
             configuration
         );
     }
