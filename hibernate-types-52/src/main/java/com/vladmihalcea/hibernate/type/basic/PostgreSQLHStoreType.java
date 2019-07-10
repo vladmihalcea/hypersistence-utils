@@ -24,6 +24,8 @@ import java.util.Map;
  */
 public class PostgreSQLHStoreType extends ImmutableType<Map> {
 
+    public static final PostgreSQLHStoreType INSTANCE = new PostgreSQLHStoreType();
+
     public PostgreSQLHStoreType() {
         super(Map.class);
     }

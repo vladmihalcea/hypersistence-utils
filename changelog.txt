@@ -1,7 +1,9 @@
-Version 2.6.0 - August 15, 2019
+Version 2.5.1 - August 15, 2019
 ================================================================================
 
 Add support for PostgreSQL Interval column type
+
+Add missing type INSTANCE constants
 
 Version 2.5.0 - July 05, 2019
 ================================================================================

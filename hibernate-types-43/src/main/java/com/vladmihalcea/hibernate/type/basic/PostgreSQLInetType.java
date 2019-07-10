@@ -20,6 +20,8 @@ import java.sql.Types;
  */
 public class PostgreSQLInetType extends ImmutableType<Inet> {
 
+    public static final PostgreSQLInetType INSTANCE = new PostgreSQLInetType();
+
     public PostgreSQLInetType() {
         super(Inet.class);
     }

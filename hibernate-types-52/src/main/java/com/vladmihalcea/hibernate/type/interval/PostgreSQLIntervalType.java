@@ -16,7 +16,7 @@ import java.time.temporal.ChronoUnit;
  * <p>
  *
  * @author Jan-Willem Gmelig Meyling
- * @since 2.6.0
+ * @since 2.5.1
  */
 public class PostgreSQLIntervalType extends ImmutableType<Duration> {
 
