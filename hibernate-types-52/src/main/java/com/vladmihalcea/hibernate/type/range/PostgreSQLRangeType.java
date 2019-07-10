@@ -36,6 +36,8 @@ import java.time.ZonedDateTime;
  */
 public class PostgreSQLRangeType extends ImmutableType<Range> {
 
+    public static final PostgreSQLRangeType INSTANCE = new PostgreSQLRangeType();
+
     public PostgreSQLRangeType() {
         super(Range.class);
     }
