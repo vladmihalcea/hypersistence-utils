@@ -56,7 +56,10 @@ public class Configuration {
 
     public Configuration() {
         load();
-        printBanner();
+
+        if(ReflectionUtils.getClassOrNull("io.hypersistence.optimizer.HypersistenceOptimizer") == null) {
+            printBanner();
+        }
     }
 
     /**
@@ -276,25 +279,53 @@ public class Configuration {
         if(printBannerValue != null && !Boolean.valueOf(printBannerValue)) {
             return;
         }
-        LOGGER.info(" _    _                           _     _");
-        LOGGER.info("| |  | |                         (_)   | |");
-        LOGGER.info("| |__| |_   _ _ __   ___ _ __ ___ _ ___| |_ ___ _ __   ___ ___");
-        LOGGER.info("|  __  | | | | '_ \\ / _ \\ '__/ __| / __| __/ _ \\ '_ \\ / __/ _ \\");
-        LOGGER.info("| |  | | |_| | |_) |  __/ |  \\__ \\ \\__ \\ ||  __/ | | | (_|  __/");
-        LOGGER.info("|_|  |_|\\__, | .__/ \\___|_|  |___/_|___/\\__\\___|_| |_|\\___\\___|");
-        LOGGER.info("         __/ | |");
-        LOGGER.info("        |___/|_|");
-        LOGGER.info("");
-        LOGGER.info("           ____        _   _           _");
-        LOGGER.info("          / __ \\      | | (_)         (_)");
-        LOGGER.info("         | |  | |_ __ | |_ _ _ __ ___  _ _______ _ __");
-        LOGGER.info("         | |  | | '_ \\| __| | '_ ` _ \\| |_  / _ \\ '__|");
-        LOGGER.info("         | |__| | |_) | |_| | | | | | | |/ /  __/ |");
-        LOGGER.info("          \\____/| .__/ \\__|_|_| |_| |_|_/___\\___|_|");
-        LOGGER.info("                | |");
-        LOGGER.info("                |_|");
-        LOGGER.info("");
-        LOGGER.info("You should use Hypersistence Optimizer to speed up your Hibernate application.");
-        LOGGER.info("For more details, go to https://vladmihalcea.com/hypersistence-optimizer/");
+
+        Logger logger = LoggerFactory.getLogger("Hypersistence Optimizer");
+
+        printWarning("You should use Hypersistence Optimizer to speed up your Hibernate application!", logger);
+        printWarning("For more details, go to https://vladmihalcea.com/hypersistence-optimizer/", logger);
+
+
+        printInfo(
+            StringUtils.join(
+                StringUtils.LINE_SEPARATOR,
+                "",
+                " _    _                           _     _",
+                "| |  | |                         (_)   | |",
+                "| |__| |_   _ _ __   ___ _ __ ___ _ ___| |_ ___ _ __   ___ ___",
+                "|  __  | | | | '_ \\ / _ \\ '__/ __| / __| __/ _ \\ '_ \\ / __/ _ \\",
+                "| |  | | |_| | |_) |  __/ |  \\__ \\ \\__ \\ ||  __/ | | | (_|  __/",
+                "|_|  |_|\\__, | .__/ \\___|_|  |___/_|___/\\__\\___|_| |_|\\___\\___|",
+                "         __/ | |",
+                "        |___/|_|",
+                "",
+                "           ____        _   _           _",
+                "          / __ \\      | | (_)         (_)",
+                "         | |  | |_ __ | |_ _ _ __ ___  _ _______ _ __",
+                "         | |  | | '_ \\| __| | '_ ` _ \\| |_  / _ \\ '__|",
+                "         | |__| | |_) | |_| | | | | | | |/ /  __/ |",
+                "          \\____/| .__/ \\__|_|_| |_| |_|_/___\\___|_|",
+                "                | |",
+                "                |_|",
+                ""
+            ),
+            logger
+        );
+    }
+
+    private void printWarning(String message, Logger logger) {
+        if (logger.isWarnEnabled()) {
+            logger.warn(message);
+        } else {
+            System.out.println(message);
+        }
+    }
+
+    private void printInfo(String message, Logger logger) {
+        if (logger.isInfoEnabled()) {
+            logger.info(message);
+        } else {
+            System.out.println(message);
+        }
     }
 }

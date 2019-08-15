@@ -292,6 +292,23 @@ public final class ReflectionUtils {
     }
 
     /**
+     * Get the Java {@link Class} with the given fully-qualified name or or {@code null}
+     * if no {@link Class} was found matching the provided name.
+     *
+     * @param className the Java {@link Class} name to be retrieved
+     * @param <T>       {@link Class} type
+     * @return the Java {@link Class} object or {@code null}
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> Class<T> getClassOrNull(String className) {
+        try {
+            return (Class<T>) Class.forName(className);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
      * Handle {@link NoSuchFieldException} by logging it and rethrown it as a {@link IllegalArgumentException}
      *
      * @param fieldName field name
