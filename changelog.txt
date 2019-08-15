@@ -5,6 +5,8 @@ Add support for PostgreSQL Interval column type
 
 Add missing type INSTANCE constants
 
+Upgrade Jackson Databind artifact version
+
 Version 2.5.0 - July 05, 2019
 ================================================================================
 
