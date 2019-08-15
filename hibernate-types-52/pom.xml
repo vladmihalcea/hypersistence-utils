@@ -41,6 +41,36 @@
         </dependency>
 
         <dependency>
+            <groupId>javax.json.bind</groupId>
+            <artifactId>javax.json.bind-api</artifactId>
+            <version>${json.bind-api.version}</version>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.json</groupId>
+            <artifactId>javax.json-api</artifactId>
+            <version>${json-api.version}</version>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse</groupId>
+            <artifactId>yasson</artifactId>
+            <version>${yasson.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+            <version>${glassfish.json.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-ehcache</artifactId>
             <version>${hibernate.version}</version>
@@ -69,6 +99,10 @@
 
         <mysql.version>8.0.13</mysql.version>
         <jackson.version>2.9.9</jackson.version>
+        <json.bind-api.version>1.0</json.bind-api.version>
+        <json-api.version>1.1.4</json-api.version>
+        <yasson.version>1.0.1</yasson.version>
+        <glassfish.json.version>1.1.2</glassfish.json.version>
 
         <jdk.version>8</jdk.version>
         <jdk>${env.JAVA_HOME_8}</jdk>

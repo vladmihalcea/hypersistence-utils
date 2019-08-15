@@ -1,23 +1,21 @@
-package com.vladmihalcea.hibernate.type.json;
+package com.vladmihalcea.hibernate.type.jsonp;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vladmihalcea.hibernate.type.AbstractHibernateType;
-import com.vladmihalcea.hibernate.type.json.internal.JacksonUtil;
-import com.vladmihalcea.hibernate.type.json.internal.JsonStringSqlTypeDescriptor;
-import com.vladmihalcea.hibernate.type.json.internal.JsonTypeDescriptor;
+import com.vladmihalcea.hibernate.type.jsonp.internal.JsonStringSqlTypeDescriptor;
+import com.vladmihalcea.hibernate.type.jsonp.internal.JsonTypeDescriptor;
+import com.vladmihalcea.hibernate.type.jsonp.internal.JsonbUtil;
 import com.vladmihalcea.hibernate.type.util.Configuration;
-import com.vladmihalcea.hibernate.type.util.ObjectMapperWrapper;
+import com.vladmihalcea.hibernate.type.util.JsonbWrapper;
 import org.hibernate.usertype.DynamicParameterizedType;
 
+import javax.json.bind.Jsonb;
 import java.lang.reflect.Type;
 import java.util.Properties;
 
 /**
  * Maps any given Java object on a JSON column type that is managed via {@link java.sql.PreparedStatement#setString(int, String)} at JDBC Driver level. For instance, if you are using MySQL, you should be using this {@link JsonStringType} to map the {@code json} column type.
- * <p>
- * For more details about how to use it, check out <a href="https://vladmihalcea.com/how-to-map-json-objects-using-generic-hibernate-types/">this article</a> on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
  *
- * @author Vlad Mihalcea
+ * @author Jan-Willem Gmelig Meyling
  */
 public class JsonStringType extends AbstractHibernateType<Object> implements DynamicParameterizedType {
 
@@ -26,49 +24,49 @@ public class JsonStringType extends AbstractHibernateType<Object> implements Dyn
     public JsonStringType() {
         super(
             JsonStringSqlTypeDescriptor.INSTANCE,
-            new JsonTypeDescriptor(JacksonUtil.getObjectMapperWrapper(Configuration.INSTANCE))
+            new JsonTypeDescriptor(JsonbUtil.getObjectMapperWrapper(Configuration.INSTANCE))
         );
     }
 
     public JsonStringType(Configuration configuration) {
         super(
             JsonStringSqlTypeDescriptor.INSTANCE,
-            new JsonTypeDescriptor(JacksonUtil.getObjectMapperWrapper(configuration)),
+            new JsonTypeDescriptor(JsonbUtil.getObjectMapperWrapper(configuration)),
             configuration
         );
     }
 
-    public JsonStringType(ObjectMapper objectMapper) {
+    public JsonStringType(Jsonb objectMapper) {
         super(
             JsonStringSqlTypeDescriptor.INSTANCE,
-            new JsonTypeDescriptor(new ObjectMapperWrapper(objectMapper))
+            new JsonTypeDescriptor(new JsonbWrapper(objectMapper))
         );
     }
 
-    public JsonStringType(ObjectMapperWrapper objectMapperWrapper) {
+    public JsonStringType(JsonbWrapper jsonbWrapper) {
         super(
             JsonStringSqlTypeDescriptor.INSTANCE,
-            new JsonTypeDescriptor(objectMapperWrapper)
+            new JsonTypeDescriptor(jsonbWrapper)
         );
     }
 
-    public JsonStringType(ObjectMapper objectMapper, Type javaType) {
+    public JsonStringType(Jsonb objectMapper, Type javaType) {
         super(
             JsonStringSqlTypeDescriptor.INSTANCE,
-            new JsonTypeDescriptor(new ObjectMapperWrapper(objectMapper), javaType)
+            new JsonTypeDescriptor(new JsonbWrapper(objectMapper), javaType)
         );
     }
 
-    public JsonStringType(ObjectMapperWrapper objectMapperWrapper, Type javaType) {
+    public JsonStringType(JsonbWrapper jsonbWrapper, Type javaType) {
         super(
             JsonStringSqlTypeDescriptor.INSTANCE,
-            new JsonTypeDescriptor(objectMapperWrapper, javaType)
+            new JsonTypeDescriptor(jsonbWrapper, javaType)
         );
     }
 
     @Override
     public String getName() {
-        return "json";
+        return "json-p";
     }
 
     @Override

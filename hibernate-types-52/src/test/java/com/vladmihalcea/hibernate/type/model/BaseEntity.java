@@ -27,6 +27,10 @@ import javax.persistence.Version;
         @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class),
         @TypeDef(name = "jsonb-node", typeClass = JsonNodeBinaryType.class),
         @TypeDef(name = "json-node", typeClass = JsonNodeStringType.class),
+        @TypeDef(name = "json-p", typeClass = com.vladmihalcea.hibernate.type.jsonp.JsonStringType.class),
+        @TypeDef(name = "jsonb-p", typeClass = com.vladmihalcea.hibernate.type.jsonp.JsonBinaryType.class),
+        @TypeDef(name = "jsonb-p-value", typeClass = com.vladmihalcea.hibernate.type.jsonp.JsonNodeBinaryType.class),
+        @TypeDef(name = "json-p-value", typeClass = com.vladmihalcea.hibernate.type.jsonp.JsonNodeStringType.class),
 })
 @MappedSuperclass
 public class BaseEntity {
