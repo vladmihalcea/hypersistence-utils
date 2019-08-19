@@ -42,14 +42,6 @@ public class PostgreSQLHStoreType extends ImmutableType<Map> {
 
     @Override
     protected void set(PreparedStatement st, Map value, int index, SharedSessionContractImplementor session) throws SQLException {
-        if (value == null) {
-            st.setNull(index, Types.OTHER);
-        } else {
-            PGobject holder = new PGobject();
-            holder.setType("hstore");
-            holder.setValue(HStoreConverter.toString(value));
-
-            st.setObject(index, holder);
-        }
+        st.setObject(index, value);
     }
 }

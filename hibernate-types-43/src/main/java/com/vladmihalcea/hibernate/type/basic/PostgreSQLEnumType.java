@@ -43,10 +43,6 @@ public class PostgreSQLEnumType extends org.hibernate.type.EnumType {
             int index,
             SessionImplementor session)
             throws HibernateException, SQLException {
-        if (value == null) {
-            st.setNull(index, Types.OTHER);
-        } else {
-            st.setObject(index, value.toString(), Types.OTHER);
-        }
+        st.setObject(index, value, Types.OTHER);
     }
 }
