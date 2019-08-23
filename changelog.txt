@@ -1,61 +1,74 @@
+Version 2.6.0 - August 23, 2019
+================================================================================
+
+ImmutableType should also implement the Type interface #119
+
+Remove unnecessary null checks and PGobject instantiations #118
+
+Add support for the PostgreSQL citext type #117
+
 Version 2.5.1 - August 15, 2019
 ================================================================================
 
-Add support for PostgreSQL Interval column type
+Add support for PostgreSQL Interval column type #53
 
-Add missing type INSTANCE constants
+Add missing type INSTANCE constants #111
 
 Upgrade Jackson Databind artifact version
 
 Version 2.5.0 - July 05, 2019
 ================================================================================
 
-Add handling for null PostgreSQL Range column values.
+Add handling for null PostgreSQL Range column values #106
 
-Add PostgreSQL UUID ARRAY support.
+Add PostgreSQL UUID ARRAY support #105
 
-Allow the Configuration to be accessed by all custom Types.
+Allow the Configuration to be accessed by all custom Types #107
 
 Version 2.4.4 - June 06, 2019
 ================================================================================
 
 Update Javadoc to specify which JSON types are suitable for PostgreSQL and MySQL.
 
-Add ZoneIdType to map the java.time.ZoneId to a VARCHAR-based column.
+Add ZoneIdType to map the java.time.ZoneId to a VARCHAR-based column #103
 
-Replace reflection usage in PostgreSQL Types with Driver-specific API calls.
+Replace reflection usage in PostgreSQL Types with Driver-specific API calls #99
 
-In case the JSON attribute is a java.util.Set, an additional SQL UPDATE is executed when persisting the entity.
+In case the JSON attribute is a java.util.Set, an additional SQL UPDATE is executed when persisting the entity #100
 
 Version 2.4.3 - April 07, 2019
 ================================================================================
 
-Adjustment in ZoneDateTime pattern for 1-6 nanoseconds digits.
+Adjustment in ZoneDateTime pattern for 1-6 nanoseconds digits #90
 
 Array types use a singleton Java descriptors and that prevents them from being
-initialized separately using dynamic parameters.
+initialized separately using dynamic parameters #84
 
 Version 2.4.2 - February 26, 2019
 ================================================================================
 
-Add a LongArrayType to support long[] array mappings.
+Add a LongArrayType to support long[] array mappings #82
 
 Version 2.4.1 - February 01, 2019
 ================================================================================
 
-Fix issue with ZonedDateTimeRanges and DST.
+Fix issue with ZonedDateTimeRanges and DST #78
 
-Change constructor type args from Class to Type for JSON Types so it's easier to register them dynamically.
+Change constructor type args from Class to Type for JSON Types so it's easier to register them dynamically
+
+Support insertion of String values into JSON columns #80
 
 Version 2.4.0 - January 02, 2019
 ================================================================================
 
-Add support for HStore and Range PostgreSQL column types.
+Add support for the PostgreSQL hstore type #44
+
+Add support for PostgeSQL range type. #63
 
 Version 2.3.5 - December 03, 2018
 ================================================================================
 
-Add EnumArrayType to support mapping database Enums as Java arrays.
+Add EnumArrayType to support mapping database Enums as Java arrays #58
 
 Version 2.3.4 - November 14, 2018
 ================================================================================
@@ -66,7 +79,9 @@ to snake_case database identifiers.
 Version 2.3.3 - October 23, 2018
 ================================================================================
 
-Add support for java.time.Year and add the YearMonthEpochType.
+Add continuous Integer solution for YearMonthType #47
+
+Add types for java.time.Year and java.time.Month #51
 
 Version 2.3.2 - October 18, 2018
 ================================================================================
@@ -78,17 +93,17 @@ Migrate hibernate-types-52 to Jackson 2.9.7.
 Version 2.3.1 - October 16, 2018
 ================================================================================
 
-Add support for the java.util.YearMonth which can be persisted as a DATE or INTEGER column.
+Add support for the java.util.YearMonth which can be persisted as a DATE or INTEGER column
 
 Version 2.3.0 - September 06, 2018
 ================================================================================
 
-Add support for the PostgreSQL INET column type.
+Add InetType for PostgreSQL #43
 
 Version 2.2.3 - September 06, 2018
 ================================================================================
 
-Fix issue #39 caused by marshalling a String using Jackson.
+String fields on entity as JSONB don't work correctly #39
 
 Version 2.2.2 - June 03, 2018
 ================================================================================
@@ -103,7 +118,7 @@ Pass the original IOException when throwing the IllegalArgumentException from Ob
 Version 2.2.0 - March 27, 2018
 ================================================================================
 
-Fix issue #21 which allows you to customize the deep copy mechanism via the JsonSerializer interface supplied by the hibernate.types.json.serializer configuration property.
+Fix issue which allows you to customize the deep copy mechanism via the JsonSerializer interface supplied by the hibernate.types.json.serializer configuration property #21
 
 Version 2.1.1 - March 08, 2018
 ================================================================================
@@ -115,7 +130,7 @@ Refactor internal PropertyLoader to Configuration and make it work with hibernat
 Version 2.1.0 - March 07, 2018
 ================================================================================
 
-Fix issue #3 which allows providing an external ObjectMapper.
+Add support to provide an external ObjectMapper #3
 
 Add the cause to the IllegalArgumentException thrown by JacksonUtil.
 
@@ -131,14 +146,14 @@ Migrate hibernate-types-52 to Jackson 2.9.0.
 Version 1.2.0 - November 28, 2018
 ================================================================================
 
-Fix issue #11 which adds support for List, Set, Map to be saved as JSON via TypeReferenceJsonStringSerializer.
+Add support for List, Set, Map to be saved as JSON #11
 
-Fix issue #14 related to a Serialization problem when using JsonNodeBinaryType and Hibernate 2nd-level cache.
+Serialization problem when using JsonNodeBinaryType and Hibernate 2nd-level cache #14
 
 Version 1.1.2 - November 11, 2018
 ================================================================================
 
-Fix issue #8 which allows the JacksonUtil#clone to use SerializationHelper.clone when the Object implements Serializable.
+JacksonUtil#clone should support Lists as well #8
 
 Add an INSTANCE constant to existing Types.
 
