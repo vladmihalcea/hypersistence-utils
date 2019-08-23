@@ -1,12 +1,21 @@
 package com.vladmihalcea.hibernate.type.basic;
 
 import com.vladmihalcea.hibernate.type.ImmutableType;
+import org.hibernate.HibernateException;
+import org.hibernate.MappingException;
+import org.hibernate.engine.jdbc.Size;
+import org.hibernate.engine.spi.Mapping;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.type.ForeignKeyDirection;
+import org.hibernate.type.Type;
 
+import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Map;
 
 /**
  * Maps an {@link Character} to a nullable CHAR column type.

@@ -1,8 +1,5 @@
 package com.vladmihalcea.hibernate.type.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -15,58 +12,144 @@ import java.lang.reflect.Method;
  */
 public final class ReflectionUtils {
 
-    public static final String GETTER_PREFIX = "get";
-    public static final String SETTER_PREFIX = "set";
-    private static final Logger LOGGER = LoggerFactory.getLogger(ReflectionUtils.class);
+    private static final String GETTER_PREFIX = "get";
 
+    private static final String SETTER_PREFIX = "set";
+
+    /**
+     * Prevent any instantiation.
+     */
     private ReflectionUtils() {
-        throw new UnsupportedOperationException("ReflectionUtils is not instantiable!");
+        throw new UnsupportedOperationException("The " + getClass() + " is not instantiable!");
     }
 
     /**
-     * Instantiate object
+     * Instantiate a new {@link Object} of the provided type.
      *
-     * @param className Class for object to instantiate
-     * @param <T> field type
-     * @return field value
+     * @param className The fully-qualified Java class name of the {@link Object} to instantiate
+     * @param <T>       class type
+     * @return new Java {@link Object} of the provided type
      */
     public static <T> T newInstance(String className) {
         try {
             Class clazz = Class.forName(className);
-            return (T) clazz.newInstance();
+            return newInstance(clazz);
         } catch (ClassNotFoundException e) {
-            throw handleException(className, e);
-        } catch (InstantiationException e) {
-            throw handleException(className, e);
-        } catch (IllegalAccessException e) {
-            throw handleException(className, e);
+            throw handleException(e);
         }
     }
 
     /**
-     * Get target object field value
+     * Instantiate a new {@link Object} of the provided type.
      *
-     * @param target    target object
+     * @param clazz The Java {@link Class} of the {@link Object} to instantiate
+     * @param <T>   class type
+     * @return new Java {@link Object} of the provided type
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T newInstance(Class clazz) {
+        try {
+            return (T) clazz.newInstance();
+        } catch (InstantiationException e) {
+            throw handleException(e);
+        } catch (IllegalAccessException e) {
+            throw handleException(e);
+        }
+    }
+
+    /**
+     * Get the {@link Field} with the given name belonging to the provided Java {@link Class}.
+     *
+     * @param targetClass the provided Java {@link Class} the field belongs to
+     * @param fieldName   the {@link Field} name
+     * @return the {@link Field} matching the given name
+     */
+    public static Field getField(Class targetClass, String fieldName) {
+        Field field = null;
+
+        try {
+            field = targetClass.getDeclaredField(fieldName);
+        } catch (NoSuchFieldException e) {
+            try {
+                field = targetClass.getField(fieldName);
+            } catch (NoSuchFieldException ignore) {
+            }
+
+            if (!targetClass.getSuperclass().equals(Object.class)) {
+                return getField(targetClass.getSuperclass(), fieldName);
+            } else {
+                throw handleException(e);
+            }
+        } finally {
+            if (field != null) {
+                field.setAccessible(true);
+            }
+        }
+
+        return field;
+    }
+
+    /**
+     * Get the {@link Field} with the given name belonging to the provided Java {@link Class} or {@code null}
+     * if no {@link Field} was found.
+     *
+     * @param targetClass the provided Java {@link Class} the field belongs to
+     * @param fieldName   the {@link Field} name
+     * @return the {@link Field} matching the given name or {@code null}
+     */
+    public static Field getFieldOrNull(Class targetClass, String fieldName) {
+        try {
+            Field field = targetClass.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            return field;
+        } catch (NoSuchFieldException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Get the value of the field matching the given name and belonging to target {@link Object}.
+     *
+     * @param target    target {@link Object} whose field we are retrieving the value from
      * @param fieldName field name
      * @param <T>       field type
      * @return field value
      */
     public static <T> T getFieldValue(Object target, String fieldName) {
         try {
-            Field field = target.getClass().getDeclaredField(fieldName);
+            Field field = getField(target.getClass(), fieldName);
             field.setAccessible(true);
             @SuppressWarnings("unchecked")
             T returnValue = (T) field.get(target);
             return returnValue;
-        } catch (NoSuchFieldException e) {
-            throw handleException(fieldName, e);
         } catch (IllegalAccessException e) {
-            throw handleException(fieldName, e);
+            throw handleException(e);
         }
     }
 
     /**
-     * Set target object field value
+     * Get the value of the field matching the given name and belonging to target {@link Object} or {@code null}
+     * if no {@link Field} was found..
+     *
+     * @param target    target {@link Object} whose field we are retrieving the value from
+     * @param fieldName field name
+     * @param <T>       field type
+     * @return field value matching the given name or {@code null}
+     */
+    public static <T> T getFieldValueOrNull(Object target, String fieldName) {
+        try {
+            Field field = getField(target.getClass(), fieldName);
+            field.setAccessible(true);
+            @SuppressWarnings("unchecked")
+            T returnValue = (T) field.get(target);
+            return returnValue;
+        } catch (IllegalAccessException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Set the value of the field matching the given name and belonging to target {@link Object}.
      *
      * @param target    target object
      * @param fieldName field name
@@ -78,24 +161,52 @@ public final class ReflectionUtils {
             field.setAccessible(true);
             field.set(target, value);
         } catch (NoSuchFieldException e) {
-            throw handleException(fieldName, e);
+            throw handleException(e);
         } catch (IllegalAccessException e) {
-            throw handleException(fieldName, e);
+            throw handleException(e);
         }
     }
 
     /**
-     * Get target method
+     * Get the {@link Method} with the given signature (name and parameter types) belonging to
+     * the provided Java {@link Object}.
      *
-     * @param target         target object
+     * @param target         target {@link Object}
      * @param methodName     method name
      * @param parameterTypes method parameter types
-     * @return return value
+     * @return return {@link Method} matching the provided signature
      */
     public static Method getMethod(Object target, String methodName, Class... parameterTypes) {
         return getMethod(target.getClass(), methodName, parameterTypes);
     }
 
+    /**
+     * Get the {@link Method} with the given signature (name and parameter types) belonging to
+     * the provided Java {@link Object} or {@code null} if no {@link Method} was found.
+     *
+     * @param target         target {@link Object}
+     * @param methodName     method name
+     * @param parameterTypes method parameter types
+     * @return return {@link Method} matching the provided signature or {@code null}
+     */
+    public static Method getMethodOrNull(Object target, String methodName, Class... parameterTypes) {
+        try {
+            return getMethod(target.getClass(), methodName, parameterTypes);
+        } catch (RuntimeException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Get the {@link Method} with the given signature (name and parameter types) belonging to
+     * the provided Java {@link Class}.
+     *
+     * @param targetClass    target {@link Class}
+     * @param methodName     method name
+     * @param parameterTypes method parameter types
+     * @return the {@link Method} matching the provided signature
+     */
+    @SuppressWarnings("unchecked")
     public static Method getMethod(Class targetClass, String methodName, Class... parameterTypes) {
         try {
             return targetClass.getDeclaredMethod(methodName, parameterTypes);
@@ -105,22 +216,22 @@ public final class ReflectionUtils {
             } catch (NoSuchMethodException ignore) {
             }
 
-            if(!targetClass.getSuperclass().equals(Object.class)) {
+            if (!targetClass.getSuperclass().equals(Object.class)) {
                 return getMethod(targetClass.getSuperclass(), methodName, parameterTypes);
-            }
-            else {
-                throw handleException(methodName, e);
+            } else {
+                throw handleException(e);
             }
         }
     }
 
     /**
-     * Check if target class has the given method
+     * Check if the provided Java {@link Class} contains a method matching
+     * the given signature (name and parameter types).
      *
-     * @param targetClass    target class
+     * @param targetClass    target {@link Class}
      * @param methodName     method name
      * @param parameterTypes method parameter types
-     * @return method availability
+     * @return the provided Java {@link Class} contains a method with the given signature
      */
     public static boolean hasMethod(Class<?> targetClass, String methodName, Class... parameterTypes) {
         try {
@@ -132,162 +243,198 @@ public final class ReflectionUtils {
     }
 
     /**
-     * Get setter method
+     * Get the property setter {@link Method} with the given signature (name and parameter types)
+     * belonging to the provided Java {@link Object}.
      *
-     * @param target        target object
-     * @param property      property
-     * @param parameterType setter parameter type
-     * @return setter method
+     * @param target        target {@link Object}
+     * @param propertyName  property name
+     * @param parameterType setter property type
+     * @return the setter {@link Method} matching the provided signature
      */
-    public static Method getSetter(Object target, String property, Class<?> parameterType) {
-        String setterMethodName = SETTER_PREFIX + property.substring(0, 1).toUpperCase() + property.substring(1);
+    public static Method getSetter(Object target, String propertyName, Class<?> parameterType) {
+        String setterMethodName = SETTER_PREFIX + propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
         Method setter = getMethod(target, setterMethodName, parameterType);
         setter.setAccessible(true);
         return setter;
     }
 
     /**
-     * Get getter method
+     * Get the property getter {@link Method} with the given name belonging to
+     * the provided Java {@link Object}.
      *
-     * @param target   target object
-     * @param property property
-     * @return setter method
+     * @param target       target {@link Object}
+     * @param propertyName property name
+     * @return the getter {@link Method} matching the provided name
      */
-    public static Method getGetter(Object target, String property) {
-        String getterMethodName = GETTER_PREFIX + property.substring(0, 1).toUpperCase() + property.substring(1);
+    public static Method getGetter(Object target, String propertyName) {
+        String getterMethodName = GETTER_PREFIX + propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
         Method getter = getMethod(target, getterMethodName);
         getter.setAccessible(true);
         return getter;
     }
 
     /**
-     * Invoke target method
+     * Invoke the provided {@link Method} on the given Java {@link Object}.
      *
-     * @param target target object whose method we are invoking
-     * @param method method to invoke
-     * @param parameters method parameters
-     * @param <T> return value object type
-     * @return return value
+     * @param target     target {@link Object} whose method we are invoking
+     * @param method     method to invoke
+     * @param parameters parameters passed to the method call
+     * @param <T>        return value object type
+     * @return the value return by the {@link Method} invocation
      */
-    public static <T> T invoke(Object target, Method method, Object... parameters) {
+    public static <T> T invokeMethod(Object target, Method method, Object... parameters) {
         try {
             method.setAccessible(true);
             @SuppressWarnings("unchecked")
             T returnValue = (T) method.invoke(target, parameters);
             return returnValue;
         } catch (InvocationTargetException e) {
-            throw handleException(method.getName(), e);
+            throw handleException(e);
         } catch (IllegalAccessException e) {
-            throw handleException(method.getName(), e);
+            throw handleException(e);
         }
     }
 
     /**
-     * Invoke getter method with the given parameter
+     * Invoke the method with the provided signature (name and parameter types)
+     * on the given Java {@link Object}.
      *
-     * @param target   target object
-     * @param property property
-     * @param <T> return value object type
-     * @return return value
+     * @param target     target {@link Object} whose method we are invoking
+     * @param methodName method name to invoke
+     * @param parameters parameters passed to the method call
+     * @param <T>        return value object type
+     * @return the value return by the method invocation
      */
-    public static <T> T invokeGetter(Object target, String property) {
-        Method setter = getGetter(target, property);
+    public static <T> T invokeMethod(Object target, String methodName, Object... parameters) {
+        try {
+            Class[] parameterClasses = new Class[parameters.length];
+
+            for (int i = 0; i < parameters.length; i++) {
+                parameterClasses[i] = parameters[i].getClass();
+            }
+
+            Method method = getMethod(target, methodName, parameterClasses);
+            method.setAccessible(true);
+            @SuppressWarnings("unchecked")
+            T returnValue = (T) method.invoke(target, parameters);
+            return returnValue;
+        } catch (InvocationTargetException e) {
+            throw handleException(e);
+        } catch (IllegalAccessException e) {
+            throw handleException(e);
+        }
+    }
+
+    /**
+     * Invoke the property getter with the provided name on the given Java {@link Object}.
+     *
+     * @param target       target {@link Object} whose property getter we are invoking
+     * @param propertyName property name whose getter we are invoking
+     * @param <T>          return value object type
+     * @return the value return by the getter invocation
+     */
+    public static <T> T invokeGetter(Object target, String propertyName) {
+        Method setter = getGetter(target, propertyName);
         try {
             return (T) setter.invoke(target);
         } catch (IllegalAccessException e) {
-            throw handleException(setter.getName(), e);
+            throw handleException(e);
         } catch (InvocationTargetException e) {
-            throw handleException(setter.getName(), e);
+            throw handleException(e);
         }
     }
 
     /**
-     * Invoke setter method with the given parameter
+     * Invoke the property setter with the provided signature (name and parameter types)
+     * on the given Java {@link Object}.
      *
-     * @param target    target object
-     * @param property  property
-     * @param parameter setter parameter
+     * @param target       target {@link Object} whose property setter we are invoking
+     * @param propertyName property name whose setter we are invoking
+     * @param parameter    parameter passed to the setter call
      */
-    public static void invokeSetter(Object target, String property, Object parameter) {
-        Method setter = getSetter(target, property, parameter.getClass());
+    public static void invokeSetter(Object target, String propertyName, Object parameter) {
+        Method setter = getSetter(target, propertyName, parameter.getClass());
         try {
             setter.invoke(target, parameter);
         } catch (IllegalAccessException e) {
-            throw handleException(setter.getName(), e);
+            throw handleException(e);
         } catch (InvocationTargetException e) {
-            throw handleException(setter.getName(), e);
+            throw handleException(e);
         }
     }
 
     /**
-     * Invoke setter method with the given parameter
+     * Invoke the {@link boolean} property setter with the provided name
+     * on the given Java {@link Object}.
      *
-     * @param target    target object
-     * @param property  property
-     * @param parameter setter parameter
+     * @param target       target {@link Object} whose property setter we are invoking
+     * @param propertyName property name whose setter we are invoking
+     * @param parameter    {@link boolean} parameter passed to the setter call
      */
-    public static void invokeSetter(Object target, String property, boolean parameter) {
-        Method setter = getSetter(target, property, boolean.class);
+    public static void invokeSetter(Object target, String propertyName, boolean parameter) {
+        Method setter = getSetter(target, propertyName, boolean.class);
         try {
             setter.invoke(target, parameter);
         } catch (IllegalAccessException e) {
-            throw handleException(setter.getName(), e);
+            throw handleException(e);
         } catch (InvocationTargetException e) {
-            throw handleException(setter.getName(), e);
+            throw handleException(e);
         }
     }
 
     /**
-     * Invoke setter method with the given parameter
+     * Invoke the {@link int} property setter with the provided name
+     * on the given Java {@link Object}.
      *
-     * @param target    target object
-     * @param property  property
-     * @param parameter setter parameter
+     * @param target       target {@link Object} whose property setter we are invoking
+     * @param propertyName property name whose setter we are invoking
+     * @param parameter    {@link int} parameter passed to the setter call
      */
-    public static void invokeSetter(Object target, String property, int parameter) {
-        Method setter = getSetter(target, property, int.class);
+    public static void invokeSetter(Object target, String propertyName, int parameter) {
+        Method setter = getSetter(target, propertyName, int.class);
         try {
             setter.invoke(target, parameter);
         } catch (IllegalAccessException e) {
-            throw handleException(setter.getName(), e);
+            throw handleException(e);
         } catch (InvocationTargetException e) {
-            throw handleException(setter.getName(), e);
+            throw handleException(e);
         }
     }
 
     /**
-     * Invoke static Class method
+     * Invoke the {@code static} {@link Method} with the provided parameters.
      *
-     * @param method method to invoke
-     * @param parameters method parameters
-     * @param <T> return value object type
-     * @return return value
+     * @param method     target {@code static} {@link Method} to invoke
+     * @param parameters parameters passed to the method call
+     * @param <T>        return value object type
+     * @return the value return by the method invocation
      */
-    public static <T> T invokeStatic(Method method, Object... parameters) {
+    public static <T> T invokeStaticMethod(Method method, Object... parameters) {
         try {
             method.setAccessible(true);
             @SuppressWarnings("unchecked")
             T returnValue = (T) method.invoke(null, parameters);
             return returnValue;
         } catch (InvocationTargetException e) {
-            throw handleException(method.getName(), e);
+            throw handleException(e);
         } catch (IllegalAccessException e) {
-            throw handleException(method.getName(), e);
+            throw handleException(e);
         }
     }
 
     /**
-     * Invoke setter method with the given parameter
+     * Get the Java {@link Class} with the given fully-qualified name.
      *
-     * @param className class name to be retrieved
-     * @param <T> return value object type
-     * @return Java {@link Class} object instance
+     * @param className the Java {@link Class} name to be retrieved
+     * @param <T>       {@link Class} type
+     * @return the Java {@link Class} object
      */
+    @SuppressWarnings("unchecked")
     public static <T> Class<T> getClass(String className) {
         try {
             return (Class<T>) Class.forName(className);
         } catch (ClassNotFoundException e) {
-            throw handleException(className, e);
+            throw handleException(e);
         }
     }
 
@@ -309,74 +456,113 @@ public final class ReflectionUtils {
     }
 
     /**
-     * Handle {@link NoSuchFieldException} by logging it and rethrown it as a {@link IllegalArgumentException}
+     * Get the Java Wrapper {@link Class} associated to the given primitive type.
      *
-     * @param fieldName field name
-     * @param e         exception
-     * @return wrapped exception
+     * @param clazz primitive class
+     * @return the Java Wrapper {@link Class}
      */
-    private static IllegalArgumentException handleException(String fieldName, NoSuchFieldException e) {
-        LOGGER.error("Couldn't find field " + fieldName, e);
+    public static Class<?> getWrapperClass(Class<?> clazz) {
+        if (!clazz.isPrimitive())
+            return clazz;
+
+        if (clazz == Integer.TYPE)
+            return Integer.class;
+        if (clazz == Long.TYPE)
+            return Long.class;
+        if (clazz == Boolean.TYPE)
+            return Boolean.class;
+        if (clazz == Byte.TYPE)
+            return Byte.class;
+        if (clazz == Character.TYPE)
+            return Character.class;
+        if (clazz == Float.TYPE)
+            return Float.class;
+        if (clazz == Double.TYPE)
+            return Double.class;
+        if (clazz == Short.TYPE)
+            return Short.class;
+        if (clazz == Void.TYPE)
+            return Void.class;
+
+        return clazz;
+    }
+
+    /**
+     * Get the first super class matching the provided package name.
+     *
+     * @param clazz       Java class
+     * @param packageName package name
+     * @param <T>         class generic type
+     * @return the first super class matching the provided package name or {@code null}.
+     */
+    public static <T> Class<T> getFirstSuperClassFromPackage(Class clazz, String packageName) {
+        if (clazz.getPackage().getName().equals(packageName)) {
+            return clazz;
+        } else {
+            Class superClass = clazz.getSuperclass();
+            return (superClass == null || superClass.equals(Object.class)) ?
+                    null :
+                    (Class<T>) getFirstSuperClassFromPackage(superClass, packageName);
+        }
+    }
+
+    /**
+     * Handle the {@link NoSuchFieldException} by rethrowing it as an {@link IllegalArgumentException}.
+     *
+     * @param e the original {@link NoSuchFieldException}
+     * @return the {@link IllegalArgumentException} wrapping exception
+     */
+    private static IllegalArgumentException handleException(NoSuchFieldException e) {
         return new IllegalArgumentException(e);
     }
 
     /**
-     * Handle {@link NoSuchMethodException} by logging it and rethrown it as a {@link IllegalArgumentException}
+     * Handle the {@link NoSuchMethodException} by rethrowing it as an {@link IllegalArgumentException}.
      *
-     * @param methodName method name
-     * @param e          exception
-     * @return wrapped exception
+     * @param e the original {@link NoSuchMethodException}
+     * @return the {@link IllegalArgumentException} wrapping exception
      */
-    private static IllegalArgumentException handleException(String methodName, NoSuchMethodException e) {
-        LOGGER.error("Couldn't find method " + methodName, e);
+    private static IllegalArgumentException handleException(NoSuchMethodException e) {
         return new IllegalArgumentException(e);
     }
 
     /**
-     * Handle {@link IllegalAccessException} by logging it and rethrown it as a {@link IllegalArgumentException}
+     * Handle the {@link IllegalAccessException} by rethrowing it as an {@link IllegalArgumentException}.
      *
-     * @param memberName member name
-     * @param e          exception
-     * @return wrapped exception
+     * @param e the original {@link IllegalAccessException}
+     * @return the {@link IllegalArgumentException} wrapping exception
      */
-    private static IllegalArgumentException handleException(String memberName, IllegalAccessException e) {
-        LOGGER.error("Couldn't access member " + memberName, e);
+    private static IllegalArgumentException handleException(IllegalAccessException e) {
         return new IllegalArgumentException(e);
     }
 
     /**
-     * Handle {@link InvocationTargetException} by logging it and rethrown it as a {@link IllegalArgumentException}
+     * Handle the {@link InvocationTargetException} by rethrowing it as an {@link IllegalArgumentException}.
      *
-     * @param methodName method name
-     * @param e          exception
-     * @return wrapped exception
+     * @param e the original {@link InvocationTargetException}
+     * @return the {@link IllegalArgumentException} wrapping exception
      */
-    private static IllegalArgumentException handleException(String methodName, InvocationTargetException e) {
-        LOGGER.error("Couldn't invoke method " + methodName, e);
+    private static IllegalArgumentException handleException(InvocationTargetException e) {
         return new IllegalArgumentException(e);
     }
 
     /**
-     * Handle {@link ClassNotFoundException} by logging it and rethrown it as a {@link IllegalArgumentException}
+     * Handle the {@link ClassNotFoundException} by rethrowing it as an {@link IllegalArgumentException}.
      *
-     * @param className class name
-     * @param e         exception
-     * @return wrapped exception
+     * @param e the original {@link ClassNotFoundException}
+     * @return the {@link IllegalArgumentException} wrapping exception
      */
-    private static IllegalArgumentException handleException(String className, ClassNotFoundException e) {
-        LOGGER.error("Couldn't find class " + className, e);
+    private static IllegalArgumentException handleException(ClassNotFoundException e) {
         return new IllegalArgumentException(e);
     }
 
     /**
-     * Handle {@link InstantiationException} by logging it and rethrown it as a {@link IllegalArgumentException}
+     * Handle the {@link InstantiationException} by rethrowing it as an {@link IllegalArgumentException}.
      *
-     * @param className class name
-     * @param e         exception
-     * @return wrapped exception
+     * @param e the original {@link InstantiationException}
+     * @return the {@link IllegalArgumentException} wrapping exception
      */
-    private static IllegalArgumentException handleException(String className, InstantiationException e) {
-        LOGGER.error("Couldn't instantiate class " + className, e);
+    private static IllegalArgumentException handleException(InstantiationException e) {
         return new IllegalArgumentException(e);
     }
 }
