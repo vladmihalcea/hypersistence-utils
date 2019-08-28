@@ -12,10 +12,12 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
 /**
- * Maps an {@link Duration} object type to a PostgreSQL Interval column type.
+ * Maps a Java {@link Duration} object to a PostgreSQL Interval column type.
  * <p>
+ * For more details about how to use it, check out <a href="https://vladmihalcea.com/map-postgresql-interval-java-duration-hibernate/">this article</a> on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
  *
  * @author Jan-Willem Gmelig Meyling
+ * @author Vlad Mihalcea
  * @since 2.5.1
  */
 public class PostgreSQLIntervalType extends ImmutableType<Duration> {
