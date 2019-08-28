@@ -1,0 +1,52 @@
+package com.vladmihalcea.hibernate.type.basic;
+
+import com.vladmihalcea.hibernate.type.ImmutableType;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
+
+/**
+ * Maps a {@link String} object to an SQL <code>VARCHAR</code> or <code>LONGVARCHAR</code> value,
+ * avoiding two possible values for “no data” by replacing blank lines with NULLs.
+ * Usually string-based fields have two possible values for “no data”: NULL, and the empty (blank) string.
+ * In most cases, it’s redundant and can lead to mistakes.
+ *
+ * @author Andrei Akinchev
+ */
+public class NonBlankStringType extends ImmutableType<String> {
+
+    public static final NonBlankStringType INSTANCE = new NonBlankStringType();
+
+    public NonBlankStringType() {
+        super(String.class);
+    }
+
+    @Override
+    public int[] sqlTypes() {
+        return new int[]{Types.OTHER};
+    }
+
+    @Override
+    protected String get(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner) throws SQLException {
+        String value = rs.getString(names[0]);
+        if (value == null) {
+            return null;
+        }
+        if (value.trim().isEmpty()) {
+            return null;
+        }
+        return value;
+    }
+
+    @Override
+    protected void set(PreparedStatement st, String value, int index, SharedSessionContractImplementor session) throws SQLException {
+        if (value == null || value.trim().isEmpty()) {
+            st.setNull(index, Types.OTHER);
+        } else {
+            st.setString(index, value);
+        }
+    }
+}
