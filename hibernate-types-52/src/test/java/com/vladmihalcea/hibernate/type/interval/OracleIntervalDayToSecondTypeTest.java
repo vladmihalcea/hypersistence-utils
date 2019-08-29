@@ -1,9 +1,10 @@
 package com.vladmihalcea.hibernate.type.interval;
 
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
-import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
+import com.vladmihalcea.hibernate.type.util.AbstractOracleIntegrationTest;
+import com.vladmihalcea.hibernate.type.util.ReflectionUtils;
 import org.hibernate.annotations.TypeDef;
-import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.persistence.Column;
@@ -13,11 +14,11 @@ import java.time.Duration;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Tests for {@see PostgreSQLIntervalType} Hibernate type.
+ * Tests for {@see OracleIntervalDayToSecondType} Hibernate type.
  *
- * @author Jan-Willem Gmelig Meyling
+ * @author Vlad Mihalcea
  */
-public class PostgreSQLIntervalTypeTest extends AbstractPostgreSQLIntegrationTest {
+public class OracleIntervalDayToSecondTypeTest extends AbstractOracleIntegrationTest {
 
     @Override
     protected Class<?>[] entities() {
@@ -26,6 +27,10 @@ public class PostgreSQLIntervalTypeTest extends AbstractPostgreSQLIntegrationTes
 
     @Test
     public void test() {
+        if(!isOracle()) {
+            return;
+        }
+
         Duration duration = Duration.ofDays(1).plusHours(2).plusMinutes(3).plusSeconds(4);
 
         doInJPA(entityManager -> {
@@ -43,10 +48,10 @@ public class PostgreSQLIntervalTypeTest extends AbstractPostgreSQLIntegrationTes
     }
 
     @Entity(name = "WorkShift")
-    @TypeDef(typeClass = PostgreSQLIntervalType.class, defaultForType = Duration.class)
+    @TypeDef(typeClass = OracleIntervalDayToSecondType.class, defaultForType = Duration.class)
     public static class WorkShift extends BaseEntity {
 
-        @Column(columnDefinition = "interval")
+        @Column(columnDefinition = "INTERVAL DAY TO SECOND")
         private Duration duration;
 
         public Duration getDuration() {

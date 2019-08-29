@@ -39,12 +39,12 @@ public class PostgreSQLIntervalType extends ImmutableType<Duration> {
         final int days = interval.getDays();
         final int hours = interval.getHours();
         final int minutes = interval.getMinutes();
-        final double secs = interval.getSeconds();
+        final double seconds = interval.getSeconds();
 
         return Duration.ofDays(days)
                 .plus(hours, ChronoUnit.HOURS)
                 .plus(minutes, ChronoUnit.MINUTES)
-                .plus((long) Math.floor(secs), ChronoUnit.SECONDS);
+                .plus((long) Math.floor(seconds), ChronoUnit.SECONDS);
     }
 
     @Override
@@ -55,8 +55,8 @@ public class PostgreSQLIntervalType extends ImmutableType<Duration> {
             final int days = (int) value.toDays();
             final int hours = (int) (value.toHours() % 24);
             final int minutes = (int) (value.toMinutes() % 60);
-            final double secs = value.getSeconds() % 60;
-            st.setObject(index, new PGInterval(0, 0, days, hours, minutes, secs));
+            final double seconds = value.getSeconds() % 60;
+            st.setObject(index, new PGInterval(0, 0, days, hours, minutes, seconds));
         }
     }
 
