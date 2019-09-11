@@ -3,6 +3,8 @@ Version 2.7.0 - IN PROGRESS
 
 Add support for JSON column values for Oracle #131
 
+Add YearMonthTimestampType #127
+
 Ability to use PostgreSQLEnumType and EnumArrayType with TypedParameterValue #125
 
 Version 2.6.1 - August 29, 2019
