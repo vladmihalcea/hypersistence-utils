@@ -4,6 +4,9 @@ import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
 import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.hibernate.jpa.TypedParameterValue;
+import org.hibernate.type.CustomType;
+import org.junit.Before;
 import org.junit.Test;
 
 import javax.persistence.*;
@@ -11,7 +14,6 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -20,6 +22,8 @@ import static org.junit.Assert.fail;
  * @author Vlad Mihalcea
  */
 public class PostgreSQLEnumTest extends AbstractPostgreSQLIntegrationTest {
+
+    public static final CustomType POST_STATUS_TYPE = new CustomType(PostgreSQLEnumType.INSTANCE);
 
     @Override
     protected Class<?>[] entities() {
@@ -69,8 +73,8 @@ public class PostgreSQLEnumTest extends AbstractPostgreSQLIntegrationTest {
         super.init();
     }
 
-    @Test
-    public void test() {
+    @Before
+    public void setUp() {
         doInJPA(new JPATransactionFunction<Void>() {
 
             @Override
@@ -84,7 +88,10 @@ public class PostgreSQLEnumTest extends AbstractPostgreSQLIntegrationTest {
                 return null;
             }
         });
+    }
 
+    @Test
+    public void test() {
         doInJPA(new JPATransactionFunction<Void>() {
 
             @Override
@@ -92,6 +99,20 @@ public class PostgreSQLEnumTest extends AbstractPostgreSQLIntegrationTest {
                 Post post = entityManager.find(Post.class, 1L);
                 assertEquals(PostStatus.PENDING, post.getStatus());
 
+                return null;
+            }
+        });
+    }
+
+    @Test
+    public void testTypedParameterValue() {
+        doInJPA(new JPATransactionFunction<Void>() {
+
+            @Override
+            public Void apply(EntityManager entityManager) {
+                entityManager.createQuery("SELECT a FROM Post a WHERE a.status = :paramValue", Post.class)
+                        .setParameter("paramValue", new TypedParameterValue(POST_STATUS_TYPE, PostStatus.APPROVED))
+                        .getResultList();
                 return null;
             }
         });

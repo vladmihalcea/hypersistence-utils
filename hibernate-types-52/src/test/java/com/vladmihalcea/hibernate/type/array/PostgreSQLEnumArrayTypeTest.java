@@ -4,7 +4,8 @@ import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
-import org.junit.Assert;
+import org.hibernate.jpa.TypedParameterValue;
+import org.hibernate.query.Query;
 import org.junit.Before;
 import org.junit.Test;
 import javax.persistence.*;
@@ -20,6 +21,8 @@ import static org.junit.Assert.fail;
  * @author Nikita Konev
  */
 public class PostgreSQLEnumArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
+
+    public static final EnumArrayType ROLE_TYPE = new EnumArrayType(UserRole.class, "user_role");
 
     @Override
     protected Class<?>[] entities() {
@@ -63,6 +66,53 @@ public class PostgreSQLEnumArrayTypeTest extends AbstractPostgreSQLIntegrationTe
             .getSingleResult();
 
             assertArrayEquals(userRoles, singleResult.getRoles());
+        });
+    }
+
+    @Test
+    public void testSetParameterWithType() {
+        UserRole[] userRoles = {UserRole.ROLE_ADMIN, UserRole.ROLE_USER};
+        UserRole[] requiredRoles = {UserRole.ROLE_USER};
+
+        doInJPA(entityManager -> {
+            UserAccount account = new UserAccount();
+            account.setUsername("vladmihalcea.com");
+            account.setRoles(userRoles);
+            entityManager.persist(account);
+        });
+
+        doInJPA(entityManager -> {
+            entityManager
+            .createQuery(
+                "select ua " +
+                "from UserAccountEntity ua " +
+                "where ua.roles = :roles", UserAccount.class)
+            .unwrap(Query.class)
+            .setParameter("roles", requiredRoles, new EnumArrayType(UserRole.class, "user_role"))
+            .getResultList();
+        });
+    }
+
+    @Test
+    public void testTypedParameterValue() {
+        UserRole[] userRoles = {UserRole.ROLE_ADMIN, UserRole.ROLE_USER};
+        UserRole[] requiredRoles = {UserRole.ROLE_USER};
+
+        doInJPA(entityManager -> {
+            UserAccount account = new UserAccount();
+            account.setUsername("vladmihalcea.com");
+            account.setRoles(userRoles);
+            entityManager.persist(account);
+        });
+
+        doInJPA(entityManager -> {
+            entityManager
+            .createQuery(
+                "select ua " +
+                "from UserAccountEntity ua " +
+                "where ua.roles = :roles", UserAccount.class)
+            .setParameter("roles", new TypedParameterValue(ROLE_TYPE, requiredRoles))
+            .getResultList();
         });
     }
 
