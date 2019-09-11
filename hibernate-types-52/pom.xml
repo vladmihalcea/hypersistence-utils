@@ -41,6 +41,14 @@
         </dependency>
 
         <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-ehcache</artifactId>
             <version>${hibernate.version}</version>
@@ -69,6 +77,7 @@
 
         <mysql.version>8.0.13</mysql.version>
         <jackson.version>2.9.9.2</jackson.version>
+        <guava.version>27.1-jre</guava.version>
 
         <jdk.version>8</jdk.version>
         <jdk>${env.JAVA_HOME_8}</jdk>
