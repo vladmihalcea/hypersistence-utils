@@ -1,7 +1,9 @@
-Version 2.7.0 - IN PROGRESS
+Version 2.7.0 - September 14, 2019
 ================================================================================
 
 Add support for JSON column values for Oracle #131
+
+Add support for mapping a Guava Range object to a PostgreSQL range type #129
 
 Add support for mapping the Java Period object to a PostgreSQL interval type #128
 
@@ -79,7 +81,7 @@ Version 2.4.0 - January 02, 2019
 
 Add support for the PostgreSQL hstore type #44
 
-Add support for PostgeSQL range type. #63
+Add support for PostgreSQL range type #63
 
 Version 2.3.5 - December 03, 2018
 ================================================================================
