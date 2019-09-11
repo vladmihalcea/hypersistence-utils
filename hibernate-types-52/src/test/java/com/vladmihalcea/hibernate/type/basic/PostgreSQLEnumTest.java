@@ -3,6 +3,9 @@ package com.vladmihalcea.hibernate.type.basic;
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.hibernate.jpa.TypedParameterValue;
+import org.hibernate.type.CustomType;
+import org.junit.Before;
 import org.junit.Test;
 
 import javax.persistence.*;
@@ -18,6 +21,8 @@ import static org.junit.Assert.fail;
  * @author Vlad Mihalcea
  */
 public class PostgreSQLEnumTest extends AbstractPostgreSQLIntegrationTest {
+
+    public static final CustomType POST_STATUS_TYPE = new CustomType(new PostgreSQLEnumType(PostStatus.class));
 
     @Override
     protected Class<?>[] entities() {
@@ -46,8 +51,8 @@ public class PostgreSQLEnumTest extends AbstractPostgreSQLIntegrationTest {
         super.init();
     }
 
-    @Test
-    public void test() {
+    @Before
+    public void setUp() {
         doInJPA(entityManager -> {
             Post post = new Post();
             post.setId(1L);
@@ -55,10 +60,22 @@ public class PostgreSQLEnumTest extends AbstractPostgreSQLIntegrationTest {
             post.setStatus(PostStatus.PENDING);
             entityManager.persist(post);
         });
+    }
 
+    @Test
+    public void test() {
         doInJPA(entityManager -> {
             Post post = entityManager.find(Post.class, 1L);
             assertEquals(PostStatus.PENDING, post.getStatus());
+        });
+    }
+
+    @Test
+    public void testTypedParameterValue() {
+        doInJPA(entityManager -> {
+            entityManager.createQuery("SELECT a FROM Post a WHERE a.status = :paramValue", Post.class)
+                   .setParameter("paramValue", new TypedParameterValue(POST_STATUS_TYPE, PostStatus.APPROVED))
+                   .getResultList();
         });
     }
 

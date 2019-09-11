@@ -5,6 +5,7 @@ import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
+import org.hibernate.jpa.TypedParameterValue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,6 +22,8 @@ import static org.junit.Assert.fail;
  * @author Nikita Konev
  */
 public class PostgreSQLEnumArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
+
+    public static final EnumArrayType ROLE_TYPE = new EnumArrayType(UserRole.class, "user_role");
 
     @Override
     protected Class<?>[] entities() {
@@ -86,6 +89,37 @@ public class PostgreSQLEnumArrayTypeTest extends AbstractPostgreSQLIntegrationTe
                 .getSingleResult();
 
                 assertArrayEquals(userRoles, singleResult.getRoles());
+                return null;
+            }
+        });
+    }
+
+    @Test
+    public void testTypedParameterValue() {
+        final UserRole[] userRoles = {UserRole.ROLE_ADMIN, UserRole.ROLE_USER};
+        final UserRole[] requiredRoles = {UserRole.ROLE_USER};
+
+        doInJPA(new JPATransactionFunction<Void>() {
+            @Override
+            public Void apply(EntityManager entityManager) {
+                UserAccount account = new UserAccount();
+                account.setUsername("vladmihalcea.com");
+                account.setRoles(userRoles);
+                entityManager.persist(account);
+                return null;
+            }
+        });
+
+        doInJPA(new JPATransactionFunction<Void>() {
+            @Override
+            public Void apply(EntityManager entityManager) {
+                entityManager
+                        .createQuery(
+                                "select ua " +
+                                        "from UserAccountEntity ua " +
+                                        "where ua.roles = :roles", UserAccount.class)
+                        .setParameter("roles", new TypedParameterValue(ROLE_TYPE, requiredRoles))
+                        .getResultList();
                 return null;
             }
         });

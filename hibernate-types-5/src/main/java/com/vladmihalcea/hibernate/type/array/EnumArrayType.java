@@ -4,6 +4,7 @@ import com.vladmihalcea.hibernate.type.AbstractHibernateType;
 import com.vladmihalcea.hibernate.type.array.internal.ArraySqlTypeDescriptor;
 import com.vladmihalcea.hibernate.type.array.internal.EnumArrayTypeDescriptor;
 import com.vladmihalcea.hibernate.type.util.Configuration;
+import com.vladmihalcea.hibernate.type.util.ParameterizedParameterType;
 import org.hibernate.annotations.Type;
 import org.hibernate.usertype.DynamicParameterizedType;
 
@@ -41,6 +42,14 @@ public class EnumArrayType
             new EnumArrayTypeDescriptor(),
             configuration
         );
+    }
+
+    public EnumArrayType(Class<? extends Enum> enumClass, String sqlArrayType) {
+        this();
+        Properties parameters = new Properties();
+        parameters.setProperty(SQL_ARRAY_TYPE, sqlArrayType);
+        parameters.put(DynamicParameterizedType.PARAMETER_TYPE, new ParameterizedParameterType(enumClass));
+        setParameterValues(parameters);
     }
 
     public String getName() {
