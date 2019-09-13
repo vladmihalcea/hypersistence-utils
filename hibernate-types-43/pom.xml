@@ -47,12 +47,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>${postgresql.version}</version>
@@ -65,6 +59,7 @@
     <properties>
         <hibernate.version>4.3.11.Final</hibernate.version>
         <postgresql.version>9.4-1202-jdbc4</postgresql.version>
+
         <jackson.version>2.7.9.6</jackson.version>
     </properties>
 

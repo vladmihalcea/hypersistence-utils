@@ -80,8 +80,21 @@
         </dependency>
 
         <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>${mssql.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -129,6 +142,13 @@
                 <version>${mysql.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.microsoft.sqlserver</groupId>
+                <artifactId>mssql-jdbc</artifactId>
+                <version>${mssql.version}</version>
+                <scope>test</scope>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -161,7 +181,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
-                    <jvm>${jdk}/bin/java</jvm>
+                    <jvm>${jdk8}/bin/java</jvm>
                     <forkMode>always</forkMode>
                     <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
@@ -295,6 +315,7 @@
     <properties>
         <jdk.version>6</jdk.version>
         <jdk>${env.JAVA_HOME_6}</jdk>
+        <jdk8>${env.JAVA_HOME_8}</jdk8>
         <reuseForks>false</reuseForks>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -318,6 +339,7 @@
 
         <mysql.version>5.1.47</mysql.version>
         <oracle.version>12.2.0.1</oracle.version>
+        <mssql.version>6.4.0.jre8</mssql.version>
 
     </properties>
 
