@@ -1,3 +1,3 @@
 @echo off
 
-mvn -P oracle clean test
+mvn clean test

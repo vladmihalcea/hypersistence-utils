@@ -26,10 +26,6 @@ public class OracleJsonStringPropertyTest extends AbstractOracleIntegrationTest 
 
     @Test
     public void test() {
-        if(!isOracle()) {
-            return;
-        }
-
         doInJPA(new JPATransactionFunction<Void>() {
             @Override
             public Void apply(EntityManager entityManager) {

@@ -27,10 +27,6 @@ public class OracleIntervalDayToSecondTypeTest extends AbstractOracleIntegration
 
     @Test
     public void test() {
-        if(!isOracle()) {
-            return;
-        }
-
         Duration duration = Duration.ofDays(1).plusHours(2).plusMinutes(3).plusSeconds(4);
 
         doInJPA(entityManager -> {

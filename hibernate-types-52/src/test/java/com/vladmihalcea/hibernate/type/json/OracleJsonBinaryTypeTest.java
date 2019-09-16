@@ -50,10 +50,6 @@ public class OracleJsonBinaryTypeTest extends AbstractOracleIntegrationTest {
 
     @Test
     public void test() {
-        if(!isOracle()) {
-            return;
-        }
-
         final AtomicReference<Event> eventHolder = new AtomicReference<>();
         final AtomicReference<Participant> participantHolder = new AtomicReference<>();
 

@@ -26,10 +26,6 @@ public class OracleJsonStringPropertyTest extends AbstractOracleIntegrationTest 
 
     @Test
     public void test() {
-        if(!isOracle()) {
-            return;
-        }
-
         doInJPA(entityManager -> {
             entityManager.persist(
                 new Book()

@@ -15,21 +15,4 @@ public abstract class AbstractOracleIntegrationTest extends AbstractTest {
     protected DataSourceProvider dataSourceProvider() {
         return new OracleDataSourceProvider();
     }
-
-    public void init() {
-        if(isOracle()) {
-            super.init();
-        }
-    }
-
-    @After
-    public void destroy() {
-        if(isOracle()) {
-            super.destroy();
-        }
-    }
-
-    protected boolean isOracle() {
-        return ReflectionUtils.getClassOrNull("oracle.jdbc.pool.OracleDataSource") != null;
-    }
 }

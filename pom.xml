@@ -55,6 +55,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
@@ -62,6 +63,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
@@ -70,24 +72,35 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
+            <version>${hsqldb.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.oracle.ojdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
+            <version>${oracle.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -99,58 +112,6 @@
         </dependency>
 
     </dependencies>
-
-    <dependencyManagement>
-        <dependencies>
-            <!-- Required dependencies -->
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>${logback.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.hsqldb</groupId>
-                <artifactId>hsqldb</artifactId>
-                <version>${hsqldb.version}</version>
-            </dependency>
-
-            <!-- Test dependencies -->
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-core</artifactId>
-                <version>${mockito.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
-                <version>${mysql.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.microsoft.sqlserver</groupId>
-                <artifactId>mssql-jdbc</artifactId>
-                <version>${mssql.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-        </dependencies>
-    </dependencyManagement>
 
     <build>
         <defaultGoal>test</defaultGoal>
@@ -269,36 +230,6 @@
                 </plugins>
             </build>
         </profile>
-
-        <profile>
-            <id>oracle</id>
-            <activation>
-                <property>
-                    <name>ENABLE_ORACLE_REPOSITORY</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <repositories>
-                <repository>
-                    <id>maven.oracle.com</id>
-                    <releases>
-                        <enabled>true</enabled>
-                    </releases>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                    <url>https://maven.oracle.com</url>
-                    <layout>default</layout>
-                </repository>
-            </repositories>
-            <dependencies>
-                <dependency>
-                    <groupId>com.oracle.jdbc</groupId>
-                    <artifactId>ojdbc8</artifactId>
-                    <version>${oracle.version}</version>
-                </dependency>
-            </dependencies>
-        </profile>
     </profiles>
 
     <distributionManagement>
@@ -338,7 +269,7 @@
         <hsqldb.version>2.2.8</hsqldb.version>
 
         <mysql.version>5.1.47</mysql.version>
-        <oracle.version>12.2.0.1</oracle.version>
+        <oracle.version>19.3.0.0</oracle.version>
         <mssql.version>6.4.0.jre8</mssql.version>
 
     </properties>
