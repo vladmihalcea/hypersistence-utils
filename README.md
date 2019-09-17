@@ -18,6 +18,8 @@ You should use the `JsonStringType` to map a `VARCHAR2` column type storing JSON
 
 You should use the `JsonBlobType` to map a `BLOB` column type storing JSON.
 
+For more details, check out [this article](https://vladmihalcea.com/oracle-json-jpa-hibernate/).
+
 ##### SQL Server
 
 You should use this `JsonStringType` to map an `NVARCHAR` column type storing JSON.
@@ -26,16 +28,20 @@ You should use this `JsonStringType` to map an `NVARCHAR` column type storing JS
 
 You should use this `JsonBinaryType` to map both `jsonb` and `json` column types.
 
+For more details, check out [this article](https://vladmihalcea.com/how-to-map-json-objects-using-generic-hibernate-types/).
+
 ##### MySQL
 
 You should use this `JsonStringType` to map the `json` column type.
 
+For more details, check out [this article](https://vladmihalcea.com/how-to-map-json-objects-using-generic-hibernate-types/).
+
 ##### JSON mapping examples
 
+* [How to map Oracle JSON columns using JPA and Hibernate](https://vladmihalcea.com/oracle-json-jpa-hibernate/)
 * [How to map a Jackson `JsonNode` to a JSON column](https://vladmihalcea.com/how-to-store-schema-less-eav-entity-attribute-value-data-using-json-and-hibernate/)
 * [Java Object to String or Binary JSON column mapping](https://vladmihalcea.com/how-to-map-json-objects-using-generic-hibernate-types/)
 * [How to map JSON collections using JPA and Hibernate](https://vladmihalcea.com/how-to-map-json-collections-using-jpa-and-hibernate/)
-* [Java Collection to String or Binary JSON column mapping](https://vladmihalcea.com/how-to-map-json-collections-using-jpa-and-hibernate/)
 * [How to customize the Jackson ObjectMapper used by Hibernate-Types](https://vladmihalcea.com/hibernate-types-customize-jackson-objectmapper/)
 * [How to customize the JSON Serializer used by Hibernate-Types](https://vladmihalcea.com/how-to-customize-the-json-serializer-used-by-hibernate-types/)
 * [How to fix the Hibernate “No Dialect mapping for JDBC type: 1111” issue when mixing JSON types with native SQL queries](https://vladmihalcea.com/hibernate-no-dialect-mapping-for-jdbc-type/)
