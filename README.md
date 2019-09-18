@@ -149,6 +149,35 @@ Depending on the Hibernate version you are using, you need to following dependen
 * SLF4J
 * Jackson Databind
 
+### How to remove the Hypersistence Optimizer banner from the log?
+
+#### Why the Hypersistence Optimizer banner?
+
+Maintaining this project costs me money. Therefore, I basically have two options when it comes to maintaining it.
+
+1. I could just abandon it since it does not really bring me any revenue and focus all my time on my [blog](https://vladmihalcea.com/), [training](https://vladmihalcea.com/trainings/), [courses](https://courses.vladmihalcea.com/), [books](https://vladmihalcea.com/books/high-performance-java-persistence/), [consulting](https://vladmihalcea.com/consulting/) or developing {Hypersistence Optimizer](https://vladmihalcea.com/hypersistence-optimizer/).
+2. Or, I could keep on maintaining it at my own expense for the price of displaying a log-based banner during bootstrap.
+
+I believe the latter option is much better for the hundreds of thousands of users benefiting from this project.
+
+#### Adding Hypersistence Optimizer to your project
+
+Using Hibernate without [Hypersistence Optimizer](https://vladmihalcea.com/hypersistence-optimizer/) is highly discouraged, hence the reason for that banner. You can view it as a `WARN` log message that tells you are risking application performance issues if you don't make sure you use the right JPA mappings and Hibernate configuration properties.
+
+> If you want to see why it's a bad idea to use JPA and Hibernate without a tool that inspects your mappings and configurations, check out this [video presentation](https://www.youtube.com/watch?v=x1nOVct9P2g).
+
+So, the easiest way to have the banner removed is to add [Hypersistence Optimizer](https://vladmihalcea.com/hypersistence-optimizer/) to your project.
+
+### Setting the `hibernate.types.print.banner=false` configuration setting
+
+You can disable the banner by providing the `hibernate.types.print.banner=false` in either `hibernate.properties` or `hibernate-types.properties` file.
+
+> For Spring and Spring Boot, this [Pull Request](https://github.com/hibernate/hibernate-orm/pull/2649) is needed to be integrated into Hibernate ORM. 
+>
+> Once this Pull Request is integrated, you could pass the `hibernate.types.print.banner=false` configuration property from the `application.properties` file. 
+>
+> So, in the meanwhile, you could vote for the [HHH-13103 issue](https://hibernate.atlassian.net/browse/HHH-13103) and remind the Hibernate team that you really need that Pull Request to be integrated. Hopefully, it will be added to the project sooner than later.
+
 ## How to quickly start test environment
 ```bash
 cd docker
