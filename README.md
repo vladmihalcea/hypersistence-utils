@@ -178,20 +178,24 @@ You can disable the banner by providing the `hibernate.types.print.banner=false`
 >
 > So, in the meanwhile, you could vote for the [HHH-13103 issue](https://hibernate.atlassian.net/browse/HHH-13103) and remind the Hibernate team that you really need that Pull Request to be integrated. Hopefully, it will be added to the project sooner than later.
 
-## How to quickly start test environment
+## How to start the test environment
+
 ```bash
 cd docker
 docker-compose up -d
 ```
 
-## How to quickly access to database logs
+## How to stop the test environment
+
+```bash
+cd docker
+docker-compose down -v
+```
+
+## How to get access to database logs
+
 ```bash
 docker logs -f mysql-hibernate-types
 docker logs -f postgresql-hibernate-types
 ```
 
-## How to quickly terminate test environment
-```bash
-cd docker
-docker-compose down -v
-```
