@@ -4,6 +4,8 @@ import com.vladmihalcea.hibernate.type.util.ReflectionUtils;
 import org.hibernate.dialect.Oracle12cDialect;
 import org.hibernate.dialect.pagination.LimitHandler;
 import org.hibernate.dialect.pagination.SQL2008StandardLimitHandler;
+import org.hibernate.tool.schema.extract.internal.SequenceInformationExtractorNoOpImpl;
+import org.hibernate.tool.schema.extract.spi.SequenceInformationExtractor;
 
 import javax.sql.DataSource;
 import java.util.Properties;
@@ -75,7 +77,10 @@ public class OracleDataSourceProvider implements DataSourceProvider {
         public LimitHandler getLimitHandler() {
             return SQL2008StandardLimitHandler.INSTANCE;
         }
-    }
 
-    ;
+        @Override
+        public SequenceInformationExtractor getSequenceInformationExtractor() {
+            return SequenceInformationExtractorNoOpImpl.INSTANCE;
+        }
+    }
 }
