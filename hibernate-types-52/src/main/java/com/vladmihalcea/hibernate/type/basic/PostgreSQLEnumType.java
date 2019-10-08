@@ -73,6 +73,6 @@ public class PostgreSQLEnumType extends org.hibernate.type.EnumType {
             int index,
             SharedSessionContractImplementor session)
             throws HibernateException, SQLException {
-        st.setObject(index, value, Types.OTHER);
+        st.setObject(index, value != null ? ((Enum) value).name() : null, Types.OTHER);
     }
 }

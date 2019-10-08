@@ -121,7 +121,12 @@ public class PostgreSQLEnumTest extends AbstractPostgreSQLIntegrationTest {
     public enum PostStatus {
         PENDING,
         APPROVED,
-        SPAM
+        SPAM;
+
+        @Override
+        public String toString() {
+            return String.format("The %s enum is mapped to ordinal: %d", name(), ordinal());
+        }
     }
 
     @Entity(name = "Post")
