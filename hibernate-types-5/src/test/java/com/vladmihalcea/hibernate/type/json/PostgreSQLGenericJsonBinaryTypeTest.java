@@ -5,6 +5,7 @@ import com.vladmihalcea.hibernate.type.model.Location;
 import com.vladmihalcea.hibernate.type.model.Ticket;
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
 import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
+import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
 
@@ -49,6 +50,8 @@ public class PostgreSQLGenericJsonBinaryTypeTest extends AbstractPostgreSQLInteg
             return null;
             }
         });
+
+        QueryCountHolder.clear();
         doInJPA(new JPATransactionFunction<Void>() {
             @Override
             public Void apply(EntityManager entityManager) {
@@ -59,8 +62,9 @@ public class PostgreSQLGenericJsonBinaryTypeTest extends AbstractPostgreSQLInteg
             return null;
             }
         });
+        assertEquals(1, QueryCountHolder.getGrandTotal().getSelect());
+        assertEquals(0, QueryCountHolder.getGrandTotal().getUpdate());
     }
-
 
     @Entity(name = "Event")
     @Table(name = "event")

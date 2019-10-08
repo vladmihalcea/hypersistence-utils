@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import javax.persistence.*;
 import java.time.YearMonth;
+import java.util.TimeZone;
 
 import static org.junit.Assert.assertEquals;
 
@@ -21,6 +22,20 @@ public class MySQLYearMonthDateTest extends AbstractMySQLIntegrationTest {
         return new Class<?>[]{
                 Book.class
         };
+    }
+
+    private TimeZone defaultTimeZone;
+
+    @Override
+    protected void afterInit() {
+        defaultTimeZone = TimeZone.getDefault();
+        TimeZone.setDefault(TimeZone.getTimeZone("Europe/Athens"));
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        TimeZone.setDefault(defaultTimeZone);
     }
 
     @Test
