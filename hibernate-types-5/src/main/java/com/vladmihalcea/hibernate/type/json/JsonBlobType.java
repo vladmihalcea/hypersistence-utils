@@ -31,6 +31,13 @@ public class JsonBlobType extends AbstractHibernateType<Object> implements Dynam
         );
     }
 
+    public JsonBlobType(Type javaType) {
+        super(
+            org.hibernate.type.descriptor.sql.BlobTypeDescriptor.DEFAULT,
+            new JsonTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper(), javaType)
+        );
+    }
+
     public JsonBlobType(Configuration configuration) {
         super(
             org.hibernate.type.descriptor.sql.BlobTypeDescriptor.DEFAULT,

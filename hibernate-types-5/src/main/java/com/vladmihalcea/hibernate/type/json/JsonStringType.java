@@ -37,6 +37,13 @@ public class JsonStringType extends AbstractHibernateType<Object> implements Dyn
         );
     }
 
+    public JsonStringType(Type javaType) {
+        super(
+            JsonStringSqlTypeDescriptor.INSTANCE,
+            new JsonTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper(), javaType)
+        );
+    }
+
     public JsonStringType(Configuration configuration) {
         super(
             JsonStringSqlTypeDescriptor.INSTANCE,

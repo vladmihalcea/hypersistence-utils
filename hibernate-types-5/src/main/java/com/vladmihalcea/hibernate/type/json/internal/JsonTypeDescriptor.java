@@ -44,6 +44,11 @@ public class JsonTypeDescriptor
         });
     }
 
+    public JsonTypeDescriptor(Type type) {
+        this();
+        this.type = type;
+    }
+
     public JsonTypeDescriptor(final ObjectMapperWrapper objectMapperWrapper) {
         super(Object.class, new MutableMutabilityPlan<Object>() {
             @Override

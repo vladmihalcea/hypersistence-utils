@@ -44,6 +44,11 @@ public class JsonTypeDescriptor
         });
     }
 
+    public JsonTypeDescriptor(Type type) {
+        this();
+        this.type = type;
+    }
+
     public JsonTypeDescriptor(final ObjectMapperWrapper objectMapperWrapper) {
         super(Object.class, new MutableMutabilityPlan<Object>() {
             @Override
@@ -55,13 +60,7 @@ public class JsonTypeDescriptor
     }
 
     public JsonTypeDescriptor(final ObjectMapperWrapper objectMapperWrapper, Type type) {
-        super(Object.class, new MutableMutabilityPlan<Object>() {
-            @Override
-            protected Object deepCopyNotNull(Object value) {
-                return objectMapperWrapper.clone(value);
-            }
-        });
-        this.objectMapperWrapper = objectMapperWrapper;
+        this(objectMapperWrapper);
         this.type = type;
     }
 

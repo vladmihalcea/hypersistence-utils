@@ -1,6 +1,7 @@
 package com.vladmihalcea.hibernate.type.json;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
 import com.vladmihalcea.hibernate.type.util.AbstractSQLServerIntegrationTest;
 import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
 import org.hibernate.SQLQuery;
@@ -18,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Vlad Mihalcea
  */
-public class SQLServerJsonStringPropertyTest extends AbstractSQLServerIntegrationTest {
+public class PostgreSQLJsonStringPropertyTest extends AbstractPostgreSQLIntegrationTest {
 
     @Override
     protected Class<?>[] entities() {
@@ -86,7 +87,7 @@ public class SQLServerJsonStringPropertyTest extends AbstractSQLServerIntegratio
                         "  isbn = :isbn")
                     .setParameter("isbn", "978-9730228236")
                     .unwrap(SQLQuery.class)
-                    .addScalar("properties", new JsonStringType(JsonNode.class))
+                    .addScalar("properties", new JsonBinaryType(JsonNode.class))
                     .uniqueResult();
 
                 assertEquals("High-Performance Java Persistence", properties.get("title").asText());
@@ -98,7 +99,7 @@ public class SQLServerJsonStringPropertyTest extends AbstractSQLServerIntegratio
 
     @Entity(name = "Book")
     @Table(name = "book")
-    @TypeDef(name = "json", typeClass = JsonStringType.class)
+    @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
     public static class Book {
 
         @Id
@@ -108,8 +109,8 @@ public class SQLServerJsonStringPropertyTest extends AbstractSQLServerIntegratio
         @NaturalId
         private String isbn;
 
-        @Type(type = "json")
-        @Column(columnDefinition = "NVARCHAR(1000) CHECK(ISJSON(properties) = 1)")
+        @Type(type = "jsonb")
+        @Column(columnDefinition = "jsonb")
         private String properties;
 
         public String getIsbn() {

@@ -1,14 +1,17 @@
 package com.vladmihalcea.hibernate.type.json;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.vladmihalcea.hibernate.type.util.AbstractSQLServerIntegrationTest;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.hibernate.query.NativeQuery;
 import org.junit.Test;
 
 import javax.persistence.*;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -58,6 +61,22 @@ public class SQLServerJsonStringPropertyTest extends AbstractSQLServerIntegratio
                     "   \"url\": \"https://www.amazon.com/High-Performance-Java-Persistence-Vlad-Mihalcea/dp/973022823X/\"" +
                     "}"
             );
+        });
+
+        doInJPA(entityManager -> {
+            JsonNode properties = (JsonNode) entityManager
+                .createNativeQuery(
+                    "SELECT " +
+                    "  properties AS properties " +
+                    "FROM book " +
+                    "WHERE " +
+                    "  isbn = :isbn")
+                .setParameter("isbn", "978-9730228236")
+                .unwrap(NativeQuery.class)
+                .addScalar("properties", new JsonStringType(JsonNode.class))
+                .getSingleResult();
+
+            assertEquals("High-Performance Java Persistence", properties.get("title").asText());
         });
     }
 

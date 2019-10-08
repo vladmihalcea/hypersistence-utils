@@ -1,7 +1,9 @@
 package com.vladmihalcea.hibernate.type.json;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.vladmihalcea.hibernate.type.util.AbstractOracleIntegrationTest;
 import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
@@ -10,6 +12,7 @@ import org.junit.Test;
 
 import javax.persistence.*;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -66,6 +69,27 @@ public class OracleJsonStringPropertyTest extends AbstractOracleIntegrationTest 
                         "   \"url\": \"https://www.amazon.com/High-Performance-Java-Persistence-Vlad-Mihalcea/dp/973022823X/\"" +
                         "}"
                 );
+
+                return null;
+            }
+        });
+
+        doInJPA(new JPATransactionFunction<Void>() {
+            @Override
+            public Void apply(EntityManager entityManager) {
+                JsonNode properties = (JsonNode) entityManager
+                    .createNativeQuery(
+                        "SELECT " +
+                        "  properties AS properties " +
+                        "FROM book " +
+                        "WHERE " +
+                        "  isbn = :isbn")
+                    .setParameter("isbn", "978-9730228236")
+                    .unwrap(SQLQuery.class)
+                    .addScalar("properties", new JsonStringType(JsonNode.class))
+                    .uniqueResult();
+
+                assertEquals("High-Performance Java Persistence", properties.get("title").asText());
 
                 return null;
             }

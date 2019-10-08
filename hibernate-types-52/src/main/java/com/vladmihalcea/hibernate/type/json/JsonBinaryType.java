@@ -32,6 +32,13 @@ public class JsonBinaryType
         );
     }
 
+    public JsonBinaryType(Type javaType) {
+        super(
+            JsonBinarySqlTypeDescriptor.INSTANCE,
+            new JsonTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper(), javaType)
+        );
+    }
+
     public JsonBinaryType(Configuration configuration) {
         super(
             JsonBinarySqlTypeDescriptor.INSTANCE,
