@@ -1,3 +1,14 @@
+Version 2.7.1 - October 10, 2019
+================================================================================
+
+Unexpected dirty checking behavior on collections of POJOs mapped with JsonBinaryType #138
+
+Mapping Enum to a String column uses toString() instead of name() #135
+
+Upgrade Jackson Databind library version to 2.9.10 #134
+
+Add support for passing the mapping Class to Json Types #133
+
 Version 2.7.0 - September 14, 2019
 ================================================================================
 
