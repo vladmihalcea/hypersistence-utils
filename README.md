@@ -24,6 +24,8 @@ For more details, check out [this article](https://vladmihalcea.com/oracle-json-
 
 You should use this `JsonStringType` to map an `NVARCHAR` column type storing JSON.
 
+For more details, check out [this article](https://vladmihalcea.com/sql-server-json-hibernate/).
+
 ##### PostgreSQL
 
 You should use this `JsonBinaryType` to map both `jsonb` and `json` column types.
