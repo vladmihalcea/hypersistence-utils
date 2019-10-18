@@ -35,7 +35,7 @@ public final class Range<T extends Comparable> implements Serializable {
 														            .appendPattern(".")
 														            .appendFraction(ChronoField.NANO_OF_SECOND, 1, 6, false)
 														            .optionalEnd()
-														            .appendPattern("X")
+														            .appendPattern("[XXX][X]")
 														            .toFormatter();
 
     private static final int LOWER_INCLUSIVE = 1 << 1;
