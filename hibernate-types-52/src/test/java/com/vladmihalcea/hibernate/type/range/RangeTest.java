@@ -46,12 +46,12 @@ public class RangeTest {
     
     @Test
     public void zonedDateTimeTest() {
-    	assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.1-06,)"));
-    	assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.12-06,)"));
-    	assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.123-06,)"));
-    	assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.1234-06,)"));
-    	assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.12345-06,)"));
-    	assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.123456-06,)"));
+        assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.1-06,)"));
+        assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.12-06,)"));
+        assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.123-06,)"));
+        assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.1234-06,)"));
+        assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.12345-06,)"));
+        assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.123456-06,)"));
         assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.123456+05:30,)"));
         assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.123456-02:30,)"));
     }

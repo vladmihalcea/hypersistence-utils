@@ -30,13 +30,13 @@ import java.util.function.Function;
 public final class Range<T extends Comparable> implements Serializable {
     private static final DateTimeFormatter LOCAL_DATE_TIME = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss[.SSSSSS]");
     private static final DateTimeFormatter ZONE_DATE_TIME = new DateTimeFormatterBuilder()
-														            .appendPattern("yyyy-MM-dd HH:mm:ss")
-														            .optionalStart()
-														            .appendPattern(".")
-														            .appendFraction(ChronoField.NANO_OF_SECOND, 1, 6, false)
-														            .optionalEnd()
-														            .appendPattern("[XXX][X]")
-														            .toFormatter();
+                                                                    .appendPattern("yyyy-MM-dd HH:mm:ss")
+                                                                    .optionalStart()
+                                                                    .appendPattern(".")
+                                                                    .appendFraction(ChronoField.NANO_OF_SECOND, 1, 6, false)
+                                                                    .optionalEnd()
+                                                                    .appendPattern("[XXX][X]")
+                                                                    .toFormatter();
 
     private static final int LOWER_INCLUSIVE = 1 << 1;
     private static final int LOWER_EXCLUSIVE = 1 << 2;
