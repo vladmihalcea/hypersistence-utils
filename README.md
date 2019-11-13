@@ -155,12 +155,8 @@ Depending on the Hibernate version you are using, you need to following dependen
 
 #### Why the Hypersistence Optimizer banner?
 
-Maintaining this project costs me money. Therefore, I basically have two options when it comes to maintaining it.
-
-1. I could just abandon it since it does not really bring me any revenue and focus all my time on my [blog](https://vladmihalcea.com/), [training](https://vladmihalcea.com/trainings/), [courses](https://courses.vladmihalcea.com/), [books](https://vladmihalcea.com/books/high-performance-java-persistence/), [consulting](https://vladmihalcea.com/consulting/) or developing [Hypersistence Optimizer](https://vladmihalcea.com/hypersistence-optimizer/).
-2. Or, I could keep on maintaining it at my own expense for the price of displaying a log-based banner during bootstrap.
-
-I believe the latter option is much better for the hundreds of thousands of users benefiting from this project.
+Maintaining this project costs thousands of dollars per year, and, without the support of [Hypersistence](https://hypersistence.io/),
+this project would have to be abandoned.
 
 #### Adding Hypersistence Optimizer to your project
 
