@@ -11,12 +11,17 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 import org.junit.Test;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.Table;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -91,6 +96,10 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
     @Test
     public void test() {
+
+        final Date date1 = Timestamp.valueOf("1991-12-31 00:00:00");
+        final Date date2 = Timestamp.valueOf("1990-01-01 00:00:00");
+
         doInJPA(new JPATransactionFunction<Void>() {
 
             @Override
@@ -106,6 +115,8 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 event.setSensorValues(Arrays.asList(12, 756));
                 event.setSensorLongValues(Arrays.asList(42L, 9223372036854775800L));
                 event.setSensorStates(Arrays.asList(SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN));
+                event.setDateValues(Arrays.asList(date1, date2));
+                event.setTimestampValues(Arrays.asList(date1, date2));
 
                 entityManager.persist(event);
 
@@ -124,6 +135,10 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 assertArrayEquals(new Integer[]{12, 756}, event.getSensorValues().toArray());
                 assertArrayEquals(new Long[]{42L, 9223372036854775800L}, event.getSensorLongValues().toArray());
                 assertArrayEquals(new SensorState[]{SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN}, event.getSensorStates().toArray());
+                assertEquals(date1.getTime(), event.getDateValues().get(0).getTime());
+                assertEquals(date2.getTime(), event.getDateValues().get(1).getTime());
+                assertEquals(date1.getTime(), event.getTimestampValues().get(0).getTime());
+                assertEquals(date2.getTime(), event.getTimestampValues().get(1).getTime());
 
                 return null;
             }
@@ -160,7 +175,6 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         @TypeDef(name = "sensor-state-array", typeClass = ListArrayType.class, parameters = {
             @Parameter(name = ListArrayType.SQL_ARRAY_TYPE, value = "sensor_state")}
         )
-
     })
     @Table(name = "event")
     public static class Event extends BaseEntity {
@@ -183,6 +197,14 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         @Type(type = "sensor-state-array")
         @Column(name = "sensor_states", columnDefinition = "sensor_state[]")
         private List<SensorState> sensorStates;
+
+        @Type(type = "list-array")
+        @Column(name = "date_values", columnDefinition = "date[]")
+        private List<Date> dateValues;
+
+        @Type(type = "list-array")
+        @Column(name = "timestamp_values", columnDefinition = "timestamp[]")
+        private List<Date> timestampValues;
 
         public List<UUID> getSensorIds() {
             return sensorIds;
@@ -222,6 +244,22 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
         public void setSensorStates(List<SensorState> sensorStates) {
             this.sensorStates = sensorStates;
+        }
+
+        public List<Date> getDateValues() {
+            return dateValues;
+        }
+
+        public void setDateValues(List<Date> dateValues) {
+            this.dateValues = dateValues;
+        }
+
+        public List<Date> getTimestampValues() {
+            return timestampValues;
+        }
+
+        public void setTimestampValues(List<Date> timestampValues) {
+            this.timestampValues = timestampValues;
         }
     }
 

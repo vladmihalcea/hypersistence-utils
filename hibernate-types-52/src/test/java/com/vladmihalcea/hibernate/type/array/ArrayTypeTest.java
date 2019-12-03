@@ -17,6 +17,9 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,6 +27,7 @@ import static org.junit.Assert.*;
 
 /**
  * @author Vlad Mihalcea
+ * @author Guillaume Briand
  */
 public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
@@ -69,6 +73,10 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
     @Test
     public void test() {
+
+        Date date1 = Date.from(LocalDate.of(1991, 12, 31).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+        Date date2 = Date.from(LocalDate.of(1990, 1, 1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+
         doInJPA(entityManager -> {
             Event nullEvent = new Event();
             nullEvent.setId(0L);
@@ -81,6 +89,9 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             event.setSensorValues(new int[]{12, 756});
             event.setSensorLongValues(new long[]{42L, 9223372036854775800L});
             event.setSensorStates(new SensorState[]{SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN});
+            event.setDateValues(new Date[]{date1, date2});
+            event.setTimestampValues(new Date[]{date1, date2});
+
             entityManager.persist(event);
         });
 
@@ -90,8 +101,10 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             assertArrayEquals(new UUID[]{UUID.fromString("c65a3bcb-8b36-46d4-bddb-ae96ad016eb1"), UUID.fromString("72e95717-5294-4c15-aa64-a3631cf9a800")}, event.getSensorIds());
             assertArrayEquals(new String[]{"Temperature", "Pressure"}, event.getSensorNames());
             assertArrayEquals(new int[]{12, 756}, event.getSensorValues());
-                assertArrayEquals(new long[]{42L, 9223372036854775800L}, event.getSensorLongValues());
+            assertArrayEquals(new long[]{42L, 9223372036854775800L}, event.getSensorLongValues());
             assertArrayEquals(new SensorState[]{SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN}, event.getSensorStates());
+            assertArrayEquals(new Date[]{date1, date2}, event.getDateValues());
+            assertArrayEquals(new Date[]{date1, date2}, event.getTimestampValues());
         });
 
         doInJPA(entityManager -> {
@@ -100,12 +113,14 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 "   id, " +
                 "   sensor_ids, " +
                 "   sensor_names, " +
-                "   sensor_values " +
+                "   sensor_values, " +
+                "   date_values   " +
                 "from event ", Tuple.class)
             .unwrap(org.hibernate.query.NativeQuery.class)
             .addScalar("sensor_ids", UUIDArrayType.INSTANCE)
             .addScalar("sensor_names", StringArrayType.INSTANCE)
             .addScalar("sensor_values", IntArrayType.INSTANCE)
+            .addScalar("date_values", DateArrayType.INSTANCE)
             .getResultList();
 
             assertEquals(2, events.size());
@@ -113,10 +128,10 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
     }
 
     @Entity(name = "Event")
+    @Table(name = "event")
     @TypeDef(name = "sensor-state-array", typeClass = EnumArrayType.class, parameters = {
         @Parameter(name = EnumArrayType.SQL_ARRAY_TYPE, value = "sensor_state")}
     )
-    @Table(name = "event")
     public static class Event extends BaseEntity {
         @Type(type = "uuid-array")
         @Column(name = "sensor_ids", columnDefinition = "uuid[]")
@@ -133,10 +148,26 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         @Type(type = "long-array")
         @Column(name = "sensor_long_values", columnDefinition = "bigint[]")
         private long[] sensorLongValues;
-        
+
+        @Type(type = "date-array")
+        @Column(name = "date_values", columnDefinition = "date[]")
+        private Date[] dateValues;
+
+        @Type(type = "timestamp-array")
+        @Column(name = "timestamp_values", columnDefinition = "timestamp[]")
+        private Date[] timestampValues;
+
         @Type(type = "sensor-state-array")
         @Column(name = "sensor_states", columnDefinition = "sensor_state[]")
         private SensorState[] sensorStates;
+
+        public UUID[] getSensorIds() {
+            return sensorIds;
+        }
+
+        public void setSensorIds(UUID[] sensorIds) {
+            this.sensorIds = sensorIds;
+        }
 
         public String[] getSensorNames() {
             return sensorNames;
@@ -161,7 +192,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         public void setSensorLongValues(long[] sensorLongValues) {
             this.sensorLongValues = sensorLongValues;
         }
-        
+
         public SensorState[] getSensorStates() {
             return sensorStates;
         }
@@ -170,12 +201,20 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             this.sensorStates = sensorStates;
         }
 
-        public UUID[] getSensorIds() {
-            return sensorIds;
+        public Date[] getDateValues() {
+            return dateValues;
         }
 
-        public void setSensorIds(UUID[] sensorIds) {
-            this.sensorIds = sensorIds;
+        public void setDateValues(Date[] dateValues) {
+            this.dateValues = dateValues;
+        }
+
+        public Date[] getTimestampValues() {
+            return timestampValues;
+        }
+
+        public void setTimestampValues(Date[] timestampValues) {
+            this.timestampValues = timestampValues;
         }
     }
 

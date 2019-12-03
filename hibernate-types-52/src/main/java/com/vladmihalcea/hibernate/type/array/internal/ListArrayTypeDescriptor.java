@@ -82,6 +82,8 @@ public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Object>
                     sqlArrayType = "text";
                 } else if (UUID.class.isAssignableFrom(arrayElementClass)) {
                     sqlArrayType = "uuid";
+                } else if (Date.class.isAssignableFrom(arrayElementClass)) {
+                    sqlArrayType = "timestamp";
                 } else {
                     throw new UnsupportedOperationException("The " + arrayElementClass + " is not supported yet!");
                 }
