@@ -1,9 +1,6 @@
 package com.vladmihalcea.hibernate.type.model;
 
-import com.vladmihalcea.hibernate.type.array.IntArrayType;
-import com.vladmihalcea.hibernate.type.array.LongArrayType;
-import com.vladmihalcea.hibernate.type.array.StringArrayType;
-import com.vladmihalcea.hibernate.type.array.UUIDArrayType;
+import com.vladmihalcea.hibernate.type.array.*;
 import com.vladmihalcea.hibernate.type.json.*;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
@@ -20,6 +17,7 @@ import javax.persistence.Version;
         @TypeDef(name = "string-array", typeClass = StringArrayType.class),
         @TypeDef(name = "int-array", typeClass = IntArrayType.class),
         @TypeDef(name = "long-array", typeClass = LongArrayType.class),
+        @TypeDef(name = "date-array", typeClass = DateArrayType.class),
         @TypeDef(name = "json", typeClass = JsonStringType.class),
         @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class),
         @TypeDef(name = "jsonb-node", typeClass = JsonNodeBinaryType.class),

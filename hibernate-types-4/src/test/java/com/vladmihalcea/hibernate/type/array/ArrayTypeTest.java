@@ -15,14 +15,16 @@ import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.Table;
 import javax.sql.DataSource;
-
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.fail;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
+
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.fail;
 
 /**
  * @author Vlad Mihalcea
@@ -92,7 +94,16 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
     }
 
     @Test
-    public void test() {
+    public void test() throws ParseException {
+
+        SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
+
+        String date1String = formater.format(new Date());
+        String date2String = formater.format(new Date(1));
+
+        final Date date1 = formater.parse(date1String);
+        final Date date2 = formater.parse(date2String);
+
         doInJPA(new JPATransactionFunction<Void>() {
 
             @Override
@@ -107,7 +118,8 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 event.setSensorNames(new String[]{"Temperature", "Pressure"});
                 event.setSensorValues(new int[]{12, 756});
                 event.setSensorLongValues(new long[]{42L, 9223372036854775800L});
-                event.setSensorStates(new SensorState[] {SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN});
+                event.setSensorStates(new SensorState[]{SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN});
+                event.setDateValues(new Date[]{date1, date2});
                 entityManager.persist(event);
 
                 return null;
@@ -124,6 +136,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 assertArrayEquals(new int[]{12, 756}, event.getSensorValues());
                 assertArrayEquals(new long[]{42L, 9223372036854775800L}, event.getSensorLongValues());
                 assertArrayEquals(new SensorState[]{SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN}, event.getSensorStates());
+                assertArrayEquals(new Date[]{date1, date2}, event.getDateValues());
 
                 return null;
             }
@@ -147,12 +160,16 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         @Type(type = "int-array")
         @Column(name = "sensor_values", columnDefinition = "integer[]")
         private int[] sensorValues;
-        
+
         @Type(type = "long-array")
         @Column(name = "sensor_long_values", columnDefinition = "bigint[]")
         private long[] sensorLongValues;
-        
-        @Type( type = "sensor-state-array")
+
+        @Type(type = "date-array")
+        @Column(name = "date_values", columnDefinition = "date[]")
+        private Date[] dateValues;
+
+        @Type(type = "sensor-state-array")
         @Column(name = "sensor_states", columnDefinition = "sensor_state[]")
         private SensorState[] sensorStates;
 
@@ -179,7 +196,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         public void setSensorValues(int[] sensorValues) {
             this.sensorValues = sensorValues;
         }
-        
+
         public long[] getSensorLongValues() {
             return sensorLongValues;
         }
@@ -187,13 +204,21 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         public void setSensorLongValues(long[] sensorLongValues) {
             this.sensorLongValues = sensorLongValues;
         }
-        
+
+        public Date[] getDateValues() {
+            return dateValues;
+        }
+
+        public void setDateValues(Date[] dateValues) {
+            this.dateValues = dateValues;
+        }
+
         public SensorState[] getSensorStates() {
-          return sensorStates;
+            return sensorStates;
         }
 
         public void setSensorStates(SensorState[] sensorStates) {
-          this.sensorStates = sensorStates;
+            this.sensorStates = sensorStates;
         }
     }
     
