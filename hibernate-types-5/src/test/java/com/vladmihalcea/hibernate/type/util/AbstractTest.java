@@ -24,6 +24,7 @@ import org.hibernate.integrator.spi.Integrator;
 import org.hibernate.jdbc.Work;
 import org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl;
 import org.hibernate.jpa.boot.internal.PersistenceUnitInfoDescriptor;
+import org.hibernate.jpa.boot.spi.IntegratorProvider;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.type.BasicType;
@@ -239,7 +240,18 @@ public abstract class AbstractTest {
         PersistenceUnitInfo persistenceUnitInfo = persistenceUnitInfo(getClass().getSimpleName());
         Map<String, Object> configuration = new HashMap<String, Object>();
         configuration.put(AvailableSettings.INTERCEPTOR, interceptor());
-        Integrator integrator = integrator();
+        final Integrator integrator = integrator();
+        if (integrator != null) {
+            configuration.put(
+                "hibernate.integrator_provider",
+                new IntegratorProvider() {
+                    @Override
+                    public List<Integrator> getIntegrators() {
+                        return Collections.singletonList(integrator);
+                    }
+                }
+            );
+        }
 
         EntityManagerFactoryBuilderImpl entityManagerFactoryBuilder = new EntityManagerFactoryBuilderImpl(
                 new PersistenceUnitInfoDescriptor(persistenceUnitInfo), configuration
