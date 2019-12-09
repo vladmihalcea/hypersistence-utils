@@ -34,14 +34,14 @@ public class ArraySqlTypeDescriptor implements SqlTypeDescriptor {
             protected void doBind(PreparedStatement st, X value, int index, WrapperOptions options) throws SQLException {
                 AbstractArrayTypeDescriptor<Object> abstractArrayTypeDescriptor = (AbstractArrayTypeDescriptor<Object>) javaTypeDescriptor;
                 st.setArray(index, st.getConnection().createArrayOf(
-                        abstractArrayTypeDescriptor.getSqlArrayType(),
-                        abstractArrayTypeDescriptor.unwrap(value, Object[].class, options)
+                    abstractArrayTypeDescriptor.getSqlArrayType(),
+                    abstractArrayTypeDescriptor.unwrap(value, Object[].class, options)
                 ));
             }
 
             @Override
             protected void doBind(CallableStatement st, X value, String name, WrapperOptions options)
-                    throws SQLException {
+                throws SQLException {
                 throw new UnsupportedOperationException("Binding by name is not supported!");
             }
         };

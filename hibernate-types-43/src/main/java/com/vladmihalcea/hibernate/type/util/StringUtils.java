@@ -1,7 +1,7 @@
 package com.vladmihalcea.hibernate.type.util;
 
 /**
- * <code>StringUtil</code> - String utilities holder.
+ * <code>StringUtils</code> - String utilities holder.
  *
  * @author Vlad Mihalcea
  * @since 2.5.1

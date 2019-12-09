@@ -1,12 +1,9 @@
 package com.vladmihalcea.hibernate.type.array;
 
-import com.vladmihalcea.hibernate.type.AbstractHibernateType;
-import com.vladmihalcea.hibernate.type.array.internal.ArraySqlTypeDescriptor;
+import com.vladmihalcea.hibernate.type.array.internal.AbstractArrayType;
 import com.vladmihalcea.hibernate.type.array.internal.UUIDArrayTypeDescriptor;
 import com.vladmihalcea.hibernate.type.util.Configuration;
-import org.hibernate.usertype.DynamicParameterizedType;
 
-import java.util.Properties;
 import java.util.UUID;
 
 /**
@@ -16,22 +13,18 @@ import java.util.UUID;
  *
  * @author Rafael Acevedo
  */
-public class UUIDArrayType
-        extends AbstractHibernateType<UUID[]>
-        implements DynamicParameterizedType {
+public class UUIDArrayType extends AbstractArrayType<UUID[]> {
 
     public static final UUIDArrayType INSTANCE = new UUIDArrayType();
 
     public UUIDArrayType() {
         super(
-            ArraySqlTypeDescriptor.INSTANCE,
             new UUIDArrayTypeDescriptor()
         );
     }
 
     public UUIDArrayType(Configuration configuration) {
         super(
-            ArraySqlTypeDescriptor.INSTANCE,
             new UUIDArrayTypeDescriptor(),
             configuration
         );
@@ -39,15 +32,5 @@ public class UUIDArrayType
 
     public String getName() {
         return "uuid-array";
-    }
-
-    @Override
-    protected boolean registerUnderJavaType() {
-        return true;
-    }
-
-    @Override
-    public void setParameterValues(Properties parameters) {
-        ((UUIDArrayTypeDescriptor) getJavaTypeDescriptor()).setParameterValues(parameters);
     }
 }

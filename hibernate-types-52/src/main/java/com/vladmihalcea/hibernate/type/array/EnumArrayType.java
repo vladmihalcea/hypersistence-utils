@@ -1,7 +1,6 @@
 package com.vladmihalcea.hibernate.type.array;
 
-import com.vladmihalcea.hibernate.type.AbstractHibernateType;
-import com.vladmihalcea.hibernate.type.array.internal.ArraySqlTypeDescriptor;
+import com.vladmihalcea.hibernate.type.array.internal.AbstractArrayType;
 import com.vladmihalcea.hibernate.type.array.internal.EnumArrayTypeDescriptor;
 import com.vladmihalcea.hibernate.type.util.Configuration;
 import com.vladmihalcea.hibernate.type.util.ParameterizedParameterType;
@@ -19,26 +18,21 @@ import java.util.Properties;
  * @author Nazir El-Kayssi
  * @author Vlad Mihalcea
  */
-public class EnumArrayType
-        extends AbstractHibernateType<Enum[]>
-        implements DynamicParameterizedType {
+public class EnumArrayType extends AbstractArrayType<Enum[]> {
 
     public static final EnumArrayType INSTANCE = new EnumArrayType();
-    public static final String SQL_ARRAY_TYPE = "sql_array_type";
     private static final String DEFAULT_TYPE_NAME = "%s_enum_array_type";
 
     private String name;
 
     public EnumArrayType() {
         super(
-            ArraySqlTypeDescriptor.INSTANCE,
             new EnumArrayTypeDescriptor()
         );
     }
 
     public EnumArrayType(Configuration configuration) {
         super(
-            ArraySqlTypeDescriptor.INSTANCE,
             new EnumArrayTypeDescriptor(),
             configuration
         );
@@ -54,11 +48,6 @@ public class EnumArrayType
 
     public String getName() {
         return name;
-    }
-
-    @Override
-    protected boolean registerUnderJavaType() {
-        return true;
     }
 
     @Override

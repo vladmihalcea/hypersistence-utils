@@ -1,12 +1,8 @@
 package com.vladmihalcea.hibernate.type.array;
 
-import com.vladmihalcea.hibernate.type.AbstractHibernateType;
-import com.vladmihalcea.hibernate.type.array.internal.ArraySqlTypeDescriptor;
+import com.vladmihalcea.hibernate.type.array.internal.AbstractArrayType;
 import com.vladmihalcea.hibernate.type.array.internal.IntArrayTypeDescriptor;
 import com.vladmihalcea.hibernate.type.util.Configuration;
-import org.hibernate.usertype.DynamicParameterizedType;
-
-import java.util.Properties;
 
 /**
  * Maps an {@code int[]} array on a PostgreSQL ARRAY type.
@@ -15,37 +11,23 @@ import java.util.Properties;
  *
  * @author Vlad Mihalcea
  */
-public class IntArrayType
-        extends AbstractHibernateType<int[]>
-        implements DynamicParameterizedType {
+public class IntArrayType extends AbstractArrayType<int[]> {
 
     public static final IntArrayType INSTANCE = new IntArrayType();
 
     public IntArrayType() {
         super(
-            ArraySqlTypeDescriptor.INSTANCE,
             new IntArrayTypeDescriptor()
         );
     }
 
     public IntArrayType(Configuration configuration) {
         super(
-            ArraySqlTypeDescriptor.INSTANCE,
             new IntArrayTypeDescriptor(), configuration
         );
     }
 
     public String getName() {
         return "int-array";
-    }
-
-    @Override
-    protected boolean registerUnderJavaType() {
-        return true;
-    }
-
-    @Override
-    public void setParameterValues(Properties parameters) {
-        ((IntArrayTypeDescriptor) getJavaTypeDescriptor()).setParameterValues(parameters);
     }
 }

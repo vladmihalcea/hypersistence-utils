@@ -20,12 +20,24 @@ public abstract class AbstractArrayTypeDescriptor<T>
     private Class<T> arrayObjectClass;
 
     public AbstractArrayTypeDescriptor(Class<T> arrayObjectClass) {
-        super(arrayObjectClass, (MutabilityPlan<T>) new MutableMutabilityPlan<Object>() {
+        this(arrayObjectClass, (MutabilityPlan<T>) new MutableMutabilityPlan<Object>() {
             @Override
             protected T deepCopyNotNull(Object value) {
                 return ArrayUtil.deepCopy(value);
             }
         });
+    }
+
+    protected AbstractArrayTypeDescriptor(Class<T> arrayObjectClass, MutabilityPlan<T> mutableMutabilityPlan) {
+        super(arrayObjectClass, mutableMutabilityPlan);
+        this.arrayObjectClass = arrayObjectClass;
+    }
+
+    protected Class<T> getArrayObjectClass() {
+        return arrayObjectClass;
+    }
+
+    public void setArrayObjectClass(Class<T> arrayObjectClass) {
         this.arrayObjectClass = arrayObjectClass;
     }
 

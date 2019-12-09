@@ -4,161 +4,184 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 
 /**
+ * <code>ArrayUtil</code> - Array utilities holder.
+ *
  * @author Vlad Mihalcea
  */
 public class ArrayUtil {
 
-    public static <T> T deepCopy(Object objectArray) {
-        Class arrayClass = objectArray.getClass();
+    /**
+     * Clone an array.
+     *
+     * @param originalArray original array
+     * @param <T> array element type
+     * @return cloned array
+     */
+    public static <T> T deepCopy(Object originalArray) {
+        Class arrayClass = originalArray.getClass();
 
         if (boolean[].class.equals(arrayClass)) {
-            boolean[] array = (boolean[]) objectArray;
+            boolean[] array = (boolean[]) originalArray;
             return (T) Arrays.copyOf(array, array.length);
         } else if (byte[].class.equals(arrayClass)) {
-            byte[] array = (byte[]) objectArray;
+            byte[] array = (byte[]) originalArray;
             return (T) Arrays.copyOf(array, array.length);
         } else if (short[].class.equals(arrayClass)) {
-            short[] array = (short[]) objectArray;
+            short[] array = (short[]) originalArray;
             return (T) Arrays.copyOf(array, array.length);
         } else if (int[].class.equals(arrayClass)) {
-            int[] array = (int[]) objectArray;
+            int[] array = (int[]) originalArray;
             return (T) Arrays.copyOf(array, array.length);
         } else if (long[].class.equals(arrayClass)) {
-            long[] array = (long[]) objectArray;
+            long[] array = (long[]) originalArray;
             return (T) Arrays.copyOf(array, array.length);
         } else if (float[].class.equals(arrayClass)) {
-            float[] array = (float[]) objectArray;
+            float[] array = (float[]) originalArray;
             return (T) Arrays.copyOf(array, array.length);
         } else if (double[].class.equals(arrayClass)) {
-            double[] array = (double[]) objectArray;
+            double[] array = (double[]) originalArray;
             return (T) Arrays.copyOf(array, array.length);
         } else if (char[].class.equals(arrayClass)) {
-            char[] array = (char[]) objectArray;
+            char[] array = (char[]) originalArray;
             return (T) Arrays.copyOf(array, array.length);
         } else {
-            Object[] array = (Object[]) objectArray;
+            Object[] array = (Object[]) originalArray;
             return (T) Arrays.copyOf(array, array.length);
         }
     }
 
-    public static Object[] wrapArray(Object objectArray) {
-        Class arrayClass = objectArray.getClass();
+    /**
+     * Wrap a given array so that primitives become wrapper objects.
+     *
+     * @param originalArray original array
+     * @return wrapped array
+     */
+    public static Object[] wrapArray(Object originalArray) {
+        Class arrayClass = originalArray.getClass();
 
         if (boolean[].class.equals(arrayClass)) {
-            boolean[] fromArray = (boolean[]) objectArray;
+            boolean[] fromArray = (boolean[]) originalArray;
             Boolean[] array = new Boolean[fromArray.length];
             for (int i = 0; i < fromArray.length; i++) {
                 array[i] = fromArray[i];
             }
             return array;
         } else if (byte[].class.equals(arrayClass)) {
-            byte[] fromArray = (byte[]) objectArray;
+            byte[] fromArray = (byte[]) originalArray;
             Byte[] array = new Byte[fromArray.length];
             for (int i = 0; i < fromArray.length; i++) {
                 array[i] = fromArray[i];
             }
             return array;
         } else if (short[].class.equals(arrayClass)) {
-            short[] fromArray = (short[]) objectArray;
+            short[] fromArray = (short[]) originalArray;
             Short[] array = new Short[fromArray.length];
             for (int i = 0; i < fromArray.length; i++) {
                 array[i] = fromArray[i];
             }
             return array;
         } else if (int[].class.equals(arrayClass)) {
-            int[] fromArray = (int[]) objectArray;
+            int[] fromArray = (int[]) originalArray;
             Integer[] array = new Integer[fromArray.length];
             for (int i = 0; i < fromArray.length; i++) {
                 array[i] = fromArray[i];
             }
             return array;
         } else if (long[].class.equals(arrayClass)) {
-            long[] fromArray = (long[]) objectArray;
+            long[] fromArray = (long[]) originalArray;
             Long[] array = new Long[fromArray.length];
             for (int i = 0; i < fromArray.length; i++) {
                 array[i] = fromArray[i];
             }
             return array;
         } else if (float[].class.equals(arrayClass)) {
-            float[] fromArray = (float[]) objectArray;
+            float[] fromArray = (float[]) originalArray;
             Float[] array = new Float[fromArray.length];
             for (int i = 0; i < fromArray.length; i++) {
                 array[i] = fromArray[i];
             }
             return array;
         } else if (double[].class.equals(arrayClass)) {
-            double[] fromArray = (double[]) objectArray;
+            double[] fromArray = (double[]) originalArray;
             Double[] array = new Double[fromArray.length];
             for (int i = 0; i < fromArray.length; i++) {
                 array[i] = fromArray[i];
             }
             return array;
         } else if (char[].class.equals(arrayClass)) {
-            char[] fromArray = (char[]) objectArray;
+            char[] fromArray = (char[]) originalArray;
             Character[] array = new Character[fromArray.length];
             for (int i = 0; i < fromArray.length; i++) {
                 array[i] = fromArray[i];
             }
             return array;
         } else {
-            return (Object[]) objectArray;
+            return (Object[]) originalArray;
         }
     }
 
-    public static <T> T unwrapArray(Object[] objectArray, Class<T> arrayClass) {
+    /**
+     * Unwarp {@link Object[]} array to an array of the provided type
+     *
+     * @param originalArray original array
+     * @param arrayClass array class
+     * @param <T> array element type
+     * @return unwrapped array
+     */
+    public static <T> T unwrapArray(Object[] originalArray, Class<T> arrayClass) {
 
         if (boolean[].class.equals(arrayClass)) {
-            boolean[] array = new boolean[objectArray.length];
-            for (int i = 0; i < objectArray.length; i++) {
-                array[i] = objectArray[i] != null ? (Boolean) objectArray[i] : Boolean.FALSE;
+            boolean[] array = new boolean[originalArray.length];
+            for (int i = 0; i < originalArray.length; i++) {
+                array[i] = originalArray[i] != null ? (Boolean) originalArray[i] : Boolean.FALSE;
             }
             return (T) array;
         } else if (byte[].class.equals(arrayClass)) {
-            byte[] array = new byte[objectArray.length];
-            for (int i = 0; i < objectArray.length; i++) {
-                array[i] = objectArray[i] != null ? (Byte) objectArray[i] : 0;
+            byte[] array = new byte[originalArray.length];
+            for (int i = 0; i < originalArray.length; i++) {
+                array[i] = originalArray[i] != null ? (Byte) originalArray[i] : 0;
             }
             return (T) array;
         } else if (short[].class.equals(arrayClass)) {
-            short[] array = new short[objectArray.length];
-            for (int i = 0; i < objectArray.length; i++) {
-                array[i] = objectArray[i] != null ? (Short) objectArray[i] : 0;
+            short[] array = new short[originalArray.length];
+            for (int i = 0; i < originalArray.length; i++) {
+                array[i] = originalArray[i] != null ? (Short) originalArray[i] : 0;
             }
             return (T) array;
         } else if (int[].class.equals(arrayClass)) {
-            int[] array = new int[objectArray.length];
-            for (int i = 0; i < objectArray.length; i++) {
-                array[i] = objectArray[i] != null ? (Integer) objectArray[i] : 0;
+            int[] array = new int[originalArray.length];
+            for (int i = 0; i < originalArray.length; i++) {
+                array[i] = originalArray[i] != null ? (Integer) originalArray[i] : 0;
             }
             return (T) array;
         } else if (long[].class.equals(arrayClass)) {
-            long[] array = new long[objectArray.length];
-            for (int i = 0; i < objectArray.length; i++) {
-                array[i] = objectArray[i] != null ? (Long) objectArray[i] : 0L;
+            long[] array = new long[originalArray.length];
+            for (int i = 0; i < originalArray.length; i++) {
+                array[i] = originalArray[i] != null ? (Long) originalArray[i] : 0L;
             }
             return (T) array;
         } else if (float[].class.equals(arrayClass)) {
-            float[] array = new float[objectArray.length];
-            for (int i = 0; i < objectArray.length; i++) {
-                array[i] = objectArray[i] != null ? (Float) objectArray[i] : 0f;
+            float[] array = new float[originalArray.length];
+            for (int i = 0; i < originalArray.length; i++) {
+                array[i] = originalArray[i] != null ? (Float) originalArray[i] : 0f;
             }
             return (T) array;
         } else if (double[].class.equals(arrayClass)) {
-            double[] array = new double[objectArray.length];
-            for (int i = 0; i < objectArray.length; i++) {
-                array[i] = objectArray[i] != null ? (Double) objectArray[i] : 0d;
+            double[] array = new double[originalArray.length];
+            for (int i = 0; i < originalArray.length; i++) {
+                array[i] = originalArray[i] != null ? (Double) originalArray[i] : 0d;
             }
             return (T) array;
         } else if (char[].class.equals(arrayClass)) {
-            char[] array = new char[objectArray.length];
-            for (int i = 0; i < objectArray.length; i++) {
-                array[i] = objectArray[i] != null ? (Character) objectArray[i] : 0;
+            char[] array = new char[originalArray.length];
+            for (int i = 0; i < originalArray.length; i++) {
+                array[i] = originalArray[i] != null ? (Character) originalArray[i] : 0;
             }
             return (T) array;
         } else if (Enum[].class.isAssignableFrom(arrayClass)) {
-          T array = arrayClass.cast(Array.newInstance(arrayClass.getComponentType(), objectArray.length));
-          for (int i = 0; i < objectArray.length; i++) {
-              Object objectValue = objectArray[i];
+          T array = arrayClass.cast(Array.newInstance(arrayClass.getComponentType(), originalArray.length));
+          for (int i = 0; i < originalArray.length; i++) {
+              Object objectValue = originalArray[i];
               if (objectValue != null) {
                   String stringValue = (objectValue instanceof String) ? (String) objectValue : String.valueOf(objectValue);
                   objectValue = Enum.valueOf((Class) arrayClass.getComponentType(), stringValue);
@@ -167,10 +190,18 @@ public class ArrayUtil {
           }
           return array;
         } else {
-            return (T) objectArray;
+            return (T) originalArray;
         }
     }
 
+    /**
+     * Create array from its {@link String} representation.
+     *
+     * @param string string representation
+     * @param arrayClass array class
+     * @param <T> array element type
+     * @return array
+     */
     public static <T> T fromString(String string, Class<T> arrayClass) {
         String stringArray = string.replaceAll("[\\[\\]]", "");
         String[] tokens = stringArray.split(",");
@@ -230,6 +261,13 @@ public class ArrayUtil {
         }
     }
 
+    /**
+     * Check if two arrays are equal.
+     *
+     * @param firstArray first array
+     * @param secondArray second array
+     * @return arrays are equal
+     */
     public static boolean isEquals(Object firstArray, Object secondArray) {
         if (firstArray.getClass() != secondArray.getClass()) {
             return false;
@@ -257,4 +295,34 @@ public class ArrayUtil {
         }
     }
 
+    /**
+     * Get the array class for the provided array element class.
+     *
+     * @param arrayElementClass array element class
+     * @param <T> array element type
+     * @return array class
+     */
+    public static <T> Class<T[]> toArrayClass(Class<T> arrayElementClass) {
+
+        if (boolean.class.equals(arrayElementClass)) {
+            return (Class) boolean[].class;
+        } else if (byte.class.equals(arrayElementClass)) {
+            return (Class) byte[].class;
+        } else if (short.class.equals(arrayElementClass)) {
+            return (Class) short[].class;
+        } else if (int.class.equals(arrayElementClass)) {
+            return (Class) int[].class;
+        } else if (long.class.equals(arrayElementClass)) {
+            return (Class) long[].class;
+        } else if (float.class.equals(arrayElementClass)) {
+            return (Class) float[].class;
+        } else if (double[].class.equals(arrayElementClass)) {
+            return (Class) double[].class;
+        } else if (char[].class.equals(arrayElementClass)) {
+            return (Class) char[].class;
+        } else {
+            Object array = Array.newInstance(arrayElementClass, 0);
+            return (Class<T[]>) array.getClass();
+        }
+    }
 }

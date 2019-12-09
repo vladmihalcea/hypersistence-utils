@@ -1,8 +1,6 @@
 package com.vladmihalcea.hibernate.type.util;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 
 /**
  * <code>ReflectionUtils</code> - Reflection utilities holder.
@@ -504,6 +502,32 @@ public final class ReflectionUtils {
                     null :
                     (Class<T>) getFirstSuperClassFromPackage(superClass, packageName);
         }
+    }
+
+    /**
+     * Get the {@link Member} with the given name belonging to the provided Java {@link Class} or {@code null}
+     * if no {@link Member} was found.
+     *
+     * @param targetClass the provided Java {@link Class} the field or method belongs to
+     * @param memberName   the {@link Field} or {@link Method} name
+     * @return the {@link Field} or {@link Method} matching the given name or {@code null}
+     */
+    public static Member getMemberOrNull(Class targetClass, String memberName) {
+        Field field = getFieldOrNull(targetClass, memberName);
+        return (field != null) ? field : getMethodOrNull(targetClass, memberName);
+    }
+
+    /**
+     * Get the generic {@link Type} of the {@link Member} with the given name belonging to the provided Java {@link Class} or {@code null}
+     * if no {@link Member} was found.
+     *
+     * @param targetClass the provided Java {@link Class} the field or method belongs to
+     * @param memberName   the {@link Field} or {@link Method} name
+     * @return the generic {@link Type} of the {@link Field} or {@link Method} matching the given name or {@code null}
+     */
+    public static Type getMemberGenericTypeOrNull(Class targetClass, String memberName) {
+        Field field = getFieldOrNull(targetClass, memberName);
+        return (field != null) ? field.getGenericType() : getMethodOrNull(targetClass, memberName).getGenericReturnType();
     }
 
     /**

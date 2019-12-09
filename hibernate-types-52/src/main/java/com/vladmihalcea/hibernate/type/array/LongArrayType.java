@@ -1,12 +1,8 @@
 package com.vladmihalcea.hibernate.type.array;
 
-import com.vladmihalcea.hibernate.type.AbstractHibernateType;
-import com.vladmihalcea.hibernate.type.array.internal.ArraySqlTypeDescriptor;
+import com.vladmihalcea.hibernate.type.array.internal.AbstractArrayType;
 import com.vladmihalcea.hibernate.type.array.internal.LongArrayTypeDescriptor;
 import com.vladmihalcea.hibernate.type.util.Configuration;
-import org.hibernate.usertype.DynamicParameterizedType;
-
-import java.util.Properties;
 
 /**
  * Maps an {@code long[]} array on a PostgreSQL ARRAY type.
@@ -17,39 +13,25 @@ import java.util.Properties;
  *
  * @author Vlad Mihalcea
  */
-public class LongArrayType
-		extends AbstractHibernateType<long[]>
-        implements DynamicParameterizedType {
+public class LongArrayType extends AbstractArrayType<long[]> {
 
     public static final LongArrayType INSTANCE = new LongArrayType();
 
     public LongArrayType() {
-		super(
-            ArraySqlTypeDescriptor.INSTANCE,
+        super(
             new LongArrayTypeDescriptor()
         );
     }
 
     public LongArrayType(Configuration configuration) {
         super(
-            ArraySqlTypeDescriptor.INSTANCE,
             new LongArrayTypeDescriptor(),
             configuration
         );
     }
 
     @Override
-	public String getName() {
-		return "long-array";
-    }
-
-    @Override
-    protected boolean registerUnderJavaType() {
-        return true;
-    }
-
-    @Override
-    public void setParameterValues(Properties parameters) {
-		((LongArrayTypeDescriptor) getJavaTypeDescriptor()).setParameterValues(parameters);
+    public String getName() {
+        return "long-array";
     }
 }
