@@ -190,8 +190,18 @@ public class ArrayUtil {
           }
           return array;
         } else {
-            return (T) originalArray;
-        }
+            if(arrayClass.isInstance(originalArray)) {
+                return (T) originalArray;
+            } else {
+                int arrayLength = originalArray.length;
+                Object[] array = (Object[]) Array.newInstance(arrayClass.getComponentType(), arrayLength);
+                if (arrayLength > 0) {
+                    for (int i = 0; i < originalArray.length; i++) {
+                        array[i] = originalArray[i];
+                    }
+                }
+                return (T) array;
+            }        }
     }
 
     /**
