@@ -73,19 +73,12 @@ public class Simple2DArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             entityManager.persist(
                 new Event()
                 .setId(1L)
-                .setSensorNames(new String[]{"Temperature", "Pressure"})
-                .setSensorValues(new int[]{12, 756})
-                .setSensorStates(new SensorState[]{SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN})
                 .setTest2DArray(new String[][] {})
             );
         });
 
         doInJPA(entityManager -> {
             Event event = entityManager.find(Event.class, 1L);
-
-            assertArrayEquals(new String[]{"Temperature", "Pressure"}, event.getSensorNames());
-            assertArrayEquals(new int[]{12, 756}, event.getSensorValues());
-            assertArrayEquals(new SensorState[]{SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN}, event.getSensorStates());
         });
     }
 
@@ -93,53 +86,17 @@ public class Simple2DArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
     @Table(name = "event")
     @TypeDefs({
         @TypeDef(
-            typeClass = StringArrayType.class,
-            defaultForType = String[].class
-        ),
-        @TypeDef(
             typeClass = String2DArrayType.class,
             defaultForType = String[][].class
-        ),
-        @TypeDef(
-            typeClass = IntArrayType.class,
-            defaultForType = int[].class
-        ),
-        @TypeDef(
-            typeClass = EnumArrayType.class,
-            defaultForType = SensorState[].class,
-            parameters = {
-                @Parameter(
-                    name = EnumArrayType.SQL_ARRAY_TYPE,
-                    value = "sensor_state"
-                )
-            }
         )
     })
     public static class Event {
 
         @Id
         private Long id;
-
-        @Column(
-            name = "sensor_names",
-            columnDefinition = "text[]"
-        )
-        private String[] sensorNames;
         
         @Column(name = "test_2d_array", columnDefinition = "text[]")
         private String[][] test2dArray;
-
-        @Column(
-            name = "sensor_values",
-            columnDefinition = "integer[]"
-        )
-        private int[] sensorValues;
-
-        @Column(
-            name = "sensor_states",
-            columnDefinition = "sensor_state[]"
-        )
-        private SensorState[] sensorStates;
 
         public Long getId() {
             return id;
@@ -147,33 +104,6 @@ public class Simple2DArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
         public Event setId(Long id) {
             this.id = id;
-            return this;
-        }
-
-        public String[] getSensorNames() {
-            return sensorNames;
-        }
-
-        public Event setSensorNames(String[] sensorNames) {
-            this.sensorNames = sensorNames;
-            return this;
-        }
-
-        public int[] getSensorValues() {
-            return sensorValues;
-        }
-
-        public Event setSensorValues(int[] sensorValues) {
-            this.sensorValues = sensorValues;
-            return this;
-        }
-
-        public SensorState[] getSensorStates() {
-            return sensorStates;
-        }
-
-        public Event setSensorStates(SensorState[] sensorStates) {
-            this.sensorStates = sensorStates;
             return this;
         }
 
@@ -185,9 +115,5 @@ public class Simple2DArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             this.test2dArray = test2dArray;
             return this;
         }
-    }
-
-    public enum SensorState {
-        ONLINE, OFFLINE, UNKNOWN;
     }
 }
