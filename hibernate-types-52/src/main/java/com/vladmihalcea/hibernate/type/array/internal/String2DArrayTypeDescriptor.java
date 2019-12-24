@@ -20,7 +20,7 @@ public class String2DArrayTypeDescriptor
     @Override
     public <X> String[][] wrap(X value, WrapperOptions options) {
         Object[] array = super.wrap(value, options);
-        if(array.length == 0)
+        if(array != null && array.length == 0)
             return new String[][] { };
         return (String[][]) array;
     }
