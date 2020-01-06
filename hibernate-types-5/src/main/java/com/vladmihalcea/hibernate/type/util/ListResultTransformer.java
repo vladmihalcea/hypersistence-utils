@@ -10,15 +10,21 @@ import java.util.List;
  * {@link ResultTransformer#transformList(List)} method.
  *
  * This way, the {@link ListResultTransformer} can be used
- * as a {@link @FunctionalInterface}.
+ * as a functional interface.
  *
  * @author Vlad Mihalcea
  * @since 2.9.0
  */
 public abstract class ListResultTransformer implements ResultTransformer {
 
+    /**
+     * Default implementation returning the tuples list as-is.
+     *
+     * @param tuples tuples list
+     * @return tuples list
+     */
     @Override
-    public List transformList(List collection) {
-        return collection;
+    public List transformList(List tuples) {
+        return tuples;
     }
 }
