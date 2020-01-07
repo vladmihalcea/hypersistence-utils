@@ -1,5 +1,6 @@
 package com.vladmihalcea.hibernate.type.util;
 
+import org.hibernate.transform.ResultTransformer;
 import org.junit.Test;
 
 import javax.persistence.*;
@@ -28,35 +29,44 @@ public class ListResultTransformerTest extends AbstractPostgreSQLIntegrationTest
             entityManager.persist(
                 new Post()
                     .setId(1L)
-                    .setTitle("High-Performance Java Persistence eBook has been released!")
+                    .setTitle(
+                        "High-Performance Java Persistence " +
+                        "eBook has been released!")
                     .setCreatedOn(LocalDate.of(2016, 8, 30))
             );
 
             entityManager.persist(
                 new Post()
                     .setId(2L)
-                    .setTitle("High-Performance Java Persistence paperback has been released!")
+                    .setTitle(
+                        "High-Performance Java Persistence " +
+                        "paperback has been released!")
                     .setCreatedOn(LocalDate.of(2016, 10, 12))
             );
 
             entityManager.persist(
                 new Post()
                     .setId(3L)
-                    .setTitle("High-Performance Java Persistence Mach 1 video course has been released!")
+                    .setTitle(
+                        "High-Performance Java Persistence " +
+                        "Mach 1 video course has been released!")
                     .setCreatedOn(LocalDate.of(2018, 1, 30))
             );
 
             entityManager.persist(
                 new Post()
                     .setId(4L)
-                    .setTitle("High-Performance Java Persistence Mach 2 video course has been released!")
+                    .setTitle(
+                        "High-Performance Java Persistence " +
+                        "Mach 2 video course has been released!")
                     .setCreatedOn(LocalDate.of(2018, 5, 8))
             );
 
             entityManager.persist(
                 new Post()
                     .setId(5L)
-                    .setTitle("Hypersistence Optimizer has been released!")
+                    .setTitle(
+                        "Hypersistence Optimizer has been released!")
                     .setCreatedOn(LocalDate.of(2019, 3, 19))
             );
         });
@@ -80,6 +90,49 @@ public class ListResultTransformerTest extends AbstractPostgreSQLIntegrationTest
         public int getPostCount() {
             return postCount;
         }
+    }
+
+    @Test
+    public void testTransformer() {
+        doInJPA(entityManager -> {
+            List<PostCountByYear> postCountByYearMap = (List<PostCountByYear>) entityManager
+            .createQuery(
+                "select " +
+                "   YEAR(p.createdOn) as year, " +
+                "   count(p) as postCount " +
+                "from Post p " +
+                "group by " +
+                "   YEAR(p.createdOn) " +
+                "order by " +
+                "   YEAR(p.createdOn)")
+            .unwrap(org.hibernate.query.Query.class)
+            .setResultTransformer(
+                new ResultTransformer() {
+                    @Override
+                    public Object transformTuple(Object[] tuple, String[] aliases) {
+                        return new PostCountByYear(
+                            ((Number) tuple[0]).intValue(),
+                            ((Number) tuple[1]).intValue()
+                        );
+                    }
+
+                    @Override
+                    public List transformList(List tuples) {
+                        return tuples;
+                    }
+                }
+            )
+            .getResultList();
+
+            assertEquals(2016, postCountByYearMap.get(0).getYear());
+            assertEquals(2, postCountByYearMap.get(0).getPostCount());
+
+            assertEquals(2018, postCountByYearMap.get(1).getYear());
+            assertEquals(2, postCountByYearMap.get(1).getPostCount());
+
+            assertEquals(2019, postCountByYearMap.get(2).getYear());
+            assertEquals(1, postCountByYearMap.get(2).getPostCount());
+        });
     }
 
     @Test

@@ -67,8 +67,14 @@ For more details, check out [this article](https://vladmihalcea.com/how-to-map-j
 
 #### Utilities
 
+##### Naming Strategy
+
 * [`CamelCaseToSnakeCaseNamingStrategy` - How to map camelCase properties to snake_case column names with Hibernate](https://vladmihalcea.com/map-camel-case-properties-snake-case-column-names-hibernate/)
+
+##### DTO Projection and ResultTransformer
+
 * [`ClassImportIntegrator` - How to write a compact DTO projection query with JPA](https://vladmihalcea.com/dto-projection-jpa-query/)
+* [`ListResultTransformer` - The best way to use a Hibernate ResultTransformer](https://vladmihalcea.com/hibernate-resulttransformer/)
 
 ### Are you struggling with application performance issues?
 
