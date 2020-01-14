@@ -48,7 +48,8 @@ public class MultiDimensionalArrayTypeTest extends AbstractPostgreSQLIntegration
         DataSource dataSource = newDataSource();
         try (Connection connection = dataSource.getConnection()) {
             try (Statement statement = connection.createStatement()){
-                statement.executeUpdate("DROP TYPE IF EXISTS seat_status;");
+                statement.executeUpdate("DROP TABLE IF EXISTS plane;");
+                statement.executeUpdate("DROP TYPE IF EXISTS seat_status CASCADE;");
                 statement.executeUpdate("CREATE TYPE seat_status AS ENUM ('UNRESERVED', 'RESERVED', 'BLOCKED');");
             }
         } catch (SQLException e) {
