@@ -11,9 +11,11 @@ import java.lang.annotation.Annotation;
 import java.util.Properties;
 
 /**
- * Maps an {@code Enum[]} array on a database ARRAY type.
+ * Maps an {@code Enum[]} array on a database ARRAY type. Multidimensional arrays are supported as well, as explained in <a href="https://vladmihalcea.com/multidimensional-array-jpa-hibernate/">this article</a>.
  * <p>
  * The {@code SQL_ARRAY_TYPE} parameter is used to define the enum type name in the database.
+ * <p>
+ * For more details about how to use it, check out <a href="https://vladmihalcea.com/map-postgresql-enum-array-jpa-entity-property-hibernate/">this article</a> on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
  *
  * @author Nazir El-Kayssi
  * @author Vlad Mihalcea

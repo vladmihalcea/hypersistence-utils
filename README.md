@@ -48,9 +48,14 @@ For more details, check out [this article](https://vladmihalcea.com/how-to-map-j
 * [How to customize the JSON Serializer used by Hibernate-Types](https://vladmihalcea.com/how-to-customize-the-json-serializer-used-by-hibernate-types/)
 * [How to fix the Hibernate “No Dialect mapping for JDBC type: 1111” issue when mixing JSON types with native SQL queries](https://vladmihalcea.com/hibernate-no-dialect-mapping-for-jdbc-type/)
 
-#### PostgreSQL Types (e.g. ARRAY, ENUM, INET)
+#### ARRAY 
 
-* [PostgreSQL ARRAY mapping](https://vladmihalcea.com/how-to-map-java-and-sql-arrays-with-jpa-and-hibernate/)
+* [How to map the PostgreSQL ARRAY type with JPA and Hibernate](https://vladmihalcea.com/how-to-map-java-and-sql-arrays-with-jpa-and-hibernate/)
+* [Multidimensional array mapping with JPA and Hibernate](https://vladmihalcea.com/multidimensional-array-jpa-hibernate/)
+* [How to map the HSQLDB ARRAY type with JPA and Hibernate](https://vladmihalcea.com/hibernate-hsqldb-array-type/)
+
+#### PostgreSQL Types (e.g. ENUM, INET, HSTORE, RANGE)
+
 * [Java Enum to PostgreSQL Enum Type](https://vladmihalcea.com/the-best-way-to-map-an-enum-type-with-jpa-and-hibernate/)
 * [How to map the PostgreSQL Inet type with JPA and Hibernate](https://vladmihalcea.com/postgresql-inet-type-hibernate/)
 * [How to map a PostgreSQL HStore entity property with JPA and Hibernate](https://vladmihalcea.com/map-postgresql-hstore-jpa-entity-property-hibernate/)
