@@ -191,18 +191,20 @@ public class ArrayUtil {
               Array.set(array, i, objectValue);
           }
           return array;
+        } else if(arrayClass.getComponentType().isArray()) {
+            int arrayLength = originalArray.length;
+            Object[] array = (Object[]) Array.newInstance(arrayClass.getComponentType(), arrayLength);
+            if (arrayLength > 0) {
+                for (int i = 0; i < originalArray.length; i++) {
+                    array[i] = unwrapArray((Object[]) originalArray[i], arrayClass.getComponentType());
+                }
+            }
+            return (T) array;
         } else {
             if(arrayClass.isInstance(originalArray)) {
                 return (T) originalArray;
             } else {
-                int arrayLength = originalArray.length;
-                Object[] array = (Object[]) Array.newInstance(arrayClass.getComponentType(), arrayLength);
-                if (arrayLength > 0) {
-                    for (int i = 0; i < originalArray.length; i++) {
-                        array[i] = originalArray[i];
-                    }
-                }
-                return (T) array;
+                throw new UnsupportedOperationException("Cannot transform array :" + Arrays.toString(originalArray) + " to type: " + arrayClass);
             }
         }
     }
