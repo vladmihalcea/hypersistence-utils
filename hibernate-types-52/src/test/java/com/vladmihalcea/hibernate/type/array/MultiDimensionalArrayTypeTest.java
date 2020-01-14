@@ -61,9 +61,6 @@ public class MultiDimensionalArrayTypeTest extends AbstractPostgreSQLIntegration
     @Test
     public void test() {
         doInJPA(entityManager -> {
-            Plane plane = new Plane();
-            plane.setId(1L);
-            plane.setName("Alice");
             entityManager.persist(
                 new Plane()
                     .setId(1L)
@@ -154,7 +151,7 @@ public class MultiDimensionalArrayTypeTest extends AbstractPostgreSQLIntegration
             return this;
         }
 
-        private SeatStatus getSeatStatus(int row, char letter) {
+        public SeatStatus getSeatStatus(int row, char letter) {
             return seatGrid[row - 1][letter - 65];
         }
     }

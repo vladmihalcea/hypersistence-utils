@@ -77,9 +77,6 @@ public class MultiDimensionalArrayTypeTest extends AbstractPostgreSQLIntegration
 
             @Override
             public Void apply(EntityManager entityManager) {
-                Plane plane = new Plane();
-                plane.setId(1L);
-                plane.setName("Alice");
                 entityManager.persist(
                     new Plane()
                         .setId(1L)
