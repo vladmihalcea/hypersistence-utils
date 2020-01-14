@@ -49,12 +49,15 @@ public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Object>
     @Override
     public Object wrap(Object value, WrapperOptions options) {
         Object wrappedObject = super.wrap(value, options);
-        List list = new ArrayList<>();
-        if (wrappedObject instanceof Object[]) {
-            Object[] wrappedArray = (Object[]) wrappedObject;
-            Collections.addAll(list, wrappedArray);
-        } else {
-            throw new UnsupportedOperationException("The wrapped object " + value + " is not an Object[]!");
+        List list = null;
+        if (wrappedObject != null) {
+            list = new ArrayList<>();
+            if (wrappedObject instanceof Object[]) {
+                Object[] wrappedArray = (Object[]) wrappedObject;
+                Collections.addAll(list, wrappedArray);
+            } else {
+                throw new UnsupportedOperationException("The wrapped object " + value + " is not an Object[]!");
+            }
         }
         return list;
     }

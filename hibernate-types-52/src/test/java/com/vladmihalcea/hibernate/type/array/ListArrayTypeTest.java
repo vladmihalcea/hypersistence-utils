@@ -19,10 +19,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -121,6 +118,132 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             .getResultList();
 
             assertEquals(2, events.size());
+        });
+    }
+
+    @Test
+    public void testMixingNullValues() {
+
+        Date date = Date.from(LocalDate.of(1990, 1, 1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+
+        doInJPA(entityManager -> {
+            Event nullEvent = new Event();
+            nullEvent.setId(0L);
+            entityManager.persist(nullEvent);
+
+            Event event = new Event();
+            event.setId(1L);
+            event.setSensorIds(Arrays.asList(null, UUID.fromString("72e95717-5294-4c15-aa64-a3631cf9a800")));
+            event.setSensorNames(Arrays.asList("Temperature", null));
+            event.setSensorValues(Arrays.asList(null, 756));
+            event.setSensorLongValues(Arrays.asList(null, 9223372036854775800L));
+            event.setSensorStates(Arrays.asList(null, SensorState.OFFLINE, SensorState.ONLINE, null));
+            event.setDateValues(Arrays.asList(null, date));
+            event.setTimestampValues(Arrays.asList(null, date));
+            entityManager.persist(event);
+        });
+
+        doInJPA(entityManager -> {
+            Event event = entityManager.find(Event.class, 1L);
+
+            assertArrayEquals(new UUID[]{null, UUID.fromString("72e95717-5294-4c15-aa64-a3631cf9a800")}, event.getSensorIds().toArray());
+            assertArrayEquals(new String[]{"Temperature", null}, event.getSensorNames().toArray());
+            assertArrayEquals(new Integer[]{null, 756}, event.getSensorValues().toArray());
+            assertArrayEquals(new Long[]{null, 9223372036854775800L}, event.getSensorLongValues().toArray());
+            assertArrayEquals(new SensorState[]{null, SensorState.OFFLINE, SensorState.ONLINE, null}, event.getSensorStates().toArray());
+            assertArrayEquals(new Date[]{null, date}, event.getDateValues().toArray());
+            assertArrayEquals(new Date[]{null, date}, event.getTimestampValues().toArray());
+        });
+    }
+    
+    @Test
+    public void testNullValues() {
+        
+        doInJPA(entityManager -> {
+            Event nullEvent = new Event();
+            nullEvent.setId(0L);
+            entityManager.persist(nullEvent);
+
+            Event event = new Event();
+            event.setId(1L);
+            event.setSensorIds(Arrays.asList(null, null));
+            event.setSensorNames(Arrays.asList(null, null));
+            event.setSensorValues(Arrays.asList(null, null));
+            event.setSensorLongValues(Arrays.asList(null, null));
+            event.setSensorStates(Arrays.asList(null, null));
+            event.setDateValues(Arrays.asList(null, null));
+            event.setTimestampValues(Arrays.asList(null, null));
+            entityManager.persist(event);
+        });
+
+        doInJPA(entityManager -> {
+            Event event = entityManager.find(Event.class, 1L);
+
+            assertArrayEquals(new UUID[]{null, null}, event.getSensorIds().toArray());
+            assertArrayEquals(new String[]{null, null}, event.getSensorNames().toArray());
+            assertArrayEquals(new Integer[]{null, null}, event.getSensorValues().toArray());
+            assertArrayEquals(new Long[]{null, null}, event.getSensorLongValues().toArray());
+            assertArrayEquals(new SensorState[]{null, null}, event.getSensorStates().toArray());
+            assertArrayEquals(new Date[]{null, null}, event.getDateValues().toArray());
+            assertArrayEquals(new Date[]{null, null}, event.getTimestampValues().toArray());
+        });
+    }
+
+    @Test
+    public void testEmptyArrays() {
+
+        doInJPA(entityManager -> {
+            Event nullEvent = new Event();
+            nullEvent.setId(0L);
+            entityManager.persist(nullEvent);
+
+            Event event = new Event();
+            event.setId(1L);
+            event.setSensorIds(Collections.emptyList());
+            event.setSensorNames(Collections.emptyList());
+            event.setSensorValues(Collections.emptyList());
+            event.setSensorLongValues(Collections.emptyList());
+            event.setSensorStates(Collections.emptyList());
+            event.setDateValues(Collections.emptyList());
+            event.setTimestampValues(Collections.emptyList());
+            entityManager.persist(event);
+        });
+
+        doInJPA(entityManager -> {
+            Event event = entityManager.find(Event.class, 1L);
+
+            assertArrayEquals(new UUID[]{}, event.getSensorIds().toArray());
+            assertArrayEquals(new String[]{}, event.getSensorNames().toArray());
+            assertArrayEquals(new Integer[]{}, event.getSensorValues().toArray());
+            assertArrayEquals(new Long[]{}, event.getSensorLongValues().toArray());
+            assertArrayEquals(new SensorState[]{}, event.getSensorStates().toArray());
+            assertArrayEquals(new Date[]{}, event.getDateValues().toArray());
+            assertArrayEquals(new Date[]{}, event.getTimestampValues().toArray());
+        });
+    }
+
+    @Test
+    public void testNullArrays() {
+
+        doInJPA(entityManager -> {
+            Event nullEvent = new Event();
+            nullEvent.setId(0L);
+            entityManager.persist(nullEvent);
+
+            Event event = new Event();
+            event.setId(1L);
+            entityManager.persist(event);
+        });
+
+        doInJPA(entityManager -> {
+            Event event = entityManager.find(Event.class, 1L);
+
+            assertEquals(null, event.getSensorIds());
+            assertEquals(null, event.getSensorNames());
+            assertEquals(null, event.getSensorLongValues());
+            assertEquals(null, event.getSensorStates());
+            assertEquals(null, event.getDateValues());
+            assertEquals(null, event.getTimestampValues());
         });
     }
 
