@@ -5,6 +5,7 @@ import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.type.descriptor.java.MutableMutabilityPlan;
 import org.hibernate.usertype.DynamicParameterizedType;
 
+import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -23,9 +24,21 @@ public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Object>
                 if (value instanceof List) {
                     Object[] array = ((List) value).toArray();
                     return ArrayUtil.deepCopy(array);
+                } else if (value.getClass().isArray()) {
+                    Object[] array = (Object[]) value;
+                    return ArrayUtil.deepCopy(array);
                 } else {
                     throw new UnsupportedOperationException("The provided " + value + " is not a List!");
                 }
+            }
+
+            @Override
+            public Object assemble(Serializable cached) {
+                if (cached != null && cached.getClass().isArray()) {
+                    Object[] array = (Object[]) cached;
+                    return Arrays.asList(array);
+                }
+                return super.assemble(cached);
             }
         });
     }
