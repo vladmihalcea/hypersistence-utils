@@ -2,6 +2,7 @@ package com.vladmihalcea.hibernate.type.model;
 
 import com.vladmihalcea.hibernate.type.array.*;
 import com.vladmihalcea.hibernate.type.json.*;
+import lombok.Data;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
@@ -26,6 +27,7 @@ import javax.persistence.Version;
     @TypeDef(name = "jsonb-lob", typeClass = JsonBlobType.class),
 })
 @MappedSuperclass
+@Data
 public class BaseEntity {
 
     @Id

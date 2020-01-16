@@ -24,6 +24,7 @@ import javax.persistence.Version;
     @TypeDef(name = "json-node", typeClass = JsonNodeStringType.class)
 })
 @MappedSuperclass
+
 public class BaseEntity {
 
     @Id
@@ -32,15 +33,4 @@ public class BaseEntity {
     @Version
     private Integer version;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Integer getVersion() {
-        return version;
-    }
 }

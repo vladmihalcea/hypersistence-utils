@@ -93,6 +93,30 @@ public class JsonTypeDescriptor
         );
     }
 
+
+    public boolean areEqualFixed(Object one, Object another) {
+        if (one == another) {
+            return true;
+        }
+        if (one == null || another == null) {
+            return false;
+        }
+        if (one instanceof String && another instanceof String) {
+            return one.equals(another);
+        }
+        if (one instanceof Collection && another instanceof Collection) {
+            return Objects.equals(one, another);
+        }
+
+        if (one.getClass().equals(another.getClass())) {
+            return one.equals(another);
+        }
+
+        return objectMapperWrapper.toJsonNode(objectMapperWrapper.toString(one)).equals(
+                objectMapperWrapper.toJsonNode(objectMapperWrapper.toString(another))
+        );
+    }
+
     @Override
     public String toString(Object value) {
         return objectMapperWrapper.toString(value);
