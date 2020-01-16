@@ -19,23 +19,7 @@ public class JsonNodeTypeDescriptor
     private ObjectMapperWrapper objectMapperWrapper;
 
     public JsonNodeTypeDescriptor() {
-        super(JsonNode.class, new MutableMutabilityPlan<JsonNode>() {
-            @Override
-            public Serializable disassemble(JsonNode value) {
-                return JacksonUtil.toString(value);
-            }
-
-            @Override
-            public JsonNode assemble(Serializable cached) {
-                return JacksonUtil.toJsonNode((String) cached);
-            }
-
-            @Override
-            protected JsonNode deepCopyNotNull(JsonNode value) {
-                return ObjectMapperWrapper.INSTANCE.clone(value);
-            }
-        });
-        this.objectMapperWrapper = ObjectMapperWrapper.INSTANCE;
+        this(ObjectMapperWrapper.INSTANCE);
     }
 
     public JsonNodeTypeDescriptor(final ObjectMapperWrapper objectMapperWrapper) {

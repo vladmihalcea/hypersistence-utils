@@ -36,12 +36,7 @@ public class JsonTypeDescriptor
     private ObjectMapperWrapper objectMapperWrapper;
 
     public JsonTypeDescriptor() {
-        super(Object.class, new MutableMutabilityPlan<Object>() {
-            @Override
-            protected Object deepCopyNotNull(Object value) {
-                return ObjectMapperWrapper.INSTANCE.clone(value);
-            }
-        });
+        this(ObjectMapperWrapper.INSTANCE);
     }
 
     public JsonTypeDescriptor(Type type) {
@@ -87,6 +82,9 @@ public class JsonTypeDescriptor
         }
         if (one instanceof Collection && another instanceof Collection) {
             return Objects.equals(one, another);
+        }
+        if (one.getClass().equals(another.getClass())) {
+            return one.equals(another);
         }
         return objectMapperWrapper.toJsonNode(objectMapperWrapper.toString(one)).equals(
             objectMapperWrapper.toJsonNode(objectMapperWrapper.toString(another))
