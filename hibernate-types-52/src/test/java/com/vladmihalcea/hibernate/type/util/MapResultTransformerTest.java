@@ -27,35 +27,50 @@ public class MapResultTransformerTest extends AbstractPostgreSQLIntegrationTest 
             entityManager.persist(
                 new Post()
                     .setId(1L)
-                    .setTitle("High-Performance Java Persistence eBook has been released!")
+                    .setTitle(
+                        "High-Performance Java Persistence eBook " +
+                        "has been released!"
+                    )
                     .setCreatedOn(LocalDate.of(2016, 8, 30))
             );
 
             entityManager.persist(
                 new Post()
                     .setId(2L)
-                    .setTitle("High-Performance Java Persistence paperback has been released!")
+                    .setTitle(
+                        "High-Performance Java Persistence paperback " +
+                        "has been released!"
+                    )
                     .setCreatedOn(LocalDate.of(2016, 10, 12))
             );
 
             entityManager.persist(
                 new Post()
                     .setId(3L)
-                    .setTitle("High-Performance Java Persistence Mach 1 video course has been released!")
+                    .setTitle(
+                        "High-Performance Java Persistence Mach 1 video course " +
+                        "has been released!"
+                    )
                     .setCreatedOn(LocalDate.of(2018, 1, 30))
             );
 
             entityManager.persist(
                 new Post()
                     .setId(4L)
-                    .setTitle("High-Performance Java Persistence Mach 2 video course has been released!")
+                    .setTitle(
+                        "High-Performance Java Persistence Mach 2 video course " +
+                        "has been released!"
+                    )
                     .setCreatedOn(LocalDate.of(2018, 5, 8))
             );
 
             entityManager.persist(
                 new Post()
                     .setId(5L)
-                    .setTitle("Hypersistence Optimizer has been released!")
+                    .setTitle(
+                        "Hypersistence Optimizer " +
+                        "has been released!"
+                    )
                     .setCreatedOn(LocalDate.of(2019, 3, 19))
             );
         });
@@ -69,10 +84,38 @@ public class MapResultTransformerTest extends AbstractPostgreSQLIntegrationTest 
                 "select " +
                 "   YEAR(p.createdOn) as year, " +
                 "   count(p) as postCount " +
-                "from Post p " +
+                "from " +
+                "   Post p " +
                 "group by " +
                 "   YEAR(p.createdOn)", Tuple.class)
             .getResultStream()
+            .collect(
+                Collectors.toMap(
+                    tuple -> ((Number) tuple.get("year")).intValue(),
+                    tuple -> ((Number) tuple.get("postCount")).intValue()
+                )
+            );
+
+            assertEquals(2, postCountByYearMap.get(2016).intValue());
+            assertEquals(2, postCountByYearMap.get(2018).intValue());
+            assertEquals(1, postCountByYearMap.get(2019).intValue());
+        });
+    }
+
+    @Test
+    public void testGroupByListStreamCollector() {
+        doInJPA(entityManager -> {
+            Map<Integer, Integer> postCountByYearMap = entityManager
+            .createQuery(
+                "select " +
+                "   YEAR(p.createdOn) as year, " +
+                "   count(p) as postCount " +
+                "from " +
+                "   Post p " +
+                "group by " +
+                "   YEAR(p.createdOn)", Tuple.class)
+            .getResultList()
+            .stream()
             .collect(
                 Collectors.toMap(
                     tuple -> ((Number) tuple.get("year")).intValue(),
@@ -94,7 +137,8 @@ public class MapResultTransformerTest extends AbstractPostgreSQLIntegrationTest 
                 "select " +
                 "   YEAR(p.createdOn) as year, " +
                 "   count(p) as postCount " +
-                "from Post p " +
+                "from " +
+                "   Post p " +
                 "group by " +
                 "   YEAR(p.createdOn)")
             .unwrap(org.hibernate.query.Query.class)
