@@ -35,11 +35,7 @@ public class OracleDataSourceProvider implements DataSourceProvider {
 
     @Override
     public Class<? extends DataSource> dataSourceClassName() {
-        try {
-            return (Class<? extends DataSource>) Class.forName("oracle.jdbc.pool.OracleDataSource");
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException(e);
-        }
+        return ReflectionUtils.getClass("oracle.jdbc.pool.OracleDataSource");
     }
 
     @Override
