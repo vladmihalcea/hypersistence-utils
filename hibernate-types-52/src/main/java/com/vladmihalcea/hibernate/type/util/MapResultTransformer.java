@@ -15,6 +15,8 @@ import java.util.Map;
  * then those will be used.
  * <p>
  * Otherwise, the first column value is the key while the second one is the Map value.
+ * <p>
+ * For more details about how to use it, check out <a href="https://vladmihalcea.com/jpa-query-map-result/">this article</a> on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
  *
  * @author Vlad Mihalcea
  * @since 2.9.0

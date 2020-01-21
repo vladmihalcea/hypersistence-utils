@@ -8,13 +8,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The {@link MapResultTransformer} allows us to return
+ * The {@link com.vladmihalcea.hibernate.type.util.MapResultTransformer} allows us to return
  * a {@link Map} from a JPA {@link javax.persistence.Query}.
  * <p>
  * If there are aliases named as {@code key} or {@code value},
  * then those will be used.
  * <p>
  * Otherwise, the first column value is the key while the second one is the Map value.
+ * <p>
+ * For more details about how to use it, check out <a href="https://vladmihalcea.com/jpa-query-map-result/">this article</a> on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
  *
  * @author Vlad Mihalcea
  * @since 2.9.0
