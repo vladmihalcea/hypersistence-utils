@@ -1,11 +1,10 @@
 package com.vladmihalcea.hibernate.type.basic;
 
 import com.vladmihalcea.hibernate.type.util.Configuration;
+import com.vladmihalcea.hibernate.type.util.ReflectionUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.type.descriptor.java.EnumJavaTypeDescriptor;
-import org.hibernate.type.descriptor.java.spi.JavaTypeDescriptorRegistry;
-import org.hibernate.type.spi.TypeConfiguration;
+import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -49,17 +48,25 @@ public class PostgreSQLEnumType extends org.hibernate.type.EnumType {
     public PostgreSQLEnumType(Class<? extends Enum> enumClass) {
         this();
 
-        setTypeConfiguration(new TypeConfiguration() {
-            @Override
-            public JavaTypeDescriptorRegistry getJavaTypeDescriptorRegistry() {
-                return new JavaTypeDescriptorRegistry(this) {
-                    @Override
-                    public EnumJavaTypeDescriptor getDescriptor(Class javaType) {
-                        return new EnumJavaTypeDescriptor(enumClass);
-                    }
-                };
-            }
-        });
+        Class typeConfigurationClass = ReflectionUtils.getClassOrNull("org.hibernate.type.spi.TypeConfiguration");
+
+        if(typeConfigurationClass != null) {
+            Object typeConfiguration = ReflectionUtils.newInstance(typeConfigurationClass);
+
+            Class enumJavaTypeDescriptorClass = ReflectionUtils.getClassOrNull("org.hibernate.type.descriptor.java.EnumJavaTypeDescriptor");
+
+            Object enumJavaTypeDescriptor = ReflectionUtils.newInstance(enumJavaTypeDescriptorClass, new Object[] {enumClass}, new Class[]{enumClass.getClass()});
+
+            Object javaTypeDescriptorRegistry = ReflectionUtils.invokeGetter(typeConfiguration, "javaTypeDescriptorRegistry");
+
+            ReflectionUtils.invokeMethod(
+                javaTypeDescriptorRegistry,
+                ReflectionUtils.getMethod(javaTypeDescriptorRegistry, "addDescriptor", JavaTypeDescriptor.class),
+                enumJavaTypeDescriptor
+            );
+
+            ReflectionUtils.invokeSetter(this, "typeConfiguration", typeConfiguration);
+        }
 
         Properties properties = new Properties();
         properties.setProperty("enumClass", enumClass.getName());

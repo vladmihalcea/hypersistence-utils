@@ -58,7 +58,8 @@
     </dependencies>
 
     <properties>
-        <hibernate.version>5.4.9.Final</hibernate.version>
+        <hibernate.version>5.4.10.Final</hibernate.version>
+        <!--<hibernate.version>5.2.18.Final</hibernate.version>-->
         <postgresql.version>9.4-1202-jdbc41</postgresql.version>
 
         <mysql.version>8.0.13</mysql.version>

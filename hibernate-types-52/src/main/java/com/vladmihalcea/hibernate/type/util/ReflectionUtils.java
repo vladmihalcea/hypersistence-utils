@@ -56,6 +56,32 @@ public final class ReflectionUtils {
     }
 
     /**
+     * Instantiate a new {@link Object} of the provided type.
+     *
+     * @param clazz The Java {@link Class} of the {@link Object} to instantiate
+     * @param args The arguments that need to be passed to the constructor
+     * @param argsTypes The argument types that need to be passed to the constructor
+     * @param <T>   class type
+     * @return new Java {@link Object} of the provided type
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T newInstance(Class clazz, Object[] args, Class[] argsTypes) {
+        try {
+            Constructor<T> constructor = clazz.getDeclaredConstructor(argsTypes);
+
+            return constructor.newInstance(args);
+        } catch (InstantiationException e) {
+            throw handleException(e);
+        } catch (IllegalAccessException e) {
+            throw handleException(e);
+        } catch (NoSuchMethodException e) {
+            throw handleException(e);
+        } catch (InvocationTargetException e) {
+            throw handleException(e);
+        }
+    }
+
+    /**
      * Get the {@link Field} with the given name belonging to the provided Java {@link Class}.
      *
      * @param targetClass the provided Java {@link Class} the field belongs to
