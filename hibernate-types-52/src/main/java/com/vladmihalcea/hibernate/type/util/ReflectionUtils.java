@@ -29,12 +29,8 @@ public final class ReflectionUtils {
      * @return new Java {@link Object} of the provided type
      */
     public static <T> T newInstance(String className) {
-        try {
-            Class clazz = Class.forName(className);
-            return newInstance(clazz);
-        } catch (ClassNotFoundException e) {
-            throw handleException(e);
-        }
+        Class clazz = getClass(className);
+        return newInstance(clazz);
     }
 
     /**
@@ -456,7 +452,7 @@ public final class ReflectionUtils {
     @SuppressWarnings("unchecked")
     public static <T> Class<T> getClass(String className) {
         try {
-            return (Class<T>) Class.forName(className);
+            return (Class<T>) Class.forName(className, false, Thread.currentThread().getContextClassLoader());
         } catch (ClassNotFoundException e) {
             throw handleException(e);
         }
@@ -473,7 +469,7 @@ public final class ReflectionUtils {
     @SuppressWarnings("unchecked")
     public static <T> Class<T> getClassOrNull(String className) {
         try {
-            return (Class<T>) Class.forName(className);
+            return (Class<T>) getClass(className);
         } catch (Exception e) {
             return null;
         }
