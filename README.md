@@ -80,6 +80,7 @@ For more details, check out [this article](https://vladmihalcea.com/how-to-map-j
 
 * [`ClassImportIntegrator` - How to write a compact DTO projection query with JPA](https://vladmihalcea.com/dto-projection-jpa-query/)
 * [`ListResultTransformer` - The best way to use a Hibernate ResultTransformer](https://vladmihalcea.com/hibernate-resulttransformer/)
+* [`MapResultTransformer` - How to return a Map result from a JPA or Hibernate query](https://vladmihalcea.com/jpa-query-map-result/)
 
 ### Are you struggling with application performance issues?
 
