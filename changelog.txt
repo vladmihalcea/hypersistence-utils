@@ -1,11 +1,11 @@
 Version 2.9.3 - January 26, 2020
 ================================================================================
 
+PostgreSQLEnumType is not compatible with Hibernate 5.2 because of JavaTypeDescriptorRegistry and TypeConfiguration #176
+
 Unexpected Hibernate dirty checking when using Sets #175
 
 GraalVM / Quarkus native build support #173
-
-PostgreSQLEnumType is not compatible with Hibernate 5.2 because of JavaTypeDescriptorRegistry and TypeConfiguration #176
 
 When fetching an entity from the second-level cache, ListArrayType throws UnsupportedOperationException #169
 
@@ -22,9 +22,9 @@ When fetching a List backed by a NULL PostgreSQL array, a NPE is thrown #164
 Version 2.9.0 - January 06, 2020
 ================================================================================
 
-Empty multi-dimensional arrays throw ClassCastException #161
-
 Add support for MapResultTransformer and ListResultTransformer #163
+
+Empty multi-dimensional arrays throw ClassCastException #161
 
 Add support for mapping java.util.Date ARRAY or List to PostgreSQL DATE[] and TIMESTAMP[] #150
 
@@ -33,15 +33,15 @@ Add support for mapping ARRAY to a java.util.List #97
 Version 2.8.0 - December 08, 2019
 ================================================================================
 
-Add support for ClassImportIntegrator for compact DTOs #151
-
-Add support for PostgreSQL tx_vector column type #116
-
 ObjectMapperJsonSerializer should inspect the inner Collection element type #158
 
 Upgrade Jackson Databind library to 2.9.10.1 #157
 
+Add support for ClassImportIntegrator for compact DTOs #151
+
 NPE thrown by AbstractArrayTypeDescriptor#setParameterValues when creating a PostgreSQL ARRAY #142
+
+Add support for PostgreSQL tx_vector column type #116
 
 Version 2.7.1 - October 10, 2019
 ================================================================================
@@ -93,11 +93,11 @@ Upgrade Jackson Databind artifact version
 Version 2.5.0 - July 05, 2019
 ================================================================================
 
+Allow the Configuration to be accessed by all custom Types #107
+
 Add handling for null PostgreSQL Range column values #106
 
 Add PostgreSQL UUID ARRAY support #105
-
-Allow the Configuration to be accessed by all custom Types #107
 
 Version 2.4.4 - June 06, 2019
 ================================================================================
@@ -106,9 +106,9 @@ Update Javadoc to specify which JSON types are suitable for PostgreSQL and MySQL
 
 Add ZoneIdType to map the java.time.ZoneId to a VARCHAR-based column #103
 
-Replace reflection usage in PostgreSQL Types with Driver-specific API calls #99
-
 In case the JSON attribute is a java.util.Set, an additional SQL UPDATE is executed when persisting the entity #100
+
+Replace reflection usage in PostgreSQL Types with Driver-specific API calls #99
 
 Version 2.4.3 - April 07, 2019
 ================================================================================
@@ -126,18 +126,18 @@ Add a LongArrayType to support long[] array mappings #82
 Version 2.4.1 - February 01, 2019
 ================================================================================
 
-Fix issue with ZonedDateTimeRanges and DST #78
-
 Change constructor type args from Class to Type for JSON Types so it's easier to register them dynamically
 
 Support insertion of String values into JSON columns #80
 
+Fix issue with ZonedDateTimeRanges and DST #78
+
 Version 2.4.0 - January 02, 2019
 ================================================================================
 
-Add support for the PostgreSQL hstore type #44
-
 Add support for PostgreSQL range type #63
+
+Add support for the PostgreSQL hstore type #44
 
 Version 2.3.5 - December 03, 2018
 ================================================================================
@@ -153,9 +153,9 @@ to snake_case database identifiers.
 Version 2.3.3 - October 23, 2018
 ================================================================================
 
-Add continuous Integer solution for YearMonthType #47
-
 Add types for java.time.Year and java.time.Month #51
+
+Add continuous Integer solution for YearMonthType #47
 
 Version 2.3.2 - October 18, 2018
 ================================================================================
@@ -220,9 +220,9 @@ Migrate hibernate-types-52 to Jackson 2.9.0.
 Version 1.2.0 - November 28, 2018
 ================================================================================
 
-Add support for List, Set, Map to be saved as JSON #11
-
 Serialization problem when using JsonNodeBinaryType and Hibernate 2nd-level cache #14
+
+Add support for List, Set, Map to be saved as JSON #11
 
 Version 1.1.2 - November 11, 2018
 ================================================================================
