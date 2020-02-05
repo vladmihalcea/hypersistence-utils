@@ -9,10 +9,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.junit.Test;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Tuple;
+import javax.persistence.*;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -71,36 +68,108 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
     @Test
     public void test() {
 
-        Date date1 = Date.from(LocalDate.of(1991, 12, 31).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-        Date date2 = Date.from(LocalDate.of(1990, 1, 1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-
         doInJPA(entityManager -> {
-            Event nullEvent = new Event();
-            nullEvent.setId(0L);
-            entityManager.persist(nullEvent);
+            entityManager.persist(
+                new Event()
+                    .setId(0L)
+            );
 
-            Event event = new Event();
-            event.setId(1L);
-            event.setSensorIds(Arrays.asList(UUID.fromString("c65a3bcb-8b36-46d4-bddb-ae96ad016eb1"), UUID.fromString("72e95717-5294-4c15-aa64-a3631cf9a800")));
-            event.setSensorNames(Arrays.asList("Temperature", "Pressure"));
-            event.setSensorValues(Arrays.asList(12, 756));
-            event.setSensorLongValues(Arrays.asList(42L, 9223372036854775800L));
-            event.setSensorStates(Arrays.asList(SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN));
-            event.setDateValues(Arrays.asList(date1, date2));
-            event.setTimestampValues(Arrays.asList(date1, date2));
-            entityManager.persist(event);
+            entityManager.persist(
+                new Event()
+                    .setId(1L)
+                    .setSensorIds(
+                        Arrays.asList(
+                            UUID.fromString("c65a3bcb-8b36-46d4-bddb-ae96ad016eb1"),
+                            UUID.fromString("72e95717-5294-4c15-aa64-a3631cf9a800")
+                        )
+                    )
+                    .setSensorNames(Arrays.asList("Temperature", "Pressure"))
+                    .setSensorValues(Arrays.asList(12, 756))
+                    .setSensorLongValues(Arrays.asList(42L, 9223372036854775800L))
+                    .setSensorStates(
+                        Arrays.asList(
+                            SensorState.ONLINE, SensorState.OFFLINE,
+                            SensorState.ONLINE, SensorState.UNKNOWN
+                        )
+                    )
+                    .setDateValues(
+                        Arrays.asList(
+                            java.sql.Date.valueOf(LocalDate.of(1991, 12, 31)),
+                            java.sql.Date.valueOf(LocalDate.of(1990, 1, 1))
+                        )
+                    )
+                    .setTimestampValues(
+                        Arrays.asList(
+                            Date.from(
+                                LocalDate.of(1991, 12, 31)
+                                    .atStartOfDay()
+                                    .atZone(ZoneId.systemDefault())
+                                    .toInstant()
+                            ),
+                            Date.from(
+                                LocalDate.of(1990, 1, 1)
+                                    .atStartOfDay()
+                                    .atZone(ZoneId.systemDefault())
+                                    .toInstant()
+                            )
+                        )
+                    )
+            );
         });
 
         doInJPA(entityManager -> {
             Event event = entityManager.find(Event.class, 1L);
 
-            assertArrayEquals(new UUID[]{UUID.fromString("c65a3bcb-8b36-46d4-bddb-ae96ad016eb1"), UUID.fromString("72e95717-5294-4c15-aa64-a3631cf9a800")}, event.getSensorIds().toArray());
-            assertArrayEquals(new String[]{"Temperature", "Pressure"}, event.getSensorNames().toArray());
-            assertArrayEquals(new Integer[]{12, 756}, event.getSensorValues().toArray());
-            assertArrayEquals(new Long[]{42L, 9223372036854775800L}, event.getSensorLongValues().toArray());
-            assertArrayEquals(new SensorState[]{SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN}, event.getSensorStates().toArray());
-            assertArrayEquals(new Date[]{date1, date2}, event.getDateValues().toArray());
-            assertArrayEquals(new Date[]{date1, date2}, event.getTimestampValues().toArray());
+            assertEquals(
+                Arrays.asList(
+                    UUID.fromString("c65a3bcb-8b36-46d4-bddb-ae96ad016eb1"),
+                    UUID.fromString("72e95717-5294-4c15-aa64-a3631cf9a800")
+                ),
+                event.getSensorIds()
+            );
+            assertEquals(
+                Arrays.asList("Temperature", "Pressure"),
+                event.getSensorNames()
+            );
+            assertEquals(
+                Arrays.asList(12, 756),
+                event.getSensorValues()
+            );
+            assertEquals(
+                Arrays.asList(42L, 9223372036854775800L),
+                event.getSensorLongValues()
+            );
+            assertEquals(
+                Arrays.asList(
+                    SensorState.ONLINE, SensorState.OFFLINE,
+                    SensorState.ONLINE, SensorState.UNKNOWN
+                ),
+                event.getSensorStates()
+            );
+            assertEquals(
+                Arrays.asList(
+                    java.sql.Date.valueOf(LocalDate.of(1991, 12, 31)),
+                    java.sql.Date.valueOf(LocalDate.of(1990, 1, 1))
+                ),
+                event.getDateValues()
+            );
+            assertEquals(
+                Arrays.asList(
+                    Date.from(
+                        LocalDate.of(1991, 12, 31)
+                            .atStartOfDay()
+                            .atZone(ZoneId.systemDefault())
+                            .toInstant()
+                    ),
+                    Date.from(
+                        LocalDate.of(1990, 1, 1)
+                            .atStartOfDay()
+                            .atZone(ZoneId.systemDefault())
+                            .toInstant()
+                    )
+                ),
+                event.getTimestampValues()
+            );
         });
 
         doInJPA(entityManager -> {
@@ -222,6 +291,144 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         });
     }
 
+    @Entity(name = "Event")
+    @Table(name = "event")
+    @TypeDef(name = "list-array", typeClass = ListArrayType.class)
+    public static class Event {
+
+        @Id
+        private Long id;
+
+        @Type(type = "list-array")
+        @Column(
+            name = "sensor_ids",
+            columnDefinition = "uuid[]"
+        )
+        private List<UUID> sensorIds;
+
+        @Type(type = "list-array")
+        @Column(
+            name = "sensor_names",
+            columnDefinition = "text[]"
+        )
+        private List<String> sensorNames;
+
+        @Type(type = "list-array")
+        @Column(
+            name = "sensor_values",
+            columnDefinition = "integer[]"
+        )
+        private List<Integer> sensorValues;
+
+        @Type(type = "list-array")
+        @Column(
+            name = "sensor_long_values",
+            columnDefinition = "bigint[]"
+        )
+        private List<Long> sensorLongValues;
+
+        @Type(
+            type = "com.vladmihalcea.hibernate.type.array.ListArrayType",
+            parameters = {
+                @Parameter(
+                    name = ListArrayType.SQL_ARRAY_TYPE,
+                    value = "sensor_state"
+                )
+            }
+        )
+        @Column(
+            name = "sensor_states",
+            columnDefinition = "sensor_state[]"
+        )
+        private List<SensorState> sensorStates;
+
+        @Type(type = "list-array")
+        @Column(
+            name = "date_values",
+            columnDefinition = "date[]"
+        )
+        private List<Date> dateValues;
+
+        @Type(type = "list-array")
+        @Column(
+            name = "timestamp_values",
+            columnDefinition = "timestamp[]"
+        )
+        private List<Date> timestampValues;
+
+        public Long getId() {
+            return id;
+        }
+
+        public Event setId(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public List<UUID> getSensorIds() {
+            return sensorIds;
+        }
+
+        public Event setSensorIds(List<UUID> sensorIds) {
+            this.sensorIds = sensorIds;
+            return this;
+        }
+
+        public List<String> getSensorNames() {
+            return sensorNames;
+        }
+
+        public Event setSensorNames(List<String> sensorNames) {
+            this.sensorNames = sensorNames;
+            return this;
+        }
+
+        public List<Integer> getSensorValues() {
+            return sensorValues;
+        }
+
+        public Event setSensorValues(List<Integer> sensorValues) {
+            this.sensorValues = sensorValues;
+            return this;
+        }
+
+        public List<Long> getSensorLongValues() {
+            return sensorLongValues;
+        }
+
+        public Event setSensorLongValues(List<Long> sensorLongValues) {
+            this.sensorLongValues = sensorLongValues;
+            return this;
+        }
+
+        public List<SensorState> getSensorStates() {
+            return sensorStates;
+        }
+
+        public Event setSensorStates(List<SensorState> sensorStates) {
+            this.sensorStates = sensorStates;
+            return this;
+        }
+
+        public List<Date> getDateValues() {
+            return dateValues;
+        }
+
+        public Event setDateValues(List<Date> dateValues) {
+            this.dateValues = dateValues;
+            return this;
+        }
+
+        public List<Date> getTimestampValues() {
+            return timestampValues;
+        }
+
+        public Event setTimestampValues(List<Date> timestampValues) {
+            this.timestampValues = timestampValues;
+            return this;
+        }
+    }
+
     @Test
     public void testNullArrays() {
 
@@ -245,98 +452,6 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             assertEquals(null, event.getDateValues());
             assertEquals(null, event.getTimestampValues());
         });
-    }
-
-    @Entity(name = "Event")
-    @TypeDef(name = "list-array", typeClass = ListArrayType.class)
-    @TypeDef(name = "sensor-state-array", typeClass = ListArrayType.class, parameters = {
-        @Parameter(name = ListArrayType.SQL_ARRAY_TYPE, value = "sensor_state")}
-    )
-    @Table(name = "event")
-    public static class Event extends BaseEntity {
-        @Type(type = "list-array")
-        @Column(name = "sensor_ids", columnDefinition = "uuid[]")
-        private List<UUID> sensorIds;
-
-        @Type(type = "list-array")
-        @Column(name = "sensor_names", columnDefinition = "text[]")
-        private List<String> sensorNames;
-
-        @Type(type = "list-array")
-        @Column(name = "sensor_values", columnDefinition = "integer[]")
-        private List<Integer> sensorValues;
-
-        @Type(type = "list-array")
-        @Column(name = "sensor_long_values", columnDefinition = "bigint[]")
-        private List<Long> sensorLongValues;
-
-        @Type(type = "sensor-state-array")
-        @Column(name = "sensor_states", columnDefinition = "sensor_state[]")
-        private List<SensorState> sensorStates;
-
-        @Type(type = "list-array")
-        @Column(name = "date_values", columnDefinition = "date[]")
-        private List<Date> dateValues;
-
-        @Type(type = "list-array")
-        @Column(name = "timestamp_values", columnDefinition = "timestamp[]")
-        private List<Date> timestampValues;
-
-        public List<UUID> getSensorIds() {
-            return sensorIds;
-        }
-
-        public void setSensorIds(List<UUID> sensorIds) {
-            this.sensorIds = sensorIds;
-        }
-
-        public List<String> getSensorNames() {
-            return sensorNames;
-        }
-
-        public void setSensorNames(List<String> sensorNames) {
-            this.sensorNames = sensorNames;
-        }
-
-        public List<Integer> getSensorValues() {
-            return sensorValues;
-        }
-
-        public void setSensorValues(List<Integer> sensorValues) {
-            this.sensorValues = sensorValues;
-        }
-
-        public List<Long> getSensorLongValues() {
-            return sensorLongValues;
-        }
-
-        public void setSensorLongValues(List<Long> sensorLongValues) {
-            this.sensorLongValues = sensorLongValues;
-        }
-
-        public List<SensorState> getSensorStates() {
-            return sensorStates;
-        }
-
-        public void setSensorStates(List<SensorState> sensorStates) {
-            this.sensorStates = sensorStates;
-        }
-
-        public List<Date> getDateValues() {
-            return dateValues;
-        }
-
-        public void setDateValues(List<Date> dateValues) {
-            this.dateValues = dateValues;
-        }
-
-        public List<Date> getTimestampValues() {
-            return timestampValues;
-        }
-
-        public void setTimestampValues(List<Date> timestampValues) {
-            this.timestampValues = timestampValues;
-        }
     }
 
     public enum SensorState {
