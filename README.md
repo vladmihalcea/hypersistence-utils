@@ -50,7 +50,8 @@ For more details, check out [this article](https://vladmihalcea.com/how-to-map-j
 
 #### ARRAY 
 
-* [How to map the PostgreSQL ARRAY type with JPA and Hibernate](https://vladmihalcea.com/how-to-map-java-and-sql-arrays-with-jpa-and-hibernate/)
+* [How to map a PostgreSQL ARRAY to a Java `List` with JPA and Hibernate](https://vladmihalcea.com/postgresql-array-java-list/)
+* [How to map the PostgreSQL ARRAY to Java Arrays with JPA and Hibernate](https://vladmihalcea.com/how-to-map-java-and-sql-arrays-with-jpa-and-hibernate/)
 * [Multidimensional array mapping with JPA and Hibernate](https://vladmihalcea.com/multidimensional-array-jpa-hibernate/)
 * [How to map the HSQLDB ARRAY type with JPA and Hibernate](https://vladmihalcea.com/hibernate-hsqldb-array-type/)
 

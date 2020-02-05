@@ -6,6 +6,8 @@ import com.vladmihalcea.hibernate.type.util.Configuration;
 
 /**
  * Maps an {@link java.util.List} entity attribute on a PostgreSQL ARRAY column type.
+ * <p>
+ * For more details about how to use it, check out <a href="https://vladmihalcea.com/postgresql-array-java-list/">this article</a> on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
  *
  * @author Vlad Mihalcea
  */
