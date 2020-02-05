@@ -76,6 +76,24 @@ public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Object>
     }
 
     @Override
+    public boolean areEqual(Object one, Object another) {
+        if (one == another) {
+            return true;
+        }
+        if (one == null || another == null) {
+            return false;
+        }
+        if(one instanceof Collection) {
+            one = ((Collection) one).toArray();
+        }
+        if(another instanceof Collection) {
+            another = ((Collection) another).toArray();
+        }
+
+        return ArrayUtil.isEquals(one, another);
+    }
+
+    @Override
     public void setParameterValues(Properties parameters) {
         Class entityClass = ReflectionUtils.getClass(parameters.getProperty(DynamicParameterizedType.ENTITY));
         String property = parameters.getProperty(DynamicParameterizedType.PROPERTY);
