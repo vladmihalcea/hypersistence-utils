@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <name>hibernate-types-52</name>
-    <description>Hibernate 5.2 extra Types.</description>
+    <description>Hibernate 5.2, 5.3, and 5.3 extra Types</description>
 
     <dependencies>
 
@@ -58,7 +58,7 @@
     </dependencies>
 
     <properties>
-        <hibernate.version>5.4.10.Final</hibernate.version>
+        <hibernate.version>5.4.11.Final</hibernate.version>
         <!--<hibernate.version>5.2.18.Final</hibernate.version>-->
         <postgresql.version>9.4-1202-jdbc41</postgresql.version>
 

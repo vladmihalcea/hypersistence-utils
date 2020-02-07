@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <name>hibernate-types-5</name>
-    <description>Hibernate 5 extra Types.</description>
+    <description>Hibernate 5.0 and 5.1 extra Types</description>
 
     <dependencies>
 

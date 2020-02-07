@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <name>hibernate-types-43</name>
-    <description>Hibernate 4.3 extra Types.</description>
+    <description>Hibernate 4.3 extra Types</description>
 
     <dependencies>
 
