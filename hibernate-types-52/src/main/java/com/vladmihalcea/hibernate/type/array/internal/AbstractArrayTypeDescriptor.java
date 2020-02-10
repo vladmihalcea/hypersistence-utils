@@ -68,6 +68,15 @@ public abstract class AbstractArrayTypeDescriptor<T>
     public T fromString(String string) {
         return ArrayUtil.fromString(string, arrayObjectClass);
     }
+    
+    @Override
+    public String extractLoggableRepresentation(T value) {
+        return (value == null) ? "null" : head(toString(value), 100) + "::" + value.getClass().getSimpleName();
+    }
+
+    private String head(String asString, int maximumKeptLength) {
+        return asString.length() <= maximumKeptLength ? asString : asString.substring(0, 100) + "...";
+    }
 
     @SuppressWarnings({"unchecked"})
     @Override
