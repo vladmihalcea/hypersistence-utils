@@ -2,6 +2,7 @@ package com.vladmihalcea.hibernate.type.array.internal;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * <code>ArrayUtil</code> - Array utilities holder.
@@ -115,6 +116,8 @@ public class ArrayUtil {
                 array[i] = fromArray[i];
             }
             return array;
+        } else if (originalArray instanceof List) {
+            return ((List) originalArray).toArray();
         } else {
             return (Object[]) originalArray;
         }

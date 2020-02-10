@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -124,6 +125,30 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             .getResultList();
 
             assertEquals(2, events.size());
+        });
+    }
+
+    @Test
+    public void testLargeArray() {
+        int[] sensorValues = new int[100];
+
+        Arrays.fill(sensorValues, 0, 10, 123);
+        Arrays.fill(sensorValues, 10, 50, 456);
+        Arrays.fill(sensorValues, 50, 90, 789);
+        Arrays.fill(sensorValues, 90, 100, 0);
+
+        doInJPA(entityManager -> {
+            Event event = new Event();
+            event.setId(0L);
+            event.setSensorValues(sensorValues);
+
+            entityManager.persist(event);
+        });
+
+        doInJPA(entityManager -> {
+            Event event = entityManager.find(Event.class, 0L);
+
+            assertArrayEquals(sensorValues, event.getSensorValues());
         });
     }
 

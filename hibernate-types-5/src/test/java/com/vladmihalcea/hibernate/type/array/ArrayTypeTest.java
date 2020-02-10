@@ -21,6 +21,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
 
@@ -139,6 +140,41 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 assertEquals(date2.getTime(), event.getDateValues()[1].getTime());
                 assertEquals(date1.getTime(), event.getTimestampValues()[0].getTime());
                 assertEquals(date2.getTime(), event.getTimestampValues()[1].getTime());
+
+                return null;
+            }
+        });
+    }
+
+    @Test
+    public void testLargeArray() {
+        final int[] sensorValues = new int[100];
+
+        Arrays.fill(sensorValues, 0, 10, 123);
+        Arrays.fill(sensorValues, 10, 50, 456);
+        Arrays.fill(sensorValues, 50, 90, 789);
+        Arrays.fill(sensorValues, 90, 100, 0);
+
+        doInJPA(new JPATransactionFunction<Void>() {
+
+            @Override
+            public Void apply(EntityManager entityManager) {
+                Event event = new Event();
+                event.setId(0L);
+                event.setSensorValues(sensorValues);
+
+                entityManager.persist(event);
+
+                return null;
+            }
+        });
+        doInJPA(new JPATransactionFunction<Void>() {
+
+            @Override
+            public Void apply(EntityManager entityManager) {
+                Event event = entityManager.find(Event.class, 0L);
+
+                assertArrayEquals(sensorValues, event.getSensorValues());
 
                 return null;
             }

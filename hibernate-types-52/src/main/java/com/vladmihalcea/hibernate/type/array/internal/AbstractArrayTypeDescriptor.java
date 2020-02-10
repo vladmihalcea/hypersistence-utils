@@ -61,12 +61,17 @@ public abstract class AbstractArrayTypeDescriptor<T>
 
     @Override
     public String toString(Object value) {
-        return Arrays.deepToString((Object[]) value);
+        return Arrays.deepToString(ArrayUtil.wrapArray(value));
     }
 
     @Override
     public T fromString(String string) {
         return ArrayUtil.fromString(string, arrayObjectClass);
+    }
+
+    @Override
+    public String extractLoggableRepresentation(T value) {
+        return (value == null) ? "null" : toString(value);
     }
 
     @SuppressWarnings({"unchecked"})

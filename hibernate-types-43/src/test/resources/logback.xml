@@ -22,7 +22,8 @@
 
     <logger name="com.vladmihalcea" level="debug"/>
 
-    <logger name="org.hibernate.type.descriptor.sql" level="trace"/>
+    <logger name="org.hibernate.SQL" level="trace"/>
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="trace"/>
 
     <root>
         <appender-ref ref="file"/>
