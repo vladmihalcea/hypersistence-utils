@@ -19,15 +19,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * @author Vlad Mihalcea
@@ -116,6 +112,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 event.setSensorNames(new String[]{"Temperature", "Pressure"});
                 event.setSensorValues(new int[]{12, 756});
                 event.setSensorLongValues(new long[]{42L, 9223372036854775800L});
+                event.setSensorDoubleValues(new double[]{0.123, 456.789});
                 event.setSensorStates(new SensorState[]{SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN});
                 event.setDateValues(new Date[]{date1, date2});
                 event.setTimestampValues(new Date[]{date1, date2});
@@ -135,6 +132,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 assertArrayEquals(new String[]{"Temperature", "Pressure"}, event.getSensorNames());
                 assertArrayEquals(new int[]{12, 756}, event.getSensorValues());
                 assertArrayEquals(new long[]{42L, 9223372036854775800L}, event.getSensorLongValues());
+                assertArrayEquals(new double[]{0.123, 456.789}, event.getSensorDoubleValues(), 0.01);
                 assertArrayEquals(new SensorState[]{SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN}, event.getSensorStates());
                 assertEquals(date1.getTime(), event.getDateValues()[0].getTime());
                 assertEquals(date2.getTime(), event.getDateValues()[1].getTime());
@@ -203,6 +201,10 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         @Column(name = "sensor_long_values", columnDefinition = "bigint[]")
         private long[] sensorLongValues;
 
+        @Type(type = "double-array")
+        @Column(name = "sensor_double_values", columnDefinition = "float8[]")
+        private double[] sensorDoubleValues;
+
         @Type(type = "date-array")
         @Column(name = "date_values", columnDefinition = "date[]")
         private Date[] dateValues;
@@ -245,6 +247,14 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
         public void setSensorLongValues(long[] sensorLongValues) {
             this.sensorLongValues = sensorLongValues;
+        }
+
+        public double[] getSensorDoubleValues() {
+            return sensorDoubleValues;
+        }
+
+        public void setSensorDoubleValues(double[] sensorDoubleValues) {
+            this.sensorDoubleValues = sensorDoubleValues;
         }
 
         public SensorState[] getSensorStates() {
