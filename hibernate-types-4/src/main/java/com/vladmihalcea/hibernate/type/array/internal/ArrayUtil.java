@@ -1,6 +1,7 @@
 package com.vladmihalcea.hibernate.type.array.internal;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -340,5 +341,22 @@ public class ArrayUtil {
             Object array = Array.newInstance(arrayElementClass, 0);
             return (Class<T[]>) array.getClass();
         }
+    }
+
+    /**
+     * Transforms an array to a {@link List}. The reason why {@link Arrays#asList(Object[])}
+     * is not used is because on Java 6 it wraps the {@link List} so we end up
+     * with two nested {@link List} objects.
+     *
+     * @param array array to transform
+     * @param <T>   array element type
+     * @return the {@link List} representation of the array
+     */
+    public static <T> List<T> asList(T[] array) {
+        List<T> list = new ArrayList<T>(array.length);
+        for (int i = 0; i < array.length; i++) {
+            list.add(i, array[i]);
+        }
+        return list;
     }
 }
