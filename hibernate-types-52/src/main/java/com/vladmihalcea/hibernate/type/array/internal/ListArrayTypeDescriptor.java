@@ -23,7 +23,7 @@ public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Object>
             protected Object deepCopyNotNull(Object value) {
                 if (value instanceof List) {
                     Object[] array = ((List) value).toArray();
-                    return ArrayUtil.deepCopy(array);
+                    return Arrays.asList(ArrayUtil.deepCopy(array));
                 } else if (value.getClass().isArray()) {
                     Object[] array = (Object[]) value;
                     return ArrayUtil.deepCopy(array);
@@ -83,14 +83,13 @@ public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Object>
         if (one == null || another == null) {
             return false;
         }
-        if(one instanceof Collection) {
-            one = ((Collection) one).toArray();
+        if (one instanceof Object[] && another instanceof Object[] ) {
+            return ArrayUtil.isEquals(one, another);
+        } else if (one instanceof List && another instanceof List) {
+            return ArrayUtil.isEquals(((List) one).toArray(), ((List) another).toArray());
+        } else {
+            throw new UnsupportedOperationException("The provided " + one + " and " + another + " are not Object[] or List!");
         }
-        if(another instanceof Collection) {
-            another = ((Collection) another).toArray();
-        }
-
-        return ArrayUtil.isEquals(one, another);
     }
 
     @Override
