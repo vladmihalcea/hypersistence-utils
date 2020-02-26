@@ -1,3 +1,16 @@
+Version 2.9.4 - February 26, 2020
+================================================================================
+
+A NullPointerException is thrown when adding a ListArrayType definition to a MappedSuperClass bug #189
+
+The ListArrayTypeDescriptor deepCopy method should not convert a List to an Java array bug #187
+
+Add support for double arrays #183
+
+Improve logging of array parameters in BasicBinder #182
+
+ListArrayType generates an extra UPDATE when persisting an entity bug #180
+
 Version 2.9.3 - January 26, 2020
 ================================================================================
 
