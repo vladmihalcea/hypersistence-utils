@@ -52,6 +52,32 @@ public final class ReflectionUtils {
     }
 
     /**
+     * Instantiate a new {@link Object} of the provided type.
+     *
+     * @param clazz The Java {@link Class} of the {@link Object} to instantiate
+     * @param args The arguments that need to be passed to the constructor
+     * @param argsTypes The argument types that need to be passed to the constructor
+     * @param <T>   class type
+     * @return new Java {@link Object} of the provided type
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T newInstance(Class clazz, Object[] args, Class[] argsTypes) {
+        try {
+            Constructor<T> constructor = clazz.getDeclaredConstructor(argsTypes);
+            constructor.setAccessible(true);
+            return constructor.newInstance(args);
+        } catch (InstantiationException e) {
+            throw handleException(e);
+        } catch (IllegalAccessException e) {
+            throw handleException(e);
+        } catch (NoSuchMethodException e) {
+            throw handleException(e);
+        } catch (InvocationTargetException e) {
+            throw handleException(e);
+        }
+    }
+
+    /**
      * Get the {@link Field} with the given name belonging to the provided Java {@link Class}.
      *
      * @param targetClass the provided Java {@link Class} the field belongs to
@@ -93,10 +119,8 @@ public final class ReflectionUtils {
      */
     public static Field getFieldOrNull(Class targetClass, String fieldName) {
         try {
-            Field field = targetClass.getDeclaredField(fieldName);
-            field.setAccessible(true);
-            return field;
-        } catch (NoSuchFieldException e) {
+            return getField(targetClass, fieldName);
+        } catch (IllegalArgumentException e) {
             return null;
         }
     }
@@ -112,7 +136,6 @@ public final class ReflectionUtils {
     public static <T> T getFieldValue(Object target, String fieldName) {
         try {
             Field field = getField(target.getClass(), fieldName);
-            field.setAccessible(true);
             @SuppressWarnings("unchecked")
             T returnValue = (T) field.get(target);
             return returnValue;
@@ -133,7 +156,6 @@ public final class ReflectionUtils {
     public static <T> T getFieldValueOrNull(Object target, String fieldName) {
         try {
             Field field = getField(target.getClass(), fieldName);
-            field.setAccessible(true);
             @SuppressWarnings("unchecked")
             T returnValue = (T) field.get(target);
             return returnValue;
@@ -151,11 +173,8 @@ public final class ReflectionUtils {
      */
     public static void setFieldValue(Object target, String fieldName, Object value) {
         try {
-            Field field = target.getClass().getDeclaredField(fieldName);
-            field.setAccessible(true);
+            Field field = getField(target.getClass(), fieldName);
             field.set(target, value);
-        } catch (NoSuchFieldException e) {
-            throw handleException(e);
         } catch (IllegalAccessException e) {
             throw handleException(e);
         }
