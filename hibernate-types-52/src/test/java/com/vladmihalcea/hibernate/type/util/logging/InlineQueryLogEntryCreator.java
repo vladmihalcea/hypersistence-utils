@@ -2,7 +2,7 @@ package com.vladmihalcea.hibernate.type.util.logging;
 
 import net.ttddyy.dsproxy.ExecutionInfo;
 import net.ttddyy.dsproxy.QueryInfo;
-import net.ttddyy.dsproxy.listener.DefaultQueryLogEntryCreator;
+import net.ttddyy.dsproxy.listener.logging.DefaultQueryLogEntryCreator;
 
 import java.util.*;
 
@@ -23,7 +23,7 @@ public class InlineQueryLogEntryCreator extends DefaultQueryLogEntryCreator {
                     firstArg = false;
                 }
 
-                SortedMap<String, Object> sortedParamMap = new TreeMap<>(new StringAsIntegerComparator());
+                SortedMap<String, Object> sortedParamMap = new TreeMap<String, Object>(new CustomStringAsIntegerComparator());
                 sortedParamMap.putAll(paramMap);
 
                 sb.append("(");
@@ -78,5 +78,8 @@ public class InlineQueryLogEntryCreator extends DefaultQueryLogEntryCreator {
             }
         }
         throw new UnsupportedOperationException("Array type not supported: " + object.getClass());
+    }
+
+    private static class CustomStringAsIntegerComparator extends StringAsIntegerComparator {
     }
 }

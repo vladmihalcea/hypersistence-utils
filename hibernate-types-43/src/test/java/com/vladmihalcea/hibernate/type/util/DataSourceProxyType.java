@@ -3,7 +3,7 @@ package com.vladmihalcea.hibernate.type.util;
 import com.vladmihalcea.hibernate.type.util.logging.InlineQueryLogEntryCreator;
 import net.ttddyy.dsproxy.listener.ChainListener;
 import net.ttddyy.dsproxy.listener.DataSourceQueryCountListener;
-import net.ttddyy.dsproxy.listener.SLF4JQueryLoggingListener;
+import net.ttddyy.dsproxy.listener.logging.SLF4JQueryLoggingListener;
 import net.ttddyy.dsproxy.support.ProxyDataSourceBuilder;
 
 import javax.sql.DataSource;
