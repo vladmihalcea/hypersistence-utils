@@ -5,8 +5,7 @@ import java.util.Date;
 /**
  * @author Guillaume Briand
  */
-public class DateArrayTypeDescriptor
-        extends AbstractArrayTypeDescriptor<Date[]> {
+public class DateArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Date[]> {
 
     public DateArrayTypeDescriptor() {
         super(Date[].class);

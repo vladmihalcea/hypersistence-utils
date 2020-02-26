@@ -1,6 +1,7 @@
 package com.vladmihalcea.hibernate.type.array;
 
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
+import com.vladmihalcea.hibernate.type.util.ReflectionUtils;
 import com.vladmihalcea.hibernate.type.util.providers.DataSourceProvider;
 import com.vladmihalcea.hibernate.type.util.providers.PostgreSQLDataSourceProvider;
 import org.hibernate.annotations.Parameter;
@@ -182,12 +183,20 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 "   id, " +
                 "   sensor_ids, " +
                 "   sensor_names, " +
-                "   sensor_values " +
+                "   sensor_values, " +
+                "   sensor_states " +
                 "from event ", Tuple.class)
             .unwrap(org.hibernate.query.NativeQuery.class)
             .addScalar("sensor_ids", UUIDArrayType.INSTANCE)
             .addScalar("sensor_names", StringArrayType.INSTANCE)
             .addScalar("sensor_values", IntArrayType.INSTANCE)
+            .addScalar(
+                "sensor_states",
+                new EnumArrayType(
+                    SensorState[].class,
+                    "sensor_state"
+                )
+            )
             .getResultList();
 
             assertEquals(2, events.size());

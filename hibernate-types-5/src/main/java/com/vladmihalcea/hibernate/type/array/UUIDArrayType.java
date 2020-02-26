@@ -3,7 +3,10 @@ package com.vladmihalcea.hibernate.type.array;
 import com.vladmihalcea.hibernate.type.array.internal.AbstractArrayType;
 import com.vladmihalcea.hibernate.type.array.internal.UUIDArrayTypeDescriptor;
 import com.vladmihalcea.hibernate.type.util.Configuration;
+import com.vladmihalcea.hibernate.type.util.ParameterizedParameterType;
+import org.hibernate.usertype.DynamicParameterizedType;
 
+import java.util.Properties;
 import java.util.UUID;
 
 /**
@@ -28,6 +31,13 @@ public class UUIDArrayType extends AbstractArrayType<UUID[]> {
             new UUIDArrayTypeDescriptor(),
             configuration
         );
+    }
+
+    public UUIDArrayType(Class arrayClass) {
+        this();
+        Properties parameters = new Properties();
+        parameters.put(DynamicParameterizedType.PARAMETER_TYPE, new ParameterizedParameterType(arrayClass));
+        setParameterValues(parameters);
     }
 
     public String getName() {

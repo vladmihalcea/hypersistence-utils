@@ -1,22 +1,23 @@
 package com.vladmihalcea.hibernate.type.array;
 
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
+import com.vladmihalcea.hibernate.type.util.ReflectionUtils;
 import com.vladmihalcea.hibernate.type.util.providers.DataSourceProvider;
 import com.vladmihalcea.hibernate.type.util.providers.PostgreSQLDataSourceProvider;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.hibernate.type.LongType;
+import org.hibernate.type.StringType;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -83,6 +84,7 @@ public class MultiDimensionalArrayTypeTest extends AbstractPostgreSQLIntegration
                     )
             );
         });
+
         doInJPA(entityManager -> {
             Plane plane = entityManager.find(Plane.class, 1L);
 
@@ -95,6 +97,27 @@ public class MultiDimensionalArrayTypeTest extends AbstractPostgreSQLIntegration
             assertEquals(SeatStatus.UNRESERVED, plane.getSeatStatus(2, 'B'));
             assertEquals(SeatStatus.RESERVED, plane.getSeatStatus(2, 'C'));
             assertEquals(SeatStatus.UNRESERVED, plane.getSeatStatus(2, 'D'));
+        });
+
+        doInJPA(entityManager -> {
+            List<Tuple> tuples = entityManager
+                .createNativeQuery(
+                    "SELECT * " +
+                    " FROM plane ", Tuple.class)
+                .unwrap(org.hibernate.query.NativeQuery.class)
+                .addScalar(
+                    "seat_grid",
+                    new EnumArrayType(
+                        (Class<? extends Enum>) ReflectionUtils.getField(Plane.class, "seatGrid").getType(),
+                        "seat_status_array"
+                    )
+                )
+                .addScalar("name", StringType.INSTANCE)
+                .addScalar("id", LongType.INSTANCE)
+                .getResultList();
+
+            Tuple plane = tuples.get(0);
+            assertEquals("ATR-42", plane.get("name"));
         });
     }
 

@@ -3,6 +3,10 @@ package com.vladmihalcea.hibernate.type.array;
 import com.vladmihalcea.hibernate.type.array.internal.AbstractArrayType;
 import com.vladmihalcea.hibernate.type.array.internal.DoubleArrayTypeDescriptor;
 import com.vladmihalcea.hibernate.type.util.Configuration;
+import com.vladmihalcea.hibernate.type.util.ParameterizedParameterType;
+import org.hibernate.usertype.DynamicParameterizedType;
+
+import java.util.Properties;
 
 /**
  * Maps an {@code double[]} array on a PostgreSQL ARRAY type. Multidimensional arrays are supported as well, as explained in <a href="https://vladmihalcea.com/multidimensional-array-jpa-hibernate/">this article</a>.
@@ -28,6 +32,13 @@ public class DoubleArrayType extends AbstractArrayType<double[]> {
             new DoubleArrayTypeDescriptor(),
             configuration
         );
+    }
+
+    public DoubleArrayType(Class arrayClass) {
+        this();
+        Properties parameters = new Properties();
+        parameters.put(DynamicParameterizedType.PARAMETER_TYPE, new ParameterizedParameterType(arrayClass));
+        setParameterValues(parameters);
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.vladmihalcea.hibernate.type.AbstractHibernateType;
 import com.vladmihalcea.hibernate.type.array.internal.ArraySqlTypeDescriptor;
 import com.vladmihalcea.hibernate.type.array.internal.DateArrayTypeDescriptor;
 import com.vladmihalcea.hibernate.type.util.Configuration;
+import com.vladmihalcea.hibernate.type.util.ParameterizedParameterType;
 import org.hibernate.usertype.DynamicParameterizedType;
 
 import java.util.Date;
@@ -34,6 +35,13 @@ public class DateArrayType
                 ArraySqlTypeDescriptor.INSTANCE,
                 new DateArrayTypeDescriptor(), configuration
         );
+    }
+
+    public DateArrayType(Class arrayClass) {
+        this();
+        Properties parameters = new Properties();
+        parameters.put(DynamicParameterizedType.PARAMETER_TYPE, new ParameterizedParameterType(arrayClass));
+        setParameterValues(parameters);
     }
 
     public String getName() {

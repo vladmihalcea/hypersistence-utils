@@ -40,11 +40,11 @@ public class EnumArrayType extends AbstractArrayType<Enum[]> {
         );
     }
 
-    public EnumArrayType(Class<? extends Enum> enumClass, String sqlArrayType) {
+    public EnumArrayType(Class arrayClass, String sqlArrayType) {
         this();
         Properties parameters = new Properties();
         parameters.setProperty(SQL_ARRAY_TYPE, sqlArrayType);
-        parameters.put(DynamicParameterizedType.PARAMETER_TYPE, new ParameterizedParameterType(enumClass));
+        parameters.put(DynamicParameterizedType.PARAMETER_TYPE, new ParameterizedParameterType(arrayClass));
         setParameterValues(parameters);
     }
 
