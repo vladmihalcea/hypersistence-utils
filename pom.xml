@@ -105,7 +105,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.oracle.ojdbc</groupId>
+            <groupId>com.oracle.database.jdbc</groupId>
             <artifactId>ojdbc8</artifactId>
             <version>${oracle.version}</version>
             <scope>test</scope>
@@ -133,6 +133,25 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-toolchains-plugin</artifactId>
+                <version>1.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>toolchain</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <toolchains>
+                        <jdk>
+                            <version>${jdk.version}</version>
+                        </jdk>
+                    </toolchains>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
@@ -140,8 +159,6 @@
                     <target>${jdk.version}</target>
                     <showDeprecation>true</showDeprecation>
                     <showWarnings>true</showWarnings>
-                    <executable>${jdk}/bin/javac</executable>
-                    <fork>true</fork>
                 </configuration>
             </plugin>
             <plugin>
@@ -261,11 +278,11 @@
 
     <properties>
         <jdk.version>6</jdk.version>
-        <jdk>${env.JAVA_HOME_6}</jdk>
         <jdk8>${env.JAVA_HOME_8}</jdk8>
-        <reuseForks>false</reuseForks>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+        <maven-toolchains-plugin.version>3.0.0</maven-toolchains-plugin.version>
         <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
         <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
         <sonar-maven-plugin.version>2.2</sonar-maven-plugin.version>
@@ -275,7 +292,7 @@
         <maven-javadoc-plugin.version>2.10.3</maven-javadoc-plugin.version>
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <maven-release-plugin.version>2.5.2</maven-release-plugin.version>
-        <maven-surefire-plugin.version>2.22.0</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
         <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
 
         <slf4j.version>1.7.25</slf4j.version>

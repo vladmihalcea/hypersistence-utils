@@ -58,6 +58,8 @@
     </dependencies>
 
     <properties>
+        <jdk.version>8</jdk.version>
+
         <hibernate.version>5.4.11.Final</hibernate.version>
         <!--<hibernate.version>5.2.18.Final</hibernate.version>-->
         <postgresql.version>9.4-1202-jdbc41</postgresql.version>
@@ -66,8 +68,6 @@
         <jackson.version>2.9.10.1</jackson.version>
         <guava.version>27.1-jre</guava.version>
 
-        <jdk.version>8</jdk.version>
-        <jdk>${env.JAVA_HOME_8}</jdk>
     </properties>
 
     <build>
