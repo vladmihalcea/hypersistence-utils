@@ -56,7 +56,7 @@ public class Configuration {
     public Configuration() {
         load();
 
-        if(ReflectionUtils.getClassOrNull("io.hypersistence.optimizer.HypersistenceOptimizer") == null) {
+        if(ReflectionUtils.getClassOrNull("io.hypersistence.optimizer.core.License$Signature") == null) {
             printBanner();
         }
     }
