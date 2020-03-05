@@ -298,8 +298,7 @@ public abstract class AbstractTest {
         if (dataSource != null) {
             properties.put("hibernate.connection.datasource", dataSource);
         }
-        properties.put("hibernate.generate_statistics", Boolean.TRUE.toString());
-        //properties.put("hibernate.ejb.metamodel.population", "disabled");
+        properties.put("hibernate.cache.ehcache.missing_cache_strategy", "create");
         additionalProperties(properties);
         return properties;
     }
