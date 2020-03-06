@@ -172,6 +172,11 @@ Depending on the Hibernate version you are using, you need to following dependen
 Maintaining this project costs thousands of dollars per year, and, without the support of [Hypersistence](https://hypersistence.io/),
 this project would have to be abandoned.
 
+> The reason why this banner was added is because, when I enabled GitHub donations, [no one ever donated a single cent](
+https://twitter.com/vlad_mihalcea/status/1194584719133958146) to support this project.
+
+And, spreading the news about the amazing [Hypersistence Optimizer](https://vladmihalcea.com/hypersistence-optimizer/) tool I'm currently building is much more beneficial for the vast majority of Hibernate projects.
+
 #### Adding Hypersistence Optimizer to your project
 
 Using Hibernate without [Hypersistence Optimizer](https://vladmihalcea.com/hypersistence-optimizer/) is highly discouraged, hence the reason for that banner. You can view it as a `WARN` log message that tells you are risking application performance issues if you don't make sure you use the right JPA mappings and Hibernate configuration properties.
@@ -193,6 +198,30 @@ You can disable the banner by providing the `hibernate.types.print.banner=false`
 If can also provide the `hibernate.types.print.banner=false`setting as a Java System property when bootstrapping your Java application:
 
     java -Dhibernate.types.print.banner=false -jar target/application-1.0.0.jar
+    
+#### Will I remove the banner?
+
+For the moment, the banner is going to stay. If you think that disabling the banner is too much of an effort for you, then you can:
+
+- fork the repository
+- remove the banner from the source code
+- build the project and use your own banner-free version
+
+This project is _free_ as in [Libre, not Gratis](https://en.wikipedia.org/wiki/Gratis_versus_libre).
+
+#### But other open-source projects don't have such a banner
+
+Some open-source projects are sponsored by large corporations, so developers get paid to maintain those projects. That's not the case for this project.
+
+Other projects are abandoned when [the main developer realizes that GitHub stars don't pay rent](https://medium.com/@kitze/github-stars-wont-pay-your-rent-8b348e12baed).
+
+#### Should you open a GitHub issue asking me to remove the banner?
+
+No, you should not. GitHub issues related to the banner removal will be deleted after adding a comment pointing to this `README` section.
+
+> Arrogance and Entitlement is frown upon. Any such message, be it a GitHub issue or blog comment will be **silently**  deleted with no further explanation!
+> 
+> As Rich Hickey said it, [_Open Source is Not About You_](https://gist.github.com/richhickey/1563cddea1002958f96e7ba9519972d9).
 
 ## How to start the test environment
 
@@ -214,4 +243,3 @@ docker-compose down -v
 docker logs -f mysql-hibernate-types
 docker logs -f postgresql-hibernate-types
 ```
-
