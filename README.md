@@ -209,17 +209,23 @@ For the moment, the banner is going to stay. If you think that disabling the ban
 
 This project is _free_ as in [Libre, not Gratis](https://en.wikipedia.org/wiki/Gratis_versus_libre).
 
-#### But other open-source projects don't have such a banner
+##### But, other open-source projects don't have such a banner
 
 Some open-source projects are sponsored by large corporations, so developers get paid to maintain those projects. That's not the case for this project.
 
-Other projects are abandoned when [the main developer realizes that GitHub stars don't pay rent](https://medium.com/@kitze/github-stars-wont-pay-your-rent-8b348e12baed).
+Other projects that lack any funding will eventually be abandoned when [the main developer realizes that GitHub stars don't pay rent](https://medium.com/@kitze/github-stars-wont-pay-your-rent-8b348e12baed).
 
-#### Should you open a GitHub issue asking me to remove the banner?
+As long as Hypersistence thrives, I can allocate some development time to maintain this project as well.
 
-No, you should not. GitHub issues related to the banner removal will be deleted after adding a comment pointing to this `README` section.
+##### Should you open a GitHub issue asking me to remove the banner?
 
-> Arrogance and Entitlement is frown upon. Any such message, be it a GitHub issue or blog comment will be **silently**  deleted with no further explanation!
+Disabling this banner takes very little time, so there is no point in opening a GitHub issue to ask me to remove this banner, 
+especially since there's already [a pinned GitHub issue explaining you how to remove it](https://github.com/vladmihalcea/hibernate-types/issues/196).
+ 
+All issues related to the banner removal will be deleted because I use the GitHub issues feature for enhancement proposals or bug fixing.
+
+> If you don't agree with these Terms and Conditions, you should not use this framework.
+> Bullying, rudeness, arrogance, and an utter sense of entitlement is not tolerated and might lead to account blocking.
 > 
 > As Rich Hickey said it, [_Open Source is Not About You_](https://gist.github.com/richhickey/1563cddea1002958f96e7ba9519972d9).
 

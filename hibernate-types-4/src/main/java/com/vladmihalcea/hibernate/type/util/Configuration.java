@@ -302,6 +302,8 @@ public class Configuration {
             ),
             logger
         );
+
+        printInfo("Check out the README page for more info about the Hypersistence Optimizer banner https://github.com/vladmihalcea/hibernate-types#how-to-remove-the-hypersistence-optimizer-banner-from-the-log", logger);
     }
 
     private void printWarning(String message, Logger logger) {
