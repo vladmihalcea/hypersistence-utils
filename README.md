@@ -99,7 +99,7 @@ More, with Hypersistence Optimizer, you can detect all such issues during testin
 
 #### Training
 
-If you are interested in on-site training, I can offer you my [High-Performance Java Persistence training](https://vladmihalcea.com/trainings/?utm_source=GitHub&utm_medium=banner&utm_campaign=hibernatetypes)
+If you are interested in on-site training, I can offer you my [High-Performance Java Persistence training](https://vladmihalcea.com/trainings/?utm_source=GitHub&utm_medium=banner&utm_campaign=hibernatetypes),
 which can be adapted to one, two or three days of sessions. For more details, check out [my website](https://vladmihalcea.com/trainings/?utm_source=GitHub&utm_medium=banner&utm_campaign=hibernatetypes).
 
 #### Consulting
@@ -125,7 +125,7 @@ Or, if you prefer reading books, you are going to love my [High-Performance Java
 
 ### Installation
 
-Depending on the Hibernate version you are using, you need to following dependency:
+Depending on the Hibernate version you are using, you need to add the following dependency:
 
 #### Hibernate 5.4, 5.3 and 5.2
 
@@ -172,7 +172,7 @@ Depending on the Hibernate version you are using, you need to following dependen
 Maintaining this project costs thousands of dollars per year, and, without the support of [Hypersistence](https://hypersistence.io/),
 this project would have to be abandoned.
 
-> The reason why this banner was added is because, when I enabled GitHub donations, [no one ever donated a single cent](
+> The reason why this banner was added is that, when I enabled GitHub donations, [no one ever donated a single cent](
 https://twitter.com/vlad_mihalcea/status/1194584719133958146) to support this project.
 
 And, spreading the news about the amazing [Hypersistence Optimizer](https://vladmihalcea.com/hypersistence-optimizer/) tool I'm currently building is much more beneficial for the vast majority of Hibernate projects.
@@ -201,7 +201,22 @@ If can also provide the `hibernate.types.print.banner=false`setting as a Java Sy
     
 #### Will I remove the banner?
 
-For the moment, the banner is going to stay. If you think that disabling the banner is too much of an effort for you, then you can:
+I know the banner might be a little annoying. But you know what's even more annoying? Having all those [open issues](https://github.com/vladmihalcea/hibernate-types/issues) waiting for you to fix them.
+
+So, I promise to remove the banner when the community will decide to step in and fix all those issues.
+
+Or, if you don't have the time to do it, I could do that. I estimate it's around 25000$ of consulting time to fix them all.
+
+> So, if you're wondering why that banner was not removed by now, it's because those issues are still waiting to be fixed, and that's not the true spirit of open-source software development!
+
+##### Should you open a GitHub issue asking me to remove the banner?
+
+Disabling this banner takes very little time, so there is no point in opening a GitHub issue to ask me to remove this banner, 
+especially since there's already [a pinned GitHub issue explaining how to remove it](https://github.com/vladmihalcea/hibernate-types/issues/196).
+ 
+Keep in mind that all issues related to the banner removal will be deleted because I use the GitHub issue feature for technical features only (e.g., enhancements, bug fixing).
+
+In case you think that the banner is unfair and disabling it is too much of an effort for you, then you can also:
 
 - fork the repository
 - remove the banner from the source code
@@ -209,25 +224,22 @@ For the moment, the banner is going to stay. If you think that disabling the ban
 
 This project is _free_ as in [Libre, not Gratis](https://en.wikipedia.org/wiki/Gratis_versus_libre).
 
-##### But, other open-source projects don't have such a banner
+## Code of conduct
 
-Some open-source projects are sponsored by large corporations, so developers get paid to maintain those projects. That's not the case for this project.
+1. If you don't agree with these Terms and Conditions, you don't have to use the official repository. You are free to fork the repository and manage it as you may wish.
+2. Bullying, rudeness, arrogance, or lecturing me about OSS with an utter sense of entitlement are not tolerated and might lead to GitHub account banning.
 
-Other projects that lack any funding will eventually be abandoned when [the main developer realizes that GitHub stars don't pay rent](https://medium.com/@kitze/github-stars-wont-pay-your-rent-8b348e12baed).
-
-As long as Hypersistence thrives, I can allocate some development time to maintain this project as well.
-
-##### Should you open a GitHub issue asking me to remove the banner?
-
-Disabling this banner takes very little time, so there is no point in opening a GitHub issue to ask me to remove this banner, 
-especially since there's already [a pinned GitHub issue explaining you how to remove it](https://github.com/vladmihalcea/hibernate-types/issues/196).
- 
-All issues related to the banner removal will be deleted because I use the GitHub issues feature for enhancement proposals or bug fixing.
-
-> If you don't agree with these Terms and Conditions, you should not use this framework.
-> Bullying, rudeness, arrogance, and an utter sense of entitlement is not tolerated and might lead to account blocking.
+> The only people entitled to say how open source 'ought' to work are people who run projects, and the scope of their entitlement extends only to their own projects.
 > 
-> As Rich Hickey said it, [_Open Source is Not About You_](https://gist.github.com/richhickey/1563cddea1002958f96e7ba9519972d9).
+> Just because someone open sources something does not imply they owe the world a change in their status, focus and effort, e.g. from inventor to community manager.
+> 
+> As a user of something open source you are not thereby entitled to anything at all. You are not entitled to contribute. You are not entitled to features. You are not entitled to the attention of others. You are not entitled to having value attached to your complaints. You are not entitled to this explanation.
+> 
+> If you have expectations (of others) that aren't being met, those expectations are your own responsibility. You are responsible for your own needs. If you want things, make them.
+> 
+> Open source is a licensing and delivery mechanism, period. It means you get the source for software and the right to use and modify it. All social impositions associated with it, including the idea of 'community-driven-development' are part of a recently-invented mythology with little basis in how things actually work, a mythology that embodies, cult-like, both a lack of support for diversity in the ways things can work and a pervasive sense of communal entitlement.
+> 
+> -- [Rich Hickey](https://gist.github.com/richhickey/1563cddea1002958f96e7ba9519972d9)
 
 ## How to start the test environment
 
