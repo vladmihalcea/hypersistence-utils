@@ -193,6 +193,9 @@
                     <value>true</value>
                 </property>
             </activation>
+            <properties>
+                <console.log.level>ERROR</console.log.level>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -279,6 +282,8 @@
     <properties>
         <jdk.version>6</jdk.version>
         <jdk8>${env.JAVA_HOME_8}</jdk8>
+
+        <console.log.level>DEBUG</console.log.level>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
