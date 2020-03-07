@@ -2,8 +2,6 @@ package com.vladmihalcea.hibernate.type.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.cfg.Environment;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,6 +9,8 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
+
+import static com.vladmihalcea.hibernate.type.util.LogUtils.LOGGER;
 
 /**
  * <code>Configuration</code> - It allows declarative configuration through the <code>hibernate.properties</code> file
@@ -24,8 +24,6 @@ import java.util.Properties;
  * @since 2.1.0
  */
 public class Configuration {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(Configuration.class);
 
     public static final Configuration INSTANCE = new Configuration();
 
@@ -271,13 +269,10 @@ public class Configuration {
             return;
         }
 
-        Logger logger = LoggerFactory.getLogger("Hypersistence Optimizer");
+        LOGGER.warn("You should use Hypersistence Optimizer to speed up your Hibernate application!");
+        LOGGER.warn("For more details, go to https://vladmihalcea.com/hypersistence-optimizer/");
 
-        printWarning("You should use Hypersistence Optimizer to speed up your Hibernate application!", logger);
-        printWarning("For more details, go to https://vladmihalcea.com/hypersistence-optimizer/", logger);
-
-
-        printInfo(
+        LOGGER.info(
             StringUtils.join(
                 StringUtils.LINE_SEPARATOR,
                 "",
@@ -299,26 +294,8 @@ public class Configuration {
                 "                | |",
                 "                |_|",
                 ""
-            ),
-            logger
+            )
         );
-
-        printInfo("Check out the README page for more info about the Hypersistence Optimizer banner https://github.com/vladmihalcea/hibernate-types#how-to-remove-the-hypersistence-optimizer-banner-from-the-log", logger);
-    }
-
-    private void printWarning(String message, Logger logger) {
-        if (logger.isWarnEnabled()) {
-            logger.warn(message);
-        } else {
-            System.out.println(message);
-        }
-    }
-
-    private void printInfo(String message, Logger logger) {
-        if (logger.isInfoEnabled()) {
-            logger.info(message);
-        } else {
-            System.out.println(message);
-        }
+        LOGGER.info("Check out the README page for more info about the Hypersistence Optimizer banner https://github.com/vladmihalcea/hibernate-types#how-to-remove-the-hypersistence-optimizer-banner-from-the-log");
     }
 }
