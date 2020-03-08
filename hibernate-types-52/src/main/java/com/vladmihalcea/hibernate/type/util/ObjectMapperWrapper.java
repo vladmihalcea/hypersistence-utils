@@ -53,11 +53,35 @@ public class ObjectMapperWrapper {
         }
     }
 
+    public <T> T fromBytes(byte[] value, Class<T> clazz) {
+        try {
+            return objectMapper.readValue(value, clazz);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("The given byte array cannot be transformed to Json object", e);
+        }
+    }
+
+    public <T> T fromBytes(byte[] value, Type type) {
+        try {
+            return objectMapper.readValue(value, objectMapper.getTypeFactory().constructType(type));
+        } catch (IOException e) {
+            throw new IllegalArgumentException("The given byte array cannot be transformed to Json object", e);
+        }
+    }
+
     public String toString(Object value) {
         try {
             return objectMapper.writeValueAsString(value);
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("The given Json object value: " + value + " cannot be transformed to a String", e);
+        }
+    }
+
+    public byte[] toBytes(Object value) {
+        try {
+            return objectMapper.writeValueAsBytes(value);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("The given Json object value: " + value + " cannot be transformed to a byte array", e);
         }
     }
 

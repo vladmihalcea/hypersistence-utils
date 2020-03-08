@@ -24,12 +24,12 @@ public class ObjectMapperJsonSerializer implements JsonSerializer {
             Object firstElement = ((Collection) value).iterator().next();
             if (!(firstElement instanceof Serializable)) {
                 JavaType type = TypeFactory.defaultInstance().constructParametricType(value.getClass(), firstElement.getClass());
-                return objectMapperWrapper.fromString(objectMapperWrapper.toString(value), type);
+                return objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(value), type);
             }
         }
 
         return value instanceof Serializable ?
             (T) SerializationHelper.clone((Serializable) value) :
-            objectMapperWrapper.fromString(objectMapperWrapper.toString(value), (Class<T>) value.getClass());
+            objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(value), (Class<T>) value.getClass());
     }
 }
