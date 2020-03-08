@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Vlad Mihalcea
  */
-public class PostgreSQLJsonBinaryTypeTestConfigurationTest extends AbstractPostgreSQLIntegrationTest {
+public class PostgreSQLJsonBinaryTypeTestConfigurationJvmForkTest extends AbstractPostgreSQLIntegrationTest {
 
     @Override
     protected Class<?>[] entities() {

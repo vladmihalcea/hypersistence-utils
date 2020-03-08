@@ -167,8 +167,9 @@
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
                     <jvm>${jdk8}/bin/java</jvm>
-                    <forkMode>always</forkMode>
-                    <useSystemClassLoader>false</useSystemClassLoader>
+                    <excludes>
+                        <exclude>**/*JvmForkTest.java</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
             <plugin>
@@ -198,6 +199,16 @@
             </properties>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${maven-surefire-plugin.version}</version>
+                        <configuration>
+                            <jvm>${jdk8}/bin/java</jvm>
+                            <reuseForks>false</reuseForks>
+                            <useSystemClassLoader>false</useSystemClassLoader>
+                        </configuration>
+                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
@@ -265,6 +276,12 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <console.log.level>ERROR</console.log.level>
+            </properties>
         </profile>
     </profiles>
 

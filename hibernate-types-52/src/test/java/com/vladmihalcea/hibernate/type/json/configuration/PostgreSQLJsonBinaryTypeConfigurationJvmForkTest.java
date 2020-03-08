@@ -13,13 +13,11 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author Vlad Mihalcea
  */
-public class PostgreSQLJsonBinaryTypeCustomJsonSerializerConfigurationTest extends AbstractPostgreSQLIntegrationTest {
+public class PostgreSQLJsonBinaryTypeConfigurationJvmForkTest extends AbstractPostgreSQLIntegrationTest {
 
     @Override
     protected Class<?>[] entities() {
@@ -32,7 +30,7 @@ public class PostgreSQLJsonBinaryTypeCustomJsonSerializerConfigurationTest exten
     public void init() {
         System.setProperty(
             Configuration.PROPERTIES_FILE_PATH,
-                "PostgreSQLJsonBinaryTypeCustomJsonSerializerConfigurationTest.properties"
+                "PostgreSQLJsonBinaryTypeConfigurationTest.properties"
         );
         super.init();
     }
@@ -45,8 +43,6 @@ public class PostgreSQLJsonBinaryTypeCustomJsonSerializerConfigurationTest exten
 
     @Test
     public void test() {
-        assertFalse(CustomJsonSerializer.isCalled());
-
         doInJPA(entityManager -> {
             Location location = new Location();
             location.setCountry("Romania");
@@ -59,16 +55,10 @@ public class PostgreSQLJsonBinaryTypeCustomJsonSerializerConfigurationTest exten
             entityManager.persist(event);
         });
 
-        assertTrue(CustomJsonSerializer.isCalled());
-        CustomJsonSerializer.reset();
-        assertFalse(CustomJsonSerializer.isCalled());
-
         doInJPA(entityManager -> {
             Event event = entityManager.find(Event.class, 1L);
-            assertEquals("2.25262562526626", event.getLocation().getReference().toString());
+            assertEquals("2.25", event.getLocation().getReference().toString());
         });
-
-        assertTrue(CustomJsonSerializer.isCalled());
     }
 
     @Entity(name = "Event")

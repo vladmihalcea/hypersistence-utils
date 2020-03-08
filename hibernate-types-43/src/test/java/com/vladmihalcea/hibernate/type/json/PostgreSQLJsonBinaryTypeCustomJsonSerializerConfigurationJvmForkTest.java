@@ -1,5 +1,6 @@
-package com.vladmihalcea.hibernate.type.json.configuration;
+package com.vladmihalcea.hibernate.type.json;
 
+import com.vladmihalcea.hibernate.type.json.configuration.CustomJsonSerializer;
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
 import com.vladmihalcea.hibernate.type.util.Configuration;
@@ -19,7 +20,7 @@ import static org.junit.Assert.*;
 /**
  * @author Vlad Mihalcea
  */
-public class PostgreSQLJsonBinaryTypeCustomJsonSerializerConfigurationTest extends AbstractPostgreSQLIntegrationTest {
+public class PostgreSQLJsonBinaryTypeCustomJsonSerializerConfigurationJvmForkTest extends AbstractPostgreSQLIntegrationTest {
 
     @Override
     protected Class<?>[] entities() {

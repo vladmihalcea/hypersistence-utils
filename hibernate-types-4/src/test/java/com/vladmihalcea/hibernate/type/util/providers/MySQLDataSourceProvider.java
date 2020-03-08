@@ -78,7 +78,7 @@ public class MySQLDataSourceProvider implements DataSourceProvider {
     @Override
     public DataSource dataSource() {
         MysqlDataSource dataSource = new MysqlDataSource();
-        dataSource.setURL("jdbc:mysql://localhost/high_performance_java_persistence?" +
+        dataSource.setURL("jdbc:mysql://localhost/high_performance_java_persistence?useSSL=false&" +
                 "rewriteBatchedStatements=" + rewriteBatchedStatements +
                 "&cachePrepStmts=" + cachePrepStmts +
                 "&useServerPrepStmts=" + useServerPrepStmts +
