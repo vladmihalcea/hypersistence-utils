@@ -3,6 +3,8 @@ package com.vladmihalcea.hibernate.type.json;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.vladmihalcea.hibernate.type.json.internal.JacksonUtil;
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
+import net.ttddyy.dsproxy.QueryCount;
+import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
@@ -21,13 +23,12 @@ public class PostgreSQLJsonNodeBinaryTypeTest extends AbstractPostgreSQLIntegrat
     @Override
     protected Class<?>[] entities() {
         return new Class<?>[]{
-                Book.class
+            Book.class
         };
     }
 
-    @Test
-    public void test() {
-
+    @Override
+    protected void afterInit() {
         doInJPA(entityManager -> {
 
             Book book = new Book();
@@ -35,26 +36,27 @@ public class PostgreSQLJsonNodeBinaryTypeTest extends AbstractPostgreSQLIntegrat
             book.setProperties(
                 JacksonUtil.toJsonNode(
                     "{" +
-                    "   \"title\": \"High-Performance Java Persistence\"," +
-                    "   \"author\": \"Vlad Mihalcea\"," +
-                    "   \"publisher\": \"Amazon\"," +
-                    "   \"price\": 44.99" +
-                    "}"
+                        "   \"title\": \"High-Performance Java Persistence\"," +
+                        "   \"author\": \"Vlad Mihalcea\"," +
+                        "   \"publisher\": \"Amazon\"," +
+                        "   \"price\": 44.99" +
+                        "}"
                 )
             );
 
             entityManager.persist(book);
         });
+    }
 
+    @Test
+    public void test() {
         doInJPA(entityManager -> {
             Session session = entityManager.unwrap(Session.class);
             Book book = session
                     .bySimpleNaturalId(Book.class)
                     .load("978-9730228236");
 
-            LOGGER.info("Book details: {}", book.getProperties());
-
-            assertEquals(expectedPrice(), book.getProperties().get("price").asText());
+            QueryCountHolder.clear();
 
             book.setProperties(
                 JacksonUtil.toJsonNode(
@@ -68,6 +70,29 @@ public class PostgreSQLJsonNodeBinaryTypeTest extends AbstractPostgreSQLIntegrat
                 )
             );
         });
+
+        QueryCount queryCount = QueryCountHolder.getGrandTotal();
+        assertEquals(1, queryCount.getTotal());
+        assertEquals(1, queryCount.getUpdate());
+    }
+
+    @Test
+    public void testLoad() {
+        QueryCountHolder.clear();
+
+        doInJPA(entityManager -> {
+            Session session = entityManager.unwrap(Session.class);
+            Book book = session
+                .bySimpleNaturalId(Book.class)
+                .load("978-9730228236");
+
+            assertEquals(expectedPrice(), book.getProperties().get("price").asText());
+        });
+
+        QueryCount queryCount = QueryCountHolder.getGrandTotal();
+        assertEquals(2, queryCount.getTotal());
+        assertEquals(2, queryCount.getSelect());
+        assertEquals(0, queryCount.getUpdate());
     }
 
     protected String initialPrice() {

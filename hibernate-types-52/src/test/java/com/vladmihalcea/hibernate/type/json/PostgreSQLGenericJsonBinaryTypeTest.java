@@ -4,6 +4,7 @@ import com.vladmihalcea.hibernate.type.model.BaseEntity;
 import com.vladmihalcea.hibernate.type.model.Location;
 import com.vladmihalcea.hibernate.type.model.Ticket;
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
+import net.ttddyy.dsproxy.QueryCount;
 import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
@@ -31,10 +32,10 @@ public class PostgreSQLGenericJsonBinaryTypeTest extends AbstractPostgreSQLInteg
         };
     }
 
-    @Test
-    public void test() {
-        final AtomicReference<Event> eventHolder = new AtomicReference<>();
+    private Event _event;
 
+    @Override
+    protected void afterInit() {
         doInJPA(entityManager -> {
             Location cluj = new Location();
             cluj.setCountry("Romania");
@@ -55,12 +56,16 @@ public class PostgreSQLGenericJsonBinaryTypeTest extends AbstractPostgreSQLInteg
 
             entityManager.persist(event);
 
-            eventHolder.set(event);
+            _event = event;
         });
+    }
 
+    @Test
+    public void test() {
         QueryCountHolder.clear();
+
         doInJPA(entityManager -> {
-            Event event = entityManager.find(Event.class, eventHolder.get().getId());
+            Event event = entityManager.find(Event.class, _event.getId());
 
             assertEquals("Cluj-Napoca", event.getLocation().getCity());
 
@@ -68,8 +73,11 @@ public class PostgreSQLGenericJsonBinaryTypeTest extends AbstractPostgreSQLInteg
             assertEquals("New-York", event.getAlternativeLocations().get(0).getCity());
             assertEquals("London", event.getAlternativeLocations().get(1).getCity());
         });
-        assertEquals(1, QueryCountHolder.getGrandTotal().getSelect());
-        assertEquals(0, QueryCountHolder.getGrandTotal().getUpdate());
+
+        QueryCount queryCount = QueryCountHolder.getGrandTotal();
+        assertEquals(1, queryCount.getTotal());
+        assertEquals(1, queryCount.getSelect());
+        assertEquals(0, queryCount.getUpdate());
     }
 
     @Entity(name = "Event")

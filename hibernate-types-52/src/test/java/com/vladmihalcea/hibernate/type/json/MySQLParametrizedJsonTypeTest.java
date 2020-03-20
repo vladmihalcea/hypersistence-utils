@@ -21,14 +21,14 @@ public class MySQLParametrizedJsonTypeTest extends AbstractMySQLIntegrationTest 
     @Override
     protected Class<?>[] entities() {
         return new Class<?>[]{
-                PropertyHolder.class,
+            PropertyHolder.class,
         };
     }
 
     @Override
     protected String[] packages() {
         return new String[]{
-                PropertyHolder.class.getPackage().getName()
+            PropertyHolder.class.getPackage().getName()
         };
     }
 
@@ -58,6 +58,7 @@ public class MySQLParametrizedJsonTypeTest extends AbstractMySQLIntegrationTest 
 
             eventHolder.set(propertyHolder);
         });
+
         doInJPA(entityManager -> {
             PropertyHolder propertyHolder = entityManager.find(PropertyHolder.class, eventHolder.get().getId());
             assertEquals("value", propertyHolder.getProperty("key1"));

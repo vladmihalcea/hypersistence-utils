@@ -4,6 +4,8 @@ import com.vladmihalcea.hibernate.type.model.BaseEntity;
 import com.vladmihalcea.hibernate.type.model.Location;
 import com.vladmihalcea.hibernate.type.model.Ticket;
 import com.vladmihalcea.hibernate.type.util.AbstractMySQLIntegrationTest;
+import net.ttddyy.dsproxy.QueryCount;
+import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
 
@@ -24,22 +26,24 @@ public class MySQLJsonTypeTest extends AbstractMySQLIntegrationTest {
     @Override
     protected Class<?>[] entities() {
         return new Class<?>[]{
-                Event.class,
-                Participant.class
+            Event.class,
+            Participant.class
         };
     }
 
     @Override
     protected String[] packages() {
         return new String[]{
-                Location.class.getPackage().getName()
+            Location.class.getPackage().getName()
         };
     }
 
-    @Test
-    public void test() {
-        final AtomicReference<Event> eventHolder = new AtomicReference<>();
-        final AtomicReference<Participant> participantHolder = new AtomicReference<>();
+    private Event _event;
+
+    private Participant _participant;
+
+    @Override
+    protected void afterInit() {
 
         doInJPA(entityManager -> {
             Event nullEvent = new Event();
@@ -66,21 +70,42 @@ public class MySQLJsonTypeTest extends AbstractMySQLIntegrationTest {
 
             entityManager.persist(participant);
 
-            eventHolder.set(event);
-            participantHolder.set(participant);
+            _event = event;
+            _participant = participant;
         });
+    }
+
+    @Test
+    public void testLoad() {
+        QueryCountHolder.clear();
+
         doInJPA(entityManager -> {
-            Event event = entityManager.find(Event.class, eventHolder.get().getId());
+            Event event = entityManager.find(Event.class, _event.getId());
+            assertEquals("Romania", event.getLocation().getCountry());
+            assertEquals("Cluj-Napoca", event.getLocation().getCity());
+        });
+
+        QueryCount queryCount = QueryCountHolder.getGrandTotal();
+        assertEquals(1, queryCount.getTotal());
+        assertEquals(1, queryCount.getSelect());
+        assertEquals(0, queryCount.getUpdate());
+    }
+
+    @Test
+    public void test() {
+        
+        doInJPA(entityManager -> {
+            Event event = entityManager.find(Event.class, _event.getId());
             assertEquals("Cluj-Napoca", event.getLocation().getCity());
 
-            Participant participant = entityManager.find(Participant.class, participantHolder.get().getId());
+            Participant participant = entityManager.find(Participant.class, _participant.getId());
             assertEquals("ABC123", participant.getTicket().getRegistrationCode());
 
             List<String> participants = entityManager.createNativeQuery(
-                    "select p.ticket -> \"$.registrationCode\" " +
-                            "from participant p " +
-                            "where JSON_EXTRACT(p.ticket, \"$.price\") > 1 ")
-                    .getResultList();
+                "select p.ticket -> \"$.registrationCode\" " +
+                "from participant p " +
+                "where JSON_EXTRACT(p.ticket, \"$.price\") > 1 ")
+            .getResultList();
 
             event.getLocation().setCity("Constanța");
             entityManager.flush();

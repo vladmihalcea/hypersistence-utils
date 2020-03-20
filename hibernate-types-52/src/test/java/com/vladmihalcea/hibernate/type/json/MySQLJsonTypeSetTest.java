@@ -2,6 +2,8 @@ package com.vladmihalcea.hibernate.type.json;
 
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
 import com.vladmihalcea.hibernate.type.util.AbstractMySQLIntegrationTest;
+import net.ttddyy.dsproxy.QueryCount;
+import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
@@ -32,10 +34,10 @@ public class MySQLJsonTypeSetTest extends AbstractMySQLIntegrationTest {
         };
     }
 
-    @Test
-    public void test() {
-        final AtomicReference<User> userHolder = new AtomicReference<>();
+    private User _user;
 
+    @Override
+    protected void afterInit() {
         doInJPA(entityManager -> {
             User user = new User();
 
@@ -48,22 +50,17 @@ public class MySQLJsonTypeSetTest extends AbstractMySQLIntegrationTest {
             )));
 
             entityManager.persist(user);
-            userHolder.set(user);
+            _user = user;
         });
+    }
 
+    @Test
+    public void test() {
         doInJPA(entityManager -> {
-            User user = entityManager.find(User.class, userHolder.get().getId());
-            assertEquals(new HashSet<>(asList("1234567", "7654321")), user.getPhones());
-            assertEquals(EnumSet.of(Role.USER, Role.ADMIN), user.getRoles());
-            assertEquals(new HashSet<>(asList(
-                  new Child("John", 1, new HashSet<>(asList("toy4", "toy3"))),
-                  new Child("Jane", 2, new HashSet<>(asList("toy2", "toy1")))
-            )), user.getChildren());
-            assertEquals(Integer.valueOf(0), user.getVersion());
-        });
+            User user = entityManager.find(User.class, _user.getId());
 
-        doInJPA(entityManager -> {
-            User user = entityManager.find(User.class, userHolder.get().getId());
+            QueryCountHolder.clear();
+
             user.setPhones(new HashSet<>(asList("1592637", "9518473")));
             user.setRoles(EnumSet.of(Role.USER, Role.DEV));
             user.setChildren(new HashSet<>(asList(
@@ -72,8 +69,12 @@ public class MySQLJsonTypeSetTest extends AbstractMySQLIntegrationTest {
             )));
         });
 
+        QueryCount queryCount = QueryCountHolder.getGrandTotal();
+        assertEquals(1, queryCount.getTotal());
+        assertEquals(1, queryCount.getUpdate());
+
         doInJPA(entityManager -> {
-            User user = entityManager.find(User.class, userHolder.get().getId());
+            User user = entityManager.find(User.class, _user.getId());
             assertEquals(new HashSet<>(asList("9518473", "1592637")), user.getPhones());
             assertEquals(EnumSet.of(Role.DEV, Role.USER), user.getRoles());
             assertEquals(new HashSet<>(asList(
@@ -82,6 +83,27 @@ public class MySQLJsonTypeSetTest extends AbstractMySQLIntegrationTest {
             )), user.getChildren());
             assertEquals(Integer.valueOf(1), user.getVersion());
         });
+    }
+
+    @Test
+    public void testLoad() {
+        QueryCountHolder.clear();
+
+        doInJPA(entityManager -> {
+            User user = entityManager.find(User.class, _user.getId());
+            assertEquals(new HashSet<>(asList("1234567", "7654321")), user.getPhones());
+            assertEquals(EnumSet.of(Role.USER, Role.ADMIN), user.getRoles());
+            assertEquals(new HashSet<>(asList(
+                new Child("John", 1, new HashSet<>(asList("toy4", "toy3"))),
+                new Child("Jane", 2, new HashSet<>(asList("toy2", "toy1")))
+            )), user.getChildren());
+            assertEquals(Integer.valueOf(0), user.getVersion());
+        });
+
+        QueryCount queryCount = QueryCountHolder.getGrandTotal();
+        assertEquals(1, queryCount.getTotal());
+        assertEquals(1, queryCount.getSelect());
+        assertEquals(0, queryCount.getUpdate());
     }
 
     @Entity

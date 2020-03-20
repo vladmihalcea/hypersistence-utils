@@ -7,11 +7,14 @@ import com.vladmihalcea.hibernate.type.model.Location;
 import com.vladmihalcea.hibernate.type.model.Ticket;
 import com.vladmihalcea.hibernate.type.util.AbstractMySQLIntegrationTest;
 import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
+import net.ttddyy.dsproxy.QueryCount;
+import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
 
 import javax.persistence.*;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
@@ -44,11 +47,11 @@ public class EhcacheMySQLJsonBinaryTypeTest extends AbstractMySQLIntegrationTest
         properties.setProperty("hibernate.cache.region.factory_class", "ehcache");
     }
 
-    @Test
-    public void test() {
-        final AtomicReference<Event> eventHolder = new AtomicReference<>();
+    private Event _event;
 
-        doInJPA((JPATransactionFunction<Void>) entityManager -> {
+    @Override
+    protected void afterInit() {
+        doInJPA(entityManager -> {
             Event nullEvent = new Event();
             nullEvent.setId(0L);
             entityManager.persist(nullEvent);
@@ -63,11 +66,11 @@ public class EhcacheMySQLJsonBinaryTypeTest extends AbstractMySQLIntegrationTest
             event.setProperties(
                 JacksonUtil.toJsonNode(
                     "{" +
-                    "   \"title\": \"High-Performance Java Persistence\"," +
-                    "   \"author\": \"Vlad Mihalcea\"," +
-                    "   \"publisher\": \"Amazon\"," +
-                    "   \"price\": 44.99" +
-                    "}"
+                        "   \"title\": \"High-Performance Java Persistence\"," +
+                        "   \"author\": \"Vlad Mihalcea\"," +
+                        "   \"publisher\": \"Amazon\"," +
+                        "   \"price\": 44.99" +
+                        "}"
                 )
             );
             entityManager.persist(event);
@@ -76,13 +79,20 @@ public class EhcacheMySQLJsonBinaryTypeTest extends AbstractMySQLIntegrationTest
             ticket.setPrice(12.34d);
             ticket.setRegistrationCode("ABC123");
 
-            eventHolder.set(event);
-
-            return null;
+            _event = event;
         });
-        doInJPA((JPATransactionFunction<Void>) entityManager -> {
-            Event event = entityManager.find(Event.class, eventHolder.get().getId());
+    }
+
+    @Test
+    public void test() {
+        doInJPA(entityManager -> {
+            QueryCountHolder.clear();
+
+            Event event = entityManager.find(Event.class, _event.getId());
             assertNotNull(event.getProperties());
+
+            QueryCount queryCount = QueryCountHolder.getGrandTotal();
+            assertEquals(0, queryCount.getTotal());
 
             List<String> properties = entityManager.createNativeQuery(
                 "select CAST(e.properties AS CHAR(1000)) " +
@@ -93,8 +103,6 @@ public class EhcacheMySQLJsonBinaryTypeTest extends AbstractMySQLIntegrationTest
             assertEquals(1, properties.size());
             JsonNode jsonNode = JacksonUtil.toJsonNode(properties.get(0));
             assertEquals("High-Performance Java Persistence", jsonNode.get("title").asText());
-
-            return null;
         });
     }
 

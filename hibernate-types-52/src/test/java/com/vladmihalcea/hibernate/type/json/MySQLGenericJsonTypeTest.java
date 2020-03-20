@@ -4,6 +4,8 @@ import com.vladmihalcea.hibernate.type.model.BaseEntity;
 import com.vladmihalcea.hibernate.type.model.Location;
 import com.vladmihalcea.hibernate.type.model.Ticket;
 import com.vladmihalcea.hibernate.type.util.AbstractMySQLIntegrationTest;
+import net.ttddyy.dsproxy.QueryCount;
+import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
 
@@ -37,10 +39,10 @@ public class MySQLGenericJsonTypeTest extends AbstractMySQLIntegrationTest {
         };
     }
 
-    @Test
-    public void test() {
-        final AtomicReference<Event> eventHolder = new AtomicReference<>();
+    private Event _event;
 
+    @Override
+    protected void afterInit() {
         doInJPA(entityManager -> {
             Location location = new Location();
             location.setCountry("Romania");
@@ -51,14 +53,25 @@ public class MySQLGenericJsonTypeTest extends AbstractMySQLIntegrationTest {
             event.setAlternativeLocations(Arrays.asList(location));
             entityManager.persist(event);
 
-            eventHolder.set(event);
+            _event = event;
         });
+    }
+
+    @Test
+    public void test() {
+        QueryCountHolder.clear();
+
         doInJPA(entityManager -> {
-            Event event = entityManager.find(Event.class, eventHolder.get().getId());
+            Event event = entityManager.find(Event.class, _event.getId());
             assertEquals(1, event.getAlternativeLocations().size());
             assertEquals("Cluj-Napoca", event.getAlternativeLocations().get(0).getCity());
             assertEquals("Romania", event.getAlternativeLocations().get(0).getCountry());
         });
+
+        QueryCount queryCount = QueryCountHolder.getGrandTotal();
+        assertEquals(1, queryCount.getTotal());
+        assertEquals(1, queryCount.getSelect());
+        assertEquals(0, queryCount.getUpdate());
     }
 
     @Entity(name = "Event")

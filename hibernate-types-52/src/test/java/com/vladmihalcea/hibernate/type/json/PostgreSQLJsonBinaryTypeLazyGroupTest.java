@@ -19,8 +19,8 @@ public class PostgreSQLJsonBinaryTypeLazyGroupTest extends AbstractPostgreSQLInt
     @Override
     protected Class<?>[] entities() {
         return new Class<?>[]{
-                Event.class,
-                Participant.class
+            Event.class,
+            Participant.class
         };
     }
 
