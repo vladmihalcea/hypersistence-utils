@@ -1,3 +1,10 @@
+Version 2.9.6 - March 21, 2020
+================================================================================
+
+Use byte arrays when cloning JSON objects #198
+
+Add Iso8601MonthType to save the 1-based value instead of the 0-based Enum ordinal for a java.time.Month entity attribute #56
+
 Version 2.9.5 - March 07, 2020
 ================================================================================
 
