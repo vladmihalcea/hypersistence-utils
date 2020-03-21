@@ -1,3 +1,3 @@
 @echo off
 
-mvn -Prelease clean test
+mvn -Pfork-jvm-test clean test
