@@ -83,7 +83,8 @@ public class JsonTypeDescriptor
         if (one instanceof Collection && another instanceof Collection) {
             return Objects.equals(one, another);
         }
-        if (one.getClass().equals(another.getClass())) {
+        if (one.getClass().equals(another.getClass()) &&
+            ReflectionUtils.getDeclaredMethodOrNull(one.getClass(), "equals", Object.class) != null) {
             return one.equals(another);
         }
         return objectMapperWrapper.toJsonNode(objectMapperWrapper.toString(one)).equals(
