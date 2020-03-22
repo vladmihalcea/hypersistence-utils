@@ -16,16 +16,25 @@ public class RangeTest {
     public void ofStringTest() {
         assertThat(integerRange("[1,3]").lower(), is(1));
         assertThat(integerRange("[1,3]").upper(), is(3));
+        assertThat(integerRange("[1,3]").isUpperBoundClosed(), is(true));
+        assertThat(integerRange("[1,3]").isLowerBoundClosed(), is(true));
 
         assertThat(integerRange("[,3]").lower(), is(nullValue()));
         assertThat(integerRange("[,3]").upper(), is(3));
         assertThat(integerRange("[,3]").hasLowerBound(), is(false));
         assertThat(integerRange("[,3]").hasUpperBound(), is(true));
+        assertThat(integerRange("[,3]").isUpperBoundClosed(), is(true));
+        assertThat(integerRange("[,3]").isLowerBoundClosed(), is(false));
 
         assertThat(integerRange("[,]").lower(), is(nullValue()));
         assertThat(integerRange("[,]").upper(), is(nullValue()));
         assertThat(integerRange("[,]").hasLowerBound(), is(false));
         assertThat(integerRange("[,]").hasUpperBound(), is(false));
+        assertThat(integerRange("[,]").isUpperBoundClosed(), is(false));
+        assertThat(integerRange("[,]").isLowerBoundClosed(), is(false));
+
+        assertThat(integerRange("(-5,5]").isUpperBoundClosed(), is(true));
+        assertThat(integerRange("(-5,5]").isLowerBoundClosed(), is(false));
     }
 
     @Test

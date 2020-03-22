@@ -38,12 +38,12 @@ public final class Range<T extends Comparable> implements Serializable {
 														            .appendPattern("X")
 														            .toFormatter();
 
-    private static final int LOWER_INCLUSIVE = 1 << 1;
-    private static final int LOWER_EXCLUSIVE = 1 << 2;
-    private static final int UPPER_INCLUSIVE = 1 << 3;
-    private static final int UPPER_EXCLUSIVE = 1 << 4;
-    private static final int LOWER_INFINITE = (1 << 5) | LOWER_EXCLUSIVE;
-    private static final int UPPER_INFINITE = (1 << 6) | UPPER_EXCLUSIVE;
+    public static final int LOWER_INCLUSIVE = 1 << 1;
+    public static final int LOWER_EXCLUSIVE = 1 << 2;
+    public static final int UPPER_INCLUSIVE = 1 << 3;
+    public static final int UPPER_EXCLUSIVE = 1 << 4;
+    public static final int LOWER_INFINITE = (1 << 5) | LOWER_EXCLUSIVE;
+    public static final int UPPER_INFINITE = (1 << 6) | UPPER_EXCLUSIVE;
 
     private final T lower;
     private final T upper;
@@ -488,8 +488,16 @@ public final class Range<T extends Comparable> implements Serializable {
                 '}';
     }
 
-    private boolean hasMask(int lowerInclusive) {
-        return (mask & lowerInclusive) == lowerInclusive;
+    public boolean hasMask(int flag) {
+        return (mask & flag) == flag;
+    }
+    
+    public boolean isLowerBoundClosed() {
+    	return hasLowerBound() && hasMask(LOWER_INCLUSIVE);
+    }
+    
+    public boolean isUpperBoundClosed() {
+    	return hasUpperBound() && hasMask(UPPER_INCLUSIVE);
     }
 
     public boolean hasLowerBound() {
