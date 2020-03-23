@@ -1,3 +1,12 @@
+Version 2.9.7 - March 23, 2020
+================================================================================
+
+Add support for checking if the bounds are open or closed for a given Range #204
+
+Row is always updated when using JSON objects wrapped in POJOs with no explicit equals method duplicate #203
+
+Allow all ArrayType objects to be used in the addScalar Hibernate Query method #190
+
 Version 2.9.6 - March 21, 2020
 ================================================================================
 
