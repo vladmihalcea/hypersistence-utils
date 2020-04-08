@@ -31,6 +31,7 @@ public final class Range<T extends Comparable> implements Serializable {
     public static final int UPPER_EXCLUSIVE = 1 << 4;
     public static final int LOWER_INFINITE = (1 << 5) | LOWER_EXCLUSIVE;
     public static final int UPPER_INFINITE = (1 << 6) | UPPER_EXCLUSIVE;
+    public static final String INFINITE_VALUE = "infinity";
 
     private final T lower;
     private final T upper;
@@ -240,11 +241,11 @@ public final class Range<T extends Comparable> implements Serializable {
         String lowerStr = str.substring(1, delim);
         String upperStr = str.substring(delim + 1, str.length() - 1);
 
-        if (lowerStr.length() == 0) {
+        if (lowerStr.length() == 0 || ("-" + INFINITE_VALUE).equalsIgnoreCase(lowerStr)) {
             mask |= LOWER_INFINITE;
         }
 
-        if (upperStr.length() == 0) {
+        if (upperStr.length() == 0 || INFINITE_VALUE.equalsIgnoreCase(upperStr)) {
             mask |= UPPER_INFINITE;
         }
 

@@ -29,6 +29,8 @@ public class RangeTest {
 
         assertThat(integerRange("[,]").lower(), is(nullValue()));
         assertThat(integerRange("[,]").upper(), is(nullValue()));
+        assertThat(integerRange("(-infinity,infinity)").lower(), is(nullValue()));
+        assertThat(integerRange("(-infinity,infinity)").upper(), is(nullValue()));
         assertThat(integerRange("[,]").hasLowerBound(), is(false));
         assertThat(integerRange("[,]").hasUpperBound(), is(false));
         assertThat(integerRange("[,]").isUpperBoundClosed(), is(false));
@@ -47,9 +49,12 @@ public class RangeTest {
 
         assertThat(integerRange("(,)").contains(integerRange("(,)")), is(true));
         assertThat(integerRange("(5,)").contains(integerRange("(6,)")), is(true));
+        assertThat(integerRange("(5,infinity)").contains(integerRange("(6,infinity)")), is(true));
         assertThat(integerRange("(,5)").contains(integerRange("(,4)")), is(true));
+        assertThat(integerRange("(-infinity,5)").contains(integerRange("(-infinity,4)")), is(true));
         assertThat(integerRange("(,)").contains(integerRange("(6,)")), is(true));
-        assertThat(integerRange("(,)").contains(integerRange("(,6)")), is(true));
+        assertThat(integerRange("(-infinity,infinity)").contains(integerRange("(6,infinity)")), is(true));
+        assertThat(integerRange("(-infinity,infinity)").contains(integerRange("(-infinity,6)")), is(true));
     }
     
     @Test
@@ -60,5 +65,6 @@ public class RangeTest {
     	assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.1234-06,)"));
     	assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.12345-06,)"));
     	assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.123456-06,)"));
+    	assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.123456-06,infinity)"));
     }
 }
