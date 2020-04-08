@@ -27,9 +27,13 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
 
     private final Range<Integer> int4Range = infinite(Integer.class);
 
+    private final Range<Integer> int4RangeInfinity = Range.integerRange("[123,infinity)");
+
     private final Range<LocalDateTime> localDateTimeRange = Range.localDateTimeRange("[2014-04-28 16:00:49,2015-04-28 16:00:49]");
 
     private final Range<ZonedDateTime> tsTz = zonedDateTimeRange("[\"2007-12-03T10:15:30+01:00\",\"2008-12-03T10:15:30+01:00\"]");
+
+    private final Range<ZonedDateTime> infinityTsTz = zonedDateTimeRange("[\"2007-12-03T10:15:30+01:00\",infinity)");
 
     private final Range<LocalDate> dateRange = Range.localDateRange("[1992-01-13,1995-01-13)");
 
@@ -42,42 +46,47 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
 
     @Test
     public void test() {
-        Restriction ageRestrictionInt = doInJPA(entityManager -> {
+        Restriction _restriction = doInJPA(entityManager -> {
             entityManager.persist(new Restriction());
 
             Restriction restriction = new Restriction();
             restriction.setRangeInt(int4Range);
+            restriction.setRangeIntInfinity(int4RangeInfinity);
             restriction.setRangeLong(int8Range);
             restriction.setRangeBigDecimal(numeric);
             restriction.setRangeLocalDateTime(localDateTimeRange);
             restriction.setRangeZonedDateTime(tsTz);
-            restriction.setLocalDateRange(dateRange);
+            restriction.setRangeZonedDateTimeInfinity(infinityTsTz);
+            restriction.setRangeLocalDate(dateRange);
             entityManager.persist(restriction);
 
             return restriction;
         });
 
         doInJPA(entityManager -> {
-            Restriction ar = entityManager.find(Restriction.class, ageRestrictionInt.getId());
+            Restriction restriction = entityManager.find(Restriction.class, _restriction.getId());
 
-            assertEquals(int4Range, ar.getRangeInt());
-            assertEquals(int8Range, ar.getRangeLong());
-            assertEquals(numeric, ar.getRangeBigDecimal());
-            assertEquals(localDateTimeRange, ar.getLocalDateTimeRange());
-            assertEquals(dateRange, ar.getLocalDateRange());
+            assertEquals(int4Range, restriction.getRangeInt());
+            assertEquals(int4RangeInfinity, restriction.getRangeIntInfinity());
+            assertEquals(int8Range, restriction.getRangeLong());
+            assertEquals(numeric, restriction.getRangeBigDecimal());
+            assertEquals(localDateTimeRange, restriction.getLocalDateTimeRange());
+            assertEquals(dateRange, restriction.getRangeLocalDate());
 
-            ZoneId zone = ar.getRangeZonedDateTime().lower().getZone();
+            ZoneId zone = restriction.getRangeZonedDateTime().lower().getZone();
 
             ZonedDateTime lower = tsTz.lower().withZoneSameInstant(zone);
             ZonedDateTime upper = tsTz.upper().withZoneSameInstant(zone);
+            assertEquals(restriction.getRangeZonedDateTime(), Range.closed(lower, upper));
 
-            assertEquals(ar.getRangeZonedDateTime(), Range.closed(lower, upper));
+            lower = infinityTsTz.lower().withZoneSameInstant(zone);
+            assertEquals(restriction.getRangeZonedDateTimeInfinity(), Range.closedInfinite(lower));
         });
     }
 
     @Test
     public void testNullRange() {
-        Restriction ageRestrictionInt = doInJPA(entityManager -> {
+        Restriction _restriction = doInJPA(entityManager -> {
             Restriction restriction = new Restriction();
             entityManager.persist(restriction);
 
@@ -85,14 +94,16 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
         });
 
         doInJPA(entityManager -> {
-            Restriction ar = entityManager.find(Restriction.class, ageRestrictionInt.getId());
+            Restriction restriction = entityManager.find(Restriction.class, _restriction.getId());
 
-            assertNull(ar.getRangeInt());
-            assertNull(ar.getRangeLong());
-            assertNull(ar.getRangeBigDecimal());
-            assertNull(ar.getLocalDateTimeRange());
-            assertNull(ar.getLocalDateRange());
-            assertNull(ar.getRangeZonedDateTime());
+            assertNull(restriction.getRangeInt());
+            assertNull(restriction.getRangeIntInfinity());
+            assertNull(restriction.getRangeLong());
+            assertNull(restriction.getRangeBigDecimal());
+            assertNull(restriction.getLocalDateTimeRange());
+            assertNull(restriction.getRangeLocalDate());
+            assertNull(restriction.getRangeZonedDateTime());
+            assertNull(restriction.getRangeZonedDateTimeInfinity());
         });
     }
 
@@ -108,31 +119,29 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
         @Column(name = "r_int", columnDefinition = "int4Range")
         private Range<Integer> rangeInt;
 
+        @Column(name = "r_int_infinity", columnDefinition = "int4Range")
+        private Range<Integer> rangeIntInfinity;
+
         @Column(name = "r_long", columnDefinition = "int8range")
         private Range<Long> rangeLong;
 
         @Column(name = "r_numeric", columnDefinition = "numrange")
         private Range<BigDecimal> rangeBigDecimal;
 
-        @Column(name = "r_tsrange", columnDefinition = "tsrange")
+        @Column(name = "r_ts", columnDefinition = "tsrange")
         private Range<LocalDateTime> rangeLocalDateTime;
 
-        @Column(name = "r_tstzrange", columnDefinition = "tstzrange")
+        @Column(name = "r_ts_tz", columnDefinition = "tstzrange")
         private Range<ZonedDateTime> rangeZonedDateTime;
 
-        @Column(name = "r_daterange", columnDefinition = "daterange")
-        private Range<LocalDate> localDateRange;
+        @Column(name = "r_ts_tz_infinity", columnDefinition = "tstzrange")
+        private Range<ZonedDateTime> rangeZonedDateTimeInfinity;
+
+        @Column(name = "r_date", columnDefinition = "daterange")
+        private Range<LocalDate> rangeLocalDate;
 
         public Long getId() {
             return id;
-        }
-
-        public Range<Long> getRangeLong() {
-            return rangeLong;
-        }
-
-        public void setRangeLong(Range<Long> rangeLong) {
-            this.rangeLong = rangeLong;
         }
 
         public Range<Integer> getRangeInt() {
@@ -141,6 +150,22 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
 
         public void setRangeInt(Range<Integer> rangeInt) {
             this.rangeInt = rangeInt;
+        }
+
+        public Range<Integer> getRangeIntInfinity() {
+            return rangeIntInfinity;
+        }
+
+        public void setRangeIntInfinity(Range<Integer> rangeIntInfinity) {
+            this.rangeIntInfinity = rangeIntInfinity;
+        }
+
+        public Range<Long> getRangeLong() {
+            return rangeLong;
+        }
+
+        public void setRangeLong(Range<Long> rangeLong) {
+            this.rangeLong = rangeLong;
         }
 
         public Range<BigDecimal> getRangeBigDecimal() {
@@ -167,12 +192,20 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
             this.rangeZonedDateTime = rangeZonedDateTime;
         }
 
-        public Range<LocalDate> getLocalDateRange() {
-            return localDateRange;
+        public Range<ZonedDateTime> getRangeZonedDateTimeInfinity() {
+            return rangeZonedDateTimeInfinity;
         }
 
-        public void setLocalDateRange(Range<LocalDate> localDateRange) {
-            this.localDateRange = localDateRange;
+        public void setRangeZonedDateTimeInfinity(Range<ZonedDateTime> rangeZonedDateTimeInfinity) {
+            this.rangeZonedDateTimeInfinity = rangeZonedDateTimeInfinity;
+        }
+
+        public Range<LocalDate> getRangeLocalDate() {
+            return rangeLocalDate;
+        }
+
+        public void setRangeLocalDate(Range<LocalDate> rangeLocalDate) {
+            this.rangeLocalDate = rangeLocalDate;
         }
     }
 }

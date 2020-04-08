@@ -24,6 +24,8 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
 
     private final Range<Integer> int4Range = infinite(Integer.class);
 
+    private final Range<Integer> int4RangeInfinity = Range.integerRange("[123,infinity)");
+
     @Override
     protected Class<?>[] entities() {
         return new Class[]{
@@ -34,7 +36,7 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
     @Test
     public void test() {
 
-        final Restriction ageRestrictionInt = doInJPA(new JPATransactionFunction<Restriction>() {
+        final Restriction _restriction = doInJPA(new JPATransactionFunction<Restriction>() {
 
             @Override
             public Restriction apply(EntityManager entityManager) {
@@ -42,6 +44,7 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
 
                 Restriction restriction = new Restriction();
                 restriction.setRangeInt(int4Range);
+                restriction.setRangeIntInfinity(int4RangeInfinity);
                 restriction.setRangeLong(int8Range);
                 restriction.setRangeBigDecimal(numeric);
                 entityManager.persist(restriction);
@@ -54,11 +57,12 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
 
             @Override
             public Void apply(EntityManager entityManager) {
-                Restriction ar = entityManager.find(Restriction.class, ageRestrictionInt.getId());
+                Restriction restriction = entityManager.find(Restriction.class, _restriction.getId());
 
-                assertEquals(int4Range, ar.getRangeInt());
-                assertEquals(int8Range, ar.getRangeLong());
-                assertEquals(numeric, ar.getRangeBigDecimal());
+                assertEquals(int4Range, restriction.getRangeInt());
+                assertEquals(int4RangeInfinity, restriction.getRangeIntInfinity());
+                assertEquals(int8Range, restriction.getRangeLong());
+                assertEquals(numeric, restriction.getRangeBigDecimal());
 
                 return null;
             }
@@ -67,7 +71,7 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
 
     @Test
     public void testNullRange() {
-        final Restriction ageRestrictionInt = doInJPA(new JPATransactionFunction<Restriction>() {
+        final Restriction _restriction = doInJPA(new JPATransactionFunction<Restriction>() {
             @Override
             public Restriction apply(EntityManager entityManager) {
                 Restriction restriction = new Restriction();
@@ -80,11 +84,12 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
         doInJPA(new JPATransactionVoidFunction() {
             @Override
             public void accept(EntityManager entityManager) {
-                Restriction ar = entityManager.find(Restriction.class, ageRestrictionInt.getId());
+                Restriction restriction = entityManager.find(Restriction.class, _restriction.getId());
 
-                assertNull(ar.getRangeInt());
-                assertNull(ar.getRangeLong());
-                assertNull(ar.getRangeBigDecimal());
+                assertNull(restriction.getRangeInt());
+                assertNull(restriction.getRangeIntInfinity());
+                assertNull(restriction.getRangeLong());
+                assertNull(restriction.getRangeBigDecimal());
             }
         });
     }
@@ -101,6 +106,9 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
         @Column(name = "r_int", columnDefinition = "int4Range")
         private Range<Integer> rangeInt;
 
+        @Column(name = "r_int_infinity", columnDefinition = "int4Range")
+        private Range<Integer> rangeIntInfinity;
+
         @Column(name = "r_long", columnDefinition = "int8range")
         private Range<Long> rangeLong;
 
@@ -111,20 +119,28 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
             return id;
         }
 
-        public Range<Long> getRangeLong() {
-            return rangeLong;
-        }
-
-        public void setRangeLong(Range<Long> rangeLong) {
-            this.rangeLong = rangeLong;
-        }
-
         public Range<Integer> getRangeInt() {
             return rangeInt;
         }
 
         public void setRangeInt(Range<Integer> rangeInt) {
             this.rangeInt = rangeInt;
+        }
+
+        public Range<Integer> getRangeIntInfinity() {
+            return rangeIntInfinity;
+        }
+
+        public void setRangeIntInfinity(Range<Integer> rangeIntInfinity) {
+            this.rangeIntInfinity = rangeIntInfinity;
+        }
+
+        public Range<Long> getRangeLong() {
+            return rangeLong;
+        }
+
+        public void setRangeLong(Range<Long> rangeLong) {
+            this.rangeLong = rangeLong;
         }
 
         public Range<BigDecimal> getRangeBigDecimal() {

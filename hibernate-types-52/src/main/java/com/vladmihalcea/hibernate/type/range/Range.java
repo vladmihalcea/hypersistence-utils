@@ -28,15 +28,6 @@ import java.util.function.Function;
  * @author Vlad Mihalcea
  */
 public final class Range<T extends Comparable> implements Serializable {
-    private static final DateTimeFormatter LOCAL_DATE_TIME = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss[.SSSSSS]");
-    private static final DateTimeFormatter ZONE_DATE_TIME = new DateTimeFormatterBuilder()
-														            .appendPattern("yyyy-MM-dd HH:mm:ss")
-														            .optionalStart()
-														            .appendPattern(".")
-														            .appendFraction(ChronoField.NANO_OF_SECOND, 1, 6, false)
-														            .optionalEnd()
-														            .appendPattern("X")
-														            .toFormatter();
 
     public static final int LOWER_INCLUSIVE = 1 << 1;
     public static final int LOWER_EXCLUSIVE = 1 << 2;
@@ -44,6 +35,19 @@ public final class Range<T extends Comparable> implements Serializable {
     public static final int UPPER_EXCLUSIVE = 1 << 4;
     public static final int LOWER_INFINITE = (1 << 5) | LOWER_EXCLUSIVE;
     public static final int UPPER_INFINITE = (1 << 6) | UPPER_EXCLUSIVE;
+
+    public static final String INFINITY = "infinity";
+
+    private static final DateTimeFormatter LOCAL_DATE_TIME = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss[.SSSSSS]");
+
+    private static final DateTimeFormatter ZONE_DATE_TIME = new DateTimeFormatterBuilder()
+        .appendPattern("yyyy-MM-dd HH:mm:ss")
+        .optionalStart()
+        .appendPattern(".")
+        .appendFraction(ChronoField.NANO_OF_SECOND, 1, 6, false)
+        .optionalEnd()
+        .appendPattern("X")
+        .toFormatter();
 
     private final T lower;
     private final T upper;
@@ -253,11 +257,11 @@ public final class Range<T extends Comparable> implements Serializable {
         String lowerStr = str.substring(1, delim);
         String upperStr = str.substring(delim + 1, str.length() - 1);
 
-        if (lowerStr.length() == 0) {
+        if (lowerStr.length() == 0 || lowerStr.endsWith(INFINITY)) {
             mask |= LOWER_INFINITE;
         }
 
-        if (upperStr.length() == 0) {
+        if (upperStr.length() == 0 || upperStr.endsWith(INFINITY)) {
             mask |= UPPER_INFINITE;
         }
 
@@ -430,11 +434,11 @@ public final class Range<T extends Comparable> implements Serializable {
     }
 
     private static Function<String, LocalDateTime> parseLocalDateTime() {
-        return str -> {
+        return s -> {
             try {
-                return LocalDateTime.parse(str, LOCAL_DATE_TIME);
+                return LocalDateTime.parse(s, LOCAL_DATE_TIME);
             } catch (DateTimeParseException e) {
-                return LocalDateTime.parse(str);
+                return LocalDateTime.parse(s);
             }
         };
     }
