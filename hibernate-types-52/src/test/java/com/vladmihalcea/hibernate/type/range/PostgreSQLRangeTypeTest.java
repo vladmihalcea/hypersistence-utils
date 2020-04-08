@@ -31,6 +31,8 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
 
     private final Range<ZonedDateTime> tsTz = zonedDateTimeRange("[\"2007-12-03T10:15:30+01:00\",\"2008-12-03T10:15:30+01:00\"]");
 
+    private final Range<ZonedDateTime> infinityTsTz = zonedDateTimeRange("[\"2007-12-03T10:15:30+01:00\",infinity)");
+
     private final Range<LocalDate> dateRange = Range.localDateRange("[1992-01-13,1995-01-13)");
 
     @Override
@@ -51,6 +53,7 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
             restriction.setRangeBigDecimal(numeric);
             restriction.setRangeLocalDateTime(localDateTimeRange);
             restriction.setRangeZonedDateTime(tsTz);
+            restriction.setInfinityRangeZonedDateTime(infinityTsTz);
             restriction.setLocalDateRange(dateRange);
             entityManager.persist(restriction);
 
@@ -70,8 +73,10 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
 
             ZonedDateTime lower = tsTz.lower().withZoneSameInstant(zone);
             ZonedDateTime upper = tsTz.upper().withZoneSameInstant(zone);
-
             assertEquals(ar.getRangeZonedDateTime(), Range.closed(lower, upper));
+
+            lower = infinityTsTz.lower().withZoneSameInstant(zone);
+            assertEquals(ar.getInfinityRangeZonedDateTime(), Range.closedInfinite(lower));
         });
     }
 
@@ -93,6 +98,7 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
             assertNull(ar.getLocalDateTimeRange());
             assertNull(ar.getLocalDateRange());
             assertNull(ar.getRangeZonedDateTime());
+            assertNull(ar.getInfinityRangeZonedDateTime());
         });
     }
 
@@ -119,6 +125,9 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
 
         @Column(name = "r_tstzrange", columnDefinition = "tstzrange")
         private Range<ZonedDateTime> rangeZonedDateTime;
+
+        @Column(name = "r_infinitytstzrange", columnDefinition = "tstzrange")
+        private Range<ZonedDateTime> infinityRangeZonedDateTime;
 
         @Column(name = "r_daterange", columnDefinition = "daterange")
         private Range<LocalDate> localDateRange;
@@ -165,6 +174,14 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
 
         public void setRangeZonedDateTime(Range<ZonedDateTime> rangeZonedDateTime) {
             this.rangeZonedDateTime = rangeZonedDateTime;
+        }
+
+        public Range<ZonedDateTime> getInfinityRangeZonedDateTime() {
+            return infinityRangeZonedDateTime;
+        }
+
+        public void setInfinityRangeZonedDateTime(Range<ZonedDateTime> infinityRangeZonedDateTime) {
+            this.infinityRangeZonedDateTime = infinityRangeZonedDateTime;
         }
 
         public Range<LocalDate> getLocalDateRange() {

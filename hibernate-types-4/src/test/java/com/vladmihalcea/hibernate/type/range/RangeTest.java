@@ -32,6 +32,8 @@ public class RangeTest {
         assertThat(integerRange("[,]").hasUpperBound(), is(false));
         assertThat(integerRange("[,]").isUpperBoundClosed(), is(false));
         assertThat(integerRange("[,]").isLowerBoundClosed(), is(false));
+        assertThat(integerRange("(infinity,infinity)").lower(), is(nullValue()));
+        assertThat(integerRange("(infinity,infinity)").upper(), is(nullValue()));
 
         assertThat(integerRange("(-5,5]").isUpperBoundClosed(), is(true));
         assertThat(integerRange("(-5,5]").isLowerBoundClosed(), is(false));
@@ -46,8 +48,11 @@ public class RangeTest {
 
         assertThat(integerRange("(,)").contains(integerRange("(,)")), is(true));
         assertThat(integerRange("(5,)").contains(integerRange("(6,)")), is(true));
+        assertThat(integerRange("(5,infinity)").contains(integerRange("(6,infinity)")), is(true));
         assertThat(integerRange("(,5)").contains(integerRange("(,4)")), is(true));
+        assertThat(integerRange("(infinity,5)").contains(integerRange("(infinity,4)")), is(true));
         assertThat(integerRange("(,)").contains(integerRange("(6,)")), is(true));
-        assertThat(integerRange("(,)").contains(integerRange("(,6)")), is(true));
+        assertThat(integerRange("(infinity,infinity)").contains(integerRange("(6,infinity)")), is(true));
+        assertThat(integerRange("(infinity,infinity)").contains(integerRange("(infinity,6)")), is(true));
     }
 }
