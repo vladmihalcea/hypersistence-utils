@@ -1,3 +1,12 @@
+Version 2.9.8 - April 09, 2020
+================================================================================
+
+Add support for PostgreSQL "infinity" String values #211
+
+Add support for saving null JSON objects when using the JsonStringType #210
+
+Add support for "empty" String values when mapping PostgreSQL range column types #209
+
 Version 2.9.7 - March 23, 2020
 ================================================================================
 
