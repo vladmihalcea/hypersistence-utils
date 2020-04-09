@@ -1,9 +1,8 @@
 package com.vladmihalcea.hibernate.type.json;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.vladmihalcea.hibernate.type.util.AbstractSQLServerIntegrationTest;
+import com.vladmihalcea.hibernate.type.util.AbstractMySQLIntegrationTest;
 import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
-import org.hibernate.SQLQuery;
+import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
@@ -12,14 +11,13 @@ import org.junit.Test;
 
 import javax.persistence.*;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
  * @author Vlad Mihalcea
  */
-public class SQLServerJsonStringPropertyTest extends AbstractSQLServerIntegrationTest {
+public class MySQLJsonStringPropertyTest extends AbstractMySQLIntegrationTest {
 
     @Override
     protected Class<?>[] entities() {
@@ -28,8 +26,8 @@ public class SQLServerJsonStringPropertyTest extends AbstractSQLServerIntegratio
         };
     }
 
-    @Test
-    public void test() {
+    @Override
+    protected void afterInit() {
         doInJPA(new JPATransactionFunction<Void>() {
             @Override
             public Void apply(EntityManager entityManager) {
@@ -49,21 +47,18 @@ public class SQLServerJsonStringPropertyTest extends AbstractSQLServerIntegratio
                 return null;
             }
         });
+    }
 
+    @Test
+    public void test() {
         doInJPA(new JPATransactionFunction<Void>() {
             @Override
             public Void apply(EntityManager entityManager) {
-                Book book = entityManager
-                    .createQuery(
-                        "select b " +
-                            "from Book b " +
-                            "where b.isbn = :isbn", Book.class)
-                    .setParameter("isbn", "978-9730228236")
-                    .getSingleResult();
+                Book book = (Book) entityManager.unwrap(Session.class)
+                    .bySimpleNaturalId(Book.class)
+                    .load("978-9730228236");
 
-                LOGGER.info("Book details: {}", book.getProperties());
-
-                assertTrue(book.getProperties().contains("\"price\": 44.99"));
+                QueryCountHolder.clear();
 
                 book.setProperties(
                     "{" +
@@ -82,19 +77,12 @@ public class SQLServerJsonStringPropertyTest extends AbstractSQLServerIntegratio
         doInJPA(new JPATransactionFunction<Void>() {
             @Override
             public Void apply(EntityManager entityManager) {
-                JsonNode properties = (JsonNode) entityManager
-                    .createNativeQuery(
-                        "SELECT " +
-                        "  properties AS properties " +
-                        "FROM book " +
-                        "WHERE " +
-                        "  isbn = :isbn")
-                    .setParameter("isbn", "978-9730228236")
-                    .unwrap(SQLQuery.class)
-                    .addScalar("properties", new JsonStringType(JsonNode.class))
-                    .uniqueResult();
+                Session session = entityManager.unwrap(Session.class);
+                Book book = (Book) session
+                    .bySimpleNaturalId(Book.class)
+                    .load("978-9730228236");
 
-                assertEquals("High-Performance Java Persistence", properties.get("title").asText());
+                assertTrue(book.getProperties().contains("\"price\": 44.99"));
 
                 return null;
             }
@@ -140,7 +128,7 @@ public class SQLServerJsonStringPropertyTest extends AbstractSQLServerIntegratio
         private String isbn;
 
         @Type(type = "json")
-        @Column(columnDefinition = "NVARCHAR(1000) CHECK(ISJSON(properties) = 1)")
+        @Column(columnDefinition = "json")
         private String properties;
 
         public String getIsbn() {

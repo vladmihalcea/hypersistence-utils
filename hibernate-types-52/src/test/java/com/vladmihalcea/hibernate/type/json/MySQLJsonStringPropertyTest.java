@@ -1,26 +1,22 @@
 package com.vladmihalcea.hibernate.type.json;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
+import com.vladmihalcea.hibernate.type.util.AbstractMySQLIntegrationTest;
 import net.ttddyy.dsproxy.QueryCount;
 import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
-import org.hibernate.query.NativeQuery;
 import org.junit.Test;
 
 import javax.persistence.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * @author Vlad Mihalcea
  */
-public class PostgreSQLJsonStringPropertyTest extends AbstractPostgreSQLIntegrationTest {
+public class MySQLJsonStringPropertyTest extends AbstractMySQLIntegrationTest {
 
     @Override
     protected Class<?>[] entities() {
@@ -71,21 +67,21 @@ public class PostgreSQLJsonStringPropertyTest extends AbstractPostgreSQLIntegrat
         assertEquals(1, queryCount.getTotal());
         assertEquals(1, queryCount.getUpdate());
 
-        doInJPA(entityManager -> {
-            JsonNode properties = (JsonNode) entityManager
-                .createNativeQuery(
-                    "SELECT " +
-                    "  properties AS properties " +
-                    "FROM book " +
-                    "WHERE " +
-                    "  isbn = :isbn")
-                .setParameter("isbn", "978-9730228236")
-                .unwrap(NativeQuery.class)
-                .addScalar("properties", new JsonBinaryType(JsonNode.class))
-                .getSingleResult();
+        QueryCountHolder.clear();
 
-            assertEquals("High-Performance Java Persistence", properties.get("title").asText());
+        doInJPA(entityManager -> {
+            Session session = entityManager.unwrap(Session.class);
+            Book book = session
+                .bySimpleNaturalId(Book.class)
+                .load("978-9730228236");
+
+            assertTrue(book.getProperties().contains("\"price\": 44.99"));
         });
+
+        queryCount = QueryCountHolder.getGrandTotal();
+        assertEquals(2, queryCount.getTotal());
+        assertEquals(2, queryCount.getSelect());
+        assertEquals(0, queryCount.getUpdate());
     }
 
     @Test
@@ -113,28 +109,9 @@ public class PostgreSQLJsonStringPropertyTest extends AbstractPostgreSQLIntegrat
         });
     }
 
-    @Test
-    public void testLoad() {
-        QueryCountHolder.clear();
-
-        doInJPA(entityManager -> {
-            Session session = entityManager.unwrap(Session.class);
-            Book book = session
-                .bySimpleNaturalId(Book.class)
-                .load("978-9730228236");
-
-            assertTrue(book.getProperties().contains("\"price\": 44.99"));
-        });
-
-        QueryCount queryCount = QueryCountHolder.getGrandTotal();
-        assertEquals(2, queryCount.getTotal());
-        assertEquals(2, queryCount.getSelect());
-        assertEquals(0, queryCount.getUpdate());
-    }
-
     @Entity(name = "Book")
     @Table(name = "book")
-    @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+    @TypeDef(name = "json", typeClass = JsonStringType.class)
     public static class Book {
 
         @Id
@@ -144,8 +121,8 @@ public class PostgreSQLJsonStringPropertyTest extends AbstractPostgreSQLIntegrat
         @NaturalId
         private String isbn;
 
-        @Type(type = "jsonb")
-        @Column(columnDefinition = "jsonb")
+        @Type(type = "json")
+        @Column(columnDefinition = "json")
         private String properties;
 
         public String getIsbn() {

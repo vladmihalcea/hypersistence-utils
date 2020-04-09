@@ -13,6 +13,7 @@ import org.junit.Test;
 import javax.persistence.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -90,6 +91,32 @@ public class SQLServerJsonStringPropertyTest extends AbstractSQLServerIntegratio
                     .uniqueResult();
 
                 assertEquals("High-Performance Java Persistence", properties.get("title").asText());
+
+                return null;
+            }
+        });
+
+        doInJPA(new JPATransactionFunction<Void>() {
+            @Override
+            public Void apply(EntityManager entityManager) {
+                Book book = (Book) entityManager.unwrap(Session.class)
+                    .bySimpleNaturalId(Book.class)
+                    .load("978-9730228236");
+
+                book.setProperties(null);
+
+                return null;
+            }
+        });
+
+        doInJPA(new JPATransactionFunction<Void>() {
+            @Override
+            public Void apply(EntityManager entityManager) {
+                Book book = (Book) entityManager.unwrap(Session.class)
+                    .bySimpleNaturalId(Book.class)
+                    .load("978-9730228236");
+
+                assertNull(book.getProperties());
 
                 return null;
             }

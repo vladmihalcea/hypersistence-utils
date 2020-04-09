@@ -3,7 +3,10 @@ package com.vladmihalcea.hibernate.type.json;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.vladmihalcea.hibernate.type.util.AbstractOracleIntegrationTest;
 import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
+import net.ttddyy.dsproxy.QueryCount;
+import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.SQLQuery;
+import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -12,6 +15,7 @@ import org.junit.Test;
 import javax.persistence.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -93,6 +97,32 @@ public class OracleJsonStringPropertyTest extends AbstractOracleIntegrationTest 
                     .uniqueResult();
 
                 assertEquals("High-Performance Java Persistence", properties.get("title").asText());
+
+                return null;
+            }
+        });
+
+        doInJPA(new JPATransactionFunction<Void>() {
+            @Override
+            public Void apply(EntityManager entityManager) {
+                Book book = (Book) entityManager.unwrap(Session.class)
+                    .bySimpleNaturalId(Book.class)
+                    .load("978-9730228236");
+
+                book.setProperties(null);
+
+                return null;
+            }
+        });
+
+        doInJPA(new JPATransactionFunction<Void>() {
+            @Override
+            public Void apply(EntityManager entityManager) {
+                Book book = (Book) entityManager.unwrap(Session.class)
+                    .bySimpleNaturalId(Book.class)
+                    .load("978-9730228236");
+
+                assertNull(book.getProperties());
 
                 return null;
             }

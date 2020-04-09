@@ -5,10 +5,7 @@ import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
 import org.hibernate.type.descriptor.sql.BasicBinder;
 
-import java.sql.CallableStatement;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 /**
  * @author Vlad Mihalcea
@@ -16,6 +13,11 @@ import java.sql.SQLException;
 public class JsonStringSqlTypeDescriptor extends AbstractJsonSqlTypeDescriptor {
 
     public static final JsonStringSqlTypeDescriptor INSTANCE = new JsonStringSqlTypeDescriptor();
+
+    @Override
+    public int getSqlType() {
+        return Types.VARCHAR;
+    }
 
     @Override
     public <X> ValueBinder<X> getBinder(final JavaTypeDescriptor<X> javaTypeDescriptor) {
