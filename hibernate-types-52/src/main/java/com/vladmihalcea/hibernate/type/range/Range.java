@@ -254,11 +254,11 @@ public final class Range<T extends Comparable> implements Serializable {
         String lowerStr = str.substring(1, delim);
         String upperStr = str.substring(delim + 1, str.length() - 1);
 
-        if (lowerStr.length() == 0 || ("-" + INFINITE_VALUE).equalsIgnoreCase(lowerStr)) {
+        if (lowerStr.length() == 0) {
             mask |= LOWER_INFINITE;
         }
 
-        if (upperStr.length() == 0 || INFINITE_VALUE.equalsIgnoreCase(upperStr)) {
+        if (upperStr.length() == 0) {
             mask |= UPPER_INFINITE;
         }
 
@@ -267,10 +267,18 @@ public final class Range<T extends Comparable> implements Serializable {
 
         if ((mask & LOWER_INFINITE) != LOWER_INFINITE) {
             lower = converter.apply(lowerStr);
+            // Maybe the converter considers the data "infinite"
+            if (lower == null) {
+                mask |= LOWER_INFINITE;
+            }
         }
 
         if ((mask & UPPER_INFINITE) != UPPER_INFINITE) {
             upper = converter.apply(upperStr);
+            // Maybe the converter considers the data "infinite"
+            if (upper == null) {
+                mask |= UPPER_INFINITE;
+            }
         }
 
         return new Range<>(lower, upper, mask, cls);
@@ -431,11 +439,14 @@ public final class Range<T extends Comparable> implements Serializable {
     }
 
     private static Function<String, LocalDateTime> parseLocalDateTime() {
-        return str -> {
+        return s -> {
             try {
-                return LocalDateTime.parse(str, LOCAL_DATE_TIME);
+                if (s.endsWith(INFINITE_VALUE)) {
+                    return null;
+                }
+                return LocalDateTime.parse(s, LOCAL_DATE_TIME);
             } catch (DateTimeParseException e) {
-                return LocalDateTime.parse(str);
+                return LocalDateTime.parse(s);
             }
         };
     }
@@ -443,6 +454,9 @@ public final class Range<T extends Comparable> implements Serializable {
     private static Function<String, ZonedDateTime> parseZonedDateTime() {
         return s -> {
             try {
+                if (s.endsWith(INFINITE_VALUE)) {
+                    return null;
+                }
                 return ZonedDateTime.parse(s, ZONE_DATE_TIME);
             } catch (DateTimeParseException e) {
                 return ZonedDateTime.parse(s);
