@@ -32,6 +32,8 @@ public final class Range<T extends Comparable> implements Serializable {
     public static final int LOWER_INFINITE = (1 << 5) | LOWER_EXCLUSIVE;
     public static final int UPPER_INFINITE = (1 << 6) | UPPER_EXCLUSIVE;
 
+    public static final String EMPTY = "empty";
+
     public static final String INFINITY = "infinity";
 
     private final T lower;
@@ -229,7 +231,11 @@ public final class Range<T extends Comparable> implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends Comparable> Range<T> ofString(String str, Function<String, T> converter, Class<T> cls) {
+    public static <T extends Comparable> Range<T> ofString(String str, Function<String, T> converter, Class<T> clazz) {
+        if(str.equals(EMPTY)) {
+            return emptyRange(clazz);
+        }
+
         int mask = str.charAt(0) == '[' ? LOWER_INCLUSIVE : LOWER_EXCLUSIVE;
         mask |= str.charAt(str.length() - 1) == ']' ? UPPER_INCLUSIVE : UPPER_EXCLUSIVE;
 
@@ -261,7 +267,7 @@ public final class Range<T extends Comparable> implements Serializable {
             upper = converter.apply(upperStr);
         }
 
-        return new Range<T>(lower, upper, mask, cls);
+        return new Range<T>(lower, upper, mask, clazz);
     }
 
     /**
@@ -506,5 +512,14 @@ public final class Range<T extends Comparable> implements Serializable {
     public interface Function<T, R> {
         
         R apply(T t);
+    }
+
+    public static <R extends Comparable<R>> Range<R> emptyRange(Class<R> clazz) {
+        return new Range<R>(
+            null,
+            null,
+            LOWER_INFINITE|UPPER_INFINITE,
+            clazz
+        );
     }
 }

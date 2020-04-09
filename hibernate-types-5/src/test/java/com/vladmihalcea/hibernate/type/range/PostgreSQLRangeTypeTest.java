@@ -22,6 +22,8 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
 
     private final Range<Long> int8Range = Range.longRange("[0,18)");
 
+    private final Range<Integer> int4RangeEmpty = Range.integerRange("[123,123)");
+
     private final Range<Integer> int4Range = infinite(Integer.class);
 
     private final Range<Integer> int4RangeInfinity = Range.integerRange("[123,infinity)");
@@ -44,6 +46,7 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
 
                 Restriction restriction = new Restriction();
                 restriction.setRangeInt(int4Range);
+                restriction.setRangeIntEmpty(int4RangeEmpty);
                 restriction.setRangeIntInfinity(int4RangeInfinity);
                 restriction.setRangeLong(int8Range);
                 restriction.setRangeBigDecimal(numeric);
@@ -60,6 +63,7 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
                 Restriction restriction = entityManager.find(Restriction.class, _restriction.getId());
 
                 assertEquals(int4Range, restriction.getRangeInt());
+                assertEquals(Range.emptyRange(Integer.class), restriction.getRangeIntEmpty());
                 assertEquals(int4RangeInfinity, restriction.getRangeIntInfinity());
                 assertEquals(int8Range, restriction.getRangeLong());
                 assertEquals(numeric, restriction.getRangeBigDecimal());
@@ -106,6 +110,9 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
         @Column(name = "r_int", columnDefinition = "int4Range")
         private Range<Integer> rangeInt;
 
+        @Column(name = "r_int_empty", columnDefinition = "int4Range")
+        private Range<Integer> rangeIntEmpty;
+
         @Column(name = "r_int_infinity", columnDefinition = "int4Range")
         private Range<Integer> rangeIntInfinity;
 
@@ -125,6 +132,14 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
 
         public void setRangeInt(Range<Integer> rangeInt) {
             this.rangeInt = rangeInt;
+        }
+
+        public Range<Integer> getRangeIntEmpty() {
+            return rangeIntEmpty;
+        }
+
+        public void setRangeIntEmpty(Range<Integer> rangeIntEmpty) {
+            this.rangeIntEmpty = rangeIntEmpty;
         }
 
         public Range<Integer> getRangeIntInfinity() {
