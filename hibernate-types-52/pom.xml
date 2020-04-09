@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <name>hibernate-types-52</name>
-    <description>Hibernate 5.2, 5.3, and 5.3 extra Types</description>
+    <description>Hibernate ORM 5.2, 5.3, and 5.4 extra Types</description>
 
     <dependencies>
 
