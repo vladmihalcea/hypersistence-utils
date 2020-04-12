@@ -3,9 +3,15 @@ package com.vladmihalcea.hibernate.type.range.guava;
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 import com.vladmihalcea.hibernate.type.ImmutableType;
+import com.vladmihalcea.hibernate.type.util.ReflectionUtils;
+import org.hibernate.annotations.common.reflection.XProperty;
+import org.hibernate.annotations.common.reflection.java.JavaXMember;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.usertype.DynamicParameterizedType;
 import org.postgresql.util.PGobject;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,6 +27,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
+import java.util.Properties;
 import java.util.function.Function;
 
 /**
@@ -41,7 +48,7 @@ import java.util.function.Function;
  * @author Vlad Mihalcea
  * @author Jan-Willem Gmelig Meyling
  */
-public class PostgreSQLGuavaRangeType extends ImmutableType<Range> {
+public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements DynamicParameterizedType {
 
     private static final DateTimeFormatter LOCAL_DATE_TIME = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss[.SSSSSS]");
 
@@ -55,6 +62,8 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> {
             .toFormatter();
 
     public static final PostgreSQLGuavaRangeType INSTANCE = new PostgreSQLGuavaRangeType();
+
+    private Type type;
 
     public PostgreSQLGuavaRangeType() {
         super(Range.class);
@@ -372,5 +381,19 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> {
         return value.toString();
     }
 
+    @Override
+    public void setParameterValues(Properties parameters) {
+        final XProperty xProperty = (XProperty) parameters.get(DynamicParameterizedType.XPROPERTY);
+        if (xProperty instanceof JavaXMember) {
+            type = ReflectionUtils.invokeGetter(xProperty, "javaType");
+        } else {
+            type = ((ParameterType) parameters.get(PARAMETER_TYPE)).getReturnedClass();
+        }
+    }
+
+    public Class<?> getElementType() {
+        return type instanceof ParameterizedType ?
+                (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[0] : null;
+    }
 
 }
