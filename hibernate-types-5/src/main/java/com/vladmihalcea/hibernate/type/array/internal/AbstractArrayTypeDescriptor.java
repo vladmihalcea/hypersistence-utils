@@ -33,7 +33,7 @@ public abstract class AbstractArrayTypeDescriptor<T>
         this.arrayObjectClass = arrayObjectClass;
     }
 
-    protected Class<T> getArrayObjectClass() {
+    public Class<T> getArrayObjectClass() {
         return arrayObjectClass;
     }
 
