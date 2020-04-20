@@ -206,7 +206,7 @@ public class ArrayUtil {
             if(arrayClass.isInstance(originalArray)) {
                 return (T) originalArray;
             } else {
-                throw new UnsupportedOperationException("Cannot transform array :" + Arrays.toString(originalArray) + " to type: " + arrayClass);
+                return (T) Arrays.copyOf(originalArray, originalArray.length, (Class) arrayClass);
             }
         }
     }

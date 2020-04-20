@@ -12,6 +12,7 @@ public class DoubleArrayTypeDescriptor
 
     @Override
     protected String getSqlArrayType() {
-		return "float8";
+        String sqlArrayType = super.getSqlArrayType();
+        return sqlArrayType != null ? sqlArrayType : "float8";
     }
 }

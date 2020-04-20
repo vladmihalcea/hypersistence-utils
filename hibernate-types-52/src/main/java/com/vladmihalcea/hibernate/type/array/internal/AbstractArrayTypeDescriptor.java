@@ -11,6 +11,8 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Properties;
 
+import static com.vladmihalcea.hibernate.type.array.internal.AbstractArrayType.SQL_ARRAY_TYPE;
+
 /**
  * @author Vlad Mihalcea
  */
@@ -18,6 +20,8 @@ public abstract class AbstractArrayTypeDescriptor<T>
         extends AbstractTypeDescriptor<T> implements DynamicParameterizedType {
 
     private Class<T> arrayObjectClass;
+
+    private String sqlArrayType;
 
     public AbstractArrayTypeDescriptor(Class<T> arrayObjectClass) {
         this(arrayObjectClass, (MutabilityPlan<T>) new MutableMutabilityPlan<Object>() {
@@ -46,6 +50,7 @@ public abstract class AbstractArrayTypeDescriptor<T>
         if (parameters.containsKey(PARAMETER_TYPE)) {
             arrayObjectClass = ((ParameterType) parameters.get(PARAMETER_TYPE)).getReturnedClass();
         }
+        sqlArrayType = parameters.getProperty(SQL_ARRAY_TYPE);
     }
 
     @Override
@@ -93,6 +98,8 @@ public abstract class AbstractArrayTypeDescriptor<T>
         return (T) value;
     }
 
-    protected abstract String getSqlArrayType();
+    protected String getSqlArrayType() {
+        return sqlArrayType;
+    }
 
 }

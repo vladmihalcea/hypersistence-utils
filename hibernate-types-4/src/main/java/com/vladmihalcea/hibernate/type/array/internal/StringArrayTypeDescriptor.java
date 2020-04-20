@@ -12,6 +12,7 @@ public class StringArrayTypeDescriptor
 
     @Override
     protected String getSqlArrayType() {
-        return "text";
+        String sqlArrayType = super.getSqlArrayType();
+        return sqlArrayType != null ? sqlArrayType : "text";
     }
 }

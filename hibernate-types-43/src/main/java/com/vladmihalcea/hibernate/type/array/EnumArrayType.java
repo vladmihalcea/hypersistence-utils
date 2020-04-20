@@ -1,6 +1,7 @@
 package com.vladmihalcea.hibernate.type.array;
 
 import com.vladmihalcea.hibernate.type.array.internal.AbstractArrayType;
+import com.vladmihalcea.hibernate.type.array.internal.AbstractArrayTypeDescriptor;
 import com.vladmihalcea.hibernate.type.array.internal.EnumArrayTypeDescriptor;
 import com.vladmihalcea.hibernate.type.util.Configuration;
 import org.hibernate.annotations.Type;
@@ -60,7 +61,7 @@ public class EnumArrayType extends AbstractArrayType<Enum[]> {
         if (name == null) {
             name = String.format(DEFAULT_TYPE_NAME, parameters.getProperty(SQL_ARRAY_TYPE));
         }
-        ((EnumArrayTypeDescriptor) getJavaTypeDescriptor()).setParameterValues(parameters);
+        ((AbstractArrayTypeDescriptor) getJavaTypeDescriptor()).setParameterValues(parameters);
     }
 
 }
