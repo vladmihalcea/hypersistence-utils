@@ -28,6 +28,14 @@ public class ObjectMapperJsonSerializer implements JsonSerializer {
             }
         }
 
+        if (value instanceof Map && !((Map) value).isEmpty()) {
+            Map.Entry firstElement = (Map.Entry) ((Map) value).entrySet().iterator().next();
+            if (!(firstElement.getKey() instanceof Serializable)
+                    || !(firstElement.getValue() instanceof Serializable)) {
+                return (T) objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(value), (Class<T>) value.getClass());
+            }
+        }
+
         return value instanceof Serializable ?
                 (T) SerializationHelper.clone((Serializable) value) :
                 objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(value), (Class<T>) value.getClass());
