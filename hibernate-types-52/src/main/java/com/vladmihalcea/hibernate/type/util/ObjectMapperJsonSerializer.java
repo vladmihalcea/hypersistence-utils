@@ -6,6 +6,7 @@ import org.hibernate.internal.util.SerializationHelper;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * @author Vlad Mihalcea
@@ -19,17 +20,33 @@ public class ObjectMapperJsonSerializer implements JsonSerializer {
     }
 
     @Override
-    public <T> T clone(T value) {
-        if (value instanceof Collection && !((Collection) value).isEmpty()) {
-            Object firstElement = ((Collection) value).iterator().next();
-            if (!(firstElement instanceof Serializable)) {
-                JavaType type = TypeFactory.defaultInstance().constructParametricType(value.getClass(), firstElement.getClass());
-                return objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(value), type);
+    public <T> T clone(T object) {
+        if (object instanceof Collection) {
+            Collection collection = (Collection) object;
+            if (!collection.isEmpty()) {
+                Object firstElement = collection.iterator().next();
+                if (!(firstElement instanceof Serializable)) {
+                    JavaType type = TypeFactory.defaultInstance().constructParametricType(collection.getClass(), firstElement.getClass());
+                    return objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(collection), type);
+                }
             }
         }
 
-        return value instanceof Serializable ?
-                (T) SerializationHelper.clone((Serializable) value) :
-                objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(value), (Class<T>) value.getClass());
+        if (object instanceof Map) {
+            Map map = (Map) object;
+            if (!map.isEmpty()) {
+                Map.Entry firstElement = (Map.Entry) map.entrySet().iterator().next();
+                Object key = firstElement.getKey();
+                Object value = firstElement.getValue();
+                if (!(key instanceof Serializable) || !(value instanceof Serializable)) {
+                    JavaType type = TypeFactory.defaultInstance().constructParametricType(map.getClass(), key.getClass(), value.getClass());
+                    return (T) objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(map), type);
+                }
+            }
+        }
+
+        return object instanceof Serializable ?
+            (T) SerializationHelper.clone((Serializable) object) :
+            objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(object), (Class<T>) object.getClass());
     }
 }

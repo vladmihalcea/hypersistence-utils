@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.junit.Test;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
@@ -56,6 +55,33 @@ public class ObjectMapperJsonSerializerTest {
         assertNotSame(original, cloned);
     }
 
+    @Test
+    public void should_clone_map_of_non_serializable_key() {
+        Map<NonSerializableObject, String> original = new HashMap<>();
+        original.put(new NonSerializableObject("key"), "value");
+        Object cloned = serializer.clone(original);
+        assertEquals(original, cloned);
+        assertNotSame(original, cloned);
+    }
+
+    @Test
+    public void should_clone_map_of_non_serializable_value() {
+        Map<String, NonSerializableObject> original = new HashMap<>();
+        original.put("key", new NonSerializableObject("value"));
+        Object cloned = serializer.clone(original);
+        assertEquals(original, cloned);
+        assertNotSame(original, cloned);
+    }
+
+    @Test
+    public void should_clone_map_of_serializable_key_and_value() {
+        Map<String, SerializableObject> original = new HashMap<>();
+        original.put("key", new SerializableObject("value"));
+        Object cloned = serializer.clone(original);
+        assertEquals(original, cloned);
+        assertNotSame(original, cloned);
+    }
+
     private static class SerializableObject implements Serializable {
         private final String value;
 
@@ -80,6 +106,11 @@ public class ObjectMapperJsonSerializerTest {
         @Override
         public int hashCode() {
             return value.hashCode();
+        }
+
+        @Override
+        public String toString() {
+            return value;
         }
     }
 
@@ -107,6 +138,11 @@ public class ObjectMapperJsonSerializerTest {
         @Override
         public int hashCode() {
             return value.hashCode();
+        }
+
+        @Override
+        public String toString() {
+            return value;
         }
     }
 }
