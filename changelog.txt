@@ -1,3 +1,14 @@
+Version 2.9.9 - April 26, 2020
+================================================================================
+
+Allow the custom ObjectMapper be used for JSON serialization #220
+
+Allow ArrayType to work on HSQLDB #219
+
+Expose the Hibernate Type for Range elements #215
+
+Make AbstractArrayTypeDescriptor#getArrayObjectClass public #214
+
 Version 2.9.8 - April 09, 2020
 ================================================================================
 
