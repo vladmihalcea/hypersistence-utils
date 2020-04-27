@@ -189,12 +189,6 @@ So, the easiest way to have the banner removed is to add [Hypersistence Optimize
 
 You can disable the banner by providing the `hibernate.types.print.banner=false` in either `hibernate.properties` or `hibernate-types.properties` file.
 
-> For Spring and Spring Boot, this [Pull Request](https://github.com/hibernate/hibernate-orm/pull/2649) is needed to be integrated into Hibernate ORM. 
->
-> Once this Pull Request is integrated, you could pass the `hibernate.types.print.banner=false` configuration property from the `application.properties` file. 
->
-> So, in the meanwhile, you could vote for the [HHH-13103 issue](https://hibernate.atlassian.net/browse/HHH-13103) and remind the Hibernate team that you really need that Pull Request to be integrated. Hopefully, it will be added to the project sooner than later.
-
 If can also provide the `hibernate.types.print.banner=false`setting as a Java System property when bootstrapping your Java application:
 
     java -Dhibernate.types.print.banner=false -jar target/application-1.0.0.jar
