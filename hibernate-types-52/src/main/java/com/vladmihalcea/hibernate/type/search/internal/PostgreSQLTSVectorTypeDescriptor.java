@@ -10,6 +10,7 @@ import org.hibernate.usertype.DynamicParameterizedType;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Properties;
@@ -83,6 +84,8 @@ public class PostgreSQLTSVectorTypeDescriptor extends AbstractTypeDescriptor<Obj
         Type classType = type;
         if (type instanceof ParameterizedType) {
             classType = ((ParameterizedType) type).getRawType();
+        } else if (type instanceof TypeVariable) {
+            classType = ((TypeVariable) type).getGenericDeclaration().getClass();
         }
         return (Class) classType;
     }
