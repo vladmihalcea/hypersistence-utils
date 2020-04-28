@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -167,6 +168,8 @@ public class JsonTypeDescriptor
         Type classType = type;
         if (type instanceof ParameterizedType) {
             classType = ((ParameterizedType) type).getRawType();
+        } else if (type instanceof TypeVariable) {
+            classType = ((TypeVariable) type).getGenericDeclaration().getClass();
         }
         return (Class) classType;
     }
