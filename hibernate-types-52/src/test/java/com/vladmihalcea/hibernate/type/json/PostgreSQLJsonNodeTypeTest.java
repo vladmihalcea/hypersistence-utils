@@ -9,9 +9,18 @@ import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.hibernate.boot.MetadataBuilder;
+import org.hibernate.boot.spi.MetadataBuilderContributor;
+import org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl;
+import org.hibernate.jpa.boot.spi.EntityManagerFactoryBuilder;
+import org.hibernate.query.NativeQuery;
+import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.junit.Test;
 
 import javax.persistence.*;
+
+import java.util.List;
+import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
 
@@ -25,6 +34,16 @@ public class PostgreSQLJsonNodeTypeTest extends AbstractPostgreSQLIntegrationTes
         return new Class<?>[]{
             Book.class
         };
+    }
+
+    @Override
+    protected void additionalProperties(Properties properties) {
+        properties.put(
+            EntityManagerFactoryBuilderImpl.METADATA_BUILDER_CONTRIBUTOR,
+            (MetadataBuilderContributor) metadataBuilder -> metadataBuilder.applyBasicType(
+                JsonNodeBinaryType.INSTANCE
+            )
+        );
     }
 
     @Override
@@ -95,6 +114,25 @@ public class PostgreSQLJsonNodeTypeTest extends AbstractPostgreSQLIntegrationTes
         assertEquals(0, queryCount.getUpdate());
     }
 
+    @Test
+    public void testQuery() {
+        doInJPA(entityManager -> {
+            List<BookDTO> books = entityManager.createNativeQuery(
+                "SELECT " +
+                "       b.id as id, " +
+                "       b.properties as properties " +
+                "FROM book b")
+            .unwrap(NativeQuery.class)
+            .setResultTransformer(new AliasToBeanResultTransformer(BookDTO.class))
+            .getResultList();
+
+            assertEquals(1, books.size());
+            BookDTO book = books.get(0);
+
+            assertEquals(expectedPrice(), book.getProperties().get("price").asText());
+        });
+    }
+
     protected String initialPrice() {
         return "44.99";
     }
@@ -103,9 +141,44 @@ public class PostgreSQLJsonNodeTypeTest extends AbstractPostgreSQLIntegrationTes
         return "44.99";
     }
 
+    public static class BookDTO {
+
+        private long id;
+
+        private JsonNode properties;
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Number id) {
+            this.id = id.longValue();
+        }
+
+        public JsonNode getProperties() {
+            return properties;
+        }
+
+        public void setProperties(JsonNode properties) {
+            this.properties = properties;
+        }
+    }
+
     @Entity(name = "Book")
     @Table(name = "book")
     @TypeDef(typeClass = JsonBinaryType.class, defaultForType = JsonNode.class)
+    @SqlResultSetMapping(
+        name = "BookDTO",
+        classes = {
+            @ConstructorResult(
+                targetClass = BookDTO.class,
+                columns = {
+                    @ColumnResult(name = "id"),
+                    @ColumnResult(name = "properties"),
+                }
+            )
+        }
+    )
     public static class Book {
 
         @Id
