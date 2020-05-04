@@ -7,18 +7,14 @@ import net.ttddyy.dsproxy.QueryCount;
 import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
-import org.hibernate.boot.MetadataBuilder;
 import org.hibernate.boot.spi.MetadataBuilderContributor;
 import org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl;
-import org.hibernate.jpa.boot.spi.EntityManagerFactoryBuilder;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.junit.Test;
 
 import javax.persistence.*;
-
 import java.util.List;
 import java.util.Properties;
 
@@ -72,20 +68,20 @@ public class PostgreSQLJsonNodeTypeTest extends AbstractPostgreSQLIntegrationTes
         doInJPA(entityManager -> {
             Session session = entityManager.unwrap(Session.class);
             Book book = session
-                    .bySimpleNaturalId(Book.class)
-                    .load("978-9730228236");
+                .bySimpleNaturalId(Book.class)
+                .load("978-9730228236");
 
             QueryCountHolder.clear();
 
             book.setProperties(
                 JacksonUtil.toJsonNode(
                     "{" +
-                    "   \"title\": \"High-Performance Java Persistence\"," +
-                    "   \"author\": \"Vlad Mihalcea\"," +
-                    "   \"publisher\": \"Amazon\"," +
-                    "   \"price\": 44.99," +
-                    "   \"url\": \"https://www.amazon.com/High-Performance-Java-Persistence-Vlad-Mihalcea/dp/973022823X/\"" +
-                    "}"
+                        "   \"title\": \"High-Performance Java Persistence\"," +
+                        "   \"author\": \"Vlad Mihalcea\"," +
+                        "   \"publisher\": \"Amazon\"," +
+                        "   \"price\": 44.99," +
+                        "   \"url\": \"https://www.amazon.com/High-Performance-Java-Persistence-Vlad-Mihalcea/dp/973022823X/\"" +
+                        "}"
                 )
             );
         });
@@ -115,7 +111,7 @@ public class PostgreSQLJsonNodeTypeTest extends AbstractPostgreSQLIntegrationTes
     }
 
     @Test
-    public void testQuery() {
+    public void testNativeQueryResultTransformer() {
         doInJPA(entityManager -> {
             List<BookDTO> books = entityManager.createNativeQuery(
                 "SELECT " +
@@ -124,6 +120,25 @@ public class PostgreSQLJsonNodeTypeTest extends AbstractPostgreSQLIntegrationTes
                 "FROM book b")
             .unwrap(NativeQuery.class)
             .setResultTransformer(new AliasToBeanResultTransformer(BookDTO.class))
+            .getResultList();
+
+            assertEquals(1, books.size());
+            BookDTO book = books.get(0);
+
+            assertEquals(expectedPrice(), book.getProperties().get("price").asText());
+        });
+    }
+
+    @Test
+    public void testNativeQueryResultMapping() {
+        doInJPA(entityManager -> {
+            List<BookDTO> books = entityManager.createNativeQuery(
+                "SELECT " +
+                "       b.id as id, " +
+                "       b.properties as properties " +
+                "FROM book b")
+            .unwrap(NativeQuery.class)
+            .setResultSetMapping("BookDTO")
             .getResultList();
 
             assertEquals(1, books.size());
@@ -146,6 +161,14 @@ public class PostgreSQLJsonNodeTypeTest extends AbstractPostgreSQLIntegrationTes
         private long id;
 
         private JsonNode properties;
+
+        public BookDTO() {
+        }
+
+        public BookDTO(Number id, JsonNode properties) {
+            this.id = id.longValue();
+            this.properties = properties;
+        }
 
         public Long getId() {
             return id;
@@ -174,7 +197,7 @@ public class PostgreSQLJsonNodeTypeTest extends AbstractPostgreSQLIntegrationTes
                 targetClass = BookDTO.class,
                 columns = {
                     @ColumnResult(name = "id"),
-                    @ColumnResult(name = "properties"),
+                    @ColumnResult(name = "properties", type = JsonNode.class),
                 }
             )
         }
