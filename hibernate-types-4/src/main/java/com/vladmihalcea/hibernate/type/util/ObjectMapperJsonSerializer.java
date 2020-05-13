@@ -22,31 +22,45 @@ public class ObjectMapperJsonSerializer implements JsonSerializer {
     @Override
     public <T> T clone(T object) {
         if (object instanceof Collection) {
-            Collection collection = (Collection) object;
-            if (!collection.isEmpty()) {
-                Object firstElement = collection.iterator().next();
-                if (!(firstElement instanceof Serializable)) {
-                    JavaType type = TypeFactory.defaultInstance().constructParametricType(collection.getClass(), firstElement.getClass());
-                    return objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(collection), type);
-                }
+            Object firstElement = findFirstNonNullElement((Collection) object);
+            if (firstElement != null && !(firstElement instanceof Serializable)) {
+                JavaType type = TypeFactory.defaultInstance().constructParametricType(object.getClass(), firstElement.getClass());
+                return objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(object), type);
             }
         }
 
         if (object instanceof Map) {
-            Map map = (Map) object;
-            if (!map.isEmpty()) {
-                Map.Entry firstElement = (Map.Entry) map.entrySet().iterator().next();
-                Object key = firstElement.getKey();
-                Object value = firstElement.getValue();
+            Map.Entry firstEntry = this.findFirstNonNullEntry((Map) object);
+            if (firstEntry != null) {
+                Object key = firstEntry.getKey();
+                Object value = firstEntry.getValue();
                 if (!(key instanceof Serializable) || !(value instanceof Serializable)) {
-                    JavaType type = TypeFactory.defaultInstance().constructParametricType(map.getClass(), key.getClass(), value.getClass());
-                    return (T) objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(map), type);
+                    JavaType type = TypeFactory.defaultInstance().constructParametricType(object.getClass(), key.getClass(), value.getClass());
+                    return (T) objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(object), type);
                 }
             }
         }
 
         return object instanceof Serializable ?
-            (T) SerializationHelper.clone((Serializable) object) :
-            objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(object), (Class<T>) object.getClass());
+                (T) SerializationHelper.clone((Serializable) object) :
+                objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(object), (Class<T>) object.getClass());
+    }
+
+    private Object findFirstNonNullElement(Collection collection) {
+        for (java.lang.Object element : collection) {
+            if (element != null) {
+                return element;
+            }
+        }
+        return null;
+    }
+
+    private Map.Entry findFirstNonNullEntry(Map<?,?> map) {
+        for (Map.Entry entry : map.entrySet()) {
+            if (entry.getValue() != null) {
+                return entry;
+            }
+        }
+        return null;
     }
 }
