@@ -1,13 +1,16 @@
 package com.vladmihalcea.hibernate.type.util;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import org.junit.Test;
 
 import java.io.Serializable;
-import java.util.*;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ObjectMapperJsonSerializerTest {
 
@@ -82,6 +85,35 @@ public class ObjectMapperJsonSerializerTest {
         assertNotSame(original, cloned);
     }
 
+    @Test
+    public void should_clone_map_with_null_value() {
+        Map<String, Object> original = new HashMap<>();
+        original.put("null", null);
+        Object cloned = serializer.clone(original);
+        assertEquals(original, cloned);
+        assertNotSame(original, cloned);
+    }
+
+    @Test
+    public void should_clone_map_of_non_serializable_value_with_null_value() {
+        Map<String, NonSerializableObject> original = new LinkedHashMap<>();
+        original.put("null", null);
+        original.put("key", new NonSerializableObject("value"));
+        Object cloned = serializer.clone(original);
+        assertEquals(original, cloned);
+        assertNotSame(original, cloned);
+    }
+
+    @Test
+    public void should_clone_map_of_serializable_key_and_value_with_null() {
+        Map<String, SerializableObject> original = new LinkedHashMap<>();
+        original.put("null", null);
+        original.put("key", new SerializableObject("value"));
+        Object cloned = serializer.clone(original);
+        assertEquals(original, cloned);
+        assertNotSame(original, cloned);
+    }
+
     private static class SerializableObject implements Serializable {
         private final String value;
 
@@ -95,8 +127,10 @@ public class ObjectMapperJsonSerializerTest {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
 
             SerializableObject that = (SerializableObject) o;
 
@@ -127,8 +161,10 @@ public class ObjectMapperJsonSerializerTest {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
 
             NonSerializableObject that = (NonSerializableObject) o;
 
