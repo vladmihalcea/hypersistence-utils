@@ -1,3 +1,10 @@
+Version 2.9.10 - May 15, 2020
+================================================================================
+
+Allow the ClassImportIntegrator to include a relative path when registering DTO aliases #231
+
+ObjectMapperJsonSerializer#clone throws NullPointerException if the Map key or value are null #227
+
 Version 2.9.9 - April 26, 2020
 ================================================================================
 
