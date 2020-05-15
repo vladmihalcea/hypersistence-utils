@@ -20,7 +20,11 @@ import java.util.List;
  */
 public class ClassImportIntegrator implements Integrator {
 
+	private static final String DOT = ".";
+
 	private final List<? extends Class> classImportList;
+
+	private String excludedPath;
 
 	/**
 	 * Builds a new integrator that can register the provided classes.
@@ -32,7 +36,24 @@ public class ClassImportIntegrator implements Integrator {
 	}
 
 	/**
-	 * Register the provided classes by their simple name.
+	 * Exclude the provided parent path and register the remaining relative path.
+	 * If the {@link #excludedPath} is not set, then the package is excluded and
+	 * only the simple class name is registered.
+	 *
+	 * For instance, if you provide the {@code com.vladmihalcea.hibernate.type} path,
+	 * and register a class whose fully-qualified name is {@code com.vladmihalcea.hibernate.type.json.PostDTO},
+	 * then the class is going to be registered under the {@code json.PostDTO} alias.
+	 *
+	 * @param path path to be excluded.
+	 * @return the {@link ClassImportIntegrator} object reference
+	 */
+	public ClassImportIntegrator excludePath(String path) {
+		this.excludedPath = path.endsWith(DOT) ? path : path + DOT;
+		return this;
+	}
+
+	/**
+	 * Register the provided classes by their simple name or relative package and class name.
 	 *
 	 * @param metadata metadata
 	 * @param sessionFactory Hibernate session factory
@@ -44,8 +65,15 @@ public class ClassImportIntegrator implements Integrator {
 		SessionFactoryImplementor sessionFactory,
 		SessionFactoryServiceRegistry serviceRegistry) {
 		for(Class classImport : classImportList) {
+			String key;
+			if(excludedPath != null) {
+				key = classImport.getName().replace(excludedPath, "");
+			} else {
+				key = classImport.getSimpleName();
+			}
+
 			metadata.getImports().put(
-				classImport.getSimpleName(),
+				key,
 				classImport.getName()
 			);
 		}
