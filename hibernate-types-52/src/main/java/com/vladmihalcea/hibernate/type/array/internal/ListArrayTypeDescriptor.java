@@ -8,6 +8,7 @@ import org.hibernate.usertype.DynamicParameterizedType;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
 import java.util.*;
 
 /**
@@ -100,7 +101,12 @@ public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Object>
         Type memberGenericType = ReflectionUtils.getMemberGenericTypeOrNull(entityClass, property);
         if (memberGenericType instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) memberGenericType;
-            Class arrayElementClass = ReflectionUtils.getClass(parameterizedType.getActualTypeArguments()[0].getTypeName());
+            Type genericType = parameterizedType.getActualTypeArguments()[0];
+            if (genericType instanceof WildcardType) {
+                // Account for kotlin.collections.List: the type we want is actually the upper bound
+                genericType = ((WildcardType) genericType).getUpperBounds()[0];
+            }
+            Class arrayElementClass = ReflectionUtils.getClass(genericType.getTypeName());
             setArrayObjectClass(
                 arrayElementClass.isArray() ?
                     arrayElementClass :
