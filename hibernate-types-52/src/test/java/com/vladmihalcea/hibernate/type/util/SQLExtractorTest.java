@@ -1,8 +1,10 @@
 package com.vladmihalcea.hibernate.type.util;
 
+import org.hibernate.query.*;
 import org.junit.Test;
 
 import javax.persistence.*;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
@@ -27,7 +29,7 @@ public class SQLExtractorTest extends AbstractPostgreSQLIntegrationTest {
     @Test
     public void testJPQL() {
         doInJPA(entityManager -> {
-            Query query = entityManager
+            Query jpql = entityManager
             .createQuery(
                 "select " +
                 "   YEAR(p.createdOn) as year, " +
@@ -37,9 +39,15 @@ public class SQLExtractorTest extends AbstractPostgreSQLIntegrationTest {
                 "group by " +
                 "   YEAR(p.createdOn)", Tuple.class);
 
-            String sql = SQLExtractor.from(query);
+            String sql = SQLExtractor.from(jpql);
+
             assertNotNull(sql);
-            LOGGER.info("SQL query: {}", sql);
+
+            LOGGER.info(
+                "The JPQL query: [\n{}\n]\ngenerates the following SQL query: [\n{}\n]",
+                jpql.unwrap(org.hibernate.query.Query.class).getQueryString(),
+                sql
+            );
         });
     }
 
@@ -61,11 +69,17 @@ public class SQLExtractorTest extends AbstractPostgreSQLIntegrationTest {
                 builder.asc(postComment.get("id"))
             );
 
-            Query query = entityManager.createQuery(criteria);
+            Query criteriaQuery = entityManager.createQuery(criteria);
 
-            String sql = SQLExtractor.from(query);
+            String sql = SQLExtractor.from(criteriaQuery);
+
             assertNotNull(sql);
-            LOGGER.info("SQL query: {}", sql);
+
+            LOGGER.info(
+                "The Criteria API query: [\n{}\n]\ngenerates the following SQL query: [\n{}\n]",
+                criteriaQuery.unwrap(org.hibernate.query.Query.class).getQueryString(),
+                sql
+            );
         });
     }
 
