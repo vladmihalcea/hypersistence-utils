@@ -1,3 +1,10 @@
+Version 2.9.11 - June 02, 2020
+================================================================================
+
+Add SQLExtractor utility #241
+
+A ClassNotFoundException is thrown when using an Enum List or Array in Kotlin #238
+
 Version 2.9.10 - May 15, 2020
 ================================================================================
 
