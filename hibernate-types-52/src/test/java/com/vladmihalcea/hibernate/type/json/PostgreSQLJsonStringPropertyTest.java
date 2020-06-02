@@ -1,7 +1,9 @@
 package com.vladmihalcea.hibernate.type.json;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
+import com.vladmihalcea.hibernate.type.util.ExceptionUtil;
 import net.ttddyy.dsproxy.QueryCount;
 import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.Session;
@@ -13,9 +15,7 @@ import org.junit.Test;
 
 import javax.persistence.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * @author Vlad Mihalcea
@@ -130,6 +130,31 @@ public class PostgreSQLJsonStringPropertyTest extends AbstractPostgreSQLIntegrat
         assertEquals(2, queryCount.getTotal());
         assertEquals(2, queryCount.getSelect());
         assertEquals(0, queryCount.getUpdate());
+    }
+
+    @Test
+    public void testInvalidJson() {
+        try {
+            doInJPA(entityManager -> {
+                Book book = entityManager.unwrap(Session.class)
+                    .bySimpleNaturalId(Book.class)
+                    .load("978-9730228236");
+
+                QueryCountHolder.clear();
+
+                book.setProperties(
+                    "{" +
+                    "   \"title\": \"High-Performance Java Persistence\"," +
+                    "   \"author\": " +
+                    "   \"extras \": [" +
+                    "}"
+                );
+            });
+            fail("An invalid JSON should throw an exception!");
+        } catch (Exception e) {
+            JsonParseException rootCause = ExceptionUtil.rootCause(e);
+            assertTrue(rootCause.getMessage().contains("Unexpected character (':'"));
+        }
     }
 
     @Entity(name = "Book")
