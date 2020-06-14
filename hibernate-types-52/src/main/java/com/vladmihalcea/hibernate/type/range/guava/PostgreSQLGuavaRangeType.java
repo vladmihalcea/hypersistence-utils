@@ -118,7 +118,13 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
     }
 
     private static String determineRangeType(Range<?> range) {
-        Object anyEndpoint = range.hasLowerBound() ? range.lowerEndpoint() : range.upperEndpoint();
+        Object anyEndpoint = range.hasLowerBound() ? range.lowerEndpoint() :
+                             range.hasUpperBound() ? range.upperEndpoint() : null;
+
+        if (anyEndpoint == null) {
+            throw new IllegalArgumentException("Cannot find bound type");
+        }
+
         Class<?> clazz = anyEndpoint.getClass();
 
         if (clazz.equals(Integer.class)) {

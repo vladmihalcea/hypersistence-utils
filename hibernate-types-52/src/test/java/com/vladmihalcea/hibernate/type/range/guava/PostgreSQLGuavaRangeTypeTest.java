@@ -2,6 +2,7 @@ package com.vladmihalcea.hibernate.type.range.guava;
 
 import com.google.common.collect.Range;
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
+import com.vladmihalcea.hibernate.type.util.ExceptionUtil;
 import org.hibernate.annotations.TypeDef;
 import org.junit.Test;
 
@@ -21,6 +22,8 @@ import java.time.ZonedDateTime;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author Edgar Asatryan
@@ -105,6 +108,23 @@ public class PostgreSQLGuavaRangeTypeTest extends AbstractPostgreSQLIntegrationT
             assertNull(ar.getLocalDateRange());
             assertNull(ar.getRangeZonedDateTime());
         });
+    }
+
+    @Test
+    public void testUnboundedRangeIsRejected() {
+        try {
+            Restriction ageRestrictionInt = doInJPA(entityManager -> {
+                Restriction restriction = new Restriction();
+                restriction.setRangeInt(Range.all());
+                entityManager.persist(restriction);
+
+                return restriction;
+            });
+            fail("An unbounded range should throw an exception!");
+        } catch (Exception e) {
+            IllegalArgumentException rootCause = ExceptionUtil.rootCause(e);
+            assertTrue(rootCause.getMessage().contains("Cannot find bound type"));
+        }
     }
 
     @Entity(name = "AgeRestriction")

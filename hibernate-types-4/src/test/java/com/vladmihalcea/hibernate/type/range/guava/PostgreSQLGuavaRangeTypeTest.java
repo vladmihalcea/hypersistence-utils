@@ -1,5 +1,6 @@
 package com.vladmihalcea.hibernate.type.range.guava;
 
+import com.google.common.base.Throwables;
 import com.google.common.collect.Range;
 import com.google.common.collect.Ranges;
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
@@ -18,6 +19,8 @@ import java.math.BigDecimal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author Edgar Asatryan
@@ -94,6 +97,27 @@ public class PostgreSQLGuavaRangeTypeTest extends AbstractPostgreSQLIntegrationT
                 assertNull(ar.getRangeBigDecimal());
             }
         });
+    }
+
+    @Test
+    public void testUnboundedRangeIsRejected() {
+        try {
+            final Restriction ageRestrictionInt = doInJPA(new JPATransactionFunction<Restriction>() {
+                @Override
+                public Restriction apply(EntityManager entityManager) {
+                    Restriction restriction = new Restriction();
+                    restriction.setRangeInt(Ranges.<Integer>all());
+                    entityManager.persist(restriction);
+
+                    return restriction;
+                }
+            });
+            fail("An unbounded range should throw an exception!");
+        } catch (Exception e) {
+            Throwable rootCause = Throwables.getRootCause(e);
+            assertTrue(rootCause instanceof IllegalArgumentException);
+            assertTrue(rootCause.getMessage().contains("Cannot find bound type"));
+        }
     }
 
     @Entity(name = "AgeRestriction")
