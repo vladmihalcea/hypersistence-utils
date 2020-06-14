@@ -128,9 +128,22 @@ public class PostgreSQLGuavaRangeTypeTest extends AbstractPostgreSQLIntegrationT
     }
 
     @Test
+    public void testUnboundedRangeStringIsRejected() {
+        try {
+            PostgreSQLGuavaRangeType instance = PostgreSQLGuavaRangeType.INSTANCE;
+            instance.integerRange("(,)");
+            fail("An unbounded range string should throw an exception!");
+        } catch (Exception e) {
+            IllegalArgumentException rootCause = ExceptionUtil.rootCause(e);
+            assertTrue(rootCause.getMessage().contains("Cannot find bound type"));
+        }
+    }
+
+    @Test
     public void testSingleBoundedRanges() {
         PostgreSQLGuavaRangeType instance = PostgreSQLGuavaRangeType.INSTANCE;
 
+        assertEquals("(,)", instance.asString(Range.all()));
         assertEquals("(1,)", instance.asString(Range.greaterThan(1)));
         assertEquals("[2,)", instance.asString(Range.atLeast(2)));
         assertEquals("(,3)", instance.asString(Range.lessThan(3)));

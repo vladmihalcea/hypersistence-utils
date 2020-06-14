@@ -170,6 +170,10 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
             upper = converter.apply(upperStr);
         }
 
+        if (lower == null && upper == null) {
+            throw new IllegalArgumentException("Cannot find bound type");
+        }
+
         if (lowerStr.length() == 0) {
             return upperBound == BoundType.CLOSED ?
                     Range.atMost(upper) :
@@ -209,6 +213,7 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
      *     Range<Integer> halfOpen = Range.integerRange("(-1,1]");
      *     Range<Integer> open = Range.integerRange("(1,2)");
      *     Range<Integer> leftUnbounded = Range.integerRange("(,10)");
+     *     Range<Integer> unbounded = Range.integerRange("(,)");
      * }</pre>
      *
      * @param range The range string, for example {@literal "[5,7]"}.
@@ -228,6 +233,7 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
      *     Range<Long> halfOpen = Range.longRange("(-1,1]");
      *     Range<Long> open = Range.longRange("(1,2)");
      *     Range<Long> leftUnbounded = Range.longRange("(,10)");
+     *     Range<Long> unbounded = Range.longRange("(,)");
      * }</pre>
      *
      * @param range The range string, for example {@literal "[5,7]"}.
@@ -367,7 +373,6 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
 
     public String asString(Range range) {
         StringBuilder sb = new StringBuilder();
-
 
         sb.append(range.hasLowerBound() && range.lowerBoundType() == BoundType.CLOSED ? '[' : '(')
                 .append(range.hasLowerBound() ? asString(range.lowerEndpoint()) : "")
