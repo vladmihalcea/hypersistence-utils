@@ -369,11 +369,11 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
         StringBuilder sb = new StringBuilder();
 
 
-        sb.append(range.lowerBoundType() == BoundType.CLOSED ? '[' : '(')
+        sb.append(range.hasLowerBound() && range.lowerBoundType() == BoundType.CLOSED ? '[' : '(')
                 .append(range.hasLowerBound() ? asString(range.lowerEndpoint()) : "")
                 .append(",")
                 .append(range.hasUpperBound() ? asString(range.upperEndpoint()) : "")
-                .append(range.upperBoundType() == BoundType.CLOSED ? ']' : ')');
+                .append(range.hasUpperBound() && range.upperBoundType() == BoundType.CLOSED ? ']' : ')');
 
         return sb.toString();
     }

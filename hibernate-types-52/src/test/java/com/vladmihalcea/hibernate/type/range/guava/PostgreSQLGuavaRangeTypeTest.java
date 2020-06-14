@@ -127,6 +127,16 @@ public class PostgreSQLGuavaRangeTypeTest extends AbstractPostgreSQLIntegrationT
         }
     }
 
+    @Test
+    public void testSingleBoundedRanges() {
+        PostgreSQLGuavaRangeType instance = PostgreSQLGuavaRangeType.INSTANCE;
+
+        assertEquals("(1,)", instance.asString(Range.greaterThan(1)));
+        assertEquals("[2,)", instance.asString(Range.atLeast(2)));
+        assertEquals("(,3)", instance.asString(Range.lessThan(3)));
+        assertEquals("(,4]", instance.asString(Range.atMost(4)));
+    }
+
     @Entity(name = "AgeRestriction")
     @Table(name = "age_restriction")
     @TypeDef(name = "range", typeClass = PostgreSQLGuavaRangeType.class, defaultForType = Range.class)
