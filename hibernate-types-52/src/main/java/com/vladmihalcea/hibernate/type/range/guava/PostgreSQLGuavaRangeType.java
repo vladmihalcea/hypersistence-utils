@@ -203,7 +203,6 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
      *     Range<Integer> halfOpen = Range.integerRange("(-1,1]");
      *     Range<Integer> open = Range.integerRange("(1,2)");
      *     Range<Integer> leftUnbounded = Range.integerRange("(,10)");
-     *     Range<Integer> unbounded = Range.integerRange("(,)");
      * }</pre>
      *
      * @param range The range string, for example {@literal "[5,7]"}.
@@ -223,7 +222,6 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
      *     Range<Long> halfOpen = Range.longRange("(-1,1]");
      *     Range<Long> open = Range.longRange("(1,2)");
      *     Range<Long> leftUnbounded = Range.longRange("(,10)");
-     *     Range<Long> unbounded = Range.longRange("(,)");
      * }</pre>
      *
      * @param range The range string, for example {@literal "[5,7]"}.
@@ -315,7 +313,7 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
                 Duration lowerDst = ZoneId.systemDefault().getRules().getDaylightSavings(range.lowerEndpoint().toInstant());
                 Duration upperDst = ZoneId.systemDefault().getRules().getDaylightSavings(range.upperEndpoint().toInstant());
                 long dstSeconds = upperDst.minus(lowerDst).getSeconds();
-                if(dstSeconds < 0 ) {
+                if (dstSeconds < 0) {
                     dstSeconds *= -1;
                 }
                 long zoneDriftSeconds = ((ZoneOffset) lowerZone).getTotalSeconds() - ((ZoneOffset) upperZone).getTotalSeconds();
