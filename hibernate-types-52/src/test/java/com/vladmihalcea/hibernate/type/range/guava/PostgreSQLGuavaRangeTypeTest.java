@@ -148,6 +148,11 @@ public class PostgreSQLGuavaRangeTypeTest extends AbstractPostgreSQLIntegrationT
         assertEquals("[2,)", instance.asString(Range.atLeast(2)));
         assertEquals("(,3)", instance.asString(Range.lessThan(3)));
         assertEquals("(,4]", instance.asString(Range.atMost(4)));
+
+        assertEquals(Range.greaterThan(5), instance.integerRange("(5,)"));
+        assertEquals(Range.atLeast(6), instance.integerRange("[6,)"));
+        assertEquals(Range.lessThan(7), instance.integerRange("(,7)"));
+        assertEquals(Range.atMost(8), instance.integerRange("(,8]"));
     }
 
     @Entity(name = "AgeRestriction")

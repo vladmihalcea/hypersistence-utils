@@ -137,8 +137,8 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> {
                 Ranges.lessThan(upper);
         } else if (upperStr.length() == 0) {
             return lowerBound == BoundType.CLOSED ?
-                Ranges.atLeast(upper) :
-                Ranges.greaterThan(upper);
+                Ranges.atLeast(lower) :
+                Ranges.greaterThan(lower);
         } else {
             return Ranges.range(lower, lowerBound, upper, upperBound);
         }

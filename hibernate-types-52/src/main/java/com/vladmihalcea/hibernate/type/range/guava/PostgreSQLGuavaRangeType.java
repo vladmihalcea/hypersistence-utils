@@ -180,8 +180,8 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
                     Range.lessThan(upper);
         } else if (upperStr.length() == 0) {
             return lowerBound == BoundType.CLOSED ?
-                    Range.atLeast(upper) :
-                    Range.greaterThan(upper);
+                    Range.atLeast(lower) :
+                    Range.greaterThan(lower);
         } else {
             return Range.range(lower, lowerBound, upper, upperBound);
         }
