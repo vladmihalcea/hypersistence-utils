@@ -1,5 +1,6 @@
 package com.vladmihalcea.hibernate.type.range.guava;
 
+import com.google.common.base.Throwables;
 import com.google.common.collect.Range;
 import com.google.common.collect.Ranges;
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
@@ -18,6 +19,8 @@ import java.math.BigDecimal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author Edgar Asatryan
@@ -94,6 +97,56 @@ public class PostgreSQLGuavaRangeTypeTest extends AbstractPostgreSQLIntegrationT
                 assertNull(ar.getRangeBigDecimal());
             }
         });
+    }
+
+    @Test
+    public void testUnboundedRangeIsRejected() {
+        try {
+            final Restriction ageRestrictionInt = doInJPA(new JPATransactionFunction<Restriction>() {
+                @Override
+                public Restriction apply(EntityManager entityManager) {
+                    Restriction restriction = new Restriction();
+                    restriction.setRangeInt(Ranges.<Integer>all());
+                    entityManager.persist(restriction);
+
+                    return restriction;
+                }
+            });
+            fail("An unbounded range should throw an exception!");
+        } catch (Exception e) {
+            Throwable rootCause = Throwables.getRootCause(e);
+            assertTrue(rootCause instanceof IllegalArgumentException);
+            assertTrue(rootCause.getMessage().contains("doesn't have any upper or lower bound!"));
+        }
+    }
+
+    @Test
+    public void testUnboundedRangeStringIsRejected() {
+        try {
+            PostgreSQLGuavaRangeType instance = PostgreSQLGuavaRangeType.INSTANCE;
+            instance.integerRange("(,)");
+            fail("An unbounded range string should throw an exception!");
+        } catch (Exception e) {
+            Throwable rootCause = Throwables.getRootCause(e);
+            assertTrue(rootCause instanceof IllegalArgumentException);
+            assertTrue(rootCause.getMessage().contains("Cannot find bound type"));
+        }
+    }
+
+    @Test
+    public void testSingleBoundedRanges() {
+        PostgreSQLGuavaRangeType instance = PostgreSQLGuavaRangeType.INSTANCE;
+
+        assertEquals("(,)", instance.asString(Ranges.all()));
+        assertEquals("(1,)", instance.asString(Ranges.greaterThan(1)));
+        assertEquals("[2,)", instance.asString(Ranges.atLeast(2)));
+        assertEquals("(,3)", instance.asString(Ranges.lessThan(3)));
+        assertEquals("(,4]", instance.asString(Ranges.atMost(4)));
+
+        assertEquals(Ranges.greaterThan(5), instance.integerRange("(5,)"));
+        assertEquals(Ranges.atLeast(6), instance.integerRange("[6,)"));
+        assertEquals(Ranges.lessThan(7), instance.integerRange("(,7)"));
+        assertEquals(Ranges.atMost(8), instance.integerRange("(,8]"));
     }
 
     @Entity(name = "AgeRestriction")

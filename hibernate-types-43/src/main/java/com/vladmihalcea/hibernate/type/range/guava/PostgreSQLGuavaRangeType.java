@@ -90,7 +90,13 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
     }
 
     private static String determineRangeType(Range<?> range) {
-        Object anyEndpoint = range.hasLowerBound() ? range.lowerEndpoint() : range.upperEndpoint();
+        Object anyEndpoint = range.hasLowerBound() ? range.lowerEndpoint() :
+                             range.hasUpperBound() ? range.upperEndpoint() : null;
+
+        if (anyEndpoint == null) {
+            throw new IllegalArgumentException("The range " + range + " doesn't have any upper or lower bound!");
+        }
+
         Class<?> clazz = anyEndpoint.getClass();
 
         if (clazz.equals(Integer.class)) {
@@ -130,14 +136,18 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
             upper = converter.apply(upperStr);
         }
 
+        if (lower == null && upper == null) {
+            throw new IllegalArgumentException("Cannot find bound type");
+        }
+
         if (lowerStr.length() == 0) {
             return upperBound == BoundType.CLOSED ?
                 Ranges.atMost(upper) :
                 Ranges.lessThan(upper);
         } else if (upperStr.length() == 0) {
             return lowerBound == BoundType.CLOSED ?
-                Ranges.atLeast(upper) :
-                Ranges.greaterThan(upper);
+                Ranges.atLeast(lower) :
+                Ranges.greaterThan(lower);
         } else {
             return Ranges.range(lower, lowerBound, upper, upperBound);
         }
@@ -220,12 +230,11 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
     public String asString(Range range) {
         StringBuilder sb = new StringBuilder();
 
-
-        sb.append(range.lowerBoundType() == BoundType.CLOSED ? '[' : '(')
+        sb.append(range.hasLowerBound() && range.lowerBoundType() == BoundType.CLOSED ? '[' : '(')
                 .append(range.hasLowerBound() ? range.lowerEndpoint().toString() : "")
                 .append(",")
                 .append(range.hasUpperBound() ? range.upperEndpoint().toString() : "")
-                .append(range.upperBoundType() == BoundType.CLOSED ? ']' : ')');
+                .append(range.hasUpperBound() && range.upperBoundType() == BoundType.CLOSED ? ']' : ')');
 
         return sb.toString();
     }

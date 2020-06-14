@@ -50,7 +50,13 @@ import java.util.function.Function;
  */
 public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements DynamicParameterizedType {
 
-    private static final DateTimeFormatter LOCAL_DATE_TIME = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss[.SSSSSS]");
+    private static final DateTimeFormatter LOCAL_DATE_TIME = new DateTimeFormatterBuilder()
+        .appendPattern("yyyy-MM-dd HH:mm:ss")
+        .optionalStart()
+        .appendPattern(".")
+        .appendFraction(ChronoField.NANO_OF_SECOND, 1, 6, false)
+        .optionalEnd()
+        .toFormatter();
 
     private static final DateTimeFormatter ZONE_DATE_TIME = new DateTimeFormatterBuilder()
             .appendPattern("yyyy-MM-dd HH:mm:ss")
@@ -118,7 +124,13 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
     }
 
     private static String determineRangeType(Range<?> range) {
-        Object anyEndpoint = range.hasLowerBound() ? range.lowerEndpoint() : range.upperEndpoint();
+        Object anyEndpoint = range.hasLowerBound() ? range.lowerEndpoint() :
+                             range.hasUpperBound() ? range.upperEndpoint() : null;
+
+        if (anyEndpoint == null) {
+            throw new IllegalArgumentException("The range " + range + " doesn't have any upper or lower bound!");
+        }
+
         Class<?> clazz = anyEndpoint.getClass();
 
         if (clazz.equals(Integer.class)) {
@@ -164,14 +176,18 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
             upper = converter.apply(upperStr);
         }
 
+        if (lower == null && upper == null) {
+            throw new IllegalArgumentException("Cannot find bound type");
+        }
+
         if (lowerStr.length() == 0) {
             return upperBound == BoundType.CLOSED ?
                     Range.atMost(upper) :
                     Range.lessThan(upper);
         } else if (upperStr.length() == 0) {
             return lowerBound == BoundType.CLOSED ?
-                    Range.atLeast(upper) :
-                    Range.greaterThan(upper);
+                    Range.atLeast(lower) :
+                    Range.greaterThan(lower);
         } else {
             return Range.range(lower, lowerBound, upper, upperBound);
         }
@@ -315,7 +331,7 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
                 Duration lowerDst = ZoneId.systemDefault().getRules().getDaylightSavings(range.lowerEndpoint().toInstant());
                 Duration upperDst = ZoneId.systemDefault().getRules().getDaylightSavings(range.upperEndpoint().toInstant());
                 long dstSeconds = upperDst.minus(lowerDst).getSeconds();
-                if(dstSeconds < 0 ) {
+                if (dstSeconds < 0) {
                     dstSeconds *= -1;
                 }
                 long zoneDriftSeconds = ((ZoneOffset) lowerZone).getTotalSeconds() - ((ZoneOffset) upperZone).getTotalSeconds();
@@ -364,12 +380,11 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
     public String asString(Range range) {
         StringBuilder sb = new StringBuilder();
 
-
-        sb.append(range.lowerBoundType() == BoundType.CLOSED ? '[' : '(')
+        sb.append(range.hasLowerBound() && range.lowerBoundType() == BoundType.CLOSED ? '[' : '(')
                 .append(range.hasLowerBound() ? asString(range.lowerEndpoint()) : "")
                 .append(",")
                 .append(range.hasUpperBound() ? asString(range.upperEndpoint()) : "")
-                .append(range.upperBoundType() == BoundType.CLOSED ? ']' : ')');
+                .append(range.hasUpperBound() && range.upperBoundType() == BoundType.CLOSED ? ']' : ')');
 
         return sb.toString();
     }

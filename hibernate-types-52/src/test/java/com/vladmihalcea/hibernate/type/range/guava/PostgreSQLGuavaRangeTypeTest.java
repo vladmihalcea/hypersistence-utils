@@ -2,6 +2,7 @@ package com.vladmihalcea.hibernate.type.range.guava;
 
 import com.google.common.collect.Range;
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
+import com.vladmihalcea.hibernate.type.util.ExceptionUtil;
 import org.hibernate.annotations.TypeDef;
 import org.junit.Test;
 
@@ -21,6 +22,8 @@ import java.time.ZonedDateTime;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author Edgar Asatryan
@@ -105,6 +108,51 @@ public class PostgreSQLGuavaRangeTypeTest extends AbstractPostgreSQLIntegrationT
             assertNull(ar.getLocalDateRange());
             assertNull(ar.getRangeZonedDateTime());
         });
+    }
+
+    @Test
+    public void testUnboundedRangeIsRejected() {
+        try {
+            Restriction ageRestrictionInt = doInJPA(entityManager -> {
+                Restriction restriction = new Restriction();
+                restriction.setRangeInt(Range.all());
+                entityManager.persist(restriction);
+
+                return restriction;
+            });
+            fail("An unbounded range should throw an exception!");
+        } catch (Exception e) {
+            IllegalArgumentException rootCause = ExceptionUtil.rootCause(e);
+            assertTrue(rootCause.getMessage().contains("doesn't have any upper or lower bound!"));
+        }
+    }
+
+    @Test
+    public void testUnboundedRangeStringIsRejected() {
+        try {
+            PostgreSQLGuavaRangeType instance = PostgreSQLGuavaRangeType.INSTANCE;
+            instance.integerRange("(,)");
+            fail("An unbounded range string should throw an exception!");
+        } catch (Exception e) {
+            IllegalArgumentException rootCause = ExceptionUtil.rootCause(e);
+            assertTrue(rootCause.getMessage().contains("Cannot find bound type"));
+        }
+    }
+
+    @Test
+    public void testSingleBoundedRanges() {
+        PostgreSQLGuavaRangeType instance = PostgreSQLGuavaRangeType.INSTANCE;
+
+        assertEquals("(,)", instance.asString(Range.all()));
+        assertEquals("(1,)", instance.asString(Range.greaterThan(1)));
+        assertEquals("[2,)", instance.asString(Range.atLeast(2)));
+        assertEquals("(,3)", instance.asString(Range.lessThan(3)));
+        assertEquals("(,4]", instance.asString(Range.atMost(4)));
+
+        assertEquals(Range.greaterThan(5), instance.integerRange("(5,)"));
+        assertEquals(Range.atLeast(6), instance.integerRange("[6,)"));
+        assertEquals(Range.lessThan(7), instance.integerRange("(,7)"));
+        assertEquals(Range.atMost(8), instance.integerRange("(,8]"));
     }
 
     @Entity(name = "AgeRestriction")
