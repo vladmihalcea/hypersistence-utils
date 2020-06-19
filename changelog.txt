@@ -1,3 +1,12 @@
+Version 2.9.12 - June 19, 2020
+================================================================================
+
+Add jackson-module-jaxb-annotations dependency #247
+
+Guava range mapping does not support infinite bounds #244
+
+Allow JSON Types to handle parameterized entity attribute type variables #237
+
 Version 2.9.11 - June 02, 2020
 ================================================================================
 
