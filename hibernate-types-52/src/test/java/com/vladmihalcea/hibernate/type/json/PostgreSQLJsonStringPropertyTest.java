@@ -157,6 +157,32 @@ public class PostgreSQLJsonStringPropertyTest extends AbstractPostgreSQLIntegrat
         }
     }
 
+    @Test
+    public void testStringValue() {
+        doInJPA(entityManager -> {
+            Book book = entityManager.unwrap(Session.class)
+                .bySimpleNaturalId(Book.class)
+                .load("978-9730228236");
+
+            QueryCountHolder.clear();
+
+            book.setProperties("value");
+        });
+
+        QueryCount queryCount = QueryCountHolder.getGrandTotal();
+        assertEquals(1, queryCount.getTotal());
+        assertEquals(1, queryCount.getUpdate());
+
+        doInJPA(entityManager -> {
+            Book book = entityManager.unwrap(Session.class)
+                .bySimpleNaturalId(Book.class)
+                .load("978-9730228236");
+
+            assertEquals("value", book.getProperties());
+        });
+    }
+
+
     @Entity(name = "Book")
     @Table(name = "book")
     @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)

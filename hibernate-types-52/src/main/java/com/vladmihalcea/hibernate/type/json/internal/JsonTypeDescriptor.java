@@ -1,5 +1,8 @@
 package com.vladmihalcea.hibernate.type.json.internal;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.node.TextNode;
+import com.vladmihalcea.hibernate.type.util.LogUtils;
 import com.vladmihalcea.hibernate.type.util.ObjectMapperWrapper;
 import com.vladmihalcea.hibernate.type.util.ReflectionUtils;
 import org.hibernate.HibernateException;
@@ -126,7 +129,18 @@ public class JsonTypeDescriptor
             final Blob blob = BlobTypeDescriptor.INSTANCE.fromString(stringValue);
             return (X) blob;
         } else if (Object.class.isAssignableFrom(type)) {
-            String stringValue = (value instanceof String) ? (String) value : toString(value);
+            String stringValue = null;
+            if(value instanceof String) {
+                try {
+                    stringValue = objectMapperWrapper.getObjectMapper().writeValueAsString(value);
+                } catch (JsonProcessingException e) {
+                    LogUtils.LOGGER.info("Cannot wrap String value", e);
+                }
+            }
+            if(stringValue == null) {
+                stringValue = toString(value);
+            }
+
             return (X) objectMapperWrapper.toJsonNode(stringValue);
         }
 
