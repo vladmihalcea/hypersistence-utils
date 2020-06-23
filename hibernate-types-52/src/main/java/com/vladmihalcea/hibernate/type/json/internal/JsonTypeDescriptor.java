@@ -103,9 +103,6 @@ public class JsonTypeDescriptor
 
     @Override
     public Object fromString(String string) {
-        if (String.class.isAssignableFrom(typeToClass())) {
-            return string;
-        }
         return objectMapperWrapper.fromString(string, type);
     }
 
