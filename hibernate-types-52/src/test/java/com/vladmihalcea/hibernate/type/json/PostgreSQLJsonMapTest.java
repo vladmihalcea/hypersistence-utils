@@ -29,14 +29,14 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
     public void test() {
 
         doInJPA(entityManager -> {
-            Book book = new Book();
-            book.setIsbn("978-9730228236");
-            book.getProperties().put("title", "High-Performance Java Persistence");
-            book.getProperties().put("author", "Vlad Mihalcea");
-            book.getProperties().put("publisher", "Amazon");
-            book.getProperties().put("price", "$44.95");
-            
-            entityManager.persist(book);
+            entityManager.persist(
+                new Book()
+                    .setIsbn("978-9730228236")
+                    .addProperty("title", "High-Performance Java Persistence")
+                    .addProperty("author", "Vlad Mihalcea")
+                    .addProperty("publisher", "Amazon")
+                    .addProperty("price", "$44.95")
+            );
         });
 
         doInJPA(entityManager -> {
@@ -44,8 +44,17 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
                 .bySimpleNaturalId(Book.class)
                 .load("978-9730228236");
 
-            assertEquals("High-Performance Java Persistence", book.getProperties().get("title"));
-            assertEquals("Vlad Mihalcea", book.getProperties().get("author"));
+            Map<String, String> bookProperties = book.getProperties();
+
+            assertEquals(
+                "High-Performance Java Persistence",
+                bookProperties.get("title")
+            );
+
+            assertEquals(
+                "Vlad Mihalcea",
+                bookProperties.get("author")
+            );
         });
     }
 
@@ -70,16 +79,23 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
             return isbn;
         }
 
-        public void setIsbn(String isbn) {
+        public Book setIsbn(String isbn) {
             this.isbn = isbn;
+            return this;
         }
 
         public Map<String, String> getProperties() {
             return properties;
         }
 
-        public void setProperties(Map<String, String> properties) {
+        public Book setProperties(Map<String, String> properties) {
             this.properties = properties;
+            return this;
+        }
+
+        public Book addProperty(String key, String value) {
+            properties.put(key, value);
+            return this;
         }
     }
 }
