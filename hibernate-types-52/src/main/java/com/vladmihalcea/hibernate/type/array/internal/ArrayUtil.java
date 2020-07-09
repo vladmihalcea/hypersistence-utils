@@ -119,7 +119,9 @@ public class ArrayUtil {
             return array;
         } else if (originalArray instanceof List) {
             return ((List) originalArray).toArray();
-        } else {
+        } else if (originalArray instanceof Set) {
+            return ((Set) originalArray).toArray();
+        }else {
             return (Object[]) originalArray;
         }
     }
