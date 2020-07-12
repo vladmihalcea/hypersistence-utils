@@ -225,23 +225,6 @@ In case you think that the banner is unfair and disabling it is too much of an e
 
 This project is _free_ as in [Libre, not Gratis](https://en.wikipedia.org/wiki/Gratis_versus_libre).
 
-## Code of conduct
-
-1. If you don't agree with these Terms and Conditions, you don't have to use the official repository. You are free to fork the repository and manage it as you may wish.
-2. Bullying, rudeness, arrogance, or lecturing me about OSS with an utter sense of entitlement are not tolerated and might lead to GitHub account banning.
-
-> The only people entitled to say how open source 'ought' to work are people who run projects, and the scope of their entitlement extends only to their own projects.
-> 
-> Just because someone open sources something does not imply they owe the world a change in their status, focus and effort, e.g. from inventor to community manager.
-> 
-> As a user of something open source you are not thereby entitled to anything at all. You are not entitled to contribute. You are not entitled to features. You are not entitled to the attention of others. You are not entitled to having value attached to your complaints. You are not entitled to this explanation.
-> 
-> If you have expectations (of others) that aren't being met, those expectations are your own responsibility. You are responsible for your own needs. If you want things, make them.
-> 
-> Open source is a licensing and delivery mechanism, period. It means you get the source for software and the right to use and modify it. All social impositions associated with it, including the idea of 'community-driven-development' are part of a recently-invented mythology with little basis in how things actually work, a mythology that embodies, cult-like, both a lack of support for diversity in the ways things can work and a pervasive sense of communal entitlement.
-> 
-> -- [Rich Hickey](https://gist.github.com/richhickey/1563cddea1002958f96e7ba9519972d9)
-
 ## How to start the test environment
 
 ```bash
