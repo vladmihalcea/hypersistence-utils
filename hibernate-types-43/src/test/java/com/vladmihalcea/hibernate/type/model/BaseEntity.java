@@ -13,18 +13,19 @@ import javax.persistence.Version;
  * @author Vlad Mihalcea
  */
 @TypeDefs({
-    @TypeDef(name = "uuid-array", typeClass = UUIDArrayType.class),
-    @TypeDef(name = "string-array", typeClass = StringArrayType.class),
-    @TypeDef(name = "int-array", typeClass = IntArrayType.class),
-    @TypeDef(name = "long-array", typeClass = LongArrayType.class),
-    @TypeDef(name = "double-array", typeClass = DoubleArrayType.class),
-    @TypeDef(name = "date-array", typeClass = DateArrayType.class),
-    @TypeDef(name = "timestamp-array", typeClass = TimestampArrayType.class),
-    @TypeDef(name = "json", typeClass = JsonStringType.class),
-    @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class),
-    @TypeDef(name = "jsonb-node", typeClass = JsonNodeBinaryType.class),
-    @TypeDef(name = "json-node", typeClass = JsonNodeStringType.class),
-    @TypeDef(name = "jsonb-lob", typeClass = JsonBlobType.class)
+        @TypeDef(name = "uuid-array", typeClass = UUIDArrayType.class),
+        @TypeDef(name = "string-array", typeClass = StringArrayType.class),
+        @TypeDef(name = "int-array", typeClass = IntArrayType.class),
+        @TypeDef(name = "long-array", typeClass = LongArrayType.class),
+        @TypeDef(name = "double-array", typeClass = DoubleArrayType.class),
+        @TypeDef(name = "boolean-array", typeClass = BooleanArrayType.class),
+        @TypeDef(name = "date-array", typeClass = DateArrayType.class),
+        @TypeDef(name = "timestamp-array", typeClass = TimestampArrayType.class),
+        @TypeDef(name = "json", typeClass = JsonStringType.class),
+        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class),
+        @TypeDef(name = "jsonb-node", typeClass = JsonNodeBinaryType.class),
+        @TypeDef(name = "json-node", typeClass = JsonNodeStringType.class),
+        @TypeDef(name = "jsonb-lob", typeClass = JsonBlobType.class)
 })
 @MappedSuperclass
 public class BaseEntity {
