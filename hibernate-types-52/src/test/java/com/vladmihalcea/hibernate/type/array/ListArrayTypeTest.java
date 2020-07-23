@@ -86,6 +86,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                     .setSensorNames(Arrays.asList("Temperature", "Pressure"))
                     .setSensorValues(Arrays.asList(12, 756))
                     .setSensorLongValues(Arrays.asList(42L, 9223372036854775800L))
+                    .setSensorBooleanValues(Arrays.asList(true, false))
                     .setSensorDoubleValues(Arrays.asList(0.123D, 456.789D))
                     .setSensorStates(
                         Arrays.asList(
@@ -139,6 +140,10 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             assertEquals(
                 Arrays.asList(42L, 9223372036854775800L),
                 event.getSensorLongValues()
+            );
+            assertEquals(
+                Arrays.asList(true, false),
+                event.getSensorBooleanValues()
             );
             assertEquals(
                 Arrays.asList(0.123D, 456.789D),
@@ -219,6 +224,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             event.setSensorNames(Arrays.asList("Temperature", null));
             event.setSensorValues(Arrays.asList(null, 756));
             event.setSensorLongValues(Arrays.asList(null, 9223372036854775800L));
+            event.setSensorBooleanValues(Arrays.asList(null, false));
             event.setSensorDoubleValues(Arrays.asList(null, 456.789D));
             event.setSensorStates(Arrays.asList(null, SensorState.OFFLINE, SensorState.ONLINE, null));
             event.setDateValues(Arrays.asList(null, date));
@@ -233,6 +239,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             assertArrayEquals(new String[]{"Temperature", null}, event.getSensorNames().toArray());
             assertArrayEquals(new Integer[]{null, 756}, event.getSensorValues().toArray());
             assertArrayEquals(new Long[]{null, 9223372036854775800L}, event.getSensorLongValues().toArray());
+            assertArrayEquals(new Boolean[]{null, false}, event.getSensorBooleanValues().toArray());
             assertArrayEquals(new Double[]{null, 456.789D}, event.getSensorDoubleValues().toArray());
             assertArrayEquals(new SensorState[]{null, SensorState.OFFLINE, SensorState.ONLINE, null}, event.getSensorStates().toArray());
             assertArrayEquals(new Date[]{null, date}, event.getDateValues().toArray());
@@ -254,6 +261,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             event.setSensorNames(Arrays.asList(null, null));
             event.setSensorValues(Arrays.asList(null, null));
             event.setSensorLongValues(Arrays.asList(null, null));
+            event.setSensorBooleanValues(Arrays.asList(null, null));
             event.setSensorDoubleValues(Arrays.asList(null, null));
             event.setSensorStates(Arrays.asList(null, null));
             event.setDateValues(Arrays.asList(null, null));
@@ -268,6 +276,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             assertArrayEquals(new String[]{null, null}, event.getSensorNames().toArray());
             assertArrayEquals(new Integer[]{null, null}, event.getSensorValues().toArray());
             assertArrayEquals(new Long[]{null, null}, event.getSensorLongValues().toArray());
+            assertArrayEquals(new Boolean[]{null, null}, event.getSensorBooleanValues().toArray());
             assertArrayEquals(new Double[]{null, null}, event.getSensorDoubleValues().toArray());
             assertArrayEquals(new SensorState[]{null, null}, event.getSensorStates().toArray());
             assertArrayEquals(new Date[]{null, null}, event.getDateValues().toArray());
@@ -289,6 +298,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             event.setSensorNames(Collections.emptyList());
             event.setSensorValues(Collections.emptyList());
             event.setSensorLongValues(Collections.emptyList());
+            event.setSensorBooleanValues(Collections.emptyList());
             event.setSensorDoubleValues(Collections.emptyList());
             event.setSensorStates(Collections.emptyList());
             event.setDateValues(Collections.emptyList());
@@ -303,6 +313,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             assertArrayEquals(new String[]{}, event.getSensorNames().toArray());
             assertArrayEquals(new Integer[]{}, event.getSensorValues().toArray());
             assertArrayEquals(new Long[]{}, event.getSensorLongValues().toArray());
+            assertArrayEquals(new Boolean[]{}, event.getSensorBooleanValues().toArray());
             assertArrayEquals(new Double[]{}, event.getSensorDoubleValues().toArray());
             assertArrayEquals(new SensorState[]{}, event.getSensorStates().toArray());
             assertArrayEquals(new Date[]{}, event.getDateValues().toArray());
@@ -345,6 +356,13 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             columnDefinition = "bigint[]"
         )
         private List<Long> sensorLongValues;
+
+        @Type(type = "list-array")
+        @Column(
+            name = "sensor_boolean_values",
+            columnDefinition = "boolean[]"
+        )
+        private List<Boolean> sensorBooleanValues;
 
         @Type(type = "list-array")
         @Column(
@@ -424,6 +442,15 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
         public Event setSensorLongValues(List<Long> sensorLongValues) {
             this.sensorLongValues = sensorLongValues;
+            return this;
+        }
+
+        public List<Boolean> getSensorBooleanValues() {
+            return sensorBooleanValues;
+        }
+
+        public Event setSensorBooleanValues(List<Boolean> sensorBooleanValues) {
+            this.sensorBooleanValues = sensorBooleanValues;
             return this;
         }
 
