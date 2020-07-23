@@ -39,47 +39,47 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
     @Override
     public void init() {
-      DataSource dataSource = newDataSource();
-      Connection connection = null;
-      try {
-          connection = dataSource.getConnection();
-          Statement statement = null;
-          try {
-              statement = connection.createStatement();
-              try {
-                  statement.executeUpdate(
-                          "DROP TYPE sensor_state CASCADE"
-                  );
-              } catch (SQLException ignore) {
-              }
-              statement.executeUpdate(
-                      "CREATE TYPE sensor_state AS ENUM ('ONLINE', 'OFFLINE', 'UNKNOWN')"
-              );
-              statement.executeUpdate(
-                  "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\""
-              );
-          }
-          finally {
-              if (statement != null) {
-                  try {
-                      statement.close();
-                  } catch (SQLException e) {
-                      fail(e.getMessage());
-                  }
-              }
-          }
-      } catch (SQLException e) {
-          fail(e.getMessage());
-      } finally {
-          if (connection != null) {
-              try {
-                  connection.close();
-              } catch (SQLException e) {
-                  fail(e.getMessage());
-              }
-          }
-      }
-      super.init();
+        DataSource dataSource = newDataSource();
+        Connection connection = null;
+        try {
+            connection = dataSource.getConnection();
+            Statement statement = null;
+            try {
+                statement = connection.createStatement();
+                try {
+                    statement.executeUpdate(
+                            "DROP TYPE sensor_state CASCADE"
+                    );
+                } catch (SQLException ignore) {
+                }
+                statement.executeUpdate(
+                        "CREATE TYPE sensor_state AS ENUM ('ONLINE', 'OFFLINE', 'UNKNOWN')"
+                );
+                statement.executeUpdate(
+                        "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\""
+                );
+            }
+            finally {
+                if (statement != null) {
+                    try {
+                        statement.close();
+                    } catch (SQLException e) {
+                        fail(e.getMessage());
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            fail(e.getMessage());
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    fail(e.getMessage());
+                }
+            }
+        }
+        super.init();
     }
 
     @Override
@@ -116,6 +116,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 event.setSensorStates(new SensorState[]{SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN});
                 event.setDateValues(new Date[]{date1, date2});
                 event.setTimestampValues(new Date[]{date1, date2});
+                event.setSensorBooleanValues(new Boolean[]{false, true, true});
 
                 entityManager.persist(event);
 
@@ -138,6 +139,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 assertEquals(date2.getTime(), event.getDateValues()[1].getTime());
                 assertEquals(date1.getTime(), event.getTimestampValues()[0].getTime());
                 assertEquals(date2.getTime(), event.getTimestampValues()[1].getTime());
+                assertArrayEquals(new Boolean[]{false, true, true}, event.getSensorBooleanValues());
 
                 return null;
             }
@@ -182,7 +184,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
     @Entity(name = "Event")
     @Table(name = "event")
     @TypeDef(name = "sensor-state-array", typeClass = EnumArrayType.class, parameters = {
-        @Parameter(name = EnumArrayType.SQL_ARRAY_TYPE, value = "sensor_state")}
+            @Parameter(name = EnumArrayType.SQL_ARRAY_TYPE, value = "sensor_state")}
     )
     public static class Event extends BaseEntity {
         @Type(type = "uuid-array")
@@ -200,6 +202,10 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         @Type(type = "long-array")
         @Column(name = "sensor_long_values", columnDefinition = "bigint[]")
         private long[] sensorLongValues;
+
+        @Type(type = "boolean-array")
+        @Column(name = "sensor_boolean_values", columnDefinition = "boolean[]")
+        private Boolean[] sensorBooleanValues;
 
         @Type(type = "double-array")
         @Column(name = "sensor_double_values", columnDefinition = "float8[]")
@@ -249,6 +255,10 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             this.sensorLongValues = sensorLongValues;
         }
 
+        public Boolean[] getSensorBooleanValues() { return sensorBooleanValues; }
+
+        public void setSensorBooleanValues(Boolean[] sensorBooleanValues) { this.sensorBooleanValues = sensorBooleanValues; }
+
         public double[] getSensorDoubleValues() {
             return sensorDoubleValues;
         }
@@ -283,6 +293,6 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
     }
 
     public enum SensorState {
-      ONLINE, OFFLINE, UNKNOWN;
+        ONLINE, OFFLINE, UNKNOWN;
     }
 }
