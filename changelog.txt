@@ -1,3 +1,8 @@
+Version 2.9.13 - July 28, 2020
+================================================================================
+
+Add support for mapping Java boolean[] arrays or List<Boolean> on PostgreSQL boolean[] array column types #167
+
 Version 2.9.12 - June 19, 2020
 ================================================================================
 
