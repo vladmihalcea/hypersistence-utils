@@ -51,6 +51,17 @@ public class RangeTest {
         assertThat(integerRange("(,)").contains(integerRange("(6,)")), is(true));
         assertThat(integerRange("(,)").contains(integerRange("(,6)")), is(true));
     }
+
+    @Test
+    public void localDateTimeTest() {
+        assertNotNull(Range.localDateTimeRange("[2019-03-27 16:33:10.1,)"));
+        assertNotNull(Range.localDateTimeRange("[2019-03-27 16:33:10.12,)"));
+        assertNotNull(Range.localDateTimeRange("[2019-03-27 16:33:10.123,)"));
+        assertNotNull(Range.localDateTimeRange("[2019-03-27 16:33:10.1234,)"));
+        assertNotNull(Range.localDateTimeRange("[2019-03-27 16:33:10.12345,)"));
+        assertNotNull(Range.localDateTimeRange("[2019-03-27 16:33:10.123456,)"));
+        assertNotNull(Range.localDateTimeRange("[2019-03-27 16:33:10.123456,infinity)"));
+    }
     
     @Test
     public void zonedDateTimeTest() {

@@ -40,7 +40,13 @@ public final class Range<T extends Comparable> implements Serializable {
 
     public static final String INFINITY = "infinity";
 
-    private static final DateTimeFormatter LOCAL_DATE_TIME = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss[.SSSSSS]");
+    private static final DateTimeFormatter LOCAL_DATE_TIME = new DateTimeFormatterBuilder()
+        .appendPattern("yyyy-MM-dd HH:mm:ss")
+        .optionalStart()
+        .appendPattern(".")
+        .appendFraction(ChronoField.NANO_OF_SECOND, 1, 6, false)
+        .optionalEnd()
+        .toFormatter();
 
     private static final DateTimeFormatter ZONE_DATE_TIME = new DateTimeFormatterBuilder()
         .appendPattern("yyyy-MM-dd HH:mm:ss")
