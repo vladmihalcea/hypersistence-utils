@@ -3,6 +3,7 @@ package com.vladmihalcea.hibernate.type.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.cfg.Environment;
 
+import javax.persistence.EntityManagerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,10 +52,10 @@ public class Configuration {
 
     private final Properties properties = Environment.getProperties();
 
-    public Configuration() {
+    private Configuration() {
         load();
 
-        if(ReflectionUtils.getClassOrNull("io.hypersistence.optimizer.core.License$Signature") == null) {
+        if(!isHypersistenceOptimizer()) {
             printBanner();
         }
     }
@@ -297,5 +298,49 @@ public class Configuration {
             )
         );
         LOGGER.info("Check out the README page for more info about the Hypersistence Optimizer banner https://github.com/vladmihalcea/hibernate-types#how-to-remove-the-hypersistence-optimizer-banner-from-the-log");
+    }
+
+    private boolean isHypersistenceOptimizer() {
+        try {
+            Class licenseClass = ReflectionUtils.getClassOrNull("io.hypersistence.optimizer.core.License");
+
+            if(licenseClass != null) {
+                Class jpaConfigClass = ReflectionUtils.getClassOrNull("io.hypersistence.optimizer.core.config.JpaConfig");
+                Object jpaConfig = ReflectionUtils.newInstance(
+                    jpaConfigClass,
+                    new Object[] {
+                        null
+                    },
+                    new Class[] {
+                        EntityManagerFactory.class
+                    }
+                );
+
+                Object license = ReflectionUtils.newInstance(
+                    licenseClass,
+                    new Object[] {
+                        jpaConfig
+                    },
+                    new Class[] {
+                        ReflectionUtils.getClassOrNull("io.hypersistence.optimizer.core.LicenseConfig")
+                    }
+                );
+
+                Properties properties = ReflectionUtils.invokeGetter(license, "properties");
+                Class propertyClass = ReflectionUtils.getClassOrNull("io.hypersistence.optimizer.core.License$Property");
+                Object trialVersionKey = Enum.valueOf(propertyClass, "TRIAL_VERSION");
+                Object validUntilMillisKey = Enum.valueOf(propertyClass, "VALID_UNTIL_MILLIS");
+
+                boolean trialVersion = Boolean.parseBoolean(properties.getProperty((String) ReflectionUtils.invokeGetter(trialVersionKey, "key")));
+                long validUntilMillis = Long.parseLong(properties.getProperty((String) ReflectionUtils.invokeGetter(validUntilMillisKey, "key")));
+
+                if(!trialVersion && validUntilMillis > System.currentTimeMillis()) {
+                    return true;
+                }
+            }
+        } catch (Exception ignore) {
+        }
+
+        return false;
     }
 }
