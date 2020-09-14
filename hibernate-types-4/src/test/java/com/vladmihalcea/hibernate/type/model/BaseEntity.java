@@ -22,6 +22,7 @@ import javax.persistence.Version;
         @TypeDef(name = "boolean-array", typeClass = BooleanArrayType.class),
         @TypeDef(name = "date-array", typeClass = DateArrayType.class),
         @TypeDef(name = "timestamp-array", typeClass = TimestampArrayType.class),
+        @TypeDef(name = "decimal-array", typeClass = DecimalArrayType.class),
         @TypeDef(name = "jsonb-node", typeClass = JsonNodeBinaryType.class),
         @TypeDef(name = "json-node", typeClass = JsonNodeStringType.class)
 })

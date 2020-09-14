@@ -1,0 +1,19 @@
+package com.vladmihalcea.hibernate.type.array.internal;
+
+import java.math.BigDecimal;
+
+/**
+ * @author Moritz Kobel
+ */
+public class DecimalArrayTypeDescriptor extends AbstractArrayTypeDescriptor<BigDecimal[]> {
+
+    public DecimalArrayTypeDescriptor() {
+        super(BigDecimal[].class);
+    }
+
+    @Override
+    protected String getSqlArrayType() {
+        String sqlArrayType = super.getSqlArrayType();
+        return sqlArrayType != null ? sqlArrayType : "decimal";
+    }
+}

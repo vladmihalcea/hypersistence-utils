@@ -14,6 +14,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Tuple;
 import javax.sql.DataSource;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -93,6 +94,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             event.setSensorStates(new SensorState[]{SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN});
             event.setDateValues(new Date[]{date1, date2});
             event.setTimestampValues(new Date[]{date1, date2});
+            event.setDecimalValues(new BigDecimal[]{BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.TEN});
             event.setSensorBooleanValues(new Boolean[]{false, true, true});
 
             entityManager.persist(event);
@@ -109,6 +111,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             assertArrayEquals(new SensorState[]{SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN}, event.getSensorStates());
             assertArrayEquals(new Date[]{date1, date2}, event.getDateValues());
             assertArrayEquals(new Date[]{date1, date2}, event.getTimestampValues());
+            assertArrayEquals(new BigDecimal[]{BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.TEN}, event.getDecimalValues());
             assertArrayEquals(new Boolean[]{false, true, true}, event.getSensorBooleanValues());
         });
 
@@ -194,6 +197,10 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         @Column(name = "timestamp_values", columnDefinition = "timestamp[]")
         private Date[] timestampValues;
 
+        @Type(type = "decimal-array")
+        @Column(name = "decimal_values", columnDefinition = "decimal[]")
+        private BigDecimal[] decimalValues;
+
         @Type(type = "sensor-state-array")
         @Column(name = "sensor_states", columnDefinition = "sensor_state[]")
         private SensorState[] sensorStates;
@@ -264,6 +271,14 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
         public void setTimestampValues(Date[] timestampValues) {
             this.timestampValues = timestampValues;
+        }
+
+        public BigDecimal[] getDecimalValues() {
+            return decimalValues;
+        }
+
+        public void setDecimalValues(BigDecimal[] decimalValues) {
+            this.decimalValues = decimalValues;
         }
     }
 
