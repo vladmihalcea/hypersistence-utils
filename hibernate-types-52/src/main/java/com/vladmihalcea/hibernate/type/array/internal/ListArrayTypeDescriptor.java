@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -127,6 +128,8 @@ public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Object>
                     sqlArrayType = "timestamp";
                 } else if (Boolean.class.isAssignableFrom(arrayElementClass)) {
                     sqlArrayType = "boolean";
+                } else if (BigDecimal.class.isAssignableFrom(arrayElementClass)) {
+                    sqlArrayType = "decimal";
                 } else {
                     throw new UnsupportedOperationException("The " + arrayElementClass + " is not supported yet!");
                 }

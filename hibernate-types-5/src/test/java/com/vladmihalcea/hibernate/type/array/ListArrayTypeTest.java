@@ -16,6 +16,7 @@ import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.Table;
 import javax.sql.DataSource;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -115,6 +116,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 event.setSensorStates(Arrays.asList(SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN));
                 event.setDateValues(Arrays.asList(date1, date2));
                 event.setTimestampValues(Arrays.asList(date1, date2));
+                event.setDecimalValues(Arrays.asList(BigDecimal.ONE, BigDecimal.ZERO));
 
                 entityManager.persist(event);
 
@@ -145,6 +147,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 assertEquals(date2.getTime(), event.getDateValues().get(1).getTime());
                 assertEquals(date1.getTime(), event.getTimestampValues().get(0).getTime());
                 assertEquals(date2.getTime(), event.getTimestampValues().get(1).getTime());
+                assertArrayEquals(new BigDecimal[]{BigDecimal.ONE, BigDecimal.ZERO}, event.getDecimalValues().toArray());
 
                 return null;
             }
@@ -199,6 +202,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 event.setSensorStates(Arrays.asList(null, SensorState.OFFLINE, SensorState.ONLINE, null));
                 event.setDateValues(Arrays.asList(null, date));
                 event.setTimestampValues(Arrays.asList(null, date));
+                event.setDecimalValues(Arrays.asList(null, BigDecimal.TEN));
                 entityManager.persist(event);
                 return null;
             }
@@ -225,6 +229,8 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 assertNull(event.getTimestampValues().get(0));
                 assertEquals(date.getTime(), event.getTimestampValues().get(1).getTime());
                 assertEquals(date.getTime(), event.getTimestampValues().get(1).getTime());
+
+                assertArrayEquals(new BigDecimal[]{null, BigDecimal.TEN}, event.getDecimalValues().toArray());
 
                 return null;
             }
@@ -253,6 +259,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 event.setSensorStates(Arrays.<SensorState>asList(null, null));
                 event.setDateValues(Arrays.<Date>asList(null, null));
                 event.setTimestampValues(Arrays.<Date>asList(null, null));
+                event.setDecimalValues(Arrays.<BigDecimal>asList(null, null));
                 entityManager.persist(event);
                 return null;
             }
@@ -273,6 +280,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 assertArrayEquals(new SensorState[]{null, null}, event.getSensorStates().toArray());
                 assertArrayEquals(new Date[]{null, null}, event.getDateValues().toArray());
                 assertArrayEquals(new Date[]{null, null}, event.getTimestampValues().toArray());
+                assertArrayEquals(new BigDecimal[]{null, null}, event.getDecimalValues().toArray());
                 return null;
             }
         });
@@ -300,6 +308,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 event.setSensorStates(Collections.<SensorState>emptyList());
                 event.setDateValues(Collections.<Date>emptyList());
                 event.setTimestampValues(Collections.<Date>emptyList());
+                event.setDecimalValues(Collections.<BigDecimal>emptyList());
                 entityManager.persist(event);
                 return null;
             }
@@ -320,6 +329,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 assertArrayEquals(new SensorState[]{}, event.getSensorStates().toArray());
                 assertArrayEquals(new Date[]{}, event.getDateValues().toArray());
                 assertArrayEquals(new Date[]{}, event.getTimestampValues().toArray());
+                assertArrayEquals(new BigDecimal[]{}, event.getDecimalValues().toArray());
                 return null;
             }
         });
@@ -356,17 +366,19 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 assertEquals(null, event.getSensorStates());
                 assertEquals(null, event.getDateValues());
                 assertEquals(null, event.getTimestampValues());
+                assertEquals(null, event.getDecimalValues());
                 return null;
             }
         });
     }
 
+
     @Entity(name = "Event")
     @TypeDefs({
-        @TypeDef(name = "list-array", typeClass = ListArrayType.class),
-        @TypeDef(name = "sensor-state-array", typeClass = ListArrayType.class, parameters = {
-            @Parameter(name = ListArrayType.SQL_ARRAY_TYPE, value = "sensor_state")}
-        )
+            @TypeDef(name = "list-array", typeClass = ListArrayType.class),
+            @TypeDef(name = "sensor-state-array", typeClass = ListArrayType.class, parameters = {
+                    @Parameter(name = ListArrayType.SQL_ARRAY_TYPE, value = "sensor_state")}
+            )
     })
     @Table(name = "event")
     public static class Event extends BaseEntity {
@@ -411,6 +423,10 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         @Type(type = "list-array")
         @Column(name = "timestamp_values", columnDefinition = "timestamp[]")
         private List<Date> timestampValues;
+
+        @Type(type = "list-array")
+        @Column(name = "decimal_values", columnDefinition = "decimal[]")
+        private List<BigDecimal> decimalValues;
 
         public List<UUID> getSensorIds() {
             return sensorIds;
@@ -483,9 +499,17 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         public void setTimestampValues(List<Date> timestampValues) {
             this.timestampValues = timestampValues;
         }
+
+        public List<BigDecimal> getDecimalValues() {
+            return decimalValues;
+        }
+
+        public void setDecimalValues(List<BigDecimal> decimalValues) {
+            this.decimalValues = decimalValues;
+        }
     }
 
     public enum SensorState {
-        ONLINE, OFFLINE, UNKNOWN;
+        ONLINE, OFFLINE, UNKNOWN
     }
 }
