@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import javax.persistence.*;
 import java.time.MonthDay;
+import java.util.ArrayList;
 import java.util.TimeZone;
 
 import static org.junit.Assert.assertEquals;
@@ -16,6 +17,8 @@ import static org.junit.Assert.assertEquals;
  * @author Mladen Savic (mladensavic94@gmail.com)
  */
 public class MySQLMonthDayDateTest extends AbstractMySQLIntegrationTest {
+
+    public static final String COLUMN_TYPE = "date";
 
     @Override
     protected Class<?>[] entities() {
@@ -47,6 +50,9 @@ public class MySQLMonthDayDateTest extends AbstractMySQLIntegrationTest {
             assertEquals(summer.getEndOfSeason(), MonthDay.of(9,22));
         });
 
+        assertEquals(COLUMN_TYPE, getColumnType("end_of_season") );
+        assertEquals(COLUMN_TYPE, getColumnType("beginning_of_season") );
+
     }
 
     @Test
@@ -65,6 +71,9 @@ public class MySQLMonthDayDateTest extends AbstractMySQLIntegrationTest {
 
             assertEquals("Winter", seasonQ.getName());
         });
+
+        assertEquals(COLUMN_TYPE, getColumnType("end_of_season") );
+        assertEquals(COLUMN_TYPE, getColumnType("beginning_of_season") );
     }
 
     public Season createEntity(String name, MonthDay beginning, MonthDay end){
@@ -78,6 +87,18 @@ public class MySQLMonthDayDateTest extends AbstractMySQLIntegrationTest {
         });
 
         return season;
+    }
+
+    public String getColumnType(String column){
+        ArrayList<String> results = new ArrayList<>(1);
+        doInJPA(entityManager -> {
+            Object result = entityManager.createNativeQuery("SELECT data_type FROM information_schema.columns WHERE \n" +
+                    "table_name = 'season' AND column_name = :column_name")
+                    .setParameter("column_name", column)
+                    .getSingleResult();
+            results.add((String) result);
+        });
+        return results.get(0);
     }
 
 

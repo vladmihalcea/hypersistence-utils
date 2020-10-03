@@ -1,5 +1,6 @@
 package com.vladmihalcea.hibernate.type.basic;
 
+import com.vladmihalcea.hibernate.type.util.AbstractMySQLIntegrationTest;
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
 import org.hibernate.Session;
 import org.hibernate.annotations.TypeDef;
@@ -14,9 +15,9 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Mladen Savic (mladensavic94@gmail.com)
  */
-public class PostgreSQLMonthDayDateTest extends AbstractPostgreSQLIntegrationTest {
+public class MySQLMonthDayIntegerTest extends AbstractMySQLIntegrationTest {
 
-    public static final String COLUMN_TYPE = "date";
+    public static final String COLUMN_TYPE = "int";
 
     @Override
     protected Class<?>[] entities() {
@@ -58,6 +59,7 @@ public class PostgreSQLMonthDayDateTest extends AbstractPostgreSQLIntegrationTes
 
         assertEquals(COLUMN_TYPE, getColumnType("end_of_season") );
         assertEquals(COLUMN_TYPE, getColumnType("beginning_of_season") );
+
     }
 
     public Season createEntity(String name, MonthDay beginning, MonthDay end){
@@ -88,16 +90,16 @@ public class PostgreSQLMonthDayDateTest extends AbstractPostgreSQLIntegrationTes
 
     @Entity(name = "Season")
     @Table(name = "season")
-    @TypeDef(typeClass = MonthDayDateType.class, defaultForType = MonthDay.class)
+    @TypeDef(typeClass = MonthDayIntegerType.class, defaultForType = MonthDay.class)
     public static class Season {
 
         @Id
         @GeneratedValue
         private Long id;
         private String name;
-        @Column(name = "beginning_of_season", columnDefinition = "date")
+        @Column(name = "beginning_of_season", columnDefinition = "integer")
         private MonthDay beginningOfSeason;
-        @Column(name = "end_of_season", columnDefinition = "date")
+        @Column(name = "end_of_season", columnDefinition = "integer")
         private MonthDay endOfSeason;
 
         public Long getId() {
