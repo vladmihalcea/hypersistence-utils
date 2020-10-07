@@ -1,3 +1,14 @@
+Version 2.10.0 - October 07, 2020
+================================================================================
+
+Add support for mapping BigDecimal arrays #272
+
+Add sub-second precision for Range<LocalDateTime> #267
+
+Add MonthDayType to map a java.time.MonthDay to either a DATE or an INTEGER column type #262
+
+YearMonthTypeDescriptor failed to wrap null value from database in use case of YearMonthIntegerType #113
+
 Version 2.9.13 - July 28, 2020
 ================================================================================
 
