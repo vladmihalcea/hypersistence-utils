@@ -69,9 +69,13 @@ public class YearMonthTypeDescriptor
         }
         if (value instanceof Number) {
             int numericValue = ((Number) (value)).intValue();
-            int year = numericValue / 100;
-            int month = numericValue % 100;
-            return YearMonth.of(year, month);
+            if(numericValue > 0) {
+                int year = numericValue / 100;
+                int month = numericValue % 100;
+                return YearMonth.of(year, month);
+            } else {
+                return null;
+            }
         }
         if (value instanceof Date) {
             Date date = (Date) value;

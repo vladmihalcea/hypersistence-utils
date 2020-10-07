@@ -1,7 +1,6 @@
 package com.vladmihalcea.hibernate.type.basic;
 
 import com.vladmihalcea.hibernate.type.util.AbstractMySQLIntegrationTest;
-import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.TypeDef;
@@ -10,7 +9,6 @@ import org.junit.Test;
 import javax.persistence.*;
 import java.time.Month;
 import java.time.Year;
-import java.time.YearMonth;
 
 import static org.junit.Assert.assertEquals;
 
@@ -22,7 +20,7 @@ public class YearAndMonthTest extends AbstractMySQLIntegrationTest {
     @Override
     protected Class<?>[] entities() {
         return new Class<?>[]{
-                Publisher.class
+            Publisher.class
         };
     }
 
@@ -39,9 +37,9 @@ public class YearAndMonthTest extends AbstractMySQLIntegrationTest {
 
         doInJPA(entityManager -> {
             Publisher publisher = entityManager
-            .unwrap(Session.class)
-            .bySimpleNaturalId(Publisher.class)
-            .load("vladmihalcea.com");
+                .unwrap(Session.class)
+                .bySimpleNaturalId(Publisher.class)
+                .load("vladmihalcea.com");
 
             assertEquals(Year.of(2013), publisher.getEstYear());
             assertEquals(Month.NOVEMBER, publisher.getSalesMonth());
@@ -49,20 +47,19 @@ public class YearAndMonthTest extends AbstractMySQLIntegrationTest {
 
         doInJPA(entityManager -> {
             Publisher book = entityManager
-            .createQuery(
-                "select p " +
-                "from Publisher p " +
-                "where " +
-                "   p.estYear = :estYear and " +
-                "   p.salesMonth = :salesMonth", Publisher.class)
-            .setParameter("estYear", Year.of(2013))
-            .setParameter("salesMonth", Month.NOVEMBER)
-            .getSingleResult();
+                .createQuery(
+                    "select p " +
+                        "from Publisher p " +
+                        "where " +
+                        "   p.estYear = :estYear and " +
+                        "   p.salesMonth = :salesMonth", Publisher.class)
+                .setParameter("estYear", Year.of(2013))
+                .setParameter("salesMonth", Month.NOVEMBER)
+                .getSingleResult();
 
             assertEquals("vladmihalcea.com", book.getName());
         });
     }
-
 
     @Entity(name = "Publisher")
     @Table(name = "publisher")

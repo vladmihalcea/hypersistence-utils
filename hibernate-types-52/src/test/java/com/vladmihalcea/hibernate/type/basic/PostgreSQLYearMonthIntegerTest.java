@@ -16,6 +16,8 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author Vlad Mihalcea
@@ -56,17 +58,37 @@ public class PostgreSQLYearMonthIntegerTest extends AbstractPostgreSQLIntegratio
 
         doInJPA(entityManager -> {
             Book book = entityManager
-                    .createQuery(
-                            "select b " +
-                                    "from Book b " +
-                                    "where " +
-                                    "   b.title = :title and " +
-                                    "   b.publishedOn = :publishedOn", Book.class)
-                    .setParameter("title", "High-Performance Java Persistence")
-                    .setParameter("publishedOn", YearMonth.of(2016, 10))
-                    .getSingleResult();
+                .createQuery(
+                    "select b " +
+                    "from Book b " +
+                    "where " +
+                    "   b.title = :title and " +
+                    "   b.publishedOn = :publishedOn", Book.class)
+                .setParameter("title", "High-Performance Java Persistence")
+                .setParameter("publishedOn", YearMonth.of(2016, 10))
+                .getSingleResult();
 
             assertEquals("978-9730228236", book.getIsbn());
+        });
+    }
+
+    @Test
+    public void testNull() {
+        doInJPA(entityManager -> {
+            Book book = new Book();
+            book.setIsbn("123-456");
+            book.setPublishedOn(null);
+
+            entityManager.persist(book);
+        });
+
+        doInJPA(entityManager -> {
+            Book book = entityManager
+                .unwrap(Session.class)
+                .bySimpleNaturalId(Book.class)
+                .load("123-456");
+
+            assertNull(book.getPublishedOn());
         });
     }
 

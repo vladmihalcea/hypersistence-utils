@@ -1,3 +1,3 @@
 @echo off
 
-mvn -Ptest clean test
+mvn -Ptest clean test %*

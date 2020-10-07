@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.time.YearMonth;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author Vlad Mihalcea
@@ -59,6 +60,25 @@ public class MySQLYearMonthIntegerTest extends AbstractMySQLIntegrationTest {
         });
     }
 
+    @Test
+    public void testNull() {
+        doInJPA(entityManager -> {
+            Book book = new Book();
+            book.setIsbn("123-456");
+            book.setPublishedOn(null);
+
+            entityManager.persist(book);
+        });
+
+        doInJPA(entityManager -> {
+            Book book = entityManager
+                .unwrap(Session.class)
+                .bySimpleNaturalId(Book.class)
+                .load("123-456");
+
+            assertNull(book.getPublishedOn());
+        });
+    }
 
     @Entity(name = "Book")
     @Table(name = "book")
