@@ -3,6 +3,7 @@ package com.vladmihalcea.hibernate.type.util;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.hibernate.internal.util.SerializationHelper;
+import org.hibernate.type.SerializationException;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -41,9 +42,17 @@ public class ObjectMapperJsonSerializer implements JsonSerializer {
             }
         }
 
-        return object instanceof Serializable ?
-            (T) SerializationHelper.clone((Serializable) object) :
-            objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(object), (Class<T>) object.getClass());
+        if (object instanceof Serializable) {
+            try {
+                return (T) SerializationHelper.clone((Serializable) object);
+            } catch (SerializationException e) {
+                //it is possible that object itself implements java.io.Serializable, but underlying structure does not
+                //in this case we switch to the other JSON marshaling strategy which doesn't use the Java serialization
+                return jsonClone(object);
+            }
+        } else {
+            return jsonClone(object);
+        }
     }
 
     private Object findFirstNonNullElement(Collection collection) {
@@ -62,5 +71,9 @@ public class ObjectMapperJsonSerializer implements JsonSerializer {
             }
         }
         return null;
+    }
+
+    private <T> T jsonClone(T object) {
+        return objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(object), (Class<T>) object.getClass());
     }
 }
