@@ -237,7 +237,7 @@ public class ObjectMapperJsonSerializerTest {
         }
     }
 
-    public class NestedObject {
+    private static class NestedObject {
         public NestedObject() {
         }
 
