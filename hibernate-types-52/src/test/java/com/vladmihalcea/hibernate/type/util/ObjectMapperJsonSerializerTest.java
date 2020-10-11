@@ -1,10 +1,15 @@
 package com.vladmihalcea.hibernate.type.util;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
+
+import com.google.common.collect.Lists;
+import org.hibernate.annotations.Type;
 import org.junit.Test;
 
+import javax.persistence.Column;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -181,4 +186,86 @@ public class ObjectMapperJsonSerializerTest {
             return value;
         }
     }
+
+    @Test
+    public void should_clone_serializable_complex_object() {
+        Map<String, List<NestedObject>> map = new LinkedHashMap<>();
+        map.put("key1", Lists.newArrayList(new NestedObject("name1", 5)));
+        map.put("key2", Lists.newArrayList(
+                new NestedObject("name1", 5),
+                new NestedObject("name2", 10)
+        ));
+        Object original = new SerializableComplexObject(map);
+        Object cloned = serializer.clone(original);
+        assertEquals(original, cloned);
+        assertNotSame(original, cloned);
+    }
+
+    private static class SerializableComplexObject implements Serializable {
+
+        @Type(type = "jsonb")
+        @Column(columnDefinition = "jsonb")
+        private final Map<String, List<NestedObject>> value;
+
+        private SerializableComplexObject(@JsonProperty("value") Map<String, List<NestedObject>> value) {
+            this.value = value;
+        }
+
+        public Map<String, List<NestedObject>> getValue() {
+            return value;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
+
+            SerializableComplexObject that = (SerializableComplexObject) o;
+
+            return value.equals(that.value);
+        }
+
+        @Override
+        public int hashCode() {
+            return value.hashCode();
+        }
+
+        @Override
+        public String toString() {
+            return value.toString();
+        }
+    }
+
+    public class NestedObject {
+        public NestedObject() {
+        }
+
+        public NestedObject(String stringProperty, int intProperty) {
+            this.stringProperty = stringProperty;
+            this.intProperty = intProperty;
+        }
+
+        private String stringProperty;
+
+        private int intProperty;
+
+        public String getStringProperty() {
+            return stringProperty;
+        }
+
+        public void setStringProperty(String stringProperty) {
+            this.stringProperty = stringProperty;
+        }
+
+        public int getIntProperty() {
+            return intProperty;
+        }
+
+        public void setIntProperty(int intProperty) {
+            this.intProperty = intProperty;
+        }
+    }
+
 }
