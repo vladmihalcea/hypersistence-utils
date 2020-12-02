@@ -12,6 +12,12 @@ The main advantage of this project is that it supports a broad range of Hibernat
 
 #### JSON 
 
+##### Best Practices
+
+> When mapping a JSON column type to a `List<POJO>` or `Map<String, POJO>`, you need to make sure that the `POJO` type overrides the default `equals` and `hashCode` methods and implements them according to the JSON object content. 
+> 
+> Otherwise, the Hibernate dirty checking mechanism may trigger unexpected UPDATE statements. Check out the [#134 issue for more details](https://github.com/vladmihalcea/hibernate-types/issues/138).
+
 ##### Oracle
 
 You should use the `JsonStringType` to map a `VARCHAR2` column type storing JSON.
