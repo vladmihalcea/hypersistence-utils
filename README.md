@@ -32,6 +32,8 @@ You should use this `JsonBinaryType` to map both `jsonb` and `json` column types
 
 For more details, check out [this article](https://vladmihalcea.com/how-to-map-json-objects-using-generic-hibernate-types/).
 
+`JsonBinaryType` dirty checking will be performed using `equals` for collections or when explicitly implemented in the POJO class. Therefore, to prevent unexpected updates you should always implement `equals` and `hashCode` methods according to Java best practices.
+
 ##### MySQL
 
 You should use this `JsonStringType` to map the `json` column type.
