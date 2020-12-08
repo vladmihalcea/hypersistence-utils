@@ -1,6 +1,7 @@
 package com.vladmihalcea.hibernate.type.binary;
 
 import com.vladmihalcea.hibernate.type.util.AbstractMySQLIntegrationTest;
+import com.vladmihalcea.hibernate.type.util.Configuration;
 import org.hibernate.annotations.TypeDef;
 import org.junit.Test;
 

@@ -279,13 +279,12 @@ public class Configuration {
             return;
         }
 
-        LOGGER.warn("You should use Hypersistence Optimizer to speed up your Hibernate application!");
-        LOGGER.warn("For more details, go to https://vladmihalcea.com/hypersistence-optimizer/");
-
         LOGGER.info(
             StringUtils.join(
                 StringUtils.LINE_SEPARATOR,
+                "is proudly powered by:",
                 "",
+                ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
                 " _    _                           _     _",
                 "| |  | |                         (_)   | |",
                 "| |__| |_   _ _ __   ___ _ __ ___ _ ___| |_ ___ _ __   ___ ___",
@@ -295,18 +294,16 @@ public class Configuration {
                 "         __/ | |",
                 "        |___/|_|",
                 "",
-                "           ____        _   _           _",
-                "          / __ \\      | | (_)         (_)",
-                "         | |  | |_ __ | |_ _ _ __ ___  _ _______ _ __",
-                "         | |  | | '_ \\| __| | '_ ` _ \\| |_  / _ \\ '__|",
-                "         | |__| | |_) | |_| | | | | | | |/ /  __/ |",
-                "          \\____/| .__/ \\__|_|_| |_| |_|_/___\\___|_|",
-                "                | |",
-                "                |_|",
+                "At Hypersistence, we only build amazing tools, like Hibernate Types, Flexy Pool, or Hypersistence Optimizer.",
+                "What if there was a tool that couuld automatically detect JPA and Hibernate performance issues?",
+                "Hypersistence Optimizer is that tool!",
+                "For more details, go to: ",
+                "",
+                "https://vladmihalcea.com/hypersistence-optimizer/",
+                "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<",
                 ""
             )
         );
-        LOGGER.info("Check out the README page for more info about the Hypersistence Optimizer banner https://github.com/vladmihalcea/hibernate-types#how-to-remove-the-hypersistence-optimizer-banner-from-the-log");
     }
 
     private boolean isHypersistenceOptimizer() {
