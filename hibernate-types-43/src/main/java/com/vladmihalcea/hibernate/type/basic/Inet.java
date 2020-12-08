@@ -46,7 +46,7 @@ public class Inet implements Serializable {
     /**
      * Get the associated {@link InetAddress} for the current {@link #address}.
      *
-     * @return the associated {@link InetAddress
+     * @return the associated {@link InetAddress}
      */
     public InetAddress toInetAddress() {
         try {
