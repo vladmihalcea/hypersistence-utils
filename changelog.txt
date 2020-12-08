@@ -1,3 +1,14 @@
+Version 2.10.1 - December 08, 2020
+================================================================================
+
+Log a WARN message if the JSON object does not implement equals and hashCode enhancement #281
+
+Convert parsing or processing errors to HibernateException enhancement #280
+
+The NotSerializableException is thrown when mapping a Map<String, List<>> entity attribute to a JSON column bug #243
+
+Add MySQL BinaryType enhancement #23
+
 Version 2.10.0 - October 07, 2020
 ================================================================================
 
