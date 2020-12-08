@@ -178,21 +178,21 @@ Depending on the Hibernate version you are using, you need to add the following 
 * SLF4J
 * Jackson Databind
 
-### How to remove the Hypersistence Optimizer banner from the log?
+### How to remove the Hypersistence banner from the log?
 
-#### Why the Hypersistence Optimizer banner?
+#### Why the Hypersistence banner?
 
 Maintaining this project costs thousands of dollars per year, and, without the support of [Hypersistence](https://hypersistence.io/),
-this project would have to be abandoned.
+this project would have been abandoned a very long time ago. 
 
-> The reason why this banner was added is that, when I enabled GitHub donations, [no one ever donated a single cent](
+The reason why this banner was added is that, when I enabled GitHub donations, [no one ever donated a single cent](
 https://twitter.com/vlad_mihalcea/status/1194584719133958146) to support this project.
 
-And, spreading the news about the amazing [Hypersistence Optimizer](https://vladmihalcea.com/hypersistence-optimizer/) tool I'm currently building is much more beneficial for the vast majority of Hibernate projects.
+Luckily, there are better ways to support companies that build software that is used by hundreds of thousands of projects. So, if you like this framework, you are going to love optimizing your application using the amazing [Hypersistence Optimizer](https://vladmihalcea.com/hypersistence-optimizer/) tool.
 
 #### Adding Hypersistence Optimizer to your project
 
-Using Hibernate without [Hypersistence Optimizer](https://vladmihalcea.com/hypersistence-optimizer/) is highly discouraged, hence the reason for that banner. You can view it as a `WARN` log message that tells you are risking application performance issues if you don't make sure you use the right JPA mappings and Hibernate configuration properties.
+Using Hibernate without [Hypersistence Optimizer](https://vladmihalcea.com/hypersistence-optimizer/) is not a good idea. To avoid risking application performance issues caused by improper usage of JPA and Hibernate configuration properties, mappings, or entity state changes, you should use Hypersistence Optimizer.
 
 > If you want to see why it's a bad idea to use JPA and Hibernate without a tool that inspects your mappings and configurations, check out this [video presentation](https://www.youtube.com/watch?v=x1nOVct9P2g).
 
@@ -214,26 +214,20 @@ If can also provide the `hibernate.types.print.banner=false`setting as a Java Sy
     
 #### Will I remove the banner?
 
-I know the banner might be a little annoying. But you know what's even more annoying? Having all those [open issues](https://github.com/vladmihalcea/hibernate-types/issues) waiting to be fixed.
+Of course, I will. As soon as all the [open issues](https://github.com/vladmihalcea/hibernate-types/issues) are fixed, I'll remove the banner.
 
-So, I decided that I would remove the banner only when the vast majority of the currently opened issues were going to be fixed. If you don't have the time to do it, I totally understand that. I don't have the time to do it either. But, I could be paid to do that, and then, you could all benefit from those new features. I estimated the cost for working on all those issues to be around 25000$. If anyone is willing to sponsor the development of this project, don't hesitate to contact me.
+Or, if you want to fix those issues but don't have the time to do it, I totally understand that. I don't have the time to do it either. But, I could be paid to do that, and then, you could all benefit from those new features. If your company is interested in sponsoring the development of this project, don't hesitate to contact me.
 
-> If you're wondering why that banner was not removed by now, it's because there are still plenty of issues waiting to be fixed, and that's not the true spirit of open-source software development!
+If you're wondering why that banner was not removed by now, it's because donations and sponsoring don't really work for small projects like this one. Is that the true spirit of open-source software development?
 
 ##### Should you open a GitHub issue asking me to remove the banner?
 
 Disabling this banner takes very little time, so there is no point in opening a GitHub issue to ask me to remove this banner, 
 especially since there's already [a pinned GitHub issue explaining how to remove it](https://github.com/vladmihalcea/hibernate-types/issues/196).
  
-Keep in mind that all issues related to the banner removal will be deleted because I use the GitHub issue feature for technical features only (e.g., enhancements, bug fixing).
+Keep in mind that all issues related to the banner removal will be deleted because GitHub issues are for technical features only (e.g., enhancements, bug fixing).
 
-In case you think that the banner is unfair and disabling it is too much of an effort for you, then you can also:
-
-- fork the repository
-- remove the banner from the source code
-- build the project and use your own banner-free version
-
-This project is _free_ as in [Libre, not Gratis](https://en.wikipedia.org/wiki/Gratis_versus_libre).
+In case you think that the banner is unfair and disabling it is too much of an effort for you, then you can also fork the repository, remove the banner from the source code, build the project and use your own banner-free version. After all, this project is _free_ as in [Libre](https://en.wikipedia.org/wiki/Gratis_versus_libre), so you're free to do that.
 
 ## How to start the test environment
 
