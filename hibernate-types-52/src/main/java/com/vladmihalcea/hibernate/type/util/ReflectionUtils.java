@@ -1,6 +1,8 @@
 package com.vladmihalcea.hibernate.type.util;
 
 import java.lang.reflect.*;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * <code>ReflectionUtils</code> - Reflection utilities holder.
@@ -534,6 +536,20 @@ public final class ReflectionUtils {
                     null :
                     (Class<T>) getFirstSuperClassFromPackage(superClass, packageName);
         }
+    }
+
+    /**
+     * Get the generic types of a given Class.
+     *
+     * @param parameterizedType parameterized Type
+     * @return generic types for the given Class.
+     */
+    public static Set<Class> getGenericTypes(ParameterizedType parameterizedType) {
+        Set<Class> genericTypes = new LinkedHashSet<>();
+        for(Type genericType : parameterizedType.getActualTypeArguments()) {
+            genericTypes.add((Class) genericType);
+        }
+        return genericTypes;
     }
 
     /**

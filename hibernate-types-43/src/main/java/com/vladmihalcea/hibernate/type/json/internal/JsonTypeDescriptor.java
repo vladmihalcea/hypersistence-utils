@@ -1,5 +1,6 @@
 package com.vladmihalcea.hibernate.type.json.internal;
 
+import com.vladmihalcea.hibernate.type.util.LogUtils;
 import com.vladmihalcea.hibernate.type.util.ObjectMapperWrapper;
 import com.vladmihalcea.hibernate.type.util.Objects;
 import com.vladmihalcea.hibernate.type.util.ReflectionUtils;
@@ -18,13 +19,13 @@ import org.hibernate.usertype.DynamicParameterizedType;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.sql.Blob;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * @author Vlad Mihalcea
@@ -32,7 +33,9 @@ import java.util.Properties;
 public class JsonTypeDescriptor
         extends AbstractTypeDescriptor<Object> implements DynamicParameterizedType {
 
-    private Type type;
+    private Type propertyType;
+
+    private Class propertyClass;
 
     private ObjectMapperWrapper objectMapperWrapper;
 
@@ -42,7 +45,7 @@ public class JsonTypeDescriptor
 
     public JsonTypeDescriptor(Type type) {
         this();
-        this.type = type;
+        setPropertyClass(type);
     }
 
     public JsonTypeDescriptor(final ObjectMapperWrapper objectMapperWrapper) {
@@ -57,17 +60,16 @@ public class JsonTypeDescriptor
 
     public JsonTypeDescriptor(final ObjectMapperWrapper objectMapperWrapper, Type type) {
         this(objectMapperWrapper);
-        this.type = type;
+        setPropertyClass(type);
     }
 
     @Override
     public void setParameterValues(Properties parameters) {
         final XProperty xProperty = (XProperty) parameters.get(DynamicParameterizedType.XPROPERTY);
-        if (xProperty instanceof JavaXMember) {
-            type = ReflectionUtils.invokeGetter(xProperty, "javaType");
-        } else {
-            type = ((ParameterType) parameters.get(PARAMETER_TYPE)).getReturnedClass();
-        }
+        Type type = (xProperty instanceof JavaXMember) ?
+            (Type) ReflectionUtils.invokeGetter(xProperty, "javaType") :
+            ((ParameterType) parameters.get(PARAMETER_TYPE)).getReturnedClass();
+        setPropertyClass(type);
     }
 
     @Override
@@ -100,10 +102,10 @@ public class JsonTypeDescriptor
 
     @Override
     public Object fromString(String string) {
-        if (String.class.isAssignableFrom(typeToClass())) {
+        if (String.class.isAssignableFrom(propertyClass)) {
             return string;
         }
-        return objectMapperWrapper.fromString(string, type);
+        return objectMapperWrapper.fromString(string, propertyType);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -164,13 +166,37 @@ public class JsonTypeDescriptor
         return fromString(stringValue);
     }
 
-    private Class typeToClass() {
-        Type classType = type;
+    private void setPropertyClass(Type type) {
+        this.propertyType = type;
         if (type instanceof ParameterizedType) {
-            classType = ((ParameterizedType) type).getRawType();
+            type = ((ParameterizedType) type).getRawType();
         } else if (type instanceof TypeVariable) {
-            classType = ((TypeVariable) type).getGenericDeclaration().getClass();
+            type = ((TypeVariable) type).getGenericDeclaration().getClass();
         }
-        return (Class) classType;
+        this.propertyClass = (Class) type;
+        validatePropertyType();
     }
+
+    private void validatePropertyType() {
+        if(Collection.class.isAssignableFrom(propertyClass)) {
+            if (propertyType instanceof ParameterizedType) {
+                ParameterizedType parameterizedType = (ParameterizedType) propertyType;
+
+                for(Class genericType : ReflectionUtils.getGenericTypes(parameterizedType)) {
+                    if(validatedTypes.contains(genericType)) {
+                        continue;
+                    }
+                    validatedTypes.add(genericType);
+                    Method equalsMethod = ReflectionUtils.getDeclaredMethodOrNull(genericType, "equals", Object.class);
+                    Method hashCodeMethod = ReflectionUtils.getDeclaredMethodOrNull(genericType, "hashCode");
+
+                    if(equalsMethod == null || hashCodeMethod == null) {
+                        LogUtils.LOGGER.warn("The {} class should override both the equals and hashCode methods based on the JSON object value it represents!", genericType);
+                    }
+                }
+            }
+        }
+    }
+
+    private static List<Class> validatedTypes = new ArrayList<Class>();
 }
