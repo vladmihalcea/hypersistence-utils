@@ -4,6 +4,7 @@ import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 import com.google.common.collect.Ranges;
 import com.vladmihalcea.hibernate.type.ImmutableType;
+import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.postgresql.util.PGobject;
 
@@ -62,7 +63,9 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> {
         } else if("numrange".equals(type)) {
             return bigDecimalRange(value);
         } else {
-            throw new IllegalStateException("The range type [" + type + "] is not supported!");
+            throw new HibernateException(
+                new IllegalStateException("The range type [" + type + "] is not supported!")
+            );
         }
     }
 
@@ -85,7 +88,9 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> {
                              range.hasUpperBound() ? range.upperEndpoint() : null;
 
         if (anyEndpoint == null) {
-            throw new IllegalArgumentException("The range " + range + " doesn't have any upper or lower bound!");
+            throw new HibernateException(
+                new IllegalArgumentException("The range " + range + " doesn't have any upper or lower bound!")
+            );
         }
 
         Class<?> clazz = anyEndpoint.getClass();
@@ -98,7 +103,9 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> {
             return "numrange";
         }
 
-        throw new IllegalStateException("The class [" + clazz.getName() + "] is not supported!");
+        throw new HibernateException(
+            new IllegalStateException("The class [" + clazz.getName() + "] is not supported!")
+        );
     }
 
 
@@ -110,7 +117,9 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> {
         int delim = str.indexOf(',');
 
         if (delim == -1) {
-            throw new IllegalArgumentException("Cannot find comma character");
+            throw new HibernateException(
+                new IllegalArgumentException("Cannot find comma character")
+            );
         }
 
         String lowerStr = str.substring(1, delim);
@@ -128,7 +137,9 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> {
         }
 
         if (lower == null && upper == null) {
-            throw new IllegalArgumentException("Cannot find bound type");
+            throw new HibernateException(
+                new IllegalArgumentException("Cannot find bound type")
+            );
         }
 
         if (lowerStr.length() == 0) {
@@ -234,6 +245,4 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> {
 
         R apply(T t);
     }
-
-
 }

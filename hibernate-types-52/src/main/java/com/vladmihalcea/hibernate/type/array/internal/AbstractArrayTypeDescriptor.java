@@ -1,5 +1,6 @@
 package com.vladmihalcea.hibernate.type.array.internal;
 
+import org.hibernate.HibernateException;
 import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.type.descriptor.java.AbstractTypeDescriptor;
 import org.hibernate.type.descriptor.java.MutabilityPlan;
@@ -92,7 +93,9 @@ public abstract class AbstractArrayTypeDescriptor<T>
             try {
                 return ArrayUtil.unwrapArray((Object[]) array.getArray(), arrayObjectClass);
             } catch (SQLException e) {
-                throw new IllegalArgumentException(e);
+                throw new HibernateException(
+                    new IllegalArgumentException(e)
+                );
             }
         }
         return (T) value;
@@ -101,5 +104,4 @@ public abstract class AbstractArrayTypeDescriptor<T>
     protected String getSqlArrayType() {
         return sqlArrayType;
     }
-
 }

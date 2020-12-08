@@ -2,6 +2,7 @@ package com.vladmihalcea.hibernate.type.range;
 
 import com.vladmihalcea.hibernate.type.ImmutableType;
 import com.vladmihalcea.hibernate.type.util.ReflectionUtils;
+import org.hibernate.HibernateException;
 import org.hibernate.annotations.common.reflection.XProperty;
 import org.hibernate.annotations.common.reflection.java.JavaXMember;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
@@ -81,7 +82,9 @@ public class PostgreSQLRangeType extends ImmutableType<Range> implements Dynamic
             case "daterange":
                 return Range.localDateRange(value);
             default:
-                throw new IllegalStateException("The range type [" + type + "] is not supported!");
+                throw new HibernateException(
+                    new IllegalStateException("The range type [" + type + "] is not supported!")
+                );
         }
     }
 
@@ -116,7 +119,9 @@ public class PostgreSQLRangeType extends ImmutableType<Range> implements Dynamic
             return "daterange";
         }
 
-        throw new IllegalStateException("The class [" + clazz.getName() + "] is not supported!");
+        throw new HibernateException(
+            new IllegalStateException("The class [" + clazz.getName() + "] is not supported!")
+        );
     }
 
     @Override

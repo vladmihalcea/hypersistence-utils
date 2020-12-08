@@ -1,5 +1,7 @@
 package com.vladmihalcea.hibernate.type.basic;
 
+import org.hibernate.HibernateException;
+
 import java.io.Serializable;
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -41,12 +43,19 @@ public class Inet implements Serializable {
         return address != null ? address.hashCode() : 0;
     }
 
+    /**
+     * Get the associated {@link InetAddress} for the current {@link #address}.
+     *
+     * @return the associated {@link InetAddress
+     */
     public InetAddress toInetAddress() {
         try {
             String host = address.replaceAll("\\/.*$", "");
             return Inet4Address.getByName(host);
         } catch (UnknownHostException e) {
-            throw new IllegalStateException(e);
+            throw new HibernateException(
+                new IllegalArgumentException(e)
+            );
         }
     }
 }

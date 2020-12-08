@@ -1,6 +1,7 @@
 package com.vladmihalcea.hibernate.type.interval;
 
 import com.vladmihalcea.hibernate.type.ImmutableType;
+import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 
 import java.sql.PreparedStatement;
@@ -57,7 +58,9 @@ public class OracleIntervalDayToSecondType extends ImmutableType<Duration> {
                     .plus((long) Math.floor(seconds), ChronoUnit.SECONDS);
         }
 
-        throw new IllegalArgumentException("The parsed interval " + intervalValue + " does not match the expected pattern: " + INTERVAL_PATTERN);
+        throw new HibernateException(
+            new IllegalArgumentException("The parsed interval " + intervalValue + " does not match the expected pattern: " + INTERVAL_PATTERN)
+        );
     }
 
     @Override

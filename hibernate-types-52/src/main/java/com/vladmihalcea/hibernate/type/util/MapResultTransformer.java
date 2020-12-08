@@ -1,5 +1,6 @@
 package com.vladmihalcea.hibernate.type.util;
 
+import org.hibernate.HibernateException;
 import org.hibernate.transform.ResultTransformer;
 
 import java.util.Collections;
@@ -57,11 +58,15 @@ public class MapResultTransformer<K, V> implements ResultTransformer {
 
         if (keyOrdinal >= 0) {
             if (valueOrdinal < 0) {
-                throw new IllegalArgumentException("A key column alias was given but no value column alias was found!");
+                throw new HibernateException(
+                    new IllegalArgumentException("A key column alias was given but no value column alias was found!")
+                );
             }
         } else {
             if (valueOrdinal >= 0) {
-                throw new IllegalArgumentException("A value column alias was given but no key column alias was found!");
+                throw new HibernateException(
+                    new IllegalArgumentException("A value column alias was given but no key column alias was found!")
+                );
             } else {
                 keyOrdinal = 0;
                 valueOrdinal = 1;
