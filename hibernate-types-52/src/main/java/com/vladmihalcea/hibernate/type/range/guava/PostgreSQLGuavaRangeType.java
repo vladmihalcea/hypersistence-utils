@@ -21,6 +21,7 @@ import java.sql.Types;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -51,6 +52,41 @@ import java.util.function.Function;
  */
 public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements DynamicParameterizedType {
 
+    /**
+     * An empty int range that satisfies {@link Range#isEmpty()} to map PostgreSQL's {@code empty} to.
+     */
+    private static final Range<Integer> EMPTY_INT_RANGE = Range.closedOpen(Integer.MIN_VALUE, Integer.MIN_VALUE);
+
+    /**
+     * An empty int range that satisfies {@link Range#isEmpty()} to map PostgreSQL's {@code empty} to.
+     */
+    private static final Range<Long> EMPTY_LONG_RANGE = Range.closedOpen(Long.MIN_VALUE, Long.MIN_VALUE);
+
+    /**
+     * An empty int range that satisfies {@link Range#isEmpty()} to map PostgreSQL's {@code empty} to.
+     */
+    private static final Range<BigDecimal> EMPTY_BIGDECIMAL_RANGE = Range.closedOpen(BigDecimal.ZERO, BigDecimal.ZERO);
+
+    /**
+     * An empty int range that satisfies {@link Range#isEmpty()} to map PostgreSQL's {@code empty} to.
+     */
+    private static final Range<LocalDateTime> EMPTY_LOCALDATETIME_RANGE = Range.closedOpen(LocalDateTime.MIN, LocalDateTime.MIN);
+
+    /**
+     * An empty int range that satisfies {@link Range#isEmpty()} to map PostgreSQL's {@code empty} to.
+     */
+    private static final Range<OffsetDateTime> EMPTY_OFFSETDATETIME_RANGE = Range.closedOpen(OffsetDateTime.MIN, OffsetDateTime.MIN);
+
+    /**
+     * An empty int range that satisfies {@link Range#isEmpty()} to map PostgreSQL's {@code empty} to.
+     */
+    private static final Range<ZonedDateTime> EMPTY_ZONEDDATETIME_RANGE = Range.closedOpen(OffsetDateTime.MIN.toZonedDateTime(), OffsetDateTime.MIN.toZonedDateTime());
+
+    /**
+     * An empty int range that satisfies {@link Range#isEmpty()} to map PostgreSQL's {@code empty} to.
+     */
+    private static final Range<LocalDate> EMPTY_DATE_RANGE = Range.closedOpen(LocalDate.MIN, LocalDate.MIN);
+
     private static final DateTimeFormatter LOCAL_DATE_TIME = new DateTimeFormatterBuilder()
         .appendPattern("yyyy-MM-dd HH:mm:ss")
         .optionalStart()
@@ -59,7 +95,7 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
         .optionalEnd()
         .toFormatter();
 
-    private static final DateTimeFormatter ZONE_DATE_TIME = new DateTimeFormatterBuilder()
+    private static final DateTimeFormatter OFFSET_DATE_TIME = new DateTimeFormatterBuilder()
             .appendPattern("yyyy-MM-dd HH:mm:ss")
             .optionalStart()
             .appendPattern(".")
@@ -72,8 +108,15 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
 
     private Type type;
 
+    private Class<?> elementType;
+
     public PostgreSQLGuavaRangeType() {
         super(Range.class);
+    }
+
+    public PostgreSQLGuavaRangeType(Class<?> elementType) {
+        super(Range.class);
+        this.elementType = elementType;
     }
 
     @Override
@@ -102,7 +145,7 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
             case "tsrange":
                 return localDateTimeRange(value);
             case "tstzrange":
-                return zonedDateTimeRange(value);
+                return ZonedDateTime.class.equals(elementType) ? zonedDateTimeRange(value) : offsetDateTimeRange(value);
             case "daterange":
                 return localDateRange(value);
             default:
@@ -114,29 +157,31 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
 
     @Override
     protected void set(PreparedStatement st, Range range, int index, SharedSessionContractImplementor session) throws SQLException {
-
         if (range == null) {
             st.setNull(index, Types.OTHER);
         } else {
             PGobject object = new PGobject();
             object.setType(determineRangeType(range));
             object.setValue(asString(range));
-
             st.setObject(index, object);
         }
     }
 
-    private static String determineRangeType(Range<?> range) {
-        Object anyEndpoint = range.hasLowerBound() ? range.lowerEndpoint() :
-                             range.hasUpperBound() ? range.upperEndpoint() : null;
+    private String determineRangeType(Range<?> range) {
+        Type clazz = this.elementType;
 
-        if (anyEndpoint == null) {
-            throw new HibernateException(
-                new IllegalArgumentException("The range " + range + " doesn't have any upper or lower bound!")
-            );
+        if (clazz == null) {
+            Object anyEndpoint = range.hasLowerBound() ? range.lowerEndpoint() :
+                                 range.hasUpperBound() ? range.upperEndpoint() : null;
+
+            if (anyEndpoint == null) {
+                throw new HibernateException(
+                    new IllegalArgumentException("The range " + range + " doesn't have any upper or lower bound!")
+                );
+            }
+
+            clazz = anyEndpoint.getClass();
         }
-
-        Class<?> clazz = anyEndpoint.getClass();
 
         if (clazz.equals(Integer.class)) {
             return "int4range";
@@ -146,20 +191,40 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
             return "numrange";
         } else if (clazz.equals(LocalDateTime.class)) {
             return "tsrange";
-        } else if (clazz.equals(ZonedDateTime.class)) {
+        } else if (clazz.equals(ZonedDateTime.class) || clazz.equals(OffsetDateTime.class)) {
             return "tstzrange";
         } else if (clazz.equals(LocalDate.class)) {
             return "daterange";
         }
 
         throw new HibernateException(
-            new IllegalStateException("The class [" + clazz.getName() + "] is not supported!")
+            new IllegalStateException("The class [" + clazz + "] is not supported!")
         );
     }
 
+    public static <T extends Comparable<?>> Range<T> ofString(String str, Function<String, T> converter, Class<T> clazz) {
+        if ("empty".equals(str)) {
+            if (clazz.equals(Integer.class)) {
+                return (Range<T>) EMPTY_INT_RANGE;
+            } else if (clazz.equals(Long.class)) {
+                return (Range<T>) EMPTY_LONG_RANGE;
+            } else if (clazz.equals(BigDecimal.class)) {
+                return (Range<T>) EMPTY_BIGDECIMAL_RANGE;
+            } else if (clazz.equals(LocalDateTime.class)) {
+                return (Range<T>) EMPTY_LOCALDATETIME_RANGE;
+            } else if (clazz.equals(ZonedDateTime.class)) {
+                return (Range<T>) EMPTY_ZONEDDATETIME_RANGE;
+            } else if (clazz.equals(OffsetDateTime.class)) {
+                return (Range<T>) EMPTY_OFFSETDATETIME_RANGE;
+            } else if (clazz.equals(LocalDate.class)) {
+                return (Range<T>) EMPTY_DATE_RANGE;
+            }
 
-    @SuppressWarnings("unchecked")
-    public static <T extends Comparable> Range<T> ofString(String str, Function<String, T> converter, Class<T> cls) {
+            throw new HibernateException(
+                    new IllegalStateException("The class [" + clazz.getName() + "] is not supported!")
+            );
+        }
+
         BoundType lowerBound = str.charAt(0) == '[' ? BoundType.CLOSED : BoundType.OPEN;
         BoundType upperBound = str.charAt(str.length() - 1) == ']' ? BoundType.CLOSED : BoundType.OPEN;
 
@@ -185,10 +250,8 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
             upper = converter.apply(upperStr);
         }
 
-        if (lower == null && upper == null) {
-            throw new HibernateException(
-                new IllegalArgumentException("Cannot find bound type")
-            );
+        if (lower == null && upper == null && upperBound == BoundType.OPEN && lowerBound == BoundType.OPEN) {
+            return Range.all();
         }
 
         if (lowerStr.length() == 0) {
@@ -360,6 +423,31 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
         return range;
     }
 
+    /**
+     * Creates the {@code OffsetDateTime} range from provided string:
+     * <pre>{@code
+     *     Range<OffsetDateTime> closed = Range.offsetDateTimeRange("[2007-12-03T10:15:30+01:00\",\"2008-12-03T10:15:30+01:00]");
+     *     Range<OffsetDateTime> quoted = Range.offsetDateTimeRange("[\"2007-12-03T10:15:30+01:00\",\"2008-12-03T10:15:30+01:00\"]");
+     *     Range<OffsetDateTime> iso = Range.offsetDateTimeRange("[2011-12-03T10:15:30+01:00[Europe/Paris], 2012-12-03T10:15:30+01:00[Europe/Paris]]");
+     * }</pre>
+     * <p>
+     * The valid formats for bounds are:
+     * <ul>
+     * <li>yyyy-MM-dd HH:mm:ss[.SSSSSS]X</li>
+     * <li>yyyy-MM-dd'T'HH:mm:ss[.SSSSSS]X</li>
+     * </ul>
+     *
+     * @param rangeStr The range string, for example {@literal "[2011-12-03T10:15:30+01:00,2012-12-03T10:15:30+01:00]"}.
+     *
+     * @return The range of {@code OffsetDateTime}s.
+     *
+     * @throws DateTimeParseException   when one of the bounds are invalid.
+     * @throws IllegalArgumentException when bounds time zones are different.
+     */
+    public static Range<OffsetDateTime> offsetDateTimeRange(String rangeStr) {
+        return ofString(rangeStr, parseOffsetDateTime().compose(unquote()), OffsetDateTime.class);
+    }
+
     private static Function<String, LocalDateTime> parseLocalDateTime() {
         return str -> {
             try {
@@ -373,9 +461,19 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
     private static Function<String, ZonedDateTime> parseZonedDateTime() {
         return s -> {
             try {
-                return ZonedDateTime.parse(s, ZONE_DATE_TIME);
+                return ZonedDateTime.parse(s, OFFSET_DATE_TIME);
             } catch (DateTimeParseException e) {
                 return ZonedDateTime.parse(s);
+            }
+        };
+    }
+
+    private static Function<String, OffsetDateTime> parseOffsetDateTime() {
+        return s -> {
+            try {
+                return OffsetDateTime.parse(s, OFFSET_DATE_TIME);
+            } catch (DateTimeParseException e) {
+                return OffsetDateTime.parse(s);
             }
         };
     }
@@ -391,6 +489,10 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
     }
 
     public String asString(Range range) {
+        if (range.isEmpty()) {
+            return "empty";
+        }
+
         StringBuilder sb = new StringBuilder();
 
         sb.append(range.hasLowerBound() && range.lowerBoundType() == BoundType.CLOSED ? '[' : '(')
@@ -404,7 +506,7 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
 
     private String asString(Object value) {
         if (value instanceof ZonedDateTime) {
-            return ZONE_DATE_TIME.format((ZonedDateTime) value);
+            return OFFSET_DATE_TIME.format((ZonedDateTime) value);
         }
         return value.toString();
     }
@@ -417,11 +519,14 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
         } else {
             type = ((ParameterType) parameters.get(PARAMETER_TYPE)).getReturnedClass();
         }
+
+        if (type instanceof ParameterizedType) {
+            elementType = (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[0];
+        }
     }
 
     public Class<?> getElementType() {
-        return type instanceof ParameterizedType ?
-                (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[0] : null;
+        return elementType;
     }
 
 }

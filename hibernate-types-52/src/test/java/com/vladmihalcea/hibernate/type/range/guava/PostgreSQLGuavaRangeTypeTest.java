@@ -2,34 +2,23 @@ package com.vladmihalcea.hibernate.type.range.guava;
 
 import com.google.common.collect.Range;
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
-import com.vladmihalcea.hibernate.type.util.ExceptionUtil;
 import org.hibernate.annotations.TypeDef;
 import org.junit.Test;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  * @author Edgar Asatryan
  * @author Jan-Willem Gmelig Meyling
  */
 public class PostgreSQLGuavaRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
+
+    private static final ZoneOffset DEFAULT_OFFSET = OffsetDateTime.now().getOffset();
 
     private final Range<BigDecimal> numeric = Range.closedOpen(new BigDecimal("0.5"), new BigDecimal("0.89"));
 
@@ -38,19 +27,24 @@ public class PostgreSQLGuavaRangeTypeTest extends AbstractPostgreSQLIntegrationT
     private final Range<Integer> int4Range = Range.closedOpen(0, 18);
 
     private final Range<LocalDateTime> localDateTimeRange = Range.closed(
-            LocalDateTime.of(2014, Month.APRIL, 28, 16, 0, 49),
-            LocalDateTime.of(2015, Month.APRIL, 28, 16, 0, 49));
+        LocalDateTime.of(2014, Month.APRIL, 28, 16, 0, 49),
+        LocalDateTime.of(2015, Month.APRIL, 28, 16, 0, 49));
 
     private final Range<ZonedDateTime> tsTz = Range.closed(
-            OffsetDateTime.of(LocalDateTime.of(2007, Month.DECEMBER, 3, 10, 15, 30), ZoneOffset.ofHours(1)).toZonedDateTime(),
-            OffsetDateTime.of(LocalDateTime.of(2008, Month.DECEMBER, 3, 10, 15, 30), ZoneOffset.ofHours(1)).toZonedDateTime());
+        OffsetDateTime.of(LocalDateTime.of(2007, Month.DECEMBER, 3, 10, 15, 30), ZoneOffset.ofHours(1)).toZonedDateTime(),
+        OffsetDateTime.of(LocalDateTime.of(2008, Month.DECEMBER, 3, 10, 15, 30), ZoneOffset.ofHours(1)).toZonedDateTime());
+
+    private final Range<OffsetDateTime> tsTzO = Range.closed(
+        OffsetDateTime.of(LocalDateTime.of(2007, Month.DECEMBER, 3, 10, 15, 30), DEFAULT_OFFSET),
+        OffsetDateTime.of(LocalDateTime.of(2008, Month.DECEMBER, 3, 10, 15, 30), DEFAULT_OFFSET)
+    );
 
     private final Range<LocalDate> dateRange = Range.closedOpen(LocalDate.of(1992, Month.JANUARY, 13), LocalDate.of(1995, Month.JANUARY, 13));
 
     @Override
     protected Class<?>[] entities() {
         return new Class[]{
-                Restriction.class
+            Restriction.class
         };
     }
 
@@ -66,6 +60,7 @@ public class PostgreSQLGuavaRangeTypeTest extends AbstractPostgreSQLIntegrationT
             restriction.setRangeLocalDateTime(localDateTimeRange);
             restriction.setRangeZonedDateTime(tsTz);
             restriction.setLocalDateRange(dateRange);
+            restriction.setOffsetZonedDateTime(tsTzO);
             entityManager.persist(restriction);
 
             return restriction;
@@ -78,6 +73,7 @@ public class PostgreSQLGuavaRangeTypeTest extends AbstractPostgreSQLIntegrationT
             assertEquals(int8Range, ar.getRangeLong());
             assertEquals(numeric, ar.getRangeBigDecimal());
             assertEquals(localDateTimeRange, ar.getLocalDateTimeRange());
+            assertEquals(tsTzO, ar.getOffsetZonedDateTime());
             assertEquals(dateRange, ar.getLocalDateRange());
 
             ZoneId zone = ar.getRangeZonedDateTime().lowerEndpoint().getZone();
@@ -112,31 +108,25 @@ public class PostgreSQLGuavaRangeTypeTest extends AbstractPostgreSQLIntegrationT
 
     @Test
     public void testUnboundedRangeIsRejected() {
-        try {
-            Restriction ageRestrictionInt = doInJPA(entityManager -> {
-                Restriction restriction = new Restriction();
-                restriction.setRangeInt(Range.all());
-                entityManager.persist(restriction);
+        Restriction ageRestrictionInt = doInJPA(entityManager -> {
+            Restriction restriction = new Restriction();
+            restriction.setRangeInt(Range.all());
+            entityManager.persist(restriction);
 
-                return restriction;
-            });
-            fail("An unbounded range should throw an exception!");
-        } catch (Exception e) {
-            IllegalArgumentException rootCause = ExceptionUtil.rootCause(e);
-            assertTrue(rootCause.getMessage().contains("doesn't have any upper or lower bound!"));
-        }
+            return restriction;
+        });
+
+
+        doInJPA(entityManager -> {
+            Restriction ar = entityManager.find(Restriction.class, ageRestrictionInt.getId());
+            assertEquals(ar.getRangeInt(), Range.all());
+        });
     }
 
     @Test
     public void testUnboundedRangeStringIsRejected() {
-        try {
-            PostgreSQLGuavaRangeType instance = PostgreSQLGuavaRangeType.INSTANCE;
-            instance.integerRange("(,)");
-            fail("An unbounded range string should throw an exception!");
-        } catch (Exception e) {
-            IllegalArgumentException rootCause = ExceptionUtil.rootCause(e);
-            assertTrue(rootCause.getMessage().contains("Cannot find bound type"));
-        }
+        PostgreSQLGuavaRangeType instance = PostgreSQLGuavaRangeType.INSTANCE;
+        assertEquals(Range.all(), instance.integerRange("(,)"));
     }
 
     @Test
@@ -178,6 +168,9 @@ public class PostgreSQLGuavaRangeTypeTest extends AbstractPostgreSQLIntegrationT
 
         @Column(name = "r_tstzrange", columnDefinition = "tstzrange")
         private Range<ZonedDateTime> rangeZonedDateTime;
+
+        @Column(name = "r_otstzrange", columnDefinition = "tstzrange")
+        private Range<OffsetDateTime> offsetZonedDateTime;
 
         @Column(name = "r_daterange", columnDefinition = "daterange")
         private Range<LocalDate> localDateRange;
@@ -232,6 +225,14 @@ public class PostgreSQLGuavaRangeTypeTest extends AbstractPostgreSQLIntegrationT
 
         public void setLocalDateRange(Range<LocalDate> localDateRange) {
             this.localDateRange = localDateRange;
+        }
+
+        public Range<OffsetDateTime> getOffsetZonedDateTime() {
+            return offsetZonedDateTime;
+        }
+
+        public void setOffsetZonedDateTime(Range<OffsetDateTime> offsetZonedDateTime) {
+            this.offsetZonedDateTime = offsetZonedDateTime;
         }
     }
 }
