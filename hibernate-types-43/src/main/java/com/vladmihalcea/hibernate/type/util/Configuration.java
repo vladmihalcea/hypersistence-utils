@@ -273,7 +273,7 @@ public class Configuration {
         LOGGER.info(
             StringUtils.join(
                 StringUtils.LINE_SEPARATOR,
-                "is proudly powered by:",
+                "This framework is proudly powered by:",
                 "",
                 ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
                 " _    _                           _     _",
