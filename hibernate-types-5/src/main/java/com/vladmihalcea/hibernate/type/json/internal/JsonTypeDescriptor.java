@@ -187,10 +187,13 @@ public class JsonTypeDescriptor
                         continue;
                     }
                     validatedTypes.add(genericType);
-                    Method equalsMethod = ReflectionUtils.getDeclaredMethodOrNull(genericType, "equals", Object.class);
-                    Method hashCodeMethod = ReflectionUtils.getDeclaredMethodOrNull(genericType, "hashCode");
+                    Method equalsMethod = ReflectionUtils.getMethodOrNull(genericType, "equals", Object.class);
+                    Method hashCodeMethod = ReflectionUtils.getMethodOrNull(genericType, "hashCode");
 
-                    if(equalsMethod == null || hashCodeMethod == null) {
+                    if(equalsMethod == null ||
+                        hashCodeMethod == null ||
+                        Object.class.equals(equalsMethod.getDeclaringClass()) ||
+                        Object.class.equals(hashCodeMethod.getDeclaringClass())) {
                         LogUtils.LOGGER.warn("The {} class should override both the equals and hashCode methods based on the JSON object value it represents!", genericType);
                     }
                 }

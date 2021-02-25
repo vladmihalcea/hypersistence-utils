@@ -241,6 +241,23 @@ public final class ReflectionUtils {
 
     /**
      * Get the {@link Method} with the given signature (name and parameter types) belonging to
+     * the provided Java {@link Object} or {@code null} if no {@link Method} was found.
+     *
+     * @param targetClass    target {@link Class}
+     * @param methodName     method name
+     * @param parameterTypes method parameter types
+     * @return return {@link Method} matching the provided signature or {@code null}
+     */
+    public static Method getMethodOrNull(Class targetClass, String methodName, Class... parameterTypes) {
+        try {
+            return getMethod(targetClass, methodName, parameterTypes);
+        } catch (RuntimeException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Get the {@link Method} with the given signature (name and parameter types) belonging to
      * the provided Java {@link Class}, excluding inherited ones, or {@code null} if no {@link Method} was found.
      *
      * @param targetClass    target {@link Class}
