@@ -295,7 +295,7 @@ public class Configuration {
                 "        |___/|_|",
                 "",
                 "At Hypersistence, we only build amazing tools, like Hibernate Types, Flexy Pool, or Hypersistence Optimizer.",
-                "What if there was a tool that couuld automatically detect JPA and Hibernate performance issues?",
+                "What if there was a tool that could automatically detect JPA and Hibernate performance issues?",
                 "Hypersistence Optimizer is that tool!",
                 "For more details, go to: ",
                 "",
