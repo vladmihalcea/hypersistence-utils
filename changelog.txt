@@ -1,3 +1,10 @@
+Version 2.10.3 - February 25, 2021
+================================================================================
+
+ReflectionUtils.getGenericTypes throws ClassCastException when using Kotlin Enums #300
+
+False positive "class should override both the equals and hashCode methods" for Enum values #295
+
 Version 2.10.2 - January 05, 2021
 ================================================================================
 
