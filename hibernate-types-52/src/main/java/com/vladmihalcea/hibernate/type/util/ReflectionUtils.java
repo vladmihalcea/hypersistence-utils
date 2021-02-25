@@ -547,7 +547,7 @@ public final class ReflectionUtils {
     public static Set<Class> getGenericTypes(ParameterizedType parameterizedType) {
         Set<Class> genericTypes = new LinkedHashSet<>();
         for(Type genericType : parameterizedType.getActualTypeArguments()) {
-            genericTypes.add((Class) genericType);
+            genericTypes.add(genericType.getClass());
         }
         return genericTypes;
     }
