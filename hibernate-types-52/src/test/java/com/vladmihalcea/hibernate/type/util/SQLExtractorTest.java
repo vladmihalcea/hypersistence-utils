@@ -1,10 +1,8 @@
 package com.vladmihalcea.hibernate.type.util;
 
-import org.hibernate.query.*;
 import org.junit.Test;
 
 import javax.persistence.*;
-import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
