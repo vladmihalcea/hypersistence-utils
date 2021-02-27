@@ -30,7 +30,7 @@ public class StringUtils {
             if(first) {
                 first = false;
             } else {
-                builder.append(LINE_SEPARATOR);
+                builder.append(delimiter);
             }
             builder.append(element);
         }
