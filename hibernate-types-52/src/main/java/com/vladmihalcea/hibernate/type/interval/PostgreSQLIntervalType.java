@@ -22,6 +22,8 @@ import java.time.temporal.ChronoUnit;
  */
 public class PostgreSQLIntervalType extends ImmutableType<Duration> {
 
+    private static final double MICROS_IN_SECOND = 1000000;
+
     public static final PostgreSQLIntervalType INSTANCE = new PostgreSQLIntervalType();
 
     public PostgreSQLIntervalType() {
@@ -39,12 +41,14 @@ public class PostgreSQLIntervalType extends ImmutableType<Duration> {
         final int days = interval.getDays();
         final int hours = interval.getHours();
         final int minutes = interval.getMinutes();
-        final double seconds = interval.getSeconds();
+        final int seconds = (int) interval.getSeconds();
+        final int micros = (int) Math.round((interval.getSeconds() - seconds) * MICROS_IN_SECOND);
 
         return Duration.ofDays(days)
                 .plus(hours, ChronoUnit.HOURS)
                 .plus(minutes, ChronoUnit.MINUTES)
-                .plus((long) Math.floor(seconds), ChronoUnit.SECONDS);
+                .plus(seconds, ChronoUnit.SECONDS)
+                .plus(micros, ChronoUnit.MICROS);
     }
 
     @Override
@@ -55,8 +59,10 @@ public class PostgreSQLIntervalType extends ImmutableType<Duration> {
             final int days = (int) value.toDays();
             final int hours = (int) (value.toHours() % 24);
             final int minutes = (int) (value.toMinutes() % 60);
-            final double seconds = value.getSeconds() % 60;
-            st.setObject(index, new PGInterval(0, 0, days, hours, minutes, seconds));
+            final int seconds = (int) (value.getSeconds() % 60);
+            final int micros = value.getNano() / 1000;
+            final double secondsWithFraction = seconds + (micros / MICROS_IN_SECOND);
+            st.setObject(index, new PGInterval(0, 0, days, hours, minutes, secondsWithFraction));
         }
     }
 

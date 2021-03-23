@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import java.time.Duration;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 
 /**
  * Tests for {@see PostgreSQLIntervalType} Hibernate type.
@@ -26,7 +27,7 @@ public class PostgreSQLIntervalTypeTest extends AbstractPostgreSQLIntegrationTes
 
     @Test
     public void test() {
-        Duration duration = Duration.ofDays(1).plusHours(2).plusMinutes(3).plusSeconds(4);
+        Duration duration = Duration.ofDays(1).plusHours(2).plusMinutes(3).plusSeconds(4).plusNanos(5000);
 
         doInJPA(entityManager -> {
             WorkShift intervalEntity = new WorkShift();
