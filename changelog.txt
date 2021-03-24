@@ -3,7 +3,7 @@ Version 2.10.4 - March 24, 2021
 
 Add fractional support to PostgreSQLIntervalType enhancement #307
 
-Use parameter delimiter to join string enhancement #302
+Use the provided delimiter parameter in the StringUtils.join method #302
 
 Version 2.10.3 - February 25, 2021
 ================================================================================
