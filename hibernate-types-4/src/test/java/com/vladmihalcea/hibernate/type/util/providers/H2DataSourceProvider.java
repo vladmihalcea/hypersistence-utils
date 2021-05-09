@@ -1,6 +1,7 @@
 package com.vladmihalcea.hibernate.type.util.providers;
 
-import org.hsqldb.jdbc.JDBCDataSource;
+import org.h2.jdbcx.JdbcConnectionPool;
+import org.h2.jdbcx.JdbcDataSource;
 
 import javax.sql.DataSource;
 import java.util.Properties;
@@ -8,25 +9,25 @@ import java.util.Properties;
 /**
  * @author Vlad Mihalcea
  */
-public class HSQLDBDataSourceProvider implements DataSourceProvider {
+public class H2DataSourceProvider implements DataSourceProvider {
 
     @Override
     public String hibernateDialect() {
-        return "org.hibernate.dialect.HSQLDialect";
+        return "org.hibernate.dialect.H2Dialect";
     }
 
     @Override
     public DataSource dataSource() {
-        JDBCDataSource dataSource = new JDBCDataSource();
-        dataSource.setUrl(url());
-        dataSource.setUser(username());
-        dataSource.setPassword(password());
-        return dataSource;
+        return JdbcConnectionPool.create(
+            url(),
+            username(),
+            password()
+        );
     }
 
     @Override
     public Class<? extends DataSource> dataSourceClassName() {
-        return JDBCDataSource.class;
+        return JdbcDataSource.class;
     }
 
     @Override
@@ -40,7 +41,7 @@ public class HSQLDBDataSourceProvider implements DataSourceProvider {
 
     @Override
     public String url() {
-        return "jdbc:hsqldb:mem:test";
+        return "jdbc:h2:mem:test";
     }
 
     @Override
@@ -55,6 +56,6 @@ public class HSQLDBDataSourceProvider implements DataSourceProvider {
 
     @Override
     public Database database() {
-        return Database.HSQLDB;
+        return Database.H2;
     }
 }

@@ -5,6 +5,7 @@ package com.vladmihalcea.hibernate.type.util.providers;
  */
 public enum Database {
     HSQLDB,
+    H2,
     POSTGRESQL,
     ORACLE,
     MYSQL,

@@ -98,6 +98,13 @@
         </dependency>
 
         <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql.version}</version>
@@ -348,6 +355,7 @@
         <datasource-proxy.version>1.6</datasource-proxy.version>
 
         <hsqldb.version>2.2.8</hsqldb.version>
+        <h2.version>1.4.200</h2.version>
         <mysql.version>5.1.47</mysql.version>
         <oracle.version>19.3.0.0</oracle.version>
         <mssql.version>6.4.0.jre8</mssql.version>
