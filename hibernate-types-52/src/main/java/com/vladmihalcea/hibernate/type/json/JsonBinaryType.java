@@ -12,11 +12,18 @@ import java.lang.reflect.Type;
 import java.util.Properties;
 
 /**
- * Maps any given Java object on a JSON column type that is managed via {@link java.sql.PreparedStatement#setObject(int, Object)} at JDBC Driver level.
  * <p>
- * If you are using <strong>PostgreSQL</strong>, you should use this {@link JsonBinaryType} to map both <strong>{@code jsonb}</strong> and <strong>{@code json}</strong> column types.
+ * Maps any given Java object on a JSON column type that is managed via {@link java.sql.PreparedStatement#setObject(int, Object)} at JDBC Driver level.
+ * </p>
+ * <p>
+ * If you are using <strong>PostgreSQL</strong>, you can use this {@link JsonBinaryType} to map both <code>jsonb</code> and <code>json</code> column types.
+ * </p>
  * <p>
  * For more details about how to use it, check out <a href="https://vladmihalcea.com/how-to-map-json-objects-using-generic-hibernate-types/">this article</a> on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
+ * </p>
+ * <p>
+ * If you want to use a more portable Hibernate <code>Type</code> that can work on <strong>Oracle</strong>, <strong>SQL Server</strong>, <strong>PostgreSQL</strong>, <strong>MySQL</strong>, or <strong>H2</strong> without any configuration changes, then you should use the {@link JsonType} instead.
+ * </p>
  *
  * @author Vlad Mihalcea
  */

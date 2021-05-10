@@ -12,11 +12,18 @@ import java.sql.Blob;
 import java.util.Properties;
 
 /**
- * Maps any given Java object on a JSON column type that is managed via {@link java.sql.PreparedStatement#setBlob(int, Blob)} at JDBC Driver level.
  * <p>
- * If you are using Oracle, you should use this {@link JsonBlobType} to map a {@code BLOB} column type storing JSON.
+ * Maps any given Java object on a JSON column type that is managed via {@link java.sql.PreparedStatement#setBlob(int, Blob)} at JDBC Driver level.
+ * </p>
+ * <p>
+ * If you are using <strong>Oracle</strong>, you can use this {@link JsonBlobType} to map a {@code BLOB} column type storing JSON.
+ * </p>
  * <p>
  * For more details about how to use it, check out <a href="https://vladmihalcea.com/oracle-json-jpa-hibernate/">this article</a> on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
+ * </p>
+ * <p>
+ * If you want to use a more portable Hibernate <code>Type</code> that can work on <strong>Oracle</strong>, <strong>SQL Server</strong>, <strong>PostgreSQL</strong>, <strong>MySQL</strong>, or <strong>H2</strong> without any configuration changes, then you should use the {@link JsonType} instead.
+ * </p>
  *
  * @author Vlad Mihalcea
  */
