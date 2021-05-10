@@ -35,8 +35,8 @@ public class PostgreSQLGuavaRangeTypeTest extends AbstractPostgreSQLIntegrationT
         OffsetDateTime.of(LocalDateTime.of(2008, Month.DECEMBER, 3, 10, 15, 30), ZoneOffset.ofHours(1)).toZonedDateTime());
 
     private final Range<OffsetDateTime> tsTzO = Range.closed(
-        OffsetDateTime.of(LocalDateTime.of(2007, Month.DECEMBER, 3, 10, 15, 30), DEFAULT_OFFSET),
-        OffsetDateTime.of(LocalDateTime.of(2008, Month.DECEMBER, 3, 10, 15, 30), DEFAULT_OFFSET)
+        OffsetDateTime.of(LocalDateTime.of(2007, Month.MAY, 3, 10, 15, 30), DEFAULT_OFFSET),
+        OffsetDateTime.of(LocalDateTime.of(2008, Month.MAY, 3, 10, 15, 30), DEFAULT_OFFSET)
     );
 
     private final Range<LocalDate> dateRange = Range.closedOpen(LocalDate.of(1992, Month.JANUARY, 13), LocalDate.of(1995, Month.JANUARY, 13));
