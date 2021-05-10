@@ -44,20 +44,20 @@ public class JsonSqlTypeDescriptor extends AbstractJsonSqlTypeDescriptor {
 
     @Override
     protected Object extractJson(ResultSet rs, String name) throws SQLException {
-        return sqlTypeDescriptor.extractJson(rs, name);
+        return sqlTypeDescriptor(rs.getStatement().getConnection()).extractJson(rs, name);
     }
 
     @Override
     protected Object extractJson(CallableStatement statement, int index) throws SQLException {
-        return sqlTypeDescriptor.extractJson(statement, index);
+        return sqlTypeDescriptor(statement.getConnection()).extractJson(statement, index);
     }
 
     @Override
     protected Object extractJson(CallableStatement statement, String name) throws SQLException {
-        return sqlTypeDescriptor.extractJson(statement, name);
+        return sqlTypeDescriptor(statement.getConnection()).extractJson(statement, name);
     }
 
-    private SqlTypeDescriptor sqlTypeDescriptor(Connection connection) {
+    private AbstractJsonSqlTypeDescriptor sqlTypeDescriptor(Connection connection) {
         if(sqlTypeDescriptor == null) {
             sqlTypeDescriptor = resolveSqlTypeDescriptor(connection);
         }

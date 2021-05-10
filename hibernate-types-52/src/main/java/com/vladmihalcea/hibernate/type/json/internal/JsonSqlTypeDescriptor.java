@@ -6,9 +6,11 @@ import org.hibernate.dialect.PostgreSQL81Dialect;
 import org.hibernate.engine.jdbc.dialect.internal.StandardDialectResolver;
 import org.hibernate.engine.jdbc.dialect.spi.DatabaseMetaDataDialectResolutionInfoAdapter;
 import org.hibernate.type.descriptor.ValueBinder;
+import org.hibernate.type.descriptor.ValueExtractor;
 import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
 import org.hibernate.type.descriptor.sql.BasicBinder;
+import org.hibernate.type.descriptor.sql.BasicExtractor;
 import org.hibernate.type.descriptor.sql.SqlTypeDescriptor;
 
 import java.sql.*;
@@ -26,7 +28,6 @@ public class JsonSqlTypeDescriptor extends AbstractJsonSqlTypeDescriptor {
         return new BasicBinder<X>(javaTypeDescriptor, this) {
             @Override
             protected void doBind(PreparedStatement st, X value, int index, WrapperOptions options) throws SQLException {
-
                 sqlTypeDescriptor(st.getConnection()).getBinder(javaTypeDescriptor).bind(
                     st, value, index, options
                 );
@@ -44,20 +45,20 @@ public class JsonSqlTypeDescriptor extends AbstractJsonSqlTypeDescriptor {
 
     @Override
     protected Object extractJson(ResultSet rs, String name) throws SQLException {
-        return sqlTypeDescriptor.extractJson(rs, name);
+        return sqlTypeDescriptor(rs.getStatement().getConnection()).extractJson(rs, name);
     }
 
     @Override
     protected Object extractJson(CallableStatement statement, int index) throws SQLException {
-        return sqlTypeDescriptor.extractJson(statement, index);
+        return sqlTypeDescriptor(statement.getConnection()).extractJson(statement, index);
     }
 
     @Override
     protected Object extractJson(CallableStatement statement, String name) throws SQLException {
-        return sqlTypeDescriptor.extractJson(statement, name);
+        return sqlTypeDescriptor(statement.getConnection()).extractJson(statement, name);
     }
 
-    private SqlTypeDescriptor sqlTypeDescriptor(Connection connection) {
+    private AbstractJsonSqlTypeDescriptor sqlTypeDescriptor(Connection connection) {
         if(sqlTypeDescriptor == null) {
             sqlTypeDescriptor = resolveSqlTypeDescriptor(connection);
         }

@@ -83,17 +83,16 @@ public class GenericPostgreSQLJsonStringTest extends AbstractPostgreSQLIntegrati
 
             @Override
             public Void apply(EntityManager entityManager) {
-                JsonNode properties = (JsonNode) entityManager
-                    .createNativeQuery(
-                        "SELECT " +
-                            "  properties AS properties " +
-                            "FROM book " +
-                            "WHERE " +
-                            "  isbn = :isbn")
-                    .setParameter("isbn", "978-9730228236")
-                    .unwrap(SQLQuery.class)
-                    .addScalar("properties", new JsonBinaryType(JsonNode.class))
-                    .uniqueResult();
+                JsonNode properties = (JsonNode) entityManager.createNativeQuery(
+                    "SELECT " +
+                    "  properties AS properties " +
+                    "FROM book " +
+                    "WHERE " +
+                    "  isbn = :isbn")
+                .setParameter("isbn", "978-9730228236")
+                .unwrap(SQLQuery.class)
+                .addScalar("properties", new JsonType(JsonNode.class))
+                .uniqueResult();
 
                 assertEquals("High-Performance Java Persistence", properties.get("title").asText());
 

@@ -77,7 +77,7 @@ public class GenericPostgreSQLJsonStringTest extends AbstractPostgreSQLIntegrati
                     "  isbn = :isbn")
                 .setParameter("isbn", "978-9730228236")
                 .unwrap(NativeQuery.class)
-                .addScalar("properties", new JsonBinaryType(JsonNode.class))
+                .addScalar("properties", new JsonType(JsonNode.class))
                 .getSingleResult();
 
             assertEquals("High-Performance Java Persistence", properties.get("title").asText());
