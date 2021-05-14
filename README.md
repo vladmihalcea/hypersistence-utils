@@ -96,46 +96,6 @@ For more details, check out [this article](https://vladmihalcea.com/how-to-map-j
 * [`ListResultTransformer` - The best way to use a Hibernate ResultTransformer](https://vladmihalcea.com/hibernate-resulttransformer/)
 * [`MapResultTransformer` - How to return a Map result from a JPA or Hibernate query](https://vladmihalcea.com/jpa-query-map-result/)
 
-### Are you struggling with application performance issues?
-
-<a href="https://vladmihalcea.com/hypersistence-optimizer/?utm_source=GitHub&utm_medium=banner&utm_campaign=hibernatetypes">
-<img src="https://vladmihalcea.com/wp-content/uploads/2019/03/Hypersistence-Optimizer-300x250.jpg" alt="Hypersistence Optimizer">
-</a>
-
-Imagine having a tool that can automatically detect if you are using JPA and Hibernate properly. No more performance issues, no more having to spend countless hours trying to figure out why your application is barely crawling.
-
-Imagine discovering early during the development cycle that you are using suboptimal mappings and entity relationships or that you are missing performance-related settings. 
-
-More, with Hypersistence Optimizer, you can detect all such issues during testing and make sure you don't deploy to production a change that will affect data access layer performance.
-
-[Hypersistence Optimizer](https://vladmihalcea.com/hypersistence-optimizer/?utm_source=GitHub&utm_medium=banner&utm_campaign=hibernatetypes) is the tool you've been long waiting for!
-
-#### Training
-
-If you are interested in on-site training, I can offer you my [High-Performance Java Persistence training](https://vladmihalcea.com/trainings/?utm_source=GitHub&utm_medium=banner&utm_campaign=hibernatetypes),
-which can be adapted to one, two or three days of sessions. For more details, check out [my website](https://vladmihalcea.com/trainings/?utm_source=GitHub&utm_medium=banner&utm_campaign=hibernatetypes).
-
-#### Consulting
-
-If you want me to review your application and provide insight into how you can optimize it to run faster, 
-then check out my [consulting page](https://vladmihalcea.com/consulting/?utm_source=GitHub&utm_medium=banner&utm_campaign=hibernatetypes).
-
-#### High-Performance Java Persistence Video Courses
-
-If you want the fastest way to learn how to speed up a Java database application, then you should definitely enroll in [my High-Performance Java Persistence video courses](https://vladmihalcea.com/courses/?utm_source=GitHub&utm_medium=banner&utm_campaign=hibernatetypes).
-
-#### High-Performance Java Persistence Book
-
-Or, if you prefer reading books, you are going to love my [High-Performance Java Persistence book](https://vladmihalcea.com/books/high-performance-java-persistence?utm_source=GitHub&utm_medium=banner&utm_campaign=hibernatetypes) as well.
-
-<a href="https://vladmihalcea.com/books/high-performance-java-persistence?utm_source=GitHub&utm_medium=banner&utm_campaign=hibernatetypes">
-<img src="https://i0.wp.com/vladmihalcea.com/wp-content/uploads/2018/01/HPJP_h200.jpg" alt="High-Performance Java Persistence book">
-</a>
-
-<a href="https://vladmihalcea.com/courses?utm_source=GitHub&utm_medium=banner&utm_campaign=hibernatetypes">
-<img src="https://i0.wp.com/vladmihalcea.com/wp-content/uploads/2018/01/HPJP_Video_Vertical_h200.jpg" alt="High-Performance Java Persistence video course">
-</a>
-
 ### Installation
 
 Depending on the Hibernate version you are using, you need to add the following dependency:
@@ -178,74 +138,60 @@ Depending on the Hibernate version you are using, you need to add the following 
 * SLF4J
 * Jackson Databind
 
-### How to remove the Hypersistence banner from the log?
+### Issue management
 
-#### Why the Hypersistence banner?
+If you have an issue, then there are two ways to address it.
 
-Maintaining this project costs thousands of dollars per year, and, without the support of [Hypersistence](https://hypersistence.io/),
-this project would have been abandoned a very long time ago. 
+#### Option 1: Providing your own fix
 
-The reason why this banner was added is that, when I enabled GitHub donations, [no one ever donated a single cent](
-https://twitter.com/vlad_mihalcea/status/1194584719133958146) to support this project.
+This project being open-source, you have the ability of fixing any issue.
+So, in this case, this is what you need to do:
 
-Luckily, there are better ways to support companies that build software that is used by hundreds of thousands of projects. So, if you like this framework, you are going to love optimizing your application using the amazing [Hypersistence Optimizer](https://vladmihalcea.com/hypersistence-optimizer/) tool.
+1. Provide a replicating test case using the existing test cases as a template
+2. Provide a fix proposal
+3. Send a Pull Request with the fix proposal and the test case
 
-#### Adding Hypersistence Optimizer to your project
+#### Option 2: Paid support
 
-Using Hibernate without [Hypersistence Optimizer](https://vladmihalcea.com/hypersistence-optimizer/) is not a good idea. To avoid risking application performance issues caused by improper usage of JPA and Hibernate configuration properties, mappings, or entity state changes, you should use Hypersistence Optimizer.
+If you don't have the time to provide a fix, the I could fix your issue via [consulting](https://vladmihalcea.com/consulting/).
 
-> If you want to see why it's a bad idea to use JPA and Hibernate without a tool that inspects your mappings and configurations, check out this [video presentation](https://www.youtube.com/watch?v=x1nOVct9P2g).
+### Are you struggling with application performance issues?
 
-So, the easiest way to have the banner removed is to add [Hypersistence Optimizer](https://vladmihalcea.com/hypersistence-optimizer/) to your project.
+<a href="https://vladmihalcea.com/hypersistence-optimizer/?utm_source=GitHub&utm_medium=banner&utm_campaign=hibernatetypes">
+<img src="https://vladmihalcea.com/wp-content/uploads/2019/03/Hypersistence-Optimizer-300x250.jpg" alt="Hypersistence Optimizer">
+</a>
 
-### Setting the `hibernate.types.print.banner=false` configuration setting
+Imagine having a tool that can automatically detect if you are using JPA and Hibernate properly. No more performance issues, no more having to spend countless hours trying to figure out why your application is barely crawling.
 
-You can disable the banner by providing the `hibernate.types.print.banner=false` in either `hibernate.properties` or `hibernate-types.properties` file.
+Imagine discovering early during the development cycle that you are using suboptimal mappings and entity relationships or that you are missing performance-related settings. 
 
-> For Spring and Spring Boot, this [Pull Request](https://github.com/hibernate/hibernate-orm/pull/2649) is needed to be integrated into Hibernate ORM. 
->
-> Once this Pull Request is integrated, you could pass the `hibernate.types.print.banner=false` configuration property from the `application.properties` file. 
->
-> So, in the meanwhile, you could vote for the [HHH-14020 issue](https://hibernate.atlassian.net/browse/HHH-14020) and remind the Hibernate team that you really need that Pull Request to be integrated. Hopefully, it will be added to the project sooner than later.
+More, with Hypersistence Optimizer, you can detect all such issues during testing and make sure you don't deploy to production a change that will affect data access layer performance.
 
-If can also provide the `hibernate.types.print.banner=false`setting as a Java System property when bootstrapping your Java application:
+[Hypersistence Optimizer](https://vladmihalcea.com/hypersistence-optimizer/?utm_source=GitHub&utm_medium=banner&utm_campaign=hibernatetypes) is the tool you've been long waiting for!
 
-    java -Dhibernate.types.print.banner=false -jar target/application-1.0.0.jar
-    
-#### Will I remove the banner?
+#### Training
 
-Of course, I will. As soon as all the [open issues](https://github.com/vladmihalcea/hibernate-types/issues) are fixed, I'll remove the banner.
+If you are interested in on-site training, I can offer you my [High-Performance Java Persistence training](https://vladmihalcea.com/trainings/?utm_source=GitHub&utm_medium=banner&utm_campaign=hibernatetypes),
+which can be adapted to one, two or three days of sessions. For more details, check out [my website](https://vladmihalcea.com/trainings/?utm_source=GitHub&utm_medium=banner&utm_campaign=hibernatetypes).
 
-Or, if you want to fix those issues but don't have the time to do it, I totally understand that. I don't have the time to do it either. But, I could be paid to do that, and then, you could all benefit from those new features. If your company is interested in sponsoring the development of this project, don't hesitate to contact me.
+#### Consulting
 
-If you're wondering why that banner was not removed by now, it's because donations and sponsoring don't really work for small projects like this one. Is that the true spirit of open-source software development?
+If you want me to review your application and provide insight into how you can optimize it to run faster, 
+then check out my [consulting page](https://vladmihalcea.com/consulting/?utm_source=GitHub&utm_medium=banner&utm_campaign=hibernatetypes).
 
-##### Should you open a GitHub issue asking me to remove the banner?
+#### High-Performance Java Persistence Video Courses
 
-Disabling this banner takes very little time, so there is no point in opening a GitHub issue to ask me to remove this banner, 
-especially since there's already [a pinned GitHub issue explaining how to remove it](https://github.com/vladmihalcea/hibernate-types/issues/196).
- 
-Keep in mind that all issues related to the banner removal will be deleted because GitHub issues are for technical features only (e.g., enhancements, bug fixing).
+If you want the fastest way to learn how to speed up a Java database application, then you should definitely enroll in [my High-Performance Java Persistence video courses](https://vladmihalcea.com/courses/?utm_source=GitHub&utm_medium=banner&utm_campaign=hibernatetypes).
 
-In case you think that the banner is unfair and disabling it is too much of an effort for you, then you can also fork the repository, remove the banner from the source code, build the project and use your own banner-free version. After all, this project is _free_ as in [Libre](https://en.wikipedia.org/wiki/Gratis_versus_libre), so you're free to do that.
+#### High-Performance Java Persistence Book
 
-## How to start the test environment
+Or, if you prefer reading books, you are going to love my [High-Performance Java Persistence book](https://vladmihalcea.com/books/high-performance-java-persistence?utm_source=GitHub&utm_medium=banner&utm_campaign=hibernatetypes) as well.
 
-```bash
-cd docker
-docker-compose up -d
-```
+<a href="https://vladmihalcea.com/books/high-performance-java-persistence?utm_source=GitHub&utm_medium=banner&utm_campaign=hibernatetypes">
+<img src="https://i0.wp.com/vladmihalcea.com/wp-content/uploads/2018/01/HPJP_h200.jpg" alt="High-Performance Java Persistence book">
+</a>
 
-## How to stop the test environment
+<a href="https://vladmihalcea.com/courses?utm_source=GitHub&utm_medium=banner&utm_campaign=hibernatetypes">
+<img src="https://i0.wp.com/vladmihalcea.com/wp-content/uploads/2018/01/HPJP_Video_Vertical_h200.jpg" alt="High-Performance Java Persistence video course">
+</a>
 
-```bash
-cd docker
-docker-compose down -v
-```
-
-## How to get access to database logs
-
-```bash
-docker logs -f mysql-hibernate-types
-docker logs -f postgresql-hibernate-types
-```
