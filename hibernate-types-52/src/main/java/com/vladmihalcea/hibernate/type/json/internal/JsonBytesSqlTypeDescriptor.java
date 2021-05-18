@@ -63,6 +63,9 @@ public class JsonBytesSqlTypeDescriptor extends AbstractJsonSqlTypeDescriptor {
     }
 
     protected String fromJsonBytes(byte[] jsonBytes) {
+        if (jsonBytes == null) {
+            return null;
+        }
         try {
             return new String(jsonBytes, CHARSET);
         } catch (UnsupportedEncodingException e) {
