@@ -46,15 +46,15 @@ For more details, check out [this article](https://vladmihalcea.com/how-to-map-j
 
 ##### JSON mapping examples
 
-* [How to map Oracle JSON columns using JPA and Hibernate](https://vladmihalcea.com/oracle-json-jpa-hibernate/)
-* [How to map SQL Server JSON columns using JPA and Hibernate](https://vladmihalcea.com/sql-server-json-hibernate/)
-* [How to map a String JPA property to a JSON column using Hibernate](https://vladmihalcea.com/map-string-jpa-property-json-column-hibernate/)
 * [How to map a POJO to a JSON column using JPA and Hibernate](https://vladmihalcea.com/how-to-map-json-objects-using-generic-hibernate-types/)
+* [How to map a String JPA property to a JSON column using Hibernate](https://vladmihalcea.com/map-string-jpa-property-json-column-hibernate/)
 * [How to map a Jackson `JsonNode` to a JSON column](https://vladmihalcea.com/how-to-store-schema-less-eav-entity-attribute-value-data-using-json-and-hibernate/)
 * [How to map JSON collections using JPA and Hibernate](https://vladmihalcea.com/how-to-map-json-collections-using-jpa-and-hibernate/)
 * [How to map a Java Map entity property as a JSON column with JPA and Hibernate](https://vladmihalcea.com/java-map-json-jpa-hibernate/)
-* [How to map Java Records to JSON columns using Hibernate
-](https://vladmihalcea.com/java-records-json-hibernate/)
+* [How to map Java Records to JSON columns using Hibernate](https://vladmihalcea.com/java-records-json-hibernate/)
+* [Why you should use Hibernate Dynamic Update for JSON properties](https://vladmihalcea.com/hibernate-dynamic-update-json-properties/)
+* [How to map Oracle JSON columns using JPA and Hibernate](https://vladmihalcea.com/oracle-json-jpa-hibernate/)
+* [How to map SQL Server JSON columns using JPA and Hibernate](https://vladmihalcea.com/sql-server-json-hibernate/)
 * [How to encrypt and decrypt JSON properties with JPA and Hibernate](https://vladmihalcea.com/encrypt-decrypt-json-jpa/)
 * [How to customize the Jackson ObjectMapper used by Hibernate-Types](https://vladmihalcea.com/hibernate-types-customize-jackson-objectmapper/)
 * [How to customize the JSON Serializer used by Hibernate-Types](https://vladmihalcea.com/how-to-customize-the-json-serializer-used-by-hibernate-types/)
