@@ -1,3 +1,10 @@
+Version 2.12.0 - June 14, 2021
+================================================================================
+
+Add hibernate-type-55 module #324
+
+Prevent NullPointerException caused by sqlArrayType in the ListArrayTypeDescriptor bug #320
+
 Version 2.11.1 - May 11, 2021
 ================================================================================
 
