@@ -56,9 +56,7 @@ public class Configuration {
     private Configuration() {
         load();
 
-        if(!isHypersistenceOptimizer()) {
-            printBanner();
-        }
+        printBanner();
     }
 
     /**
@@ -274,6 +272,9 @@ public class Configuration {
      * Print the banner into the log.
      */
     private void printBanner() {
+        if (this.isHypersistenceOptimizer() || bannerPrinted) {
+            return;
+        }
         String printBannerValue = properties.getProperty(PropertyKey.PRINT_BANNER.getKey());
         if(printBannerValue != null && !Boolean.valueOf(printBannerValue)) {
             return;
@@ -305,6 +306,7 @@ public class Configuration {
                 ""
             )
         );
+        bannerPrinted = true;
     }
 
     private boolean isHypersistenceOptimizer() {
@@ -350,4 +352,6 @@ public class Configuration {
 
         return false;
     }
+
+    private static boolean bannerPrinted = false;
 }

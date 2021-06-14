@@ -100,6 +100,14 @@ For more details, check out [this article](https://vladmihalcea.com/how-to-map-j
 
 Depending on the Hibernate version you are using, you need to add the following dependency:
 
+#### Hibernate 5.5
+
+    <dependency>
+        <groupId>com.vladmihalcea</groupId>
+        <artifactId>hibernate-types-55</artifactId>
+        <version>2.11.1</version>
+    </dependency>
+    
 #### Hibernate 5.4, 5.3 and 5.2
 
     <dependency>
