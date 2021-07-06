@@ -54,7 +54,7 @@ public final class Range<T extends Comparable> implements Serializable {
         .appendPattern(".")
         .appendFraction(ChronoField.NANO_OF_SECOND, 1, 6, false)
         .optionalEnd()
-        .appendPattern("X")
+        .appendOffset("+HH:mm", "")
         .toFormatter();
 
     private final T lower;
@@ -162,7 +162,7 @@ public final class Range<T extends Comparable> implements Serializable {
      * <p>
      * The mathematical equivalent will be:
      * <pre>{@code
-     *     (a, +∞) = {x | x > a}
+     *     (a, +âˆž) = {x | x > a}
      * }</pre>
      *
      * @param lower The lower bound, never null.
@@ -181,7 +181,7 @@ public final class Range<T extends Comparable> implements Serializable {
      * <p>
      * The mathematical equivalent will be:
      * <pre>{@code
-     *     [a, +∞) = {x | x >= a}
+     *     [a, +âˆž) = {x | x >= a}
      * }</pre>
      *
      * @param lower The lower bound, never null.
@@ -200,7 +200,7 @@ public final class Range<T extends Comparable> implements Serializable {
      * <p>
      * The mathematical equivalent will be:
      * <pre>{@code
-     *     (-∞, b) = {x | x < b}
+     *     (-âˆž, b) = {x | x < b}
      * }</pre>
      *
      * @param upper The upper bound, never null.
@@ -219,7 +219,7 @@ public final class Range<T extends Comparable> implements Serializable {
      * <p>
      * The mathematical equivalent will be:
      * <pre>{@code
-     *     (-∞, b] = {x | x =< b}
+     *     (-âˆž, b] = {x | x =< b}
      * }</pre>
      *
      * @param upper The upper bound, never null.
@@ -238,7 +238,7 @@ public final class Range<T extends Comparable> implements Serializable {
      * <p>
      * The mathematical equivalent will be:
      * <pre>{@code
-     *     (-∞, +∞) = ℝ
+     *     (-âˆž, +âˆž) = â„�
      * }</pre>
      *
      * @param cls The range class, never null.
