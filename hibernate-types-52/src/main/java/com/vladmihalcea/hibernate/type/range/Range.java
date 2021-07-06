@@ -54,7 +54,7 @@ public final class Range<T extends Comparable> implements Serializable {
         .appendPattern(".")
         .appendFraction(ChronoField.NANO_OF_SECOND, 1, 6, false)
         .optionalEnd()
-        .appendPattern("X")
+        .appendOffset("+HH:mm", "Z")
         .toFormatter();
 
     private final T lower;
