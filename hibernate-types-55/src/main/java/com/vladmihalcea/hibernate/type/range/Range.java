@@ -162,7 +162,7 @@ public final class Range<T extends Comparable> implements Serializable {
      * <p>
      * The mathematical equivalent will be:
      * <pre>{@code
-     *     (a, +âˆž) = {x | x > a}
+     *     (a, +∞) = {x | x > a}
      * }</pre>
      *
      * @param lower The lower bound, never null.
@@ -181,7 +181,7 @@ public final class Range<T extends Comparable> implements Serializable {
      * <p>
      * The mathematical equivalent will be:
      * <pre>{@code
-     *     [a, +âˆž) = {x | x >= a}
+     *     [a, +∞) = {x | x >= a}
      * }</pre>
      *
      * @param lower The lower bound, never null.
@@ -200,7 +200,7 @@ public final class Range<T extends Comparable> implements Serializable {
      * <p>
      * The mathematical equivalent will be:
      * <pre>{@code
-     *     (-âˆž, b) = {x | x < b}
+     *     (-∞, b) = {x | x < b}
      * }</pre>
      *
      * @param upper The upper bound, never null.
@@ -219,7 +219,7 @@ public final class Range<T extends Comparable> implements Serializable {
      * <p>
      * The mathematical equivalent will be:
      * <pre>{@code
-     *     (-âˆž, b] = {x | x =< b}
+     *     (-∞, b] = {x | x =< b}
      * }</pre>
      *
      * @param upper The upper bound, never null.
@@ -238,7 +238,7 @@ public final class Range<T extends Comparable> implements Serializable {
      * <p>
      * The mathematical equivalent will be:
      * <pre>{@code
-     *     (-âˆž, +âˆž) = â„�
+     *     (-∞, +∞) = ℝ
      * }</pre>
      *
      * @param cls The range class, never null.
