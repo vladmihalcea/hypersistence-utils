@@ -1,6 +1,7 @@
 package com.vladmihalcea.hibernate.type.util;
 
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.hibernate.internal.util.SerializationHelper;
 import org.hibernate.type.SerializationException;
@@ -22,6 +23,10 @@ public class ObjectMapperJsonSerializer implements JsonSerializer {
 
     @Override
     public <T> T clone(T object) {
+        if (object instanceof JsonNode) {
+            return (T) ((JsonNode) object).deepCopy();
+        }
+
         if (object instanceof Collection) {
             Object firstElement = findFirstNonNullElement((Collection) object);
             if (firstElement != null && !(firstElement instanceof Serializable)) {

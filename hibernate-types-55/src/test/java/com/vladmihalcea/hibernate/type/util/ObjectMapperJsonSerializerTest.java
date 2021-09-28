@@ -1,26 +1,23 @@
 package com.vladmihalcea.hibernate.type.util;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-
-import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
 
 import javax.persistence.Column;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 
 public class ObjectMapperJsonSerializerTest {
 
-    private ObjectMapperJsonSerializer serializer = new ObjectMapperJsonSerializer(new ObjectMapperWrapper());
+    private ObjectMapperWrapper mapper = new ObjectMapperWrapper();
+
+    private ObjectMapperJsonSerializer serializer = new ObjectMapperJsonSerializer(mapper);
 
     @Test
     public void should_clone_serializable_object() {
@@ -125,8 +122,8 @@ public class ObjectMapperJsonSerializerTest {
         Map<String, List<SerializableObject>> map = new LinkedHashMap<>();
         map.put("key1", Lists.newArrayList(new SerializableObject("name1")));
         map.put("key2", Lists.newArrayList(
-                new SerializableObject("name2"),
-                new SerializableObject("name3")
+            new SerializableObject("name2"),
+            new SerializableObject("name3")
         ));
         Object original = new SerializableComplexObject(map);
         Object cloned = serializer.clone(original);
@@ -139,8 +136,8 @@ public class ObjectMapperJsonSerializerTest {
         Map<String, List<NonSerializableObject>> map = new LinkedHashMap<>();
         map.put("key1", Lists.newArrayList(new NonSerializableObject("name1")));
         map.put("key2", Lists.newArrayList(
-                new NonSerializableObject("name2"),
-                new NonSerializableObject("name3")
+            new NonSerializableObject("name2"),
+            new NonSerializableObject("name3")
         ));
         Object original = new SerializableComplexObjectWithNonSerializableNestedObject(map);
         Object cloned = serializer.clone(original);
@@ -148,6 +145,16 @@ public class ObjectMapperJsonSerializerTest {
         assertNotSame(original, cloned);
     }
 
+    @Test
+    public void should_clone_jsonnode() {
+        Object original = mapper.getObjectMapper().createArrayNode()
+            .add(BigDecimal.ONE)
+            .add(1.0)
+            .add("string");
+        Object cloned = serializer.clone(original);
+        assertEquals(original, cloned);
+        assertNotSame(original, cloned);
+    }
 
     private static class SerializableObject implements Serializable {
         private final String value;
