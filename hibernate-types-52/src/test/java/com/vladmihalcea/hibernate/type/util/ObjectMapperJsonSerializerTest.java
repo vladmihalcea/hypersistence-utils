@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import org.hibernate.annotations.Type;
@@ -12,6 +14,7 @@ import org.junit.Test;
 
 import javax.persistence.Column;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -20,7 +23,8 @@ import java.util.Map;
 
 public class ObjectMapperJsonSerializerTest {
 
-    private ObjectMapperJsonSerializer serializer = new ObjectMapperJsonSerializer(new ObjectMapperWrapper());
+    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapperJsonSerializer serializer = new ObjectMapperJsonSerializer(mapper);
 
     @Test
     public void should_clone_serializable_object() {
@@ -143,6 +147,18 @@ public class ObjectMapperJsonSerializerTest {
                 new NonSerializableObject("name3")
         ));
         Object original = new SerializableComplexObjectWithNonSerializableNestedObject(map);
+        Object cloned = serializer.clone(original);
+        assertEquals(original, cloned);
+        assertNotSame(original, cloned);
+    }
+
+    @Test
+    public void should_clone_jsonnode() {
+        Object original = mapper.createArrayNode()
+                // see https://github.com/vladmihalcea/hibernate-types/issues/348
+                .add(BigDecimal.ONE)
+                .add(1.0)
+                .add("string");
         Object cloned = serializer.clone(original);
         assertEquals(original, cloned);
         assertNotSame(original, cloned);

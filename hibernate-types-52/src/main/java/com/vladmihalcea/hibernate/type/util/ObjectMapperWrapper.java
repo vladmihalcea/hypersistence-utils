@@ -20,14 +20,15 @@ public class ObjectMapperWrapper {
 
     private final ObjectMapper objectMapper;
 
-    private JsonSerializer jsonSerializer = new ObjectMapperJsonSerializer(this);
+    private JsonSerializer jsonSerializer;
 
     public ObjectMapperWrapper() {
-        this.objectMapper = new ObjectMapper().findAndRegisterModules();
+        this(new ObjectMapper().findAndRegisterModules());
     }
 
     public ObjectMapperWrapper(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
+        this.jsonSerializer = new ObjectMapperJsonSerializer(objectMapper);
     }
 
     public void setJsonSerializer(JsonSerializer jsonSerializer) {

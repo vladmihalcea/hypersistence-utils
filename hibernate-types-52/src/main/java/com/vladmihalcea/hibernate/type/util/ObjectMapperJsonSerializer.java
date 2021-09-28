@@ -1,11 +1,9 @@
 package com.vladmihalcea.hibernate.type.util;
 
 import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.type.TypeFactory;
-import org.hibernate.internal.util.SerializationHelper;
-import org.hibernate.type.SerializationException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 
@@ -14,44 +12,38 @@ import java.util.Map;
  */
 public class ObjectMapperJsonSerializer implements JsonSerializer {
 
-    private final ObjectMapperWrapper objectMapperWrapper;
+    private final ObjectMapper objectMapper;
 
-    public ObjectMapperJsonSerializer(ObjectMapperWrapper objectMapperWrapper) {
-        this.objectMapperWrapper = objectMapperWrapper;
+    public ObjectMapperJsonSerializer(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
     }
 
     @Override
     public <T> T clone(T object) {
+        if (object instanceof JsonNode) {
+            return (T) ((JsonNode) object).deepCopy();
+        }
+
         if (object instanceof Collection) {
             Object firstElement = findFirstNonNullElement((Collection) object);
-            if (firstElement != null && !(firstElement instanceof Serializable)) {
-                JavaType type = TypeFactory.defaultInstance().constructParametricType(object.getClass(), firstElement.getClass());
-                return objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(object), type);
+            if (firstElement != null) {
+                JavaType type = objectMapper.getTypeFactory().constructParametricType(object.getClass(), firstElement.getClass());
+                return jsonClone(object, type);
             }
         }
 
         if (object instanceof Map) {
             Map.Entry firstEntry = this.findFirstNonNullEntry((Map) object);
             if (firstEntry != null) {
-                Object key = firstEntry.getKey();
-                Object value = firstEntry.getValue();
-                if (!(key instanceof Serializable) || !(value instanceof Serializable)) {
-                    JavaType type = TypeFactory.defaultInstance().constructParametricType(object.getClass(), key.getClass(), value.getClass());
-                    return (T) objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(object), type);
-                }
+                JavaType type = objectMapper.getTypeFactory().constructParametricType(
+                        object.getClass(),
+                        firstEntry.getKey().getClass(), firstEntry.getValue().getClass()
+                );
+                return jsonClone(object, type);
             }
         }
-        if (object instanceof Serializable) {
-            try {
-                return (T) SerializationHelper.clone((Serializable) object);
-            } catch (SerializationException e) {
-                //it is possible that object itself implements java.io.Serializable, but underlying structure does not
-                //in this case we switch to the other JSON marshaling strategy which doesn't use the Java serialization
-                return jsonClone(object);
-            }
-        } else {
-            return jsonClone(object);
-        }
+
+        return jsonClone(object);
     }
 
     private Object findFirstNonNullElement(Collection collection) {
@@ -73,6 +65,10 @@ public class ObjectMapperJsonSerializer implements JsonSerializer {
     }
 
     private <T> T jsonClone(T object) {
-        return objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(object), (Class<T>) object.getClass());
+        return jsonClone(object, objectMapper.constructType(object.getClass()));
+    }
+
+    private <T> T jsonClone(T object, JavaType type) {
+        return objectMapper.convertValue(object, type);
     }
 }
