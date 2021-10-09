@@ -12,13 +12,41 @@ The main advantage of this project is that it supports a broad range of Hibernat
 
 #### JSON 
 
+##### Generic JSON Type
+
+The `JsonType` allows you to map JSON column types, no matter if you're using Oracle,
+SQL Server, PostgreSQL or MySQL.
+
+Just add the following mapping to your `package-info.java` class in the same packe where your JPA entities are located:
+
+````java
+@TypeDef(
+    name = "json", typeClass = JsonType.class
+)
+package io.hypersistence.optimizer;
+
+import com.vladmihalcea.hibernate.type.json.JsonType;
+import org.hibernate.annotations.TypeDef;
+````
+
+And, later, you can map any JSON column to `Map`, `List`, POJO, `String`, or `JsonNode` entity property:
+
+````java
+@Type(type = "json")
+private Map<String, String> properties = new HashMap<>();
+````
+
+For more details, check out [this article](https://vladmihalcea.com/how-to-map-json-objects-using-generic-hibernate-types/).
+
 ##### Best Practices
 
 > When mapping a JSON column type to a `POJO`, `List<POJO>` or `Map<String, POJO>`, you need to make sure that the `POJO` type overrides the default `equals` and `hashCode` methods and implements them according to the JSON object content. 
 > 
 > Otherwise, the Hibernate dirty checking mechanism may trigger unexpected UPDATE statements. Check out the [#134 issue for more details](https://github.com/vladmihalcea/hibernate-types/issues/138).
 
-##### Oracle
+##### Database-specific JSON types
+
+###### Oracle
 
 You should use the `JsonStringType` to map a `VARCHAR2` column type storing JSON.
 
@@ -26,19 +54,19 @@ You should use the `JsonBlobType` to map a `BLOB` column type storing JSON.
 
 For more details, check out [this article](https://vladmihalcea.com/oracle-json-jpa-hibernate/).
 
-##### SQL Server
+###### SQL Server
 
 You should use this `JsonStringType` to map an `NVARCHAR` column type storing JSON.
 
 For more details, check out [this article](https://vladmihalcea.com/sql-server-json-hibernate/).
 
-##### PostgreSQL
+###### PostgreSQL
 
 You should use this `JsonBinaryType` to map both `jsonb` and `json` column types.
 
 For more details, check out [this article](https://vladmihalcea.com/how-to-map-json-objects-using-generic-hibernate-types/).
 
-##### MySQL
+###### MySQL
 
 You should use this `JsonStringType` to map the `json` column type.
 
