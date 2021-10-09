@@ -17,4 +17,10 @@ public class ConfigurationTest {
     public void testHibernateTypesOverrideProperties() {
         assertEquals("ghi", Configuration.INSTANCE.getProperties().getProperty("hibernate.types.def"));
     }
+
+    @Test
+    public void testApplicationProperties() {
+        assertNull(Configuration.INSTANCE.getProperties().getProperty("hibernate.types.app.props.no"));
+        assertEquals("true", Configuration.INSTANCE.getProperties().getProperty("hibernate.types.app.props"));
+    }
 }

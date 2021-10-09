@@ -31,6 +31,7 @@ public class Configuration {
 
     public static final String PROPERTIES_FILE_PATH = "hibernate-types.properties.path";
     public static final String PROPERTIES_FILE_NAME = "hibernate-types.properties";
+    public static final String APPLICATION_PROPERTIES_FILE_NAME = "application.properties";
 
     /**
      * Each Property has a well-defined key.
@@ -63,21 +64,32 @@ public class Configuration {
      * Load {@link Properties} from the resolved {@link InputStream}
      */
     private void load() {
-        InputStream propertiesInputStream = null;
-        try {
-            propertiesInputStream = propertiesInputStream();
-            if (propertiesInputStream != null) {
-                properties.load(propertiesInputStream);
-            }
-        } catch (IOException e) {
-            LOGGER.error("Can't load properties", e);
-        } finally {
-            try {
-                if (propertiesInputStream != null) {
-                    propertiesInputStream.close();
+        String[] propertiesFilePaths = new String[] {
+            APPLICATION_PROPERTIES_FILE_NAME,
+            PROPERTIES_FILE_NAME,
+            System.getProperty(PROPERTIES_FILE_NAME),
+
+        };
+
+        for (String propertiesFilePath : propertiesFilePaths) {
+            if (propertiesFilePath != null) {
+                InputStream propertiesInputStream = null;
+                try {
+                    propertiesInputStream = propertiesInputStream(propertiesFilePath);
+                    if (propertiesInputStream != null) {
+                        properties.load(propertiesInputStream);
+                    }
+                } catch (IOException e) {
+                    LOGGER.error("Can't load properties", e);
+                } finally {
+                    try {
+                        if (propertiesInputStream != null) {
+                            propertiesInputStream.close();
+                        }
+                    } catch (IOException e) {
+                        LOGGER.error("Can't close the properties InputStream", e);
+                    }
                 }
-            } catch (IOException e) {
-                LOGGER.error("Can't close the properties InputStream", e);
             }
         }
     }
@@ -85,13 +97,13 @@ public class Configuration {
     /**
      * Get {@link Properties} file {@link InputStream}
      *
+     * @param propertiesFilePath properties file path
      * @return {@link Properties} file {@link InputStream}
      * @throws IOException the file couldn't be loaded properly
      */
-    private InputStream propertiesInputStream() throws IOException {
-        String propertiesFilePath = System.getProperty(PROPERTIES_FILE_PATH);
-        URL propertiesFileUrl = null;
+    private InputStream propertiesInputStream(String propertiesFilePath) throws IOException {
         if (propertiesFilePath != null) {
+            URL propertiesFileUrl;
             try {
                 propertiesFileUrl = new URL(propertiesFilePath);
             } catch (MalformedURLException ignore) {
@@ -104,7 +116,7 @@ public class Configuration {
                         } catch (MalformedURLException e) {
                             LOGGER.error(
                                 "The property " + propertiesFilePath + " can't be resolved to either a URL, " +
-                                "a classpath resource or a File"
+                                    "a classpath resource or a File"
                             );
                         }
                     }
@@ -114,7 +126,7 @@ public class Configuration {
                 return propertiesFileUrl.openStream();
             }
         }
-        return ClassLoaderUtils.getResourceAsStream(PROPERTIES_FILE_NAME);
+        return ClassLoaderUtils.getResourceAsStream(propertiesFilePath);
     }
 
     /**
