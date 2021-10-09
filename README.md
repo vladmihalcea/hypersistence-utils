@@ -17,7 +17,7 @@ The main advantage of this project is that it supports a broad range of Hibernat
 The `JsonType` allows you to map JSON column types, no matter if you're using Oracle,
 SQL Server, PostgreSQL or MySQL.
 
-Just add the following mapping to your `package-info.java` class in the same packe where your JPA entities are located:
+Just add the following mapping to your `package-info.java` class in the same package where your JPA entities are located:
 
 ````java
 @TypeDef(
