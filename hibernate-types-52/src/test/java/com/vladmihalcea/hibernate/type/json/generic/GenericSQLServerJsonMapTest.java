@@ -1,7 +1,10 @@
 package com.vladmihalcea.hibernate.type.json.generic;
 
+import java.util.HashMap;
+import java.util.Map;
+import javax.persistence.*;
+
 import com.vladmihalcea.hibernate.type.json.JsonType;
-import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
 import com.vladmihalcea.hibernate.type.util.AbstractSQLServerIntegrationTest;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
@@ -9,11 +12,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.junit.Test;
 
-import javax.persistence.*;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * @author Vlad Mihalcea
