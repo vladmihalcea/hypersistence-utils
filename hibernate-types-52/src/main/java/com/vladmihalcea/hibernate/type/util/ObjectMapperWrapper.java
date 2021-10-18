@@ -1,6 +1,7 @@
 package com.vladmihalcea.hibernate.type.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.HibernateException;
@@ -39,39 +40,21 @@ public class ObjectMapperWrapper {
         return objectMapper;
     }
 
-    public <T> T fromString(String string, Class<T> clazz) {
-        try {
-            return objectMapper.readValue(string, clazz);
-        } catch (IOException e) {
-            throw new HibernateException(
-                new IllegalArgumentException("The given string value: " + string + " cannot be transformed to Json object", e)
-            );
-        }
-    }
-
     public <T> T fromString(String string, Type type) {
         try {
-            return objectMapper.readValue(string, objectMapper.getTypeFactory().constructType(type));
+            JavaType javaType = objectMapper.getTypeFactory().constructType(type);
+            return objectMapper.readValue(string, javaType);
         } catch (IOException e) {
             throw new HibernateException(
                 new IllegalArgumentException("The given string value: " + string + " cannot be transformed to Json object", e)
-            );
-        }
-    }
-
-    public <T> T fromBytes(byte[] value, Class<T> clazz) {
-        try {
-            return objectMapper.readValue(value, clazz);
-        } catch (IOException e) {
-            throw new HibernateException(
-                new IllegalArgumentException("The given byte array cannot be transformed to Json object", e)
             );
         }
     }
 
     public <T> T fromBytes(byte[] value, Type type) {
         try {
-            return objectMapper.readValue(value, objectMapper.getTypeFactory().constructType(type));
+            JavaType javaType = objectMapper.getTypeFactory().constructType(type);
+            return objectMapper.readValue(value, javaType);
         } catch (IOException e) {
             throw new HibernateException(
                 new IllegalArgumentException("The given byte array cannot be transformed to Json object", e)
@@ -79,7 +62,18 @@ public class ObjectMapperWrapper {
         }
     }
 
-    public String toString(Object value) {
+    public String toString(Object value, Type type) {
+        try {
+            JavaType javaType = objectMapper.getTypeFactory().constructType(type);
+            return objectMapper.writerFor(javaType).writeValueAsString(value);
+        } catch (JsonProcessingException e) {
+            throw new HibernateException(
+                new IllegalArgumentException("The given Json object value: " + value + " cannot be transformed to a String", e)
+            );
+        }
+    }
+
+    public String toString(JsonNode value) {
         try {
             return objectMapper.writeValueAsString(value);
         } catch (JsonProcessingException e) {
@@ -89,9 +83,10 @@ public class ObjectMapperWrapper {
         }
     }
 
-    public byte[] toBytes(Object value) {
+    public byte[] toBytes(Object value, Type type) {
         try {
-            return objectMapper.writeValueAsBytes(value);
+            JavaType javaType = objectMapper.getTypeFactory().constructType(type);
+            return objectMapper.writerFor(javaType).writeValueAsBytes(value);
         } catch (JsonProcessingException e) {
             throw new HibernateException(
                 new IllegalArgumentException("The given Json object value: " + value + " cannot be transformed to a byte array", e)

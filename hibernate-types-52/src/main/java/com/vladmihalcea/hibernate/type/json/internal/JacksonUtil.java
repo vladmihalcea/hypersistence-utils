@@ -10,15 +10,15 @@ import java.lang.reflect.Type;
  */
 public class JacksonUtil {
 
-    public static <T> T fromString(String string, Class<T> clazz) {
-        return ObjectMapperWrapper.INSTANCE.fromString(string, clazz);
-    }
-
     public static <T> T fromString(String string, Type type) {
         return ObjectMapperWrapper.INSTANCE.fromString(string, type);
     }
 
-    public static String toString(Object value) {
+    public static String toString(Object value, Type type) {
+        return ObjectMapperWrapper.INSTANCE.toString(value, type);
+    }
+
+    public static String toString(JsonNode value) {
         return ObjectMapperWrapper.INSTANCE.toString(value);
     }
 

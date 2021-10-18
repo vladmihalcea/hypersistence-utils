@@ -16,7 +16,6 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.sql.Statement;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.Assert.assertEquals;
 
@@ -75,7 +74,7 @@ public class OracleJsonBinaryTypeTest extends AbstractOracleIntegrationTest {
             participant.setId(1L);
             participant.setTicket(ticket);
             participant.setEvent(event);
-            participant.setMetadata(JacksonUtil.toString(location));
+            participant.setMetadata(JacksonUtil.toString(location, Location.class));
 
             entityManager.persist(participant);
 

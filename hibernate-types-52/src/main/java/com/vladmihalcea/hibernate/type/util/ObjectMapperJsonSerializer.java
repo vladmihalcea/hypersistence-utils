@@ -31,7 +31,7 @@ public class ObjectMapperJsonSerializer implements JsonSerializer {
             Object firstElement = findFirstNonNullElement((Collection) object);
             if (firstElement != null && !(firstElement instanceof Serializable)) {
                 JavaType type = TypeFactory.defaultInstance().constructParametricType(object.getClass(), firstElement.getClass());
-                return objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(object), type);
+                return objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(object, type), type);
             }
         }
 
@@ -42,9 +42,9 @@ public class ObjectMapperJsonSerializer implements JsonSerializer {
                 Object value = firstEntry.getValue();
                 if (!(key instanceof Serializable) || !(value instanceof Serializable)) {
                     JavaType type = TypeFactory.defaultInstance().constructParametricType(object.getClass(), key.getClass(), value.getClass());
-                    return (T) objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(object), type);
+                    return objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(object, type), type);
+                }
             }
-        }
         }
         if (object instanceof Serializable) {
             try {
@@ -52,8 +52,8 @@ public class ObjectMapperJsonSerializer implements JsonSerializer {
             } catch (SerializationException e) {
                 //it is possible that object itself implements java.io.Serializable, but underlying structure does not
                 //in this case we switch to the other JSON marshaling strategy which doesn't use the Java serialization
-        return jsonClone(object);
-    }
+                return jsonClone(object);
+            }
         } else {
             return jsonClone(object);
         }
@@ -78,6 +78,8 @@ public class ObjectMapperJsonSerializer implements JsonSerializer {
     }
 
     private <T> T jsonClone(T object) {
-        return objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(object), (Class<T>) object.getClass());
+        // N.B. parameter info is lost
+        Class<T> clazz = (Class<T>) object.getClass();
+        return objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(object, clazz), clazz);
     }
 }

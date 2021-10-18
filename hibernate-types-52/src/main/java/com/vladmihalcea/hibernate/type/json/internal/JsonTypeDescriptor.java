@@ -36,7 +36,7 @@ public class JsonTypeDescriptor
 
     private Class propertyClass;
 
-    private ObjectMapperWrapper objectMapperWrapper;
+    private final ObjectMapperWrapper objectMapperWrapper;
 
     public JsonTypeDescriptor() {
         this(ObjectMapperWrapper.INSTANCE);
@@ -89,14 +89,14 @@ public class JsonTypeDescriptor
             ReflectionUtils.getDeclaredMethodOrNull(one.getClass(), "equals", Object.class) != null) {
             return one.equals(another);
         }
-        return objectMapperWrapper.toJsonNode(objectMapperWrapper.toString(one)).equals(
-            objectMapperWrapper.toJsonNode(objectMapperWrapper.toString(another))
+        return objectMapperWrapper.toJsonNode(objectMapperWrapper.toString(one, propertyType)).equals(
+            objectMapperWrapper.toJsonNode(objectMapperWrapper.toString(another, propertyType))
         );
     }
 
     @Override
     public String toString(Object value) {
-        return objectMapperWrapper.toString(value);
+        return objectMapperWrapper.toString(value, propertyType);
     }
 
     @Override
@@ -200,5 +200,5 @@ public class JsonTypeDescriptor
         }
     }
 
-    private static List<Class> validatedTypes = new ArrayList<>();
+    private static final List<Class> validatedTypes = new ArrayList<>();
 }

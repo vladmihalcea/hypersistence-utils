@@ -60,7 +60,7 @@ public class PostgreSQLJsonBinaryTypeTest extends AbstractPostgreSQLIntegrationT
             participant.setId(1L);
             participant.setTicket(ticket);
             participant.setEvent(event);
-            participant.setMetaData(JacksonUtil.toString(location));
+            participant.setMetaData(JacksonUtil.toString(location, Location.class));
 
             entityManager.persist(participant);
 
