@@ -1,5 +1,6 @@
-package com.vladmihalcea.hibernate.type.util;
+package com.vladmihalcea.hibernate.query;
 
+import com.vladmihalcea.hibernate.type.util.*;
 import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
 import org.junit.Test;
 

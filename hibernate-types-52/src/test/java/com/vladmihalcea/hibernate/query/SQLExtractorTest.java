@@ -1,5 +1,6 @@
-package com.vladmihalcea.hibernate.type.util;
+package com.vladmihalcea.hibernate.query;
 
+import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
 import org.junit.Test;
 
 import javax.persistence.*;
