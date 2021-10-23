@@ -1,11 +1,13 @@
-package com.vladmihalcea.hibernate.type.util;
+package com.vladmihalcea.hibernate.naming;
 
+import com.vladmihalcea.hibernate.type.util.AbstractTest;
+import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
 import org.junit.Test;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.sql.Timestamp;
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
@@ -26,37 +28,49 @@ public class CamelCaseToSnakeCaseNamingStrategyTest extends AbstractTest {
     @Override
     protected void additionalProperties(Properties properties) {
         properties.put(
-            "hibernate.physical_naming_strategy",
-            CamelCaseToSnakeCaseNamingStrategy.INSTANCE
+            "hibernate.ejb.naming_strategy",
+            CamelCaseToSnakeCaseNamingStrategy.class.getName()
         );
     }
 
     @Test
     public void test() {
-        doInJPA(entityManager -> {
-            BookAuthor author = new BookAuthor();
-            author.setId(1L);
-            author.setFirstName("Vlad");
-            author.setLastName("Mihalcea");
+        doInJPA(new JPATransactionFunction<Void>() {
 
-            entityManager.persist(author);
+            @Override
+            public Void apply(EntityManager entityManager) {
+                BookAuthor author = new BookAuthor();
+                author.setId(1L);
+                author.setFirstName("Vlad");
+                author.setLastName("Mihalcea");
 
-            PaperBackBook book = new PaperBackBook();
-            book.setISBN("978-9730228236");
-            book.setTitle("High-Performance Java Persistence");
-            book.setPublishedOn(LocalDate.of(2016, 10, 12));
-            book.setPublishedBy(author);
+                entityManager.persist(author);
 
-            entityManager.persist(book);
+                PaperBackBook book = new PaperBackBook();
+                book.setISBN("978-9730228236");
+                book.setTitle("High-Performance Java Persistence");
+                book.setPublishedOn(Timestamp.valueOf("2016-10-12 00:00:00"));
+                book.setPublishedBy(author);
+
+                entityManager.persist(book);
+
+                return null;
+            }
         });
 
-        doInJPA(entityManager -> {
-            Session session = entityManager.unwrap(Session.class);
+        doInJPA(new JPATransactionFunction<Void>() {
 
-            PaperBackBook book = session.bySimpleNaturalId(PaperBackBook.class).load("978-9730228236");
-            assertEquals("High-Performance Java Persistence", book.getTitle());
+            @Override
+            public Void apply(EntityManager entityManager) {
+                Session session = entityManager.unwrap(Session.class);
 
-            assertEquals("Vlad Mihalcea", book.getPublishedBy().getFullName());
+                PaperBackBook book = (PaperBackBook) session.bySimpleNaturalId(PaperBackBook.class).load("978-9730228236");
+                assertEquals("High-Performance Java Persistence", book.getTitle());
+
+                assertEquals("Vlad Mihalcea", book.getPublishedBy().getFullName());
+
+                return null;
+            }
         });
     }
 
@@ -111,7 +125,7 @@ public class CamelCaseToSnakeCaseNamingStrategyTest extends AbstractTest {
 
         private String title;
 
-        private LocalDate publishedOn;
+        private Timestamp publishedOn;
 
         @ManyToOne(fetch = FetchType.LAZY)
         private BookAuthor publishedBy;
@@ -140,11 +154,11 @@ public class CamelCaseToSnakeCaseNamingStrategyTest extends AbstractTest {
             this.title = title;
         }
 
-        public LocalDate getPublishedOn() {
+        public Timestamp getPublishedOn() {
             return publishedOn;
         }
 
-        public void setPublishedOn(LocalDate publishedOn) {
+        public void setPublishedOn(Timestamp publishedOn) {
             this.publishedOn = publishedOn;
         }
 

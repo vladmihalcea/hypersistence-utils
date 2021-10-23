@@ -1,5 +1,6 @@
-package com.vladmihalcea.hibernate.type.util;
+package com.vladmihalcea.hibernate.naming;
 
+import com.vladmihalcea.hibernate.type.util.AbstractTest;
 import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
@@ -27,8 +28,8 @@ public class CamelCaseToSnakeCaseNamingStrategyTest extends AbstractTest {
     @Override
     protected void additionalProperties(Properties properties) {
         properties.put(
-            "hibernate.ejb.naming_strategy",
-            CamelCaseToSnakeCaseNamingStrategy.class.getName()
+            "hibernate.physical_naming_strategy",
+            CamelCaseToSnakeCaseNamingStrategy.INSTANCE
         );
     }
 
@@ -63,7 +64,7 @@ public class CamelCaseToSnakeCaseNamingStrategyTest extends AbstractTest {
             public Void apply(EntityManager entityManager) {
                 Session session = entityManager.unwrap(Session.class);
 
-                PaperBackBook book = (PaperBackBook) session.bySimpleNaturalId(PaperBackBook.class).load("978-9730228236");
+                PaperBackBook book = session.bySimpleNaturalId(PaperBackBook.class).load("978-9730228236");
                 assertEquals("High-Performance Java Persistence", book.getTitle());
 
                 assertEquals("Vlad Mihalcea", book.getPublishedBy().getFullName());
