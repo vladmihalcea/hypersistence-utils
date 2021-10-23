@@ -114,6 +114,10 @@ For more details, check out [this article](https://vladmihalcea.com/how-to-map-j
 
 #### Utilities
 
+##### Identifier Generators
+
+* [`BatchSequenceGenerator` - Hibernate Batch Sequence Generator](https://vladmihalcea.com/hibernate-batch-sequence-generator/)
+
 ##### Naming Strategy
 
 * [`CamelCaseToSnakeCaseNamingStrategy` - How to map camelCase properties to snake_case column names with Hibernate](https://vladmihalcea.com/map-camel-case-properties-snake-case-column-names-hibernate/)

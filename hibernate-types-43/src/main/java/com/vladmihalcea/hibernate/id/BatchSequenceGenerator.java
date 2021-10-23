@@ -127,8 +127,11 @@ import org.hibernate.type.Type;
  *  <li>Postgres</li>
  *  <li>SQL Sever</li>
  * </ul>
+ * <p>
  * In theory any RDBMS that supports {@code WITH RECURSIVE} and
  * sequences is supported.
+ * <p>
+ * For more details about how to use it, check out <a href="https://vladmihalcea.com/hibernate-batch-sequence-generator/">this article</a> on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
  *
  * @author Philippe Marschall
  * @since 2.14.0
