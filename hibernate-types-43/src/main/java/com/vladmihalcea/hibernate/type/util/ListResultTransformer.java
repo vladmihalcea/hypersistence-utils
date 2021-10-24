@@ -14,19 +14,12 @@ import java.util.List;
  * <p>
  * For more details about how to use it, check out <a href="https://vladmihalcea.com/hibernate-resulttransformer/">this article</a> on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
  *
+ * @deprecated use {@link com.vladmihalcea.hibernate.query.ListResultTransformer} instead
+ *
  * @author Vlad Mihalcea
  * @since 2.9.0
  */
-public abstract class ListResultTransformer implements ResultTransformer {
+@Deprecated
+public abstract class ListResultTransformer extends com.vladmihalcea.hibernate.query.ListResultTransformer {
 
-    /**
-     * Default implementation returning the tuples list as-is.
-     *
-     * @param tuples tuples list
-     * @return tuples list
-     */
-    @Override
-    public List transformList(List tuples) {
-        return tuples;
-    }
 }

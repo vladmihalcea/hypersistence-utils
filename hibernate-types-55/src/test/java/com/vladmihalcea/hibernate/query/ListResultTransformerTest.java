@@ -1,13 +1,15 @@
-package com.vladmihalcea.hibernate.type.util;
+package com.vladmihalcea.hibernate.query;
 
+import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
 import org.hibernate.transform.ResultTransformer;
 import org.junit.Test;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
@@ -150,7 +152,7 @@ public class ListResultTransformerTest extends AbstractPostgreSQLIntegrationTest
                     "   YEAR(p.createdOn)")
                 .unwrap(org.hibernate.query.Query.class)
                 .setResultTransformer(
-                    (ListResultTransformer) (tuple, aliases) -> new PostCountByYear(
+                    (com.vladmihalcea.hibernate.type.util.ListResultTransformer) (tuple, aliases) -> new PostCountByYear(
                         ((Number) tuple[0]).intValue(),
                         ((Number) tuple[1]).intValue()
                     )

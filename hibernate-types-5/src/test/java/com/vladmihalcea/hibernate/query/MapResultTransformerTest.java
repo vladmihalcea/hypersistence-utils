@@ -1,4 +1,6 @@
-package com.vladmihalcea.hibernate.type.util;
+package com.vladmihalcea.hibernate.query;
+
+import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
 
 import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
 import org.junit.Test;
@@ -7,14 +9,14 @@ import javax.persistence.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
 /**
  * @author Vlad Mihalcea
  */
-public class ListResultTransformerTest extends AbstractPostgreSQLIntegrationTest {
+public class MapResultTransformerTest extends AbstractPostgreSQLIntegrationTest {
 
     private SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -79,64 +81,58 @@ public class ListResultTransformerTest extends AbstractPostgreSQLIntegrationTest
         });
     }
 
-    public static class PostCountByYear {
-
-        private final int year;
-
-        private final int postCount;
-
-        public PostCountByYear(int year, int postCount) {
-            this.year = year;
-            this.postCount = postCount;
-        }
-
-        public int getYear() {
-            return year;
-        }
-
-        public int getPostCount() {
-            return postCount;
-        }
-    }
-
     @Test
-    public void testListResultTransformer() {
+    public void testMapResultTransformerImplicitAlias() {
         doInJPA(new JPATransactionFunction<Void>() {
 
             @Override
             public Void apply(EntityManager entityManager) {
-                List<PostCountByYear> postCountByYearMap = (List<PostCountByYear>) entityManager
-                .createQuery(
-                    "select " +
-                    "   YEAR(p.createdOn) as year, " +
-                    "   count(p) as postCount " +
-                    "from Post p " +
-                    "group by " +
-                    "   YEAR(p.createdOn) " +
-                    "order by " +
-                    "   YEAR(p.createdOn)")
-                .unwrap(org.hibernate.Query.class)
-                .setResultTransformer(
-                    new ListResultTransformer() {
-                        @Override
-                        public Object transformTuple(Object[] tuple, String[] aliases) {
-                            return new PostCountByYear(
-                                ((Number) tuple[0]).intValue(),
-                                ((Number) tuple[1]).intValue()
-                            );
-                        }
-                    }
-                )
-                .list();
+                Map<Number, Number> postCountByYearMap = (Map<Number, Number>) entityManager
+                    .createQuery(
+                        "select " +
+                        "   YEAR(p.createdOn) as year, " +
+                        "   count(p) as postCount " +
+                        "from Post p " +
+                        "group by " +
+                        "   YEAR(p.createdOn)")
+                    .unwrap(org.hibernate.Query.class)
+                    .setResultTransformer(
+                        new MapResultTransformer<Number, Number>()
+                    )
+                    .uniqueResult();
 
-                assertEquals(2016, postCountByYearMap.get(0).getYear());
-                assertEquals(2, postCountByYearMap.get(0).getPostCount());
+                assertEquals(2, postCountByYearMap.get(2016).intValue());
+                assertEquals(2, postCountByYearMap.get(2018).intValue());
+                assertEquals(1, postCountByYearMap.get(2019).intValue());
 
-                assertEquals(2018, postCountByYearMap.get(1).getYear());
-                assertEquals(2, postCountByYearMap.get(1).getPostCount());
+                return null;
+            }
+        });
+    }
 
-                assertEquals(2019, postCountByYearMap.get(2).getYear());
-                assertEquals(1, postCountByYearMap.get(2).getPostCount());
+    @Test
+    public void testMapResultTransformerExplicitAlias() {
+        doInJPA(new JPATransactionFunction<Void>() {
+
+            @Override
+            public Void apply(EntityManager entityManager) {
+                Map<Number, Number> postCountByYearMap = (Map<Number, Number>) entityManager
+                    .createQuery(
+                        "select " +
+                        "   count(p) as map_value, " +
+                        "   YEAR(p.createdOn) as map_key " +
+                        "from Post p " +
+                        "group by " +
+                        "   YEAR(p.createdOn)")
+                    .unwrap(org.hibernate.Query.class)
+                    .setResultTransformer(
+                        new MapResultTransformer<Number, Number>()
+                    )
+                    .uniqueResult();
+
+                assertEquals(2, postCountByYearMap.get(2016).intValue());
+                assertEquals(2, postCountByYearMap.get(2018).intValue());
+                assertEquals(1, postCountByYearMap.get(2019).intValue());
 
                 return null;
             }

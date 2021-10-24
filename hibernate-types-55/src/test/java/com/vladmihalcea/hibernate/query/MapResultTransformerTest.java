@@ -1,5 +1,6 @@
-package com.vladmihalcea.hibernate.type.util;
+package com.vladmihalcea.hibernate.query;
 
+import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
 import org.junit.Test;
 
 import javax.persistence.*;
@@ -143,7 +144,7 @@ public class MapResultTransformerTest extends AbstractPostgreSQLIntegrationTest 
                 "   YEAR(p.createdOn)")
             .unwrap(org.hibernate.query.Query.class)
             .setResultTransformer(
-                new MapResultTransformer<Number, Number>()
+                new com.vladmihalcea.hibernate.type.util.MapResultTransformer<Number, Number>()
             )
             .getSingleResult();
 
@@ -166,7 +167,7 @@ public class MapResultTransformerTest extends AbstractPostgreSQLIntegrationTest 
                 "   YEAR(p.createdOn)")
             .unwrap(org.hibernate.query.Query.class)
             .setResultTransformer(
-                new MapResultTransformer<Number, Number>()
+                new com.vladmihalcea.hibernate.type.util.MapResultTransformer<Number, Number>()
             )
             .getSingleResult();
 
