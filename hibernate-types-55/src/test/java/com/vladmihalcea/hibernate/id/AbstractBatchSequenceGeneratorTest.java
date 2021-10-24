@@ -1,7 +1,7 @@
 package com.vladmihalcea.hibernate.id;
 
-import com.vladmihalcea.hibernate.type.util.AbstractTest;
-import com.vladmihalcea.hibernate.type.util.providers.DataSourceProvider;
+import com.vladmihalcea.hibernate.util.AbstractTest;
+import com.vladmihalcea.hibernate.util.providers.DataSourceProvider;
 import net.ttddyy.dsproxy.QueryCount;
 import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.annotations.GenericGenerator;

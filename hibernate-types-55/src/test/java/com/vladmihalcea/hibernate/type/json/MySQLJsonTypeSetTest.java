@@ -1,7 +1,7 @@
 package com.vladmihalcea.hibernate.type.json;
 
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
-import com.vladmihalcea.hibernate.type.util.AbstractMySQLIntegrationTest;
+import com.vladmihalcea.hibernate.util.AbstractMySQLIntegrationTest;
 import net.ttddyy.dsproxy.QueryCount;
 import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.annotations.DynamicUpdate;
@@ -17,7 +17,6 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;

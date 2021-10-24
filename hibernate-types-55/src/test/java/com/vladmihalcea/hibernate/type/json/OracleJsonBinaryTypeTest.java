@@ -4,7 +4,7 @@ import com.vladmihalcea.hibernate.type.json.internal.JacksonUtil;
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
 import com.vladmihalcea.hibernate.type.model.Location;
 import com.vladmihalcea.hibernate.type.model.Ticket;
-import com.vladmihalcea.hibernate.type.util.AbstractOracleIntegrationTest;
+import com.vladmihalcea.hibernate.util.AbstractOracleIntegrationTest;
 import net.ttddyy.dsproxy.QueryCount;
 import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.Session;
@@ -16,7 +16,6 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.sql.Statement;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.Assert.assertEquals;
 

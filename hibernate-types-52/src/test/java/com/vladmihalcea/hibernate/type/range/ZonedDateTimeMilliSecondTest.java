@@ -1,6 +1,6 @@
 package com.vladmihalcea.hibernate.type.range;
 
-import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
+import com.vladmihalcea.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import org.hibernate.annotations.TypeDef;
 import org.junit.Test;
 

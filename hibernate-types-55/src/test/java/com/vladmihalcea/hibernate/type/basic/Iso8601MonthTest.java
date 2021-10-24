@@ -1,6 +1,6 @@
 package com.vladmihalcea.hibernate.type.basic;
 
-import com.vladmihalcea.hibernate.type.util.AbstractTest;
+import com.vladmihalcea.hibernate.util.AbstractTest;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.TypeDef;

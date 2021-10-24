@@ -1,8 +1,8 @@
 package com.vladmihalcea.hibernate.type.json.configuration;
 
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
-import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
-import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
+import com.vladmihalcea.hibernate.util.AbstractPostgreSQLIntegrationTest;
+import com.vladmihalcea.hibernate.util.transaction.JPATransactionFunction;
 import org.hibernate.annotations.Type;
 import org.hibernate.boot.model.TypeContributions;
 import org.hibernate.boot.model.TypeContributor;

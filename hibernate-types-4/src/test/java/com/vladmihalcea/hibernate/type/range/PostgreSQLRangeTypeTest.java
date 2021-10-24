@@ -1,8 +1,8 @@
 package com.vladmihalcea.hibernate.type.range;
 
-import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
-import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
-import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionVoidFunction;
+import com.vladmihalcea.hibernate.util.AbstractPostgreSQLIntegrationTest;
+import com.vladmihalcea.hibernate.util.transaction.JPATransactionFunction;
+import com.vladmihalcea.hibernate.util.transaction.JPATransactionVoidFunction;
 import org.hibernate.annotations.TypeDef;
 import org.junit.Test;
 

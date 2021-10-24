@@ -1,10 +1,9 @@
 package com.vladmihalcea.hibernate.type.json.generic;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonType;
-import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
-import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
+import com.vladmihalcea.hibernate.util.AbstractPostgreSQLIntegrationTest;
+import com.vladmihalcea.hibernate.util.transaction.JPATransactionFunction;
 import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;

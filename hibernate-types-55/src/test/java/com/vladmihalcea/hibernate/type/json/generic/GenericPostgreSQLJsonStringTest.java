@@ -1,10 +1,8 @@
 package com.vladmihalcea.hibernate.type.json.generic;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonType;
-import com.vladmihalcea.hibernate.type.json.PostgreSQLJsonStringPropertyTest;
-import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
+import com.vladmihalcea.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;

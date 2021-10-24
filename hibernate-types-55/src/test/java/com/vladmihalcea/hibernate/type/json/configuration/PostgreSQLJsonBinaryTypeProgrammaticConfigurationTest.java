@@ -1,7 +1,7 @@
 package com.vladmihalcea.hibernate.type.json.configuration;
 
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
-import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
+import com.vladmihalcea.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import org.hibernate.annotations.Type;
 import org.hibernate.jpa.boot.spi.TypeContributorList;
 import org.junit.Test;

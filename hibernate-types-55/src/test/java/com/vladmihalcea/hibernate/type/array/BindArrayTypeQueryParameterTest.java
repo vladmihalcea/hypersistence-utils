@@ -1,9 +1,9 @@
 package com.vladmihalcea.hibernate.type.array;
 
-import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
-import com.vladmihalcea.hibernate.type.util.ExceptionUtil;
-import com.vladmihalcea.hibernate.type.util.providers.DataSourceProvider;
-import com.vladmihalcea.hibernate.type.util.providers.PostgreSQLDataSourceProvider;
+import com.vladmihalcea.hibernate.util.AbstractPostgreSQLIntegrationTest;
+import com.vladmihalcea.hibernate.util.ExceptionUtil;
+import com.vladmihalcea.hibernate.util.providers.DataSourceProvider;
+import com.vladmihalcea.hibernate.util.providers.PostgreSQLDataSourceProvider;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.jpa.TypedParameterValue;
 import org.hibernate.query.Query;
@@ -18,7 +18,6 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
 
 import static org.junit.Assert.*;
 

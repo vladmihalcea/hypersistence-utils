@@ -1,7 +1,7 @@
 package com.vladmihalcea.hibernate.query;
 
-import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
-import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
+import com.vladmihalcea.hibernate.util.AbstractPostgreSQLIntegrationTest;
+import com.vladmihalcea.hibernate.util.transaction.JPATransactionFunction;
 import org.junit.Test;
 
 import javax.persistence.*;

@@ -3,7 +3,7 @@ package com.vladmihalcea.hibernate.type.json;
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
 import com.vladmihalcea.hibernate.type.model.Location;
 import com.vladmihalcea.hibernate.type.model.Ticket;
-import com.vladmihalcea.hibernate.type.util.AbstractMySQLIntegrationTest;
+import com.vladmihalcea.hibernate.util.AbstractMySQLIntegrationTest;
 import net.ttddyy.dsproxy.QueryCount;
 import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.annotations.Type;
@@ -14,7 +14,6 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.Assert.assertEquals;
 

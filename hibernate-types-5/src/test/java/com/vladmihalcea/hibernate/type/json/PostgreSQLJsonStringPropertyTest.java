@@ -1,9 +1,8 @@
 package com.vladmihalcea.hibernate.type.json;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
-import com.vladmihalcea.hibernate.type.util.AbstractSQLServerIntegrationTest;
-import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
+import com.vladmihalcea.hibernate.util.AbstractPostgreSQLIntegrationTest;
+import com.vladmihalcea.hibernate.util.transaction.JPATransactionFunction;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;

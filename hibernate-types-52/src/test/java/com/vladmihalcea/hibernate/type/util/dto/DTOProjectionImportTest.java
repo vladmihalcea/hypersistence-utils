@@ -1,6 +1,6 @@
 package com.vladmihalcea.hibernate.type.util.dto;
 
-import com.vladmihalcea.hibernate.type.util.AbstractTest;
+import com.vladmihalcea.hibernate.util.AbstractTest;
 import com.vladmihalcea.hibernate.type.util.ClassImportIntegrator;
 import org.hibernate.integrator.spi.Integrator;
 import org.junit.Test;

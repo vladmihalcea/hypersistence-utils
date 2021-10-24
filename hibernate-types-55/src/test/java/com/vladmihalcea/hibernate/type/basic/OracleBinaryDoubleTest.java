@@ -1,6 +1,6 @@
 package com.vladmihalcea.hibernate.type.basic;
 
-import com.vladmihalcea.hibernate.type.util.AbstractOracleIntegrationTest;
+import com.vladmihalcea.hibernate.util.AbstractOracleIntegrationTest;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
 import org.junit.Test;

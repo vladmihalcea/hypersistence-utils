@@ -1,7 +1,7 @@
 package com.vladmihalcea.hibernate.type.binary;
 
-import com.vladmihalcea.hibernate.type.util.AbstractMySQLIntegrationTest;
-import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
+import com.vladmihalcea.hibernate.util.AbstractMySQLIntegrationTest;
+import com.vladmihalcea.hibernate.util.transaction.JPATransactionFunction;
 import org.hibernate.annotations.TypeDef;
 import org.junit.Test;
 

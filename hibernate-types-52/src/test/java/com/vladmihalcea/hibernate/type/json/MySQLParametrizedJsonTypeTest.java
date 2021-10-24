@@ -1,7 +1,7 @@
 package com.vladmihalcea.hibernate.type.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vladmihalcea.hibernate.type.util.AbstractMySQLIntegrationTest;
+import com.vladmihalcea.hibernate.util.AbstractMySQLIntegrationTest;
 import org.junit.Test;
 
 import javax.persistence.*;

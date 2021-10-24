@@ -1,7 +1,7 @@
 package com.vladmihalcea.hibernate.type.interval;
 
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
-import com.vladmihalcea.hibernate.type.util.AbstractOracleIntegrationTest;
+import com.vladmihalcea.hibernate.util.AbstractOracleIntegrationTest;
 import org.hibernate.annotations.TypeDef;
 import org.junit.Test;
 

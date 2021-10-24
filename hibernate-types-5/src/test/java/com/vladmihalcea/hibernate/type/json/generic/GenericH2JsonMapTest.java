@@ -1,10 +1,10 @@
 package com.vladmihalcea.hibernate.type.json.generic;
 
 import com.vladmihalcea.hibernate.type.json.JsonType;
-import com.vladmihalcea.hibernate.type.util.AbstractTest;
-import com.vladmihalcea.hibernate.type.util.providers.DataSourceProvider;
-import com.vladmihalcea.hibernate.type.util.providers.H2DataSourceProvider;
-import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
+import com.vladmihalcea.hibernate.util.AbstractTest;
+import com.vladmihalcea.hibernate.util.providers.DataSourceProvider;
+import com.vladmihalcea.hibernate.util.providers.H2DataSourceProvider;
+import com.vladmihalcea.hibernate.util.transaction.JPATransactionFunction;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;

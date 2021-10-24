@@ -1,6 +1,6 @@
 package com.vladmihalcea.hibernate.query;
 
-import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
+import com.vladmihalcea.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import org.hibernate.transform.ResultTransformer;
 import org.junit.Test;
 

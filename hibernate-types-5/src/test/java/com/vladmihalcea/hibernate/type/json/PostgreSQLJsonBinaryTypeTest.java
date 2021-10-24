@@ -4,8 +4,8 @@ import com.vladmihalcea.hibernate.type.json.internal.JacksonUtil;
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
 import com.vladmihalcea.hibernate.type.model.Location;
 import com.vladmihalcea.hibernate.type.model.Ticket;
-import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
-import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
+import com.vladmihalcea.hibernate.util.AbstractPostgreSQLIntegrationTest;
+import com.vladmihalcea.hibernate.util.transaction.JPATransactionFunction;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
 

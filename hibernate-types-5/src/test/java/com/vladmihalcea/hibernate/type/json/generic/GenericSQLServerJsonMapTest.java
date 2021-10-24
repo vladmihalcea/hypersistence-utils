@@ -1,8 +1,8 @@
 package com.vladmihalcea.hibernate.type.json.generic;
 
 import com.vladmihalcea.hibernate.type.json.JsonType;
-import com.vladmihalcea.hibernate.type.util.AbstractSQLServerIntegrationTest;
-import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
+import com.vladmihalcea.hibernate.util.AbstractSQLServerIntegrationTest;
+import com.vladmihalcea.hibernate.util.transaction.JPATransactionFunction;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;

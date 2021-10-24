@@ -1,10 +1,10 @@
 package com.vladmihalcea.hibernate.type.array;
 
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
-import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
-import com.vladmihalcea.hibernate.type.util.providers.DataSourceProvider;
-import com.vladmihalcea.hibernate.type.util.providers.PostgreSQLDataSourceProvider;
-import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
+import com.vladmihalcea.hibernate.util.AbstractPostgreSQLIntegrationTest;
+import com.vladmihalcea.hibernate.util.providers.DataSourceProvider;
+import com.vladmihalcea.hibernate.util.providers.PostgreSQLDataSourceProvider;
+import com.vladmihalcea.hibernate.util.transaction.JPATransactionFunction;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Parameter;
 import org.junit.Test;

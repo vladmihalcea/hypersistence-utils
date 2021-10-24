@@ -1,9 +1,8 @@
 package com.vladmihalcea.hibernate.type.json;
 
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
-import com.vladmihalcea.hibernate.type.util.AbstractMySQLIntegrationTest;
-import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
-import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
+import com.vladmihalcea.hibernate.util.AbstractPostgreSQLIntegrationTest;
+import com.vladmihalcea.hibernate.util.transaction.JPATransactionFunction;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Type;
 import org.junit.Test;

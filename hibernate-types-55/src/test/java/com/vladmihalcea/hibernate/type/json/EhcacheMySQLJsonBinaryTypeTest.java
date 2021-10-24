@@ -5,8 +5,7 @@ import com.vladmihalcea.hibernate.type.json.internal.JacksonUtil;
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
 import com.vladmihalcea.hibernate.type.model.Location;
 import com.vladmihalcea.hibernate.type.model.Ticket;
-import com.vladmihalcea.hibernate.type.util.AbstractMySQLIntegrationTest;
-import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
+import com.vladmihalcea.hibernate.util.AbstractMySQLIntegrationTest;
 import net.ttddyy.dsproxy.QueryCount;
 import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -14,10 +13,8 @@ import org.hibernate.annotations.Type;
 import org.junit.Test;
 
 import javax.persistence.*;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

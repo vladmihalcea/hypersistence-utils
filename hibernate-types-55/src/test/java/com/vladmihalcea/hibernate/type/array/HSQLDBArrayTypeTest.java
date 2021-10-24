@@ -1,7 +1,7 @@
 package com.vladmihalcea.hibernate.type.array;
 
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
-import com.vladmihalcea.hibernate.type.util.AbstractTest;
+import com.vladmihalcea.hibernate.util.AbstractTest;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;

@@ -1,15 +1,12 @@
 package com.vladmihalcea.hibernate.query;
 
-import com.vladmihalcea.hibernate.type.util.*;
-import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
+import com.vladmihalcea.hibernate.util.AbstractPostgreSQLIntegrationTest;
+import com.vladmihalcea.hibernate.util.transaction.JPATransactionFunction;
 import org.junit.Test;
 
 import javax.persistence.*;
 import javax.persistence.criteria.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

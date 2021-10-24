@@ -1,7 +1,7 @@
 package com.vladmihalcea.hibernate.type.json;
 
-import com.vladmihalcea.hibernate.type.util.AbstractMySQLIntegrationTest;
-import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
+import com.vladmihalcea.hibernate.util.AbstractMySQLIntegrationTest;
+import com.vladmihalcea.hibernate.util.transaction.JPATransactionFunction;
 import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;

@@ -1,8 +1,7 @@
 package com.vladmihalcea.hibernate.type.json.generic;
 
 import com.vladmihalcea.hibernate.type.json.JsonType;
-import com.vladmihalcea.hibernate.type.util.AbstractMySQLIntegrationTest;
-import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
+import com.vladmihalcea.hibernate.util.AbstractMySQLIntegrationTest;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;

@@ -1,7 +1,6 @@
 package com.vladmihalcea.hibernate.type.basic;
 
-import com.vladmihalcea.hibernate.type.util.AbstractMySQLIntegrationTest;
-import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
+import com.vladmihalcea.hibernate.util.AbstractMySQLIntegrationTest;
 import org.hibernate.Session;
 import org.hibernate.annotations.TypeDef;
 import org.junit.Test;

@@ -1,8 +1,8 @@
 package com.vladmihalcea.hibernate.type.util.dto;
 
-import com.vladmihalcea.hibernate.type.util.AbstractTest;
+import com.vladmihalcea.hibernate.util.AbstractTest;
 import com.vladmihalcea.hibernate.type.util.ClassImportIntegrator;
-import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
+import com.vladmihalcea.hibernate.util.transaction.JPATransactionFunction;
 import org.hibernate.integrator.spi.Integrator;
 import org.junit.Test;
 

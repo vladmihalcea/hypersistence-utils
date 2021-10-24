@@ -4,7 +4,7 @@ import com.vladmihalcea.hibernate.type.model.Event;
 import com.vladmihalcea.hibernate.type.model.Location;
 import com.vladmihalcea.hibernate.type.model.Participant;
 import com.vladmihalcea.hibernate.type.model.Ticket;
-import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
+import com.vladmihalcea.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicReference;

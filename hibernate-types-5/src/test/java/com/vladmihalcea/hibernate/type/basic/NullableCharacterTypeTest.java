@@ -1,8 +1,8 @@
 package com.vladmihalcea.hibernate.type.basic;
 
-import com.vladmihalcea.hibernate.type.util.AbstractTest;
-import com.vladmihalcea.hibernate.type.util.transaction.ConnectionVoidCallable;
-import com.vladmihalcea.hibernate.type.util.transaction.JPATransactionFunction;
+import com.vladmihalcea.hibernate.util.AbstractTest;
+import com.vladmihalcea.hibernate.util.transaction.ConnectionVoidCallable;
+import com.vladmihalcea.hibernate.util.transaction.JPATransactionFunction;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
 

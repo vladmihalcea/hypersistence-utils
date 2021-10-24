@@ -1,17 +1,14 @@
 package com.vladmihalcea.hibernate.type.range;
 
-import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
+import com.vladmihalcea.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import org.hibernate.annotations.TypeDef;
 import org.junit.Test;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import static com.vladmihalcea.hibernate.type.range.Range.infinite;
 import static com.vladmihalcea.hibernate.type.range.Range.zonedDateTimeRange;
 import static org.junit.Assert.assertEquals;
 

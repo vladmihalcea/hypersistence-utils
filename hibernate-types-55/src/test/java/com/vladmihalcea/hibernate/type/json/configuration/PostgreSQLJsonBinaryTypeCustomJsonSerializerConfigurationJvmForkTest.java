@@ -1,7 +1,7 @@
 package com.vladmihalcea.hibernate.type.json.configuration;
 
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
-import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
+import com.vladmihalcea.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import com.vladmihalcea.hibernate.type.util.Configuration;
 import org.hibernate.annotations.Type;
 import org.junit.Test;

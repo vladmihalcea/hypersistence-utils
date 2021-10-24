@@ -1,7 +1,7 @@
 package com.vladmihalcea.hibernate.id;
 
-import com.vladmihalcea.hibernate.type.util.providers.DataSourceProvider;
-import com.vladmihalcea.hibernate.type.util.providers.OracleDataSourceProvider;
+import com.vladmihalcea.hibernate.util.providers.DataSourceProvider;
+import com.vladmihalcea.hibernate.util.providers.OracleDataSourceProvider;
 
 /**
  * @author Philippe Marschall
