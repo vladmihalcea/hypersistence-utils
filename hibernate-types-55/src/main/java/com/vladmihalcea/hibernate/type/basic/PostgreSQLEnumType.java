@@ -1,7 +1,7 @@
 package com.vladmihalcea.hibernate.type.basic;
 
 import com.vladmihalcea.hibernate.type.util.Configuration;
-import com.vladmihalcea.hibernate.type.util.ReflectionUtils;
+import com.vladmihalcea.hibernate.util.ReflectionUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.descriptor.java.JavaTypeDescriptor;

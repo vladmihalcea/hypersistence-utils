@@ -1,6 +1,6 @@
 package com.vladmihalcea.hibernate.type.util.providers;
 
-import com.vladmihalcea.hibernate.type.util.ReflectionUtils;
+import com.vladmihalcea.hibernate.util.ReflectionUtils;
 import org.hibernate.dialect.Oracle12cDialect;
 import org.hibernate.dialect.pagination.LimitHandler;
 import org.hibernate.dialect.pagination.SQL2008StandardLimitHandler;

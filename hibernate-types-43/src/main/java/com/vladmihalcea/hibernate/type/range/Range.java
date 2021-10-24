@@ -1,6 +1,6 @@
 package com.vladmihalcea.hibernate.type.range;
 
-import com.vladmihalcea.hibernate.type.util.Objects;
+import com.vladmihalcea.hibernate.util.Objects;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

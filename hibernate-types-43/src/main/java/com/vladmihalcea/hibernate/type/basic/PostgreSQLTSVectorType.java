@@ -1,7 +1,7 @@
 package com.vladmihalcea.hibernate.type.basic;
 
 import com.vladmihalcea.hibernate.type.ImmutableType;
-import com.vladmihalcea.hibernate.type.util.ReflectionUtils;
+import com.vladmihalcea.hibernate.util.ReflectionUtils;
 import org.hibernate.engine.spi.SessionImplementor;
 
 import java.sql.PreparedStatement;

@@ -1,6 +1,6 @@
 package com.vladmihalcea.hibernate.type.util.providers;
 
-import com.vladmihalcea.hibernate.type.util.ReflectionUtils;
+import com.vladmihalcea.hibernate.util.ReflectionUtils;
 
 import javax.sql.DataSource;
 import java.util.Properties;

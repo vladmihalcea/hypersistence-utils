@@ -1,7 +1,7 @@
 package com.vladmihalcea.hibernate.type.json.internal;
 
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
-import com.vladmihalcea.hibernate.type.util.Objects;
+import com.vladmihalcea.hibernate.util.Objects;
 import org.junit.Test;
 
 import java.util.LinkedHashSet;

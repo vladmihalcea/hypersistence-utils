@@ -1,4 +1,4 @@
-package com.vladmihalcea.hibernate.type.util;
+package com.vladmihalcea.hibernate.util;
 
 import java.io.InputStream;
 import java.net.URL;

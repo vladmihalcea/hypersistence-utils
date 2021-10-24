@@ -2,9 +2,7 @@ package com.vladmihalcea.hibernate.type.interval;
 
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
 import com.vladmihalcea.hibernate.type.util.AbstractOracleIntegrationTest;
-import com.vladmihalcea.hibernate.type.util.ReflectionUtils;
 import org.hibernate.annotations.TypeDef;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.persistence.Column;

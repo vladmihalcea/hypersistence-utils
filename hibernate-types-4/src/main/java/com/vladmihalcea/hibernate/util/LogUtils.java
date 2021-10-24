@@ -1,4 +1,4 @@
-package com.vladmihalcea.hibernate.type.util;
+package com.vladmihalcea.hibernate.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,6 +1,6 @@
 package com.vladmihalcea.hibernate.type.array.internal;
 
-import com.vladmihalcea.hibernate.type.util.ReflectionUtils;
+import com.vladmihalcea.hibernate.util.ReflectionUtils;
 import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.type.descriptor.java.MutableMutabilityPlan;
 import org.hibernate.usertype.DynamicParameterizedType;

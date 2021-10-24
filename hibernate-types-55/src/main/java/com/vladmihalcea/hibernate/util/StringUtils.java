@@ -1,4 +1,4 @@
-package com.vladmihalcea.hibernate.type.util;
+package com.vladmihalcea.hibernate.util;
 
 /**
  * <code>StringUtils</code> - String utilities holder.

@@ -1,6 +1,6 @@
 package com.vladmihalcea.hibernate.query;
 
-import com.vladmihalcea.hibernate.type.util.ReflectionUtils;
+import com.vladmihalcea.hibernate.util.ReflectionUtils;
 import org.hibernate.Filter;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.internal.AbstractQueryImpl;

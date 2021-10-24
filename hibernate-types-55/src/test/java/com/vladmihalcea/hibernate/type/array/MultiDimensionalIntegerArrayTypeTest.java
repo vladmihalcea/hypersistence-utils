@@ -1,7 +1,7 @@
 package com.vladmihalcea.hibernate.type.array;
 
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
-import com.vladmihalcea.hibernate.type.util.ReflectionUtils;
+import com.vladmihalcea.hibernate.util.ReflectionUtils;
 import com.vladmihalcea.hibernate.type.util.providers.DataSourceProvider;
 import com.vladmihalcea.hibernate.type.util.providers.PostgreSQLDataSourceProvider;
 import org.hibernate.annotations.Type;

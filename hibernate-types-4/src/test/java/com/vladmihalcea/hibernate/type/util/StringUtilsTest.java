@@ -1,5 +1,6 @@
 package com.vladmihalcea.hibernate.type.util;
 
+import com.vladmihalcea.hibernate.util.StringUtils;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

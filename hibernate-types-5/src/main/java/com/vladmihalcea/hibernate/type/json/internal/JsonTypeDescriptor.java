@@ -1,9 +1,9 @@
 package com.vladmihalcea.hibernate.type.json.internal;
 
-import com.vladmihalcea.hibernate.type.util.LogUtils;
+import com.vladmihalcea.hibernate.util.LogUtils;
 import com.vladmihalcea.hibernate.type.util.ObjectMapperWrapper;
-import com.vladmihalcea.hibernate.type.util.Objects;
-import com.vladmihalcea.hibernate.type.util.ReflectionUtils;
+import com.vladmihalcea.hibernate.util.Objects;
+import com.vladmihalcea.hibernate.util.ReflectionUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.annotations.common.reflection.XProperty;
 import org.hibernate.annotations.common.reflection.java.JavaXMember;

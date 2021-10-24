@@ -1,6 +1,9 @@
 package com.vladmihalcea.hibernate.type.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vladmihalcea.hibernate.util.ClassLoaderUtils;
+import com.vladmihalcea.hibernate.util.ReflectionUtils;
+import com.vladmihalcea.hibernate.util.StringUtils;
 import org.hibernate.cfg.Environment;
 
 import javax.persistence.EntityManagerFactory;
@@ -12,7 +15,7 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.function.Supplier;
 
-import static com.vladmihalcea.hibernate.type.util.LogUtils.LOGGER;
+import static com.vladmihalcea.hibernate.util.LogUtils.LOGGER;
 
 /**
  * <code>Configuration</code> - It allows declarative configuration through the <code>hibernate.properties</code> file

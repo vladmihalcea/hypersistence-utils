@@ -1,22 +1,16 @@
 package com.vladmihalcea.hibernate.type.array;
 
 import com.vladmihalcea.hibernate.type.util.AbstractPostgreSQLIntegrationTest;
-import com.vladmihalcea.hibernate.type.util.ReflectionUtils;
+import com.vladmihalcea.hibernate.util.ReflectionUtils;
 import com.vladmihalcea.hibernate.type.util.providers.DataSourceProvider;
 import com.vladmihalcea.hibernate.type.util.providers.PostgreSQLDataSourceProvider;
-import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.type.LongType;
 import org.hibernate.type.StringType;
-import org.junit.Before;
 import org.junit.Test;
 
 import javax.persistence.*;
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;

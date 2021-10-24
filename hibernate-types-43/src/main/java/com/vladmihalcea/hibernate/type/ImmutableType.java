@@ -1,7 +1,7 @@
 package com.vladmihalcea.hibernate.type;
 
 import com.vladmihalcea.hibernate.type.util.Configuration;
-import com.vladmihalcea.hibernate.type.util.ReflectionUtils;
+import com.vladmihalcea.hibernate.util.ReflectionUtils;
 import org.dom4j.Node;
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;

@@ -3,7 +3,7 @@ package com.vladmihalcea.hibernate.type.range.guava;
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 import com.vladmihalcea.hibernate.type.ImmutableType;
-import com.vladmihalcea.hibernate.type.util.ReflectionUtils;
+import com.vladmihalcea.hibernate.util.ReflectionUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.annotations.common.reflection.XProperty;
 import org.hibernate.annotations.common.reflection.java.JavaXMember;
