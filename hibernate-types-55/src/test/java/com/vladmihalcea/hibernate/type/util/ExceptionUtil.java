@@ -31,8 +31,8 @@ public interface ExceptionUtil {
 	 */
 	static <T extends Throwable> T rootCause(Throwable t) {
 		Throwable cause = t.getCause();
-		if ( cause != null && cause != t ) {
-			return rootCause( cause );
+		if (cause != null && cause != t) {
+			return rootCause(cause);
 		}
 		return (T) t;
 	}
@@ -49,22 +49,23 @@ public interface ExceptionUtil {
 		do {
 			final Throwable cause = causeHolder.get();
 			final String failureMessage = cause.getMessage().toLowerCase();
-			if ( LOCK_TIMEOUT_EXCEPTIONS.stream().anyMatch( c -> c.isInstance( cause ) ) ||
-				failureMessage.contains( "timeout" ) ||
-				failureMessage.contains( "timed out" ) ||
-				failureMessage.contains( "time out" ) ||
-				failureMessage.contains( "closed connection" )
-			) {
+			if (LOCK_TIMEOUT_EXCEPTIONS.stream().anyMatch(c -> c.isInstance(cause)) ||
+				failureMessage.contains("timeout") ||
+				failureMessage.contains("timed out") ||
+				failureMessage.contains("time out") ||
+				failureMessage.contains("closed connection") ||
+				failureMessage.contains("link failure")
+				) {
 				return true;
 			} else {
-				if(cause.getCause() == null || cause.getCause() == cause) {
+				if (cause.getCause() == null || cause.getCause() == cause) {
 					break;
 				} else {
-					causeHolder.set( cause.getCause() );
+					causeHolder.set(cause.getCause());
 				}
 			}
 		}
-		while ( true );
+		while (true);
 		return false;
 	}
 
@@ -80,21 +81,21 @@ public interface ExceptionUtil {
 		do {
 			final Throwable cause = causeHolder.get();
 			if (
-				cause.getMessage().contains( "ORA-08177: can't serialize access for this transaction" ) //Oracle
-			 || cause.getMessage().toLowerCase().contains( "could not serialize access due to concurrent update" ) //PSQLException
-			 || cause.getMessage().toLowerCase().contains( "ould not serialize access due to read/write dependencies among transactions" ) //PSQLException
-			 || cause.getMessage().toLowerCase().contains( "snapshot isolation transaction aborted due to update conflict" ) //SQLServerException
-			) {
+				cause.getMessage().contains("ORA-08177: can't serialize access for this transaction") //Oracle
+					|| cause.getMessage().toLowerCase().contains("could not serialize access due to concurrent update") //PSQLException
+					|| cause.getMessage().toLowerCase().contains("ould not serialize access due to read/write dependencies among transactions") //PSQLException
+					|| cause.getMessage().toLowerCase().contains("snapshot isolation transaction aborted due to update conflict") //SQLServerException
+				) {
 				return true;
 			} else {
-				if(cause.getCause() == null || cause.getCause() == cause) {
+				if (cause.getCause() == null || cause.getCause() == cause) {
 					break;
 				} else {
-					causeHolder.set( cause.getCause() );
+					causeHolder.set(cause.getCause());
 				}
 			}
 		}
-		while ( true );
+		while (true);
 		return false;
 	}
 
@@ -108,20 +109,21 @@ public interface ExceptionUtil {
 	static boolean isConnectionClose(Exception e) {
 		Throwable cause = e;
 		do {
-			if ( cause.getMessage().toLowerCase().contains( "connection is close" )
-			  || cause.getMessage().toLowerCase().contains( "closed connection" )
-			  || cause.getMessage().toLowerCase().contains( "link failure" )
-			) {
+			if (cause.getMessage().toLowerCase().contains("connection is close")
+				|| cause.getMessage().toLowerCase().contains("closed connection")
+				|| cause.getMessage().toLowerCase().contains("link failure")
+				|| cause.getMessage().toLowerCase().contains("closed")
+				) {
 				return true;
 			} else {
-				if(cause.getCause() == null || cause.getCause() == cause) {
+				if (cause.getCause() == null || cause.getCause() == cause) {
 					break;
 				} else {
 					cause = cause.getCause();
 				}
 			}
 		}
-		while ( true );
+		while (true);
 		return false;
 	}
 }

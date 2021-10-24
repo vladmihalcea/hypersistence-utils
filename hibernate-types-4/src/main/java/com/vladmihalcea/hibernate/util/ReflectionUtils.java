@@ -550,8 +550,8 @@ public final class ReflectionUtils {
         } else {
             Class superClass = clazz.getSuperclass();
             return (superClass == null || superClass.equals(Object.class)) ?
-                    null :
-                    (Class<T>) getFirstSuperClassFromPackage(superClass, packageName);
+                null :
+                (Class<T>) getFirstSuperClassFromPackage(superClass, packageName);
         }
     }
 
@@ -569,6 +569,18 @@ public final class ReflectionUtils {
             }
         }
         return genericTypes;
+    }
+
+    /**
+     * Get class package name.
+     *
+     * @param className Class name.
+     * @return class package name
+     */
+    public static String getClassPackageName(String className) {
+        Package classPackage = getClass(className).getPackage();
+
+        return classPackage != null ? classPackage.getName() : null;
     }
 
     /**
