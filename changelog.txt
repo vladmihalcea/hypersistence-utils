@@ -1,3 +1,16 @@
+Version 2.14.0 - October 24, 2021
+================================================================================
+
+Move SQLExtractor to the query package enhancement #359
+
+Move the type/util classes that are not associated to types to the generic util package enhancement #358
+
+Move the ResultTransformer implementations to the query package enhancement #357
+
+Move CamelCaseToSnakeCaseNamingStrategy to the naming package enhancement #356
+
+Add BatchSequenceGenerator enhancement #354
+
 Version 2.13.0 - October 09, 2021
 ================================================================================
 
