@@ -2,8 +2,8 @@ package com.vladmihalcea.hibernate.type.json.polymorphic;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import com.vladmihalcea.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
@@ -13,11 +13,13 @@ import org.junit.Test;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
@@ -36,17 +38,15 @@ public class PostgreSQLJsonPolymorphicListJacksonTypeTest extends AbstractPostgr
     @Test
     public void test() {
 
-        Timestamp validUntil = Timestamp.valueOf(LocalDateTime.now().plusDays(10));
-
         doInJPA(entityManager -> {
             entityManager.persist(
                 new Book()
                     .setIsbn("978-9730228236")
-                    .addTopic(new Post("High-Performance Java Persistence")
-                        .setContent("It rocks!")
+                    .addCoupon(new AmountDiscountCoupon("PPP")
+                        .setAmount(new BigDecimal("4.99"))
                     )
-                    .addTopic(new Announcement("Black Friday - 50% discount")
-                        .setValidUntil(validUntil)
+                    .addCoupon(new PercentageDiscountCoupon("Black Friday")
+                        .setPercentage(BigDecimal.valueOf(0.02))
                     )
             );
         });
@@ -56,21 +56,33 @@ public class PostgreSQLJsonPolymorphicListJacksonTypeTest extends AbstractPostgr
                 .bySimpleNaturalId(Book.class)
                 .load("978-9730228236");
 
-            List<Topic> topics = book.getTopics();
+            Map<String, DiscountCoupon> topics = book.getCoupons()
+                .stream()
+                .collect(
+                    Collectors.toMap(
+                        DiscountCoupon::getName,
+                        Function.identity()
+                    )
+                );
+
             assertEquals(2, topics.size());
-            Post post = (Post) topics.get(0);
-            assertEquals("It rocks!", post.getContent());
-            Announcement announcement = (Announcement) topics.get(1);
+            AmountDiscountCoupon amountDiscountCoupon = (AmountDiscountCoupon) topics.get("PPP");
             assertEquals(
-                validUntil.getTime(),
-                announcement.getValidUntil().getTime()
+                new BigDecimal("4.99"),
+                amountDiscountCoupon.getAmount()
+            );
+
+            PercentageDiscountCoupon percentageDiscountCoupon = (PercentageDiscountCoupon) topics.get("Black Friday");
+            assertEquals(
+                BigDecimal.valueOf(0.02),
+                percentageDiscountCoupon.getPercentage()
             );
         });
     }
 
     @Entity(name = "Book")
     @Table(name = "book")
-    @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+    @TypeDef(name = "json", typeClass = JsonType.class)
     public static class Book {
 
         @Id
@@ -81,9 +93,9 @@ public class PostgreSQLJsonPolymorphicListJacksonTypeTest extends AbstractPostgr
         @Column(length = 15)
         private String isbn;
 
-        @Type(type = "jsonb")
+        @Type(type = "json")
         @Column(columnDefinition = "jsonb")
-        private List<Topic> topics = new ArrayList<>();
+        private List<DiscountCoupon> coupons = new ArrayList<>();
 
         public String getIsbn() {
             return isbn;
@@ -94,17 +106,17 @@ public class PostgreSQLJsonPolymorphicListJacksonTypeTest extends AbstractPostgr
             return this;
         }
 
-        public List<Topic> getTopics() {
-            return topics;
+        public List<DiscountCoupon> getCoupons() {
+            return coupons;
         }
 
-        public Book setTopics(List<Topic> topics) {
-            this.topics = topics;
+        public Book setCoupons(List<DiscountCoupon> coupons) {
+            this.coupons = coupons;
             return this;
         }
 
-        public Book addTopic(Topic topic) {
-            topics.add(topic);
+        public Book addCoupon(DiscountCoupon topic) {
+            coupons.add(topic);
             return this;
         }
     }
@@ -116,92 +128,103 @@ public class PostgreSQLJsonPolymorphicListJacksonTypeTest extends AbstractPostgr
     )
     @JsonSubTypes({
         @JsonSubTypes.Type(
-            name = "topic.post",
-            value = Post.class
+            name = "discount.coupon.amount",
+            value = AmountDiscountCoupon.class
         ),
         @JsonSubTypes.Type(
-            name = "topic.announcement",
-            value = Announcement.class
+            name = "discount.coupon.percentage",
+            value = PercentageDiscountCoupon.class
         ),
     })
-    public abstract static class Topic implements Serializable {
+    public abstract static class DiscountCoupon implements Serializable {
 
-        private String title;
+        private String name;
 
-        public Topic() {
+        public DiscountCoupon() {
         }
 
-        public Topic(String title) {
-            this.title = title;
+        public DiscountCoupon(String name) {
+            this.name = name;
         }
 
-        public String getTitle() {
-            return title;
+        public String getName() {
+            return name;
         }
 
-        public void setTitle(String title) {
-            this.title = title;
+        public void setName(String name) {
+            this.name = name;
         }
 
         @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
         public abstract String getType();
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof DiscountCoupon)) return false;
+            DiscountCoupon that = (DiscountCoupon) o;
+            return Objects.equals(getName(), that.getName());
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(getName());
+        }
     }
 
-    @JsonTypeName(Post.QUALIFIER)
-    public static class Post extends Topic {
+    public static class AmountDiscountCoupon extends DiscountCoupon {
 
-        public static final String QUALIFIER = "topic.post";
+        public static final String DISCRIMINATOR = "discount.coupon.amount";
 
-        private String content;
+        private BigDecimal amount;
 
-        public Post() {
+        public AmountDiscountCoupon() {
         }
 
-        public Post(String title) {
-            super(title);
+        public AmountDiscountCoupon(String name) {
+            super(name);
         }
 
-        public String getContent() {
-            return content;
+        public BigDecimal getAmount() {
+            return amount;
         }
 
-        public Post setContent(String content) {
-            this.content = content;
+        public AmountDiscountCoupon setAmount(BigDecimal amount) {
+            this.amount = amount;
             return this;
         }
 
         @Override
         public String getType() {
-            return Post.QUALIFIER;
+            return DISCRIMINATOR;
         }
     }
 
-    @JsonTypeName("topic.announcement")
-    public static class Announcement extends Topic {
+    public static class PercentageDiscountCoupon extends DiscountCoupon {
 
-        public static final String QUALIFIER = "topic.announcement";
+        public static final String DISCRIMINATOR = "discount.coupon.percentage";
 
-        private Date validUntil;
+        private BigDecimal percentage;
 
-        public Announcement() {
+        public PercentageDiscountCoupon() {
         }
 
-        public Announcement(String title) {
-            super(title);
+        public PercentageDiscountCoupon(String name) {
+            super(name);
         }
 
-        public Date getValidUntil() {
-            return validUntil;
+        public BigDecimal getPercentage() {
+            return percentage;
         }
 
-        public Announcement setValidUntil(Date validUntil) {
-            this.validUntil = validUntil;
+        public PercentageDiscountCoupon setPercentage(BigDecimal amount) {
+            this.percentage = amount;
             return this;
         }
 
         @Override
         public String getType() {
-            return QUALIFIER;
+            return DISCRIMINATOR;
         }
     }
 }
