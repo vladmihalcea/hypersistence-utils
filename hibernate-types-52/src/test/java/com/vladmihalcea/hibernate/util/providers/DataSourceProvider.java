@@ -12,20 +12,5 @@ public interface DataSourceProvider {
 
     DataSource dataSource();
 
-    Class<? extends DataSource> dataSourceClassName();
-
-    Properties dataSourceProperties();
-
-    String url();
-
-    String username();
-
-    String password();
-
     Database database();
-
-    enum IdentifierStrategy {
-        IDENTITY,
-        SEQUENCE
-    }
 }

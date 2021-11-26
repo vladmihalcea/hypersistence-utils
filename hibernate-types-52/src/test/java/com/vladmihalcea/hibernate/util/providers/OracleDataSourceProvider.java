@@ -6,6 +6,8 @@ import org.hibernate.dialect.pagination.LimitHandler;
 import org.hibernate.dialect.pagination.SQL2008StandardLimitHandler;
 import org.hibernate.tool.schema.extract.internal.SequenceInformationExtractorNoOpImpl;
 import org.hibernate.tool.schema.extract.spi.SequenceInformationExtractor;
+import org.testcontainers.containers.OracleContainer;
+import org.testcontainers.containers.PostgreSQLContainer;
 
 import javax.sql.DataSource;
 import java.util.Properties;
@@ -14,6 +16,17 @@ import java.util.Properties;
  * @author Vlad Mihalcea
  */
 public class OracleDataSourceProvider implements DataSourceProvider {
+    private static final OracleContainer ORACLE_CONTAINER;
+
+    static {
+        ORACLE_CONTAINER = new OracleContainer("gvenzl/oracle-xe:18.4.0-slim")
+                .withUsername("oracle")
+                .withPassword("admin")
+                .withDatabaseName("high_performance_java_persistence");
+
+        ORACLE_CONTAINER.start();
+    }
+
     @Override
     public String hibernateDialect() {
         return EnhancedOracle12cDialect.class.getName();
@@ -23,44 +36,13 @@ public class OracleDataSourceProvider implements DataSourceProvider {
     public DataSource dataSource() {
         try {
             DataSource dataSource = ReflectionUtils.newInstance("oracle.jdbc.pool.OracleDataSource");
-            ReflectionUtils.invokeSetter(dataSource, "databaseName", "high_performance_java_persistence");
-            ReflectionUtils.invokeSetter(dataSource, "URL", url());
-            ReflectionUtils.invokeSetter(dataSource, "user", "oracle");
-            ReflectionUtils.invokeSetter(dataSource, "password", "admin");
+            ReflectionUtils.invokeSetter(dataSource, "URL", ORACLE_CONTAINER.getJdbcUrl());
+            ReflectionUtils.invokeSetter(dataSource, "user", ORACLE_CONTAINER.getUsername());
+            ReflectionUtils.invokeSetter(dataSource, "password", ORACLE_CONTAINER.getPassword());
             return dataSource;
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
-    }
-
-    @Override
-    public Class<? extends DataSource> dataSourceClassName() {
-        return ReflectionUtils.getClass("oracle.jdbc.pool.OracleDataSource");
-    }
-
-    @Override
-    public Properties dataSourceProperties() {
-        Properties properties = new Properties();
-        properties.setProperty("databaseName", "high_performance_java_persistence");
-        properties.setProperty("URL", url());
-        properties.setProperty("user", username());
-        properties.setProperty("password", password());
-        return properties;
-    }
-
-    @Override
-    public String url() {
-        return "jdbc:oracle:thin:@localhost:1521/xe";
-    }
-
-    @Override
-    public String username() {
-        return "oracle";
-    }
-
-    @Override
-    public String password() {
-        return "admin";
     }
 
     @Override
