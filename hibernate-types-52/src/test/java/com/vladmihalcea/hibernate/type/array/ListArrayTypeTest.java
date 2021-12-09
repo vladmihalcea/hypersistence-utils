@@ -123,6 +123,12 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                             BigDecimal.TEN
                         )
                     )
+                    .setLocalDateValues(
+                        Arrays.asList(
+                            LocalDate.of(2022, 3, 22),
+                            LocalDate.of(2021, 4, 21)
+                        )
+                    )
             );
         });
 
@@ -195,6 +201,13 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 ),
                 event.getDecimalValues()
             );
+            assertEquals(
+                Arrays.asList(
+                    LocalDate.of(2022, 3, 22),
+                    LocalDate.of(2021, 4, 21)
+                ),
+                event.getLocalDateValues()
+            );
         });
 
         doInJPA(entityManager -> {
@@ -245,6 +258,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             event.setDateValues(Arrays.asList(null, date));
             event.setTimestampValues(Arrays.asList(null, date));
             event.setDecimalValues(Arrays.asList(null, BigDecimal.TEN));
+            event.setLocalDateValues(Arrays.asList(null, LocalDate.of(2021, 4, 21)));
             entityManager.persist(event);
         });
 
@@ -261,6 +275,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             assertArrayEquals(new Date[]{null, date}, event.getDateValues().toArray());
             assertArrayEquals(new Date[]{null, date}, event.getTimestampValues().toArray());
             assertArrayEquals(new BigDecimal[]{null, BigDecimal.TEN}, event.getDecimalValues().toArray());
+            assertArrayEquals(new LocalDate[]{null, LocalDate.of(2021, 4, 21)}, event.getLocalDateValues().toArray());
         });
     }
     
@@ -284,6 +299,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             event.setDateValues(Arrays.asList(null, null));
             event.setTimestampValues(Arrays.asList(null, null));
             event.setDecimalValues(Arrays.asList(null, null));
+            event.setLocalDateValues(Arrays.asList(null, null));
             entityManager.persist(event);
         });
 
@@ -300,6 +316,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             assertArrayEquals(new Date[]{null, null}, event.getDateValues().toArray());
             assertArrayEquals(new Date[]{null, null}, event.getTimestampValues().toArray());
             assertArrayEquals(new BigDecimal[]{null, null}, event.getDecimalValues().toArray());
+            assertArrayEquals(new LocalDate[]{null, null}, event.getLocalDateValues().toArray());
         });
     }
 
@@ -323,6 +340,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             event.setDateValues(Collections.emptyList());
             event.setTimestampValues(Collections.emptyList());
             event.setDecimalValues(Collections.emptyList());
+            event.setLocalDateValues(Collections.emptyList());
             entityManager.persist(event);
         });
 
@@ -339,6 +357,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             assertArrayEquals(new Date[]{}, event.getDateValues().toArray());
             assertArrayEquals(new Date[]{}, event.getTimestampValues().toArray());
             assertArrayEquals(new BigDecimal[]{}, event.getDecimalValues().toArray());
+            assertArrayEquals(new LocalDate[]{}, event.getLocalDateValues().toArray());
         });
     }
 
@@ -428,6 +447,13 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 columnDefinition = "decimal[]"
         )
         private List<BigDecimal> decimalValues;
+
+        @Type(type = "list-array")
+        @Column(
+            name = "localdate_values",
+            columnDefinition = "date[]"
+        )
+        private List<LocalDate> localDateValues;
 
         public Long getId() {
             return id;
@@ -528,6 +554,14 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             return this;
         }
 
+        public List<LocalDate> getLocalDateValues() {
+            return localDateValues;
+        }
+
+        public Event setLocalDateValues(List<LocalDate> localDateValues) {
+            this.localDateValues = localDateValues;
+            return this;
+        }
     }
 
     @Test

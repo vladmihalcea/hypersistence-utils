@@ -125,7 +125,7 @@ public class ArrayUtil {
     }
 
     /**
-     * Unwarp {@link Object[]} array to an array of the provided type
+     * Unwrap {@link Object[]} array to an array of the provided type
      *
      * @param originalArray original array
      * @param arrayClass array class
@@ -193,6 +193,13 @@ public class ArrayUtil {
                 Array.set(array, i, objectValue);
             }
             return array;
+        } else if (java.time.LocalDate[].class.equals(arrayClass) && java.sql.Date[].class.equals(originalArray.getClass())) {
+            // special case because conversion is neither with ctor nor valueOf
+            Object[] array = (Object[]) Array.newInstance(java.time.LocalDate.class, originalArray.length);
+            for (int i = 0; i < array.length; ++i) {
+                array[i] = originalArray[i] != null ? ((java.sql.Date) originalArray[i]).toLocalDate() : null;
+            }
+            return (T) array;
         } else if(arrayClass.getComponentType() != null && arrayClass.getComponentType().isArray()) {
             int arrayLength = originalArray.length;
             Object[] array = (Object[]) Array.newInstance(arrayClass.getComponentType(), arrayLength);

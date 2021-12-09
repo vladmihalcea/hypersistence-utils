@@ -95,6 +95,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             event.setDateValues(new Date[]{date1, date2});
             event.setTimestampValues(new Date[]{date1, date2});
             event.setDecimalValues(new BigDecimal[]{BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.TEN});
+            event.setLocalDateValues(new LocalDate[]{LocalDate.of(2022, 3, 22), LocalDate.of(2021, 4, 21)});
             event.setSensorBooleanValues(new Boolean[]{false, true, true});
 
             entityManager.persist(event);
@@ -112,6 +113,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             assertArrayEquals(new Date[]{date1, date2}, event.getDateValues());
             assertArrayEquals(new Date[]{date1, date2}, event.getTimestampValues());
             assertArrayEquals(new BigDecimal[]{BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.TEN}, event.getDecimalValues());
+            assertArrayEquals(new LocalDate[]{LocalDate.of(2022, 3, 22), LocalDate.of(2021, 4, 21)}, event.getLocalDateValues());
             assertArrayEquals(new Boolean[]{false, true, true}, event.getSensorBooleanValues());
         });
 
@@ -201,6 +203,10 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         @Column(name = "decimal_values", columnDefinition = "decimal[]")
         private BigDecimal[] decimalValues;
 
+        @Type(type = "localdate-array")
+        @Column(name = "localdate_values", columnDefinition = "date[]")
+        private LocalDate[] localDateValues;
+
         @Type(type = "sensor-state-array")
         @Column(name = "sensor_states", columnDefinition = "sensor_state[]")
         private SensorState[] sensorStates;
@@ -279,6 +285,14 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
         public void setDecimalValues(BigDecimal[] decimalValues) {
             this.decimalValues = decimalValues;
+        }
+
+        public LocalDate[] getLocalDateValues() {
+            return localDateValues;
+        }
+
+        public void setLocalDateValues(LocalDate[] localDateValues) {
+            this.localDateValues = localDateValues;
         }
     }
 

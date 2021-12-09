@@ -22,6 +22,7 @@ import javax.persistence.Version;
         @TypeDef(name = "date-array", typeClass = DateArrayType.class),
         @TypeDef(name = "timestamp-array", typeClass = TimestampArrayType.class),
         @TypeDef(name = "decimal-array", typeClass = DecimalArrayType.class),
+        @TypeDef(name = "localdate-array", typeClass = LocalDateArrayType.class),
         @TypeDef(name = "json", typeClass = JsonStringType.class),
         @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class),
         @TypeDef(name = "jsonb-node", typeClass = JsonNodeBinaryType.class),
