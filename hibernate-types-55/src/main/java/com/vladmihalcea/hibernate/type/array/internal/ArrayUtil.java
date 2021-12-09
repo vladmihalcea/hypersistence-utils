@@ -1,6 +1,6 @@
 package com.vladmihalcea.hibernate.type.array.internal;
 
-import java.lang.reflect.Array;
+import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -125,7 +125,7 @@ public class ArrayUtil {
     }
 
     /**
-     * Unwarp {@link Object[]} array to an array of the provided type
+     * Unwrap {@link Object[]} array to an array of the provided type
      *
      * @param originalArray original array
      * @param arrayClass array class
@@ -193,6 +193,13 @@ public class ArrayUtil {
                 Array.set(array, i, objectValue);
             }
             return array;
+        } else if (java.time.LocalDate[].class.equals(arrayClass) && java.sql.Date[].class.equals(originalArray.getClass())) {
+            // special case because conversion is neither with ctor nor valueOf
+            Object[] array = (Object[]) Array.newInstance(java.time.LocalDate.class, originalArray.length);
+            for (int i = 0; i < array.length; ++i) {
+                array[i] = ((java.sql.Date) originalArray[i]).toLocalDate();
+            }
+            return (T) array;
         } else if(arrayClass.getComponentType() != null && arrayClass.getComponentType().isArray()) {
             int arrayLength = originalArray.length;
             Object[] array = (Object[]) Array.newInstance(arrayClass.getComponentType(), arrayLength);
@@ -203,10 +210,37 @@ public class ArrayUtil {
             }
             return (T) array;
         } else {
-            if(arrayClass.isInstance(originalArray)) {
+            if (arrayClass.isInstance(originalArray)) {
                 return (T) originalArray;
             } else {
-                return (T) Arrays.copyOf(originalArray, originalArray.length, (Class) arrayClass);
+                final Class<?> originalComponentType = originalArray.getClass().getComponentType();
+                final Class<?> targetComponentType = arrayClass.getComponentType();
+                if (targetComponentType.isAssignableFrom(originalComponentType)) {
+                    return (T) Arrays.copyOf(originalArray, originalArray.length, (Class) arrayClass);
+                } else {
+                    try {
+                        Constructor constructor =
+                                targetComponentType.getConstructor(originalComponentType);
+                        Object[] array = (Object[]) Array.newInstance(targetComponentType, originalArray.length);
+                        for (int i = 0; i < array.length; ++i) {
+                            array[i] = constructor.newInstance(originalArray[i]);
+                        }
+                        return (T) array;
+                    } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                        // just try again
+                    }
+                    try {
+                        Method valueOf = targetComponentType.getMethod("valueOf", originalComponentType);
+                        Object[] array = (Object[]) Array.newInstance(targetComponentType, originalArray.length);
+                        for (int i = 0; i < array.length; ++i) {
+                            array[i] = valueOf.invoke(null, originalArray[i]); // null because it is static method
+                        }
+                        return (T) array;
+                    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                        // at this point there is no recovery?
+                        throw new org.hibernate.HibernateException(e) ;
+                    }
+                }
             }
         }
     }
@@ -214,9 +248,9 @@ public class ArrayUtil {
     /**
      * Create array from its {@link String} representation.
      *
-     * @param string string representation
+     * @param string     string representation
      * @param arrayClass array class
-     * @param <T> array element type
+     * @param <T>        array element type
      * @return array
      */
     public static <T> T fromString(String string, Class<T> arrayClass) {
