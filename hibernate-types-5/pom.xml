@@ -68,7 +68,7 @@
         <hibernate.version>5.1.17.Final</hibernate.version>
         <postgresql.version>9.4-1202-jdbc4</postgresql.version>
 
-        <jackson.version>2.7.9.6</jackson.version>
+        <jackson.version>2.9.10.8</jackson.version>
         <guava.version>12.0</guava.version>
     </properties>
 
