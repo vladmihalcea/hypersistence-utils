@@ -67,7 +67,7 @@
         <jdk.version>8</jdk.version>
 
         <hibernate.version>5.5.0.Final</hibernate.version>
-        <postgresql.version>42.2.19</postgresql.version>
+        <postgresql.version>42.2.25</postgresql.version>
 
         <mysql.version>8.0.20</mysql.version>
         <jackson.version>2.11.0</jackson.version>
