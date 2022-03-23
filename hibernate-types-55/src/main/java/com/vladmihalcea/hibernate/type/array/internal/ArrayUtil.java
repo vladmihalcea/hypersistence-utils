@@ -200,6 +200,13 @@ public class ArrayUtil {
                 array[i] = originalArray[i] != null ? ((java.sql.Date) originalArray[i]).toLocalDate() : null;
             }
             return (T) array;
+        } else if (java.time.LocalDateTime[].class.equals(arrayClass) && java.sql.Timestamp[].class.equals(originalArray.getClass())) {
+            // special case because conversion is neither with ctor nor valueOf
+            Object[] array = (Object[]) Array.newInstance(java.time.LocalDateTime.class, originalArray.length);
+            for (int i = 0; i < array.length; ++i) {
+                array[i] = originalArray[i] != null ? ((java.sql.Timestamp) originalArray[i]).toLocalDateTime() : null;
+            }
+            return (T) array;
         } else if(arrayClass.getComponentType() != null && arrayClass.getComponentType().isArray()) {
             int arrayLength = originalArray.length;
             Object[] array = (Object[]) Array.newInstance(arrayClass.getComponentType(), arrayLength);

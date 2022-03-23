@@ -19,6 +19,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
@@ -96,6 +97,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             event.setTimestampValues(new Date[]{date1, date2});
             event.setDecimalValues(new BigDecimal[]{BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.TEN});
             event.setLocalDateValues(new LocalDate[]{LocalDate.of(2022, 3, 22), LocalDate.of(2021, 4, 21)});
+            event.setLocalDateTimeValues(new LocalDateTime[]{LocalDateTime.of(2022, 3, 22, 11, 22, 33), LocalDateTime.of(2021, 4, 21, 22, 33, 44)});
             event.setSensorBooleanValues(new Boolean[]{false, true, true});
 
             entityManager.persist(event);
@@ -114,24 +116,25 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             assertArrayEquals(new Date[]{date1, date2}, event.getTimestampValues());
             assertArrayEquals(new BigDecimal[]{BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.TEN}, event.getDecimalValues());
             assertArrayEquals(new LocalDate[]{LocalDate.of(2022, 3, 22), LocalDate.of(2021, 4, 21)}, event.getLocalDateValues());
+            assertArrayEquals(new LocalDateTime[]{LocalDateTime.of(2022, 3, 22, 11, 22, 33), LocalDateTime.of(2021, 4, 21, 22, 33, 44)}, event.getLocalDateTimeValues());
             assertArrayEquals(new Boolean[]{false, true, true}, event.getSensorBooleanValues());
         });
 
         doInJPA(entityManager -> {
             List<Event> events = entityManager.createNativeQuery(
-                    "select " +
-                            "   id, " +
-                            "   sensor_ids, " +
-                            "   sensor_names, " +
-                            "   sensor_values, " +
-                            "   date_values   " +
-                            "from event ", Tuple.class)
-                    .unwrap(org.hibernate.query.NativeQuery.class)
-                    .addScalar("sensor_ids", UUIDArrayType.INSTANCE)
-                    .addScalar("sensor_names", StringArrayType.INSTANCE)
-                    .addScalar("sensor_values", IntArrayType.INSTANCE)
-                    .addScalar("date_values", DateArrayType.INSTANCE)
-                    .getResultList();
+                "select " +
+                "   id, " +
+                "   sensor_ids, " +
+                "   sensor_names, " +
+                "   sensor_values, " +
+                "   date_values   " +
+                "from event ", Tuple.class)
+            .unwrap(org.hibernate.query.NativeQuery.class)
+            .addScalar("sensor_ids", UUIDArrayType.INSTANCE)
+            .addScalar("sensor_names", StringArrayType.INSTANCE)
+            .addScalar("sensor_values", IntArrayType.INSTANCE)
+            .addScalar("date_values", DateArrayType.INSTANCE)
+            .getResultList();
 
             assertEquals(2, events.size());
         });
@@ -206,6 +209,10 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         @Type(type = "localdate-array")
         @Column(name = "localdate_values", columnDefinition = "date[]")
         private LocalDate[] localDateValues;
+
+        @Type(type = "localdatetime-array")
+        @Column(name = "localdatetime_values", columnDefinition = "timestamp[]")
+        private LocalDateTime[] localDateTimeValues;
 
         @Type(type = "sensor-state-array")
         @Column(name = "sensor_states", columnDefinition = "sensor_state[]")
@@ -293,6 +300,14 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
         public void setLocalDateValues(LocalDate[] localDateValues) {
             this.localDateValues = localDateValues;
+        }
+
+        public LocalDateTime[] getLocalDateTimeValues() {
+            return localDateTimeValues;
+        }
+
+        public void setLocalDateTimeValues(LocalDateTime[] localDateTimeValues) {
+            this.localDateTimeValues = localDateTimeValues;
         }
     }
 

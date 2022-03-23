@@ -11,6 +11,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -125,7 +126,7 @@ public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Object>
                     sqlArrayType = "text";
                 } else if (UUID.class.isAssignableFrom(arrayElementClass)) {
                     sqlArrayType = "uuid";
-                } else if (Date.class.isAssignableFrom(arrayElementClass)) {
+                } else if (Date.class.isAssignableFrom(arrayElementClass) || LocalDateTime.class.isAssignableFrom(arrayElementClass)) {
                     sqlArrayType = "timestamp";
                 } else if (Boolean.class.isAssignableFrom(arrayElementClass)) {
                     sqlArrayType = "boolean";
