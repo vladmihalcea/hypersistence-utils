@@ -10,7 +10,7 @@
 
     <groupId>com.vladmihalcea</groupId>
     <artifactId>hibernate-types-parent</artifactId>
-    <version>2.14.1</version>
+    <version>2.14.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Hibernate Types</name>
@@ -39,7 +39,7 @@
         <developerConnection>scm:git:git@github.com:vladmihalcea/hibernate-types.git</developerConnection>
         <url>scm:git:git@github.com:vladmihalcea/hibernate-types.git</url>
         <connection>scm:git:git@github.com:vladmihalcea/hibernate-types.git</connection>
-        <tag>hibernate-types-parent-2.14.1</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <modules>
