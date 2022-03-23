@@ -86,4 +86,9 @@ public class PostgreSQLEnumType extends org.hibernate.type.EnumType {
             throws HibernateException, SQLException {
         st.setObject(index, value != null ? ((Enum) value).name() : null, Types.OTHER);
     }
+
+    @Override
+    public int[] sqlTypes() {
+        return new int[]{Types.VARCHAR};
+    }
 }
