@@ -1,3 +1,14 @@
+Version 2.14.1 - March 23, 2021
+================================================================================
+
+Add support for using OffsetDateTime in JSON objects enhancement #408
+
+Add support for LocalDateTime[] mappings enhancement #407
+
+Add support for LocalDate[] mappings enhancement #406
+
+PostgreSQLEnumType#sqlTypes() should always return Types.VARCHAR enhancement #399
+
 Version 2.14.0 - October 24, 2021
 ================================================================================
 
