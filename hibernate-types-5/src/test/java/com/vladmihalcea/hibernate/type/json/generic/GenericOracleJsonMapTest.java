@@ -4,6 +4,7 @@ import com.vladmihalcea.hibernate.type.json.JsonType;
 import com.vladmihalcea.hibernate.util.AbstractOracleIntegrationTest;
 import com.vladmihalcea.hibernate.util.transaction.JPATransactionFunction;
 import org.hibernate.Session;
+import org.hibernate.annotations.Check;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -86,7 +87,8 @@ public class GenericOracleJsonMapTest extends AbstractOracleIntegrationTest {
         private String isbn;
 
         @Type(type = "json")
-        @Column(columnDefinition = "VARCHAR2(1000) CONSTRAINT IS_VALID_JSON CHECK (properties IS JSON)")
+        @Column(columnDefinition = "VARCHAR2(1000)")
+        @Check(constraints = "properties IS JSON")
         private Map<String, String> properties = new HashMap<String, String>();
 
         public String getIsbn() {

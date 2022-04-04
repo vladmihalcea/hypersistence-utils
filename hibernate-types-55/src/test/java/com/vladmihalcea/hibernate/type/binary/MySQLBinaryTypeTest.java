@@ -41,7 +41,6 @@ public class MySQLBinaryTypeTest extends AbstractMySQLIntegrationTest {
 
     @Entity(name = "Post")
     @Table(name = "post")
-    @TypeDef(typeClass = MySQLBinaryType.class, defaultForType = byte[].class)
     public static class Post {
 
         @Id

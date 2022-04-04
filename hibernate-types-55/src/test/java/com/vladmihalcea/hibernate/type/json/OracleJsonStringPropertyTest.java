@@ -5,6 +5,7 @@ import com.vladmihalcea.hibernate.util.AbstractOracleIntegrationTest;
 import net.ttddyy.dsproxy.QueryCount;
 import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.Session;
+import org.hibernate.annotations.Check;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -145,7 +146,8 @@ public class OracleJsonStringPropertyTest extends AbstractOracleIntegrationTest 
         private String isbn;
 
         @Type(type = "json")
-        @Column(columnDefinition = "VARCHAR2(1000) CONSTRAINT IS_VALID_JSON CHECK (properties IS JSON)")
+        @Column(columnDefinition = "VARCHAR2(1000)")
+        @Check(constraints = "properties IS JSON")
         private String properties;
 
         public String getIsbn() {
