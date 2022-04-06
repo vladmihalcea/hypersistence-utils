@@ -27,7 +27,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
+            <version>${jackson-databind.version}</version>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
@@ -35,7 +35,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-jaxb-annotations</artifactId>
-            <version>${jackson.version}</version>
+            <version>${jackson-module-jaxb-annotation}</version>
         </dependency>
 
         <dependency>
@@ -70,7 +70,8 @@
         <postgresql.version>42.3.3</postgresql.version>
 
         <mysql.version>8.0.28</mysql.version>
-        <jackson.version>2.11.0</jackson.version>
+        <jackson-databind.version>2.12.6.1</jackson-databind.version>
+        <jackson-module-jaxb-annotation>2.12.6</jackson-module-jaxb-annotation>
         <guava.version>29.0-jre</guava.version>
 
     </properties>
