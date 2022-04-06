@@ -4,9 +4,9 @@
 
 ### Introduction
 
-The Hibernate Types repository gives you extra types and general purpose utilities that are not supported by the Hibernate ORM core. 
+The Hibernate Types repository gives you extra types and general-purpose utilities that are not supported by the Hibernate ORM core. 
 
-The main advantage of this project is that it supports a broad range of Hibernate versions, spanning from Hibernate 4.1 to Hibernate 5.5.
+The main advantage of this project is that it supports a broad range of Hibernate versions, spanning from Hibernate ORM 6 to 5.5, 5.4, 5.3, 5.2, 5.1, 5, 4.3, 4.2, and Hibernate 4.1.
 
 ### Features
 
@@ -17,7 +17,24 @@ The main advantage of this project is that it supports a broad range of Hibernat
 The `JsonType` allows you to map JSON column types, no matter if you're using Oracle,
 SQL Server, PostgreSQL or MySQL.
 
-Just add the following mapping to your `package-info.java` class in the same package where your JPA entities are located:
+###### Hibernate 6
+
+If you're using Hibernate 6, you can map any JSON column to `Map`, `List`, POJO, `String`, or `JsonNode` entity property:
+
+````java
+@Type(JsonType.class)
+private Map<String, String> properties = new HashMap<>();
+````
+
+###### Hibernate 5 and 4
+
+If you're using Hibernate 5 or 4, you can either provide the fully-qualified name of the Hibernate Type:
+
+````
+@Type(type = "com.vladmihalcea.hibernate.type.json.JsonType")
+````
+
+Or, you can add the following mapping to your `package-info.java` class in the same package where your JPA entities are located:
 
 ````java
 @TypeDef(
@@ -29,7 +46,7 @@ import com.vladmihalcea.hibernate.type.json.JsonType;
 import org.hibernate.annotations.TypeDef;
 ````
 
-And, later, you can map any JSON column to `Map`, `List`, POJO, `String`, or `JsonNode` entity property:
+And later, you can map the `Map`, `List`, POJO, `String`, or `JsonNode` entity properties to JSON columns like this:
 
 ````java
 @Type(type = "json")
@@ -133,12 +150,20 @@ For more details, check out [this article](https://vladmihalcea.com/how-to-map-j
 
 Depending on the Hibernate version you are using, you need to add the following dependency:
 
+#### Hibernate 6.0
+
+    <dependency>
+        <groupId>com.vladmihalcea</groupId>
+        <artifactId>hibernate-types-60</artifactId>
+        <version>2.15.0</version>
+    </dependency>
+
 #### Hibernate 5.5
 
     <dependency>
         <groupId>com.vladmihalcea</groupId>
         <artifactId>hibernate-types-55</artifactId>
-        <version>2.14.1</version>
+        <version>2.15.0</version>
     </dependency>
     
 #### Hibernate 5.4, 5.3 and 5.2
@@ -146,7 +171,7 @@ Depending on the Hibernate version you are using, you need to add the following 
     <dependency>
         <groupId>com.vladmihalcea</groupId>
         <artifactId>hibernate-types-52</artifactId>
-        <version>2.14.1</version>
+        <version>2.15.0</version>
     </dependency>
 
 #### Hibernate 5.1 and 5.0
@@ -154,7 +179,7 @@ Depending on the Hibernate version you are using, you need to add the following 
     <dependency>
         <groupId>com.vladmihalcea</groupId>
         <artifactId>hibernate-types-5</artifactId>
-        <version>2.14.1</version>
+        <version>2.15.0</version>
     </dependency>
     
 #### Hibernate 4.3
@@ -162,7 +187,7 @@ Depending on the Hibernate version you are using, you need to add the following 
     <dependency>
         <groupId>com.vladmihalcea</groupId>
         <artifactId>hibernate-types-43</artifactId>
-        <version>2.14.1</version>
+        <version>2.15.0</version>
     </dependency>
 
 #### Hibernate 4.2 and 4.1
@@ -170,7 +195,7 @@ Depending on the Hibernate version you are using, you need to add the following 
     <dependency>
         <groupId>com.vladmihalcea</groupId>
         <artifactId>hibernate-types-4</artifactId>
-        <version>2.14.1</version>
+        <version>2.15.0</version>
     </dependency>
 
 ### Requirements
@@ -185,8 +210,8 @@ If you have an issue, then there are two ways to address it.
 
 #### Option 1: Providing your own fix
 
-This project being open-source, you have the ability of fixing any issue.
-So, in this case, this is what you need to do:
+Since this project is open-source, you have the ability to fix any issue you bump into.
+Therefore, when dealing with a problem, this is what you need to do:
 
 1. Provide a replicating test case using the existing test cases as a template
 2. Provide a fix proposal
@@ -194,7 +219,7 @@ So, in this case, this is what you need to do:
 
 #### Option 2: Paid support
 
-If you don't have the time to provide a fix, the I could fix your issue via [consulting](https://vladmihalcea.com/consulting/).
+If you don't have the time to provide a fix, then I can fix your issue via [consulting](https://vladmihalcea.com/consulting/). If you're in a hurry, this is going to be your best option.
 
 ### Are you struggling with application performance issues?
 

@@ -117,7 +117,7 @@ public class MySQLJsonTypeTest extends AbstractMySQLIntegrationTest {
     @Table(name = "event")
     public static class Event extends BaseEntity {
 
-        @Type(type = "json")
+        @Type(type = "com.vladmihalcea.hibernate.type.json.JsonType")
         @Column(columnDefinition = "json")
         private Location location;
 
