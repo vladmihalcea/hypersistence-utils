@@ -1,5 +1,6 @@
 package com.vladmihalcea.hibernate.id;
 
+import com.vladmihalcea.hibernate.util.ReflectionUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
 import org.hibernate.boot.model.relational.Database;
@@ -276,16 +277,12 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
         return this.databaseStructure.getName();
     }
 
-    @Override
-    @Deprecated
     public String[] sqlCreateStrings(Dialect dialect) {
-        return this.databaseStructure.sqlCreateStrings(dialect);
+        return ReflectionUtils.invokeMethod(databaseStructure, "sqlCreateStrings", dialect);
     }
 
-    @Override
-    @Deprecated
     public String[] sqlDropStrings(Dialect dialect) {
-        return this.databaseStructure.sqlDropStrings(dialect);
+        return ReflectionUtils.invokeMethod(databaseStructure, "sqlDropStrings", dialect);
     }
 
     @Override
