@@ -1,3 +1,12 @@
+Version 2.15.0 - April 06, 2022
+================================================================================
+
+Add support for Hibernate 6 enhancement #401
+
+Support for Jakarta EE 9? requires investigation #380
+
+Create a TypeContributor that registers all supported types enhancement #166
+
 Version 2.14.1 - March 23, 2022
 ================================================================================
 
