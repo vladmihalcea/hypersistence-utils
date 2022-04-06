@@ -70,7 +70,7 @@
         <postgresql.version>42.3.3</postgresql.version>
 
         <mysql.version>8.0.28</mysql.version>
-        <jackson.version>2.11.0</jackson.version>
+        <jackson.version>2.12.6.1</jackson.version>
         <guava.version>29.0-jre</guava.version>
 
     </properties>
