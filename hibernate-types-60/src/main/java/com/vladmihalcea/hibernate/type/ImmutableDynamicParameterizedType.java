@@ -6,19 +6,19 @@ import org.hibernate.usertype.DynamicParameterizedType;
 /**
  * @author Vlad Mihalcea
  */
-public abstract class DynamicImmutableType<T> extends ImmutableType<T> implements DynamicParameterizedType {
+public abstract class ImmutableDynamicParameterizedType<T> extends ImmutableType<T> implements DynamicParameterizedType {
 
     /**
      * {@inheritDoc}
      */
-    public DynamicImmutableType(Class<T> clazz) {
+    public ImmutableDynamicParameterizedType(Class<T> clazz) {
         super(clazz);
     }
 
     /**
      * {@inheritDoc}
      */
-    public DynamicImmutableType(Class<T> clazz, Configuration configuration) {
+    public ImmutableDynamicParameterizedType(Class<T> clazz, Configuration configuration) {
         super(clazz, configuration);
     }
 }

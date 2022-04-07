@@ -12,16 +12,16 @@ import java.util.Properties;
 /**
  * @author Vlad Mihalcea
  */
-public class DynamicMutableType<T, JDBC extends JdbcType, JAVA extends JavaType<T>> extends MutableType<T, JDBC, JAVA> implements DynamicParameterizedType {
+public class MutableDynamicParameterizedType<T, JDBC extends JdbcType, JAVA extends JavaType<T>> extends MutableType<T, JDBC, JAVA> implements DynamicParameterizedType {
 
     /**
      * {@inheritDoc}
      */
-    public DynamicMutableType(Class<T> returnedClass, JDBC jdbcTypeDescriptor, JAVA javaTypeDescriptor) {
+    public MutableDynamicParameterizedType(Class<T> returnedClass, JDBC jdbcTypeDescriptor, JAVA javaTypeDescriptor) {
         super(returnedClass, jdbcTypeDescriptor, javaTypeDescriptor);
     }
 
-    public DynamicMutableType(Class<T> returnedClass, JDBC jdbcTypeDescriptor, JAVA javaTypeDescriptor, Configuration configuration) {
+    public MutableDynamicParameterizedType(Class<T> returnedClass, JDBC jdbcTypeDescriptor, JAVA javaTypeDescriptor, Configuration configuration) {
         super(returnedClass, jdbcTypeDescriptor, javaTypeDescriptor, configuration);
     }
 

@@ -2,7 +2,7 @@ package com.vladmihalcea.hibernate.type.json;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vladmihalcea.hibernate.type.DynamicMutableType;
+import com.vladmihalcea.hibernate.type.MutableDynamicParameterizedType;
 import com.vladmihalcea.hibernate.type.json.internal.JsonBinaryJdbcTypeDescriptor;
 import com.vladmihalcea.hibernate.type.json.internal.JsonNodeJavaTypeDescriptor;
 import com.vladmihalcea.hibernate.type.util.Configuration;
@@ -24,7 +24,7 @@ import com.vladmihalcea.hibernate.type.util.ObjectMapperWrapper;
  *
  * @author Vlad Mihalcea
  */
-public class JsonNodeBinaryType extends DynamicMutableType<JsonNode, JsonBinaryJdbcTypeDescriptor, JsonNodeJavaTypeDescriptor> {
+public class JsonNodeBinaryType extends MutableDynamicParameterizedType<JsonNode, JsonBinaryJdbcTypeDescriptor, JsonNodeJavaTypeDescriptor> {
 
     public static final JsonNodeBinaryType INSTANCE = new JsonNodeBinaryType();
 

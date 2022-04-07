@@ -1,6 +1,6 @@
 package com.vladmihalcea.hibernate.type.array.internal;
 
-import com.vladmihalcea.hibernate.type.DynamicMutableType;
+import com.vladmihalcea.hibernate.type.MutableDynamicParameterizedType;
 import com.vladmihalcea.hibernate.type.util.Configuration;
 
 /**
@@ -9,7 +9,7 @@ import com.vladmihalcea.hibernate.type.util.Configuration;
  * @author Vlad Mihalcea
  */
 public abstract class AbstractArrayType<T>
-    extends DynamicMutableType<T, ArraySqlTypeDescriptor, AbstractArrayTypeDescriptor<T>> {
+    extends MutableDynamicParameterizedType<T, ArraySqlTypeDescriptor, AbstractArrayTypeDescriptor<T>> {
 
     public static final String SQL_ARRAY_TYPE = "sql_array_type";
 

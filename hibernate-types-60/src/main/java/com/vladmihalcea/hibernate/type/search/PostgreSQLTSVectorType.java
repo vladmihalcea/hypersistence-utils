@@ -1,6 +1,6 @@
 package com.vladmihalcea.hibernate.type.search;
 
-import com.vladmihalcea.hibernate.type.DynamicMutableType;
+import com.vladmihalcea.hibernate.type.MutableDynamicParameterizedType;
 import com.vladmihalcea.hibernate.type.search.internal.PostgreSQLTSVectorSqlTypeDescriptor;
 import com.vladmihalcea.hibernate.type.search.internal.PostgreSQLTSVectorTypeDescriptor;
 import com.vladmihalcea.hibernate.type.util.Configuration;
@@ -11,7 +11,7 @@ import com.vladmihalcea.hibernate.type.util.Configuration;
  * @author Vlad Mihalcea
  * @author Philip Riecks
  */
-public class PostgreSQLTSVectorType extends DynamicMutableType<Object, PostgreSQLTSVectorSqlTypeDescriptor, PostgreSQLTSVectorTypeDescriptor> {
+public class PostgreSQLTSVectorType extends MutableDynamicParameterizedType<Object, PostgreSQLTSVectorSqlTypeDescriptor, PostgreSQLTSVectorTypeDescriptor> {
 
     public static final PostgreSQLTSVectorType INSTANCE = new PostgreSQLTSVectorType();
 

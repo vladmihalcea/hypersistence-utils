@@ -1,6 +1,6 @@
 package com.vladmihalcea.hibernate.type.basic;
 
-import com.vladmihalcea.hibernate.type.DynamicImmutableType;
+import com.vladmihalcea.hibernate.type.ImmutableDynamicParameterizedType;
 import com.vladmihalcea.hibernate.util.ReflectionUtils;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.metamodel.model.convert.spi.EnumValueConverter;
@@ -26,7 +26,7 @@ import java.util.Properties;
  *
  * @author Vlad Mihalcea
  */
-public class PostgreSQLEnumType extends DynamicImmutableType<Enum> {
+public class PostgreSQLEnumType extends ImmutableDynamicParameterizedType<Enum> {
 
     public static final PostgreSQLEnumType INSTANCE = new PostgreSQLEnumType();
 

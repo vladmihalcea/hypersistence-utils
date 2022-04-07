@@ -1,7 +1,7 @@
 package com.vladmihalcea.hibernate.type.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vladmihalcea.hibernate.type.DynamicMutableType;
+import com.vladmihalcea.hibernate.type.MutableDynamicParameterizedType;
 import com.vladmihalcea.hibernate.type.json.internal.JsonJavaTypeDescriptor;
 import com.vladmihalcea.hibernate.type.util.Configuration;
 import com.vladmihalcea.hibernate.type.util.ObjectMapperWrapper;
@@ -26,7 +26,7 @@ import java.sql.Blob;
  *
  * @author Vlad Mihalcea
  */
-public class JsonBlobType extends DynamicMutableType<Object, BlobJdbcType, JsonJavaTypeDescriptor> {
+public class JsonBlobType extends MutableDynamicParameterizedType<Object, BlobJdbcType, JsonJavaTypeDescriptor> {
 
     public static final JsonBlobType INSTANCE = new JsonBlobType();
 
