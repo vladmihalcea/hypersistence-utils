@@ -1,3 +1,10 @@
+Version 2.15.1 - April 07, 2022
+================================================================================
+
+Rename the Hibernate 6 Dynamic mutable and immutable abstract types enhancement #419
+
+Add support for Hibernate 5.6 in BatchSequenceGenerator enhancement #417
+
 Version 2.15.0 - April 06, 2022
 ================================================================================
 
