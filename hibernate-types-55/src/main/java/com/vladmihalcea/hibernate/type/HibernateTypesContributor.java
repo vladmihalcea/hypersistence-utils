@@ -9,6 +9,7 @@ import com.vladmihalcea.hibernate.type.json.*;
 import com.vladmihalcea.hibernate.type.range.PostgreSQLRangeType;
 import com.vladmihalcea.hibernate.type.range.guava.PostgreSQLGuavaRangeType;
 import com.vladmihalcea.hibernate.type.search.PostgreSQLTSVectorType;
+import com.vladmihalcea.hibernate.util.ReflectionUtils;
 import org.hibernate.boot.model.TypeContributions;
 import org.hibernate.boot.model.TypeContributor;
 import org.hibernate.dialect.*;
@@ -58,7 +59,10 @@ public class HibernateTypesContributor implements TypeContributor {
             typeContributions.contributeType(PostgreSQLHStoreType.INSTANCE);
             typeContributions.contributeType(PostgreSQLInetType.INSTANCE);
             typeContributions.contributeType(PostgreSQLRangeType.INSTANCE);
-            typeContributions.contributeType(PostgreSQLGuavaRangeType.INSTANCE);
+
+            if(ReflectionUtils.getClassOrNull("com.google.common.collect.Range") != null) {
+                typeContributions.contributeType(PostgreSQLGuavaRangeType.INSTANCE);
+            }
         } else if(dialect instanceof MySQLDialect) {
             /* JSON */
             typeContributions.contributeType(JsonStringType.INSTANCE);
