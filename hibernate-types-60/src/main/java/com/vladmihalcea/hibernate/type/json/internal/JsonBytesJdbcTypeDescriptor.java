@@ -1,5 +1,6 @@
 package com.vladmihalcea.hibernate.type.json.internal;
 
+import org.hibernate.dialect.Database;
 import org.hibernate.type.descriptor.ValueBinder;
 import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.type.descriptor.java.JavaType;
@@ -7,6 +8,8 @@ import org.hibernate.type.descriptor.jdbc.BasicBinder;
 
 import java.io.UnsupportedEncodingException;
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Vlad Mihalcea
@@ -15,11 +18,32 @@ public class JsonBytesJdbcTypeDescriptor extends AbstractJsonJdbcTypeDescriptor 
 
     public static final JsonBytesJdbcTypeDescriptor INSTANCE = new JsonBytesJdbcTypeDescriptor();
 
+    private static final Map<Database, JsonBytesJdbcTypeDescriptor> INSTANCE_MAP = new HashMap<>();
+
+    static {
+        INSTANCE_MAP.put(Database.H2, INSTANCE);
+        INSTANCE_MAP.put(Database.ORACLE, new JsonBytesJdbcTypeDescriptor(2016));
+    }
+
+    public static JsonBytesJdbcTypeDescriptor of(Database database) {
+        return INSTANCE_MAP.get(database);
+    }
+
     public static final String CHARSET = "UTF8";
+
+    private final int jdbcType;
+
+    public JsonBytesJdbcTypeDescriptor() {
+        this.jdbcType = Types.BINARY;
+    }
+
+    public JsonBytesJdbcTypeDescriptor(int jdbcType) {
+        this.jdbcType = jdbcType;
+    }
 
     @Override
     public int getJdbcTypeCode() {
-        return Types.BINARY;
+        return jdbcType;
     }
 
     @Override
@@ -32,7 +56,7 @@ public class JsonBytesJdbcTypeDescriptor extends AbstractJsonJdbcTypeDescriptor 
 
             @Override
             protected void doBind(CallableStatement st, X value, String name, WrapperOptions options)
-                    throws SQLException {
+                throws SQLException {
                 st.setBytes(name, toJsonBytes(JavaType.unwrap(value, String.class, options)));
             }
         };

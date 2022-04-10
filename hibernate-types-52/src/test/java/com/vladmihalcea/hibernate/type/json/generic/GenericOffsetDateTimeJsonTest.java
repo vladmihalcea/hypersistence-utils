@@ -1,13 +1,14 @@
-package com.vladmihalcea.hibernate.type.json;
+package com.vladmihalcea.hibernate.type.json.generic;
 
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import com.vladmihalcea.hibernate.util.AbstractPostgreSQLIntegrationTest;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 import org.junit.Test;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -18,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Vlad Mihalcea
  */
-public class OffsetDateTimeJsonTest extends AbstractPostgreSQLIntegrationTest {
+public class GenericOffsetDateTimeJsonTest extends AbstractPostgreSQLIntegrationTest {
 
     @Override
     protected Class<?>[] entities() {
@@ -51,12 +52,12 @@ public class OffsetDateTimeJsonTest extends AbstractPostgreSQLIntegrationTest {
 
     @Entity(name = "Event")
     @Table(name = "event")
+    @TypeDef(defaultForType = Location.class, typeClass = JsonType.class)
     public static class Event {
 
         @Id
         private Long id;
 
-        @Type(JsonType.class)
         @Column(columnDefinition = "jsonb")
         private Location location;
 

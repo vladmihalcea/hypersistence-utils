@@ -1,5 +1,6 @@
-package com.vladmihalcea.hibernate.type.json;
+package com.vladmihalcea.hibernate.type.json.generic;
 
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import com.vladmihalcea.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import org.hibernate.annotations.TypeDef;
 import org.junit.Test;
@@ -18,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Vlad Mihalcea
  */
-public class OffsetDateTimeJsonTest extends AbstractPostgreSQLIntegrationTest {
+public class GenericOffsetDateTimeJsonTest extends AbstractPostgreSQLIntegrationTest {
 
     @Override
     protected Class<?>[] entities() {

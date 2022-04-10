@@ -1,5 +1,7 @@
 package com.vladmihalcea.hibernate.util;
 
+import java.util.Locale;
+
 /**
  * <code>StringUtils</code> - String utilities holder.
  *
@@ -38,4 +40,25 @@ public class StringUtils {
         return builder.toString();
     }
 
+    /**
+     * Check if the String value is null, empty or contains only whitespace characters.
+     * @param value String value
+     * @return if the string is blank
+     */
+    public static boolean isBlank(String value) {
+        return value == null || value.isEmpty() || value.trim().isEmpty();
+    }
+
+    /**
+     * Transform string to lowercase.
+     *
+     * @param value String value
+     * @return String value in lowercase
+     */
+    public static String toLowercase(String value) {
+        if(isBlank(value)) {
+            return value;
+        }
+        return value.toLowerCase(Locale.ROOT);
+    }
 }

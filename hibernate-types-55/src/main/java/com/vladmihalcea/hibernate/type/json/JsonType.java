@@ -6,8 +6,11 @@ import com.vladmihalcea.hibernate.type.json.internal.JsonSqlTypeDescriptor;
 import com.vladmihalcea.hibernate.type.json.internal.JsonTypeDescriptor;
 import com.vladmihalcea.hibernate.type.util.Configuration;
 import com.vladmihalcea.hibernate.type.util.ObjectMapperWrapper;
+import org.hibernate.type.descriptor.sql.SqlTypeDescriptor;
 import org.hibernate.usertype.DynamicParameterizedType;
+import org.hibernate.usertype.ParameterizedType;
 
+import javax.persistence.Column;
 import java.lang.reflect.Type;
 import java.util.Properties;
 
@@ -16,20 +19,39 @@ import java.util.Properties;
  * {@link JsonType} allows you to map any given JSON object (e.g., POJO, <code>Map&lt;String, Object&gt;</code>, List&lt;T&gt;, <code>JsonNode</code>) on any of the following database systems:
  * </p>
  * <ul>
- * <li><strong>PostgreSQL</strong> - for both <code>jsonb</code> and <code>json</code> column types</li>
- * <li><strong>MySQL</strong> - for the <code>json</code> column type</li>
- * <li><strong>SQL Server</strong> - for the <code>NVARCHAR</code> column type storing JSON</li>
- * <li><strong>Oracle</strong> - for the <code>VARCHAR</code> column type storing JSON</li>
- * <li><strong>H2</strong> - for the <code>json</code> column type</li>
+ * <li><strong>PostgreSQL</strong> - for both <strong><code>jsonb</code></strong> and <strong><code>json</code></strong> column types</li>
+ * <li><strong>MySQL</strong> - for the <strong><code>json</code></strong> column type</li>
+ * <li><strong>SQL Server</strong> - for the <strong><code>NVARCHAR</code></strong> column type storing JSON</li>
+ * <li><strong>Oracle</strong> - for the <strong><code>JSON</code></strong> column type if you're using Oracle 21c or the <strong><code>VARCHAR</code></strong> column type storing JSON if you're using an older Oracle version</li>
+ * <li><strong>H2</strong> - for the <strong><code>json</code></strong> column type</li>
  * </ul>
- *
+ * <p>
+ * If you switch to Oracle 21c from an older version, then you should also migrate your {@code JSON} columns to the native JSON type since this binary type performs better than
+ * {@code VARCHAR2} or {@code BLOB} column types.
+ * </p>
+ * <p>
+ * However, if you don't want to migrate to the new {@code JSON} data type,
+ * then you just have to provide the column type via the JPA {@link Column#columnDefinition()} attribute,
+ * like in the following example:
+ * </p>
+ * <pre>
+ * {@code @Type(}type = "com.vladmihalcea.hibernate.type.json.JsonType")
+ * {@code @Column(}columnDefinition = "VARCHAR2")
+ * </pre>
  * <p>
  * For more details about how to use the {@link JsonType}, check out <a href="https://vladmihalcea.com/how-to-map-json-objects-using-generic-hibernate-types/">this article</a> on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
  * </p>
  * <p>
- * If you are using <strong>Oracle</strong> and want to store JSON objects in a <code>BLOB</code> column types, then you should use the {@link JsonBlobType} instead. For more details, check out <a href="https://vladmihalcea.com/oracle-json-jpa-hibernate/">this article</a> on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
+ * If you are using <strong>Oracle</strong> and want to store JSON objects in a <code>BLOB</code> column type, then you can use the {@link JsonBlobType} instead. For more details, check out <a href="https://vladmihalcea.com/oracle-json-jpa-hibernate/">this article</a> on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
  * </p>
- *
+ * <p>
+ * Or, you can use the {@link JsonType}, but you'll have to specify the underlying column type
+ * using the JPA {@link Column#columnDefinition()} attribute, like this:
+ * </p>
+ * <pre>
+ * {@code @Type(}type = "com.vladmihalcea.hibernate.type.json.JsonType")
+ * {@code @Column(}columnDefinition = "BLOB")
+ * </pre>
  * @author Vlad Mihalcea
  */
 public class JsonType
@@ -53,7 +75,7 @@ public class JsonType
 
     public JsonType(Configuration configuration) {
         super(
-            new JsonSqlTypeDescriptor(),
+            new JsonSqlTypeDescriptor(configuration.getProperties()),
             new JsonTypeDescriptor(configuration.getObjectMapperWrapper()),
             configuration
         );
@@ -98,6 +120,10 @@ public class JsonType
     @Override
     public void setParameterValues(Properties parameters) {
         ((JsonTypeDescriptor) getJavaTypeDescriptor()).setParameterValues(parameters);
+        SqlTypeDescriptor sqlTypeDescriptor = getSqlTypeDescriptor();
+        if(sqlTypeDescriptor instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) sqlTypeDescriptor;
+            parameterizedType.setParameterValues(parameters);
+        }
     }
-
 }

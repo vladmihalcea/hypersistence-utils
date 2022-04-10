@@ -32,5 +32,10 @@ public class MutableDynamicParameterizedType<T, JDBC extends JdbcType, JAVA exte
             ParameterizedType parameterizedType = (ParameterizedType) javaTypeDescriptor;
             parameterizedType.setParameterValues(parameters);
         }
+        JDBC jdbcTypeDescriptor = getJdbcTypeDescriptor();
+        if(jdbcTypeDescriptor instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) jdbcTypeDescriptor;
+            parameterizedType.setParameterValues(parameters);
+        }
     }
 }
