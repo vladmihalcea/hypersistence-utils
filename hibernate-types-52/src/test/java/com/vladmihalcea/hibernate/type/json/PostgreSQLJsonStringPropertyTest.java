@@ -1,6 +1,5 @@
 package com.vladmihalcea.hibernate.type.json;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.vladmihalcea.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import com.vladmihalcea.hibernate.util.ExceptionUtil;
@@ -152,8 +151,8 @@ public class PostgreSQLJsonStringPropertyTest extends AbstractPostgreSQLIntegrat
             });
             fail("An invalid JSON should throw an exception!");
         } catch (Exception e) {
-            JsonParseException rootCause = ExceptionUtil.rootCause(e);
-            assertTrue(rootCause.getMessage().contains("Unexpected character (':'"));
+            Exception rootCause = ExceptionUtil.rootCause(e);
+            assertTrue(rootCause.getMessage().contains("invalid input syntax for type json"));
         }
     }
 

@@ -1,6 +1,5 @@
 package com.vladmihalcea.hibernate.type.json.internal;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.hibernate.type.descriptor.ValueBinder;
 import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.type.descriptor.java.JavaType;
@@ -22,13 +21,13 @@ public class JsonBinaryJdbcTypeDescriptor extends AbstractJsonJdbcTypeDescriptor
         return new BasicBinder<X>(javaType, this) {
             @Override
             protected void doBind(PreparedStatement st, X value, int index, WrapperOptions options) throws SQLException {
-                st.setObject(index, javaType.unwrap(value, JsonNode.class, options), getJdbcTypeCode());
+                st.setObject(index, javaType.unwrap(value, String.class, options), getJdbcTypeCode());
             }
 
             @Override
             protected void doBind(CallableStatement st, X value, String name, WrapperOptions options)
                     throws SQLException {
-                st.setObject(name, javaType.unwrap(value, JsonNode.class, options), getJdbcTypeCode());
+                st.setObject(name, javaType.unwrap(value, String.class, options), getJdbcTypeCode());
             }
         };
     }
