@@ -31,3 +31,22 @@ services:
       options:
         max-size: "50m"
         max-file: "1"
+
+  sqlserver-hibernate:
+    image: mcr.microsoft.com/mssql/server:2019-GA-ubuntu-16.04
+    container_name: sqlserver-hibernate-types
+    ports:
+      - 1433:1433
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Admin_123456
+      - MSSQL_PID=Express
+    volumes :
+      - ./sqlserver/setup.sql:/var/tmp/setup.sql
+      - ./sqlserver/entrypoint.sh:/var/tmp/entrypoint.sh
+    command:  bash /var/tmp/entrypoint.sh
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "1"

@@ -1,0 +1,2 @@
+# Make sure the command order is not change, otherwise container may shut down before you connect it.
+/opt/mssql-tools/bin/sqlcmd -S 127.0.0.1 -U sa -P Admin_123456 -i /var/tmp/setup.sql & /opt/mssql/bin/sqlservr
