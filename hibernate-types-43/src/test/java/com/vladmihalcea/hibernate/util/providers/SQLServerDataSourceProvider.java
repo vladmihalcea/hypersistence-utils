@@ -20,7 +20,7 @@ public class SQLServerDataSourceProvider implements DataSourceProvider {
 		ReflectionUtils.invokeMethod(dataSource, "setURL", "jdbc:sqlserver://localhost;instance=SQLEXPRESS;" +
 			"databaseName=high_performance_java_persistence;");
 		ReflectionUtils.invokeMethod(dataSource, "setUser", "sa");
-		ReflectionUtils.invokeMethod(dataSource, "setPassword", "adm1n");
+		ReflectionUtils.invokeMethod(dataSource, "setPassword", "Admin_123456");
 		return dataSource;
 	}
 

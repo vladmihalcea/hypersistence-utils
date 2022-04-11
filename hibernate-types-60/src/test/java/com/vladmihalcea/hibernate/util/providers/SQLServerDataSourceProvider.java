@@ -22,7 +22,7 @@ public class SQLServerDataSourceProvider implements DataSourceProvider {
 				"databaseName=high_performance_java_persistence;"
 		);
 		dataSource.setUser("sa");
-		dataSource.setPassword("adm1n");
+		dataSource.setPassword("Admin_123456");
 		return dataSource;
 	}
 
