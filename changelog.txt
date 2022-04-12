@@ -1,3 +1,12 @@
+Version 2.16.0 - April 12, 2022
+================================================================================
+
+Add support for customizing the JsonType underlying Oracle column type enhancement #424
+
+Change JsonBinarySqlTypeDescriptor to bind the JSON object as String enhancement #423
+
+Add support for Oracle 21c JSON columns enhancement #422
+
 Version 2.15.2 - April 10, 2022
 ================================================================================
 
