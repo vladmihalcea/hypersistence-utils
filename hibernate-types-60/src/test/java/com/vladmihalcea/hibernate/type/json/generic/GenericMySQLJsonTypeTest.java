@@ -1,5 +1,6 @@
-package com.vladmihalcea.hibernate.type.json;
+package com.vladmihalcea.hibernate.type.json.generic;
 
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
 import com.vladmihalcea.hibernate.type.model.Location;
 import com.vladmihalcea.hibernate.type.model.Ticket;
@@ -20,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Vlad Mihalcea
  */
-public class MySQLJsonTypeTest extends AbstractMySQLIntegrationTest {
+public class GenericMySQLJsonTypeTest extends AbstractMySQLIntegrationTest {
 
     @Override
     protected Class<?>[] entities() {

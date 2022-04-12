@@ -1,6 +1,7 @@
 package com.vladmihalcea.hibernate.type.json;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import com.vladmihalcea.hibernate.util.AbstractOracleIntegrationTest;
 import net.ttddyy.dsproxy.QueryCount;
 import net.ttddyy.dsproxy.QueryCountHolder;

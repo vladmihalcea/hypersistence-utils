@@ -2,6 +2,7 @@ package com.vladmihalcea.hibernate.type.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vladmihalcea.hibernate.type.AbstractHibernateType;
+import com.vladmihalcea.hibernate.type.json.internal.JsonBlobSqlTypeDescriptor;
 import com.vladmihalcea.hibernate.type.json.internal.JsonTypeDescriptor;
 import com.vladmihalcea.hibernate.type.util.Configuration;
 import com.vladmihalcea.hibernate.type.util.ObjectMapperWrapper;
@@ -33,21 +34,21 @@ public class JsonBlobType extends AbstractHibernateType<Object> implements Dynam
 
     public JsonBlobType() {
         super(
-            org.hibernate.type.descriptor.sql.BlobTypeDescriptor.DEFAULT,
+            JsonBlobSqlTypeDescriptor.INSTANCE,
             new JsonTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper())
         );
     }
 
     public JsonBlobType(Type javaType) {
         super(
-            org.hibernate.type.descriptor.sql.BlobTypeDescriptor.DEFAULT,
+            JsonBlobSqlTypeDescriptor.INSTANCE,
             new JsonTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper(), javaType)
         );
     }
 
     public JsonBlobType(Configuration configuration) {
         super(
-            org.hibernate.type.descriptor.sql.BlobTypeDescriptor.DEFAULT,
+            JsonBlobSqlTypeDescriptor.INSTANCE,
             new JsonTypeDescriptor(configuration.getObjectMapperWrapper()),
             configuration
         );
@@ -59,28 +60,28 @@ public class JsonBlobType extends AbstractHibernateType<Object> implements Dynam
 
     public JsonBlobType(ObjectMapper objectMapper) {
         super(
-            org.hibernate.type.descriptor.sql.BlobTypeDescriptor.DEFAULT,
+            JsonBlobSqlTypeDescriptor.INSTANCE,
             new JsonTypeDescriptor(new ObjectMapperWrapper(objectMapper))
         );
     }
 
     public JsonBlobType(ObjectMapperWrapper objectMapperWrapper) {
         super(
-            org.hibernate.type.descriptor.sql.BlobTypeDescriptor.DEFAULT,
+            JsonBlobSqlTypeDescriptor.INSTANCE,
             new JsonTypeDescriptor(objectMapperWrapper)
         );
     }
 
     public JsonBlobType(ObjectMapper objectMapper, Type javaType) {
         super(
-            org.hibernate.type.descriptor.sql.BlobTypeDescriptor.DEFAULT,
+            JsonBlobSqlTypeDescriptor.INSTANCE,
             new JsonTypeDescriptor(new ObjectMapperWrapper(objectMapper), javaType)
         );
     }
 
     public JsonBlobType(ObjectMapperWrapper objectMapperWrapper, Type javaType) {
         super(
-            org.hibernate.type.descriptor.sql.BlobTypeDescriptor.DEFAULT,
+            JsonBlobSqlTypeDescriptor.INSTANCE,
             new JsonTypeDescriptor(objectMapperWrapper, javaType)
         );
     }

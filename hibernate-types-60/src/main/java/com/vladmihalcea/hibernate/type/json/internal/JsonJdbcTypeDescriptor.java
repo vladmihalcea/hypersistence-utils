@@ -1,24 +1,36 @@
 package com.vladmihalcea.hibernate.type.json.internal;
 
-import org.hibernate.dialect.Dialect;
-import org.hibernate.dialect.H2Dialect;
-import org.hibernate.dialect.PostgreSQLDialect;
+import com.vladmihalcea.hibernate.type.util.ParameterTypeUtils;
+import com.vladmihalcea.hibernate.util.StringUtils;
+import org.hibernate.dialect.*;
 import org.hibernate.engine.jdbc.dialect.internal.StandardDialectResolver;
 import org.hibernate.engine.jdbc.dialect.spi.DatabaseMetaDataDialectResolutionInfoAdapter;
 import org.hibernate.type.descriptor.ValueBinder;
 import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.type.descriptor.java.JavaType;
 import org.hibernate.type.descriptor.jdbc.BasicBinder;
+import org.hibernate.usertype.DynamicParameterizedType;
+import org.hibernate.usertype.ParameterizedType;
 
 import java.sql.*;
+import java.util.Properties;
 
 /**
  * @author Vlad Mihalcea
  */
-public class JsonJdbcTypeDescriptor extends AbstractJsonJdbcTypeDescriptor {
+public class JsonJdbcTypeDescriptor extends AbstractJsonJdbcTypeDescriptor implements ParameterizedType {
 
     private volatile Dialect dialect;
-    private volatile AbstractJsonJdbcTypeDescriptor sqlTypeDescriptor;
+    private volatile AbstractJsonJdbcTypeDescriptor jdbcTypeDescriptor;
+
+    private volatile Properties properties;
+
+    public JsonJdbcTypeDescriptor() {
+    }
+
+    public JsonJdbcTypeDescriptor(Properties properties) {
+        this.properties = properties;
+    }
 
     @Override
     public <X> ValueBinder<X> getBinder(final JavaType<X> javaType) {
@@ -32,7 +44,7 @@ public class JsonJdbcTypeDescriptor extends AbstractJsonJdbcTypeDescriptor {
 
             @Override
             protected void doBind(CallableStatement st, X value, String name, WrapperOptions options)
-                    throws SQLException {
+                throws SQLException {
                 sqlTypeDescriptor(st.getConnection()).getBinder(javaType).bind(
                     st, value, name, options
                 );
@@ -56,29 +68,63 @@ public class JsonJdbcTypeDescriptor extends AbstractJsonJdbcTypeDescriptor {
     }
 
     private AbstractJsonJdbcTypeDescriptor sqlTypeDescriptor(Connection connection) {
-        if(sqlTypeDescriptor == null) {
-            sqlTypeDescriptor = resolveSqlTypeDescriptor(connection);
+        if (jdbcTypeDescriptor == null) {
+            jdbcTypeDescriptor = resolveJdbcTypeDescriptor(connection);
         }
-        return sqlTypeDescriptor;
+        return jdbcTypeDescriptor;
     }
 
-    private AbstractJsonJdbcTypeDescriptor resolveSqlTypeDescriptor(Connection connection) {
+    private AbstractJsonJdbcTypeDescriptor resolveJdbcTypeDescriptor(Connection connection) {
         try {
             StandardDialectResolver dialectResolver = new StandardDialectResolver();
-            dialect = dialectResolver.resolveDialect(
-                new DatabaseMetaDataDialectResolutionInfoAdapter(connection.getMetaData())
-            );
-            if(PostgreSQLDialect.class.isInstance(dialect)) {
+            DatabaseMetaDataDialectResolutionInfoAdapter metaDataInfo = new DatabaseMetaDataDialectResolutionInfoAdapter(connection.getMetaData());
+            dialect = dialectResolver.resolveDialect(metaDataInfo);
+            if (dialect instanceof PostgreSQLDialect) {
                 return JsonBinaryJdbcTypeDescriptor.INSTANCE;
-            } else if(H2Dialect.class.isInstance(dialect)) {
+            } else if (dialect instanceof H2Dialect) {
                 return JsonBytesJdbcTypeDescriptor.INSTANCE;
-            } else {
-                return JsonStringJdbcTypeDescriptor.INSTANCE;
+            } else if (dialect instanceof OracleDialect) {
+                if (properties != null) {
+                    DynamicParameterizedType.ParameterType parameterType = ParameterTypeUtils.resolve(properties);
+                    if (parameterType != null) {
+                        String columnType = ParameterTypeUtils.getColumnType(parameterType);
+                        if (!StringUtils.isBlank(columnType)) {
+                            switch (columnType) {
+                                case "json":
+                                    return JsonBytesJdbcTypeDescriptor.of(Database.ORACLE);
+                                case "blob":
+                                case "clob":
+                                    return JsonBlobJdbcTypeDescriptor.INSTANCE;
+                                case "varchar2":
+                                case "nvarchar2":
+                                    return JsonStringJdbcTypeDescriptor.INSTANCE;
+                            }
+                        }
+                    }
+                }
+                if (metaDataInfo.getDatabaseMajorVersion() >= 21) {
+                    return JsonBytesJdbcTypeDescriptor.of(Database.ORACLE);
+                }
             }
+            return JsonStringJdbcTypeDescriptor.INSTANCE;
         } catch (SQLException e) {
             throw new IllegalStateException(e);
         }
     }
 
+    @Override
+    public int getJdbcTypeCode() {
+        return jdbcTypeDescriptor != null ?
+            jdbcTypeDescriptor.getJdbcTypeCode() :
+            super.getJdbcTypeCode();
+    }
 
+    @Override
+    public void setParameterValues(Properties parameters) {
+        if (properties == null) {
+            properties = parameters;
+        } else {
+            properties.putAll(parameters);
+        }
+    }
 }

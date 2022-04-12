@@ -2,10 +2,10 @@ package com.vladmihalcea.hibernate.type.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vladmihalcea.hibernate.type.MutableDynamicParameterizedType;
+import com.vladmihalcea.hibernate.type.json.internal.JsonBlobJdbcTypeDescriptor;
 import com.vladmihalcea.hibernate.type.json.internal.JsonJavaTypeDescriptor;
 import com.vladmihalcea.hibernate.type.util.Configuration;
 import com.vladmihalcea.hibernate.type.util.ObjectMapperWrapper;
-import org.hibernate.type.descriptor.jdbc.BlobJdbcType;
 
 import java.lang.reflect.Type;
 import java.sql.Blob;
@@ -26,14 +26,14 @@ import java.sql.Blob;
  *
  * @author Vlad Mihalcea
  */
-public class JsonBlobType extends MutableDynamicParameterizedType<Object, BlobJdbcType, JsonJavaTypeDescriptor> {
+public class JsonBlobType extends MutableDynamicParameterizedType<Object, JsonBlobJdbcTypeDescriptor, JsonJavaTypeDescriptor> {
 
     public static final JsonBlobType INSTANCE = new JsonBlobType();
 
     public JsonBlobType() {
         super(
             Object.class,
-            org.hibernate.type.descriptor.jdbc.BlobJdbcType.DEFAULT,
+            JsonBlobJdbcTypeDescriptor.INSTANCE,
             new JsonJavaTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper())
         );
     }
@@ -41,7 +41,7 @@ public class JsonBlobType extends MutableDynamicParameterizedType<Object, BlobJd
     public JsonBlobType(Type javaType) {
         super(
             Object.class,
-            org.hibernate.type.descriptor.jdbc.BlobJdbcType.DEFAULT,
+            JsonBlobJdbcTypeDescriptor.INSTANCE,
             new JsonJavaTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper(), javaType)
         );
     }
@@ -49,7 +49,7 @@ public class JsonBlobType extends MutableDynamicParameterizedType<Object, BlobJd
     public JsonBlobType(Configuration configuration) {
         super(
             Object.class,
-            org.hibernate.type.descriptor.jdbc.BlobJdbcType.DEFAULT,
+            JsonBlobJdbcTypeDescriptor.INSTANCE,
             new JsonJavaTypeDescriptor(configuration.getObjectMapperWrapper())
         );
     }
@@ -61,7 +61,7 @@ public class JsonBlobType extends MutableDynamicParameterizedType<Object, BlobJd
     public JsonBlobType(ObjectMapper objectMapper) {
         super(
             Object.class,
-            org.hibernate.type.descriptor.jdbc.BlobJdbcType.DEFAULT,
+            JsonBlobJdbcTypeDescriptor.INSTANCE,
             new JsonJavaTypeDescriptor(new ObjectMapperWrapper(objectMapper))
         );
     }
@@ -69,7 +69,7 @@ public class JsonBlobType extends MutableDynamicParameterizedType<Object, BlobJd
     public JsonBlobType(ObjectMapperWrapper objectMapperWrapper) {
         super(
             Object.class,
-            org.hibernate.type.descriptor.jdbc.BlobJdbcType.DEFAULT,
+            JsonBlobJdbcTypeDescriptor.INSTANCE,
             new JsonJavaTypeDescriptor(objectMapperWrapper)
         );
     }
@@ -77,7 +77,7 @@ public class JsonBlobType extends MutableDynamicParameterizedType<Object, BlobJd
     public JsonBlobType(ObjectMapper objectMapper, Type javaType) {
         super(
             Object.class,
-            org.hibernate.type.descriptor.jdbc.BlobJdbcType.DEFAULT,
+            JsonBlobJdbcTypeDescriptor.INSTANCE,
             new JsonJavaTypeDescriptor(new ObjectMapperWrapper(objectMapper), javaType)
         );
     }
@@ -85,7 +85,7 @@ public class JsonBlobType extends MutableDynamicParameterizedType<Object, BlobJd
     public JsonBlobType(ObjectMapperWrapper objectMapperWrapper, Type javaType) {
         super(
             Object.class,
-            org.hibernate.type.descriptor.jdbc.BlobJdbcType.DEFAULT,
+            JsonBlobJdbcTypeDescriptor.INSTANCE,
             new JsonJavaTypeDescriptor(objectMapperWrapper, javaType)
         );
     }
