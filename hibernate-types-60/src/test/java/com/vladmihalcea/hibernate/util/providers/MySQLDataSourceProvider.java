@@ -1,6 +1,7 @@
 package com.vladmihalcea.hibernate.util.providers;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
+import org.hibernate.dialect.MySQLDialect;
 
 import javax.sql.DataSource;
 import java.util.Properties;
@@ -72,7 +73,7 @@ public class MySQLDataSourceProvider implements DataSourceProvider {
 
     @Override
     public String hibernateDialect() {
-        return "org.hibernate.dialect.MySQL57Dialect";
+        return MySQLDialect.class.getName();
     }
 
     @Override

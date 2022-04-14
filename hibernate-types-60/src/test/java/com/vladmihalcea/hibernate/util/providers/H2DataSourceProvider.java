@@ -2,6 +2,7 @@ package com.vladmihalcea.hibernate.util.providers;
 
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.h2.jdbcx.JdbcDataSource;
+import org.hibernate.dialect.H2Dialect;
 
 import javax.sql.DataSource;
 import java.util.Properties;
@@ -13,7 +14,7 @@ public class H2DataSourceProvider implements DataSourceProvider {
 
     @Override
     public String hibernateDialect() {
-        return "org.hibernate.dialect.H2Dialect";
+        return H2Dialect.class.getName();
     }
 
     @Override

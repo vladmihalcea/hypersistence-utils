@@ -12,14 +12,9 @@ import com.vladmihalcea.hibernate.type.search.PostgreSQLTSVectorType;
 import com.vladmihalcea.hibernate.util.ReflectionUtils;
 import org.hibernate.boot.model.TypeContributions;
 import org.hibernate.boot.model.TypeContributor;
-import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.dialect.*;
-import org.hibernate.engine.config.spi.ConfigurationService;
 import org.hibernate.engine.jdbc.spi.JdbcServices;
 import org.hibernate.service.ServiceRegistry;
-import org.hibernate.type.descriptor.java.JavaType;
-import org.hibernate.type.descriptor.sql.spi.DdlTypeRegistry;
-import org.hibernate.type.spi.TypeConfiguration;
 
 /**
  * The {@link HibernateTypesContributor} registers various types automatically.

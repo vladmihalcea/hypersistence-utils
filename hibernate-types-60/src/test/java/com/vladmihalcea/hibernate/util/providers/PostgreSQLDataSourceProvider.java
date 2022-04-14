@@ -1,6 +1,7 @@
 package com.vladmihalcea.hibernate.util.providers;
 
 import org.hibernate.dialect.PostgreSQL95Dialect;
+import org.hibernate.dialect.PostgreSQLDialect;
 import org.postgresql.ds.PGSimpleDataSource;
 
 import javax.sql.DataSource;
@@ -13,7 +14,7 @@ public class PostgreSQLDataSourceProvider implements DataSourceProvider {
 
     @Override
     public String hibernateDialect() {
-        return PostgreSQL95Dialect.class.getName();
+        return PostgreSQLDialect.class.getName();
     }
 
     @Override

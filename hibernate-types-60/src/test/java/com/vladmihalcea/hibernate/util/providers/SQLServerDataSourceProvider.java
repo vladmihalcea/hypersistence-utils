@@ -1,6 +1,7 @@
 package com.vladmihalcea.hibernate.util.providers;
 
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
+import org.hibernate.dialect.SQLServerDialect;
 
 import javax.sql.DataSource;
 import java.util.Properties;
@@ -11,7 +12,7 @@ import java.util.Properties;
 public class SQLServerDataSourceProvider implements DataSourceProvider {
 	@Override
 	public String hibernateDialect() {
-		return "org.hibernate.dialect.SQLServer2012Dialect";
+		return SQLServerDialect.class.getName();
 	}
 
 	@Override

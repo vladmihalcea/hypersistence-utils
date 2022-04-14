@@ -15,6 +15,8 @@ import org.hibernate.boot.model.TypeContributor;
 import org.hibernate.dialect.*;
 import org.hibernate.engine.jdbc.spi.JdbcServices;
 import org.hibernate.service.ServiceRegistry;
+import org.hibernate.type.BasicType;
+import org.hibernate.usertype.UserType;
 
 /**
  * The {@link HibernateTypesContributor} registers various types automatically.
@@ -31,64 +33,81 @@ public class HibernateTypesContributor implements TypeContributor {
 
         if(dialect instanceof PostgreSQLDialect) {
             /* Arrays */
-            typeContributions.contributeType(BooleanArrayType.INSTANCE);
-            typeContributions.contributeType(DateArrayType.INSTANCE);
-            typeContributions.contributeType(DecimalArrayType.INSTANCE);
-            typeContributions.contributeType(DoubleArrayType.INSTANCE);
-            typeContributions.contributeType(EnumArrayType.INSTANCE);
-            typeContributions.contributeType(IntArrayType.INSTANCE);
-            typeContributions.contributeType(DoubleArrayType.INSTANCE);
-            typeContributions.contributeType(ListArrayType.INSTANCE);
-            typeContributions.contributeType(LocalDateArrayType.INSTANCE);
-            typeContributions.contributeType(LocalDateTimeArrayType.INSTANCE);
-            typeContributions.contributeType(LongArrayType.INSTANCE);
-            typeContributions.contributeType(StringArrayType.INSTANCE);
-            typeContributions.contributeType(TimestampArrayType.INSTANCE);
-            typeContributions.contributeType(UUIDArrayType.INSTANCE);
-
+            this
+            .contributeType(typeContributions, BooleanArrayType.INSTANCE)
+            .contributeType(typeContributions, DateArrayType.INSTANCE)
+            .contributeType(typeContributions, DecimalArrayType.INSTANCE)
+            .contributeType(typeContributions, DoubleArrayType.INSTANCE)
+            .contributeType(typeContributions, EnumArrayType.INSTANCE)
+            .contributeType(typeContributions, IntArrayType.INSTANCE)
+            .contributeType(typeContributions, DoubleArrayType.INSTANCE)
+            .contributeType(typeContributions, ListArrayType.INSTANCE)
+            .contributeType(typeContributions, LocalDateArrayType.INSTANCE)
+            .contributeType(typeContributions, LocalDateTimeArrayType.INSTANCE)
+            .contributeType(typeContributions, LongArrayType.INSTANCE)
+            .contributeType(typeContributions, StringArrayType.INSTANCE)
+            .contributeType(typeContributions, TimestampArrayType.INSTANCE)
+            .contributeType(typeContributions, UUIDArrayType.INSTANCE)
             /* Date/Time */
-            typeContributions.contributeType(PostgreSQLIntervalType.INSTANCE);
-            typeContributions.contributeType(PostgreSQLPeriodType.INSTANCE);
-
+            .contributeType(typeContributions, PostgreSQLIntervalType.INSTANCE)
+            .contributeType(typeContributions, PostgreSQLPeriodType.INSTANCE)
             /* JSON */
-            typeContributions.contributeType(JsonBinaryType.INSTANCE);
+            .contributeType(typeContributions, JsonBinaryType.INSTANCE)
 
             /* Specific-types */
-            typeContributions.contributeType(PostgreSQLTSVectorType.INSTANCE);
-            typeContributions.contributeType(PostgreSQLEnumType.INSTANCE);
-            typeContributions.contributeType(PostgreSQLHStoreType.INSTANCE);
-            typeContributions.contributeType(PostgreSQLInetType.INSTANCE);
-            typeContributions.contributeType(PostgreSQLRangeType.INSTANCE);
+            .contributeType(typeContributions, PostgreSQLTSVectorType.INSTANCE)
+            .contributeType(typeContributions, PostgreSQLEnumType.INSTANCE)
+            .contributeType(typeContributions, PostgreSQLHStoreType.INSTANCE)
+            .contributeType(typeContributions, PostgreSQLInetType.INSTANCE)
+            .contributeType(typeContributions, PostgreSQLRangeType.INSTANCE);
 
             if(ReflectionUtils.getClassOrNull("com.google.common.collect.Range") != null) {
-                typeContributions.contributeType(PostgreSQLGuavaRangeType.INSTANCE);
+                this.contributeType(typeContributions, PostgreSQLGuavaRangeType.INSTANCE);
             }
         } else if(dialect instanceof MySQLDialect) {
             /* JSON */
-            typeContributions.contributeType(JsonStringType.INSTANCE);
-            typeContributions.contributeType(JsonNodeStringType.INSTANCE);
+            this
+            .contributeType(typeContributions, JsonStringType.INSTANCE)
+            .contributeType(typeContributions, JsonNodeStringType.INSTANCE);
         } else if(dialect instanceof SQLServerDialect) {
             /* JSON */
-            typeContributions.contributeType(JsonStringType.INSTANCE);
+            this
+            .contributeType(typeContributions, JsonStringType.INSTANCE);
         } else if(dialect instanceof OracleDialect) {
             /* Date/Time */
-            typeContributions.contributeType(OracleIntervalDayToSecondType.INSTANCE);
+            this
+            .contributeType(typeContributions, OracleIntervalDayToSecondType.INSTANCE)
             /* JSON */
-            typeContributions.contributeType(JsonStringType.INSTANCE);
-            typeContributions.contributeType(JsonBlobType.INSTANCE);
+            .contributeType(typeContributions, JsonStringType.INSTANCE)
+            .contributeType(typeContributions, JsonBlobType.INSTANCE);
         }
 
         /* Basic */
-        typeContributions.contributeType(NullableCharacterType.INSTANCE);
+        this.contributeType(typeContributions, NullableCharacterType.INSTANCE)
         /* Date/Time */
-        typeContributions.contributeType(Iso8601MonthType.INSTANCE);
-        typeContributions.contributeType(MonthDayDateType.INSTANCE);
-        typeContributions.contributeType(MonthDayIntegerType.INSTANCE);
-        typeContributions.contributeType(YearMonthDateType.INSTANCE);
-        typeContributions.contributeType(YearMonthEpochType.INSTANCE);
-        typeContributions.contributeType(YearMonthIntegerType.INSTANCE);
-        typeContributions.contributeType(YearMonthTimestampType.INSTANCE);
+        .contributeType(typeContributions, Iso8601MonthType.INSTANCE)
+        .contributeType(typeContributions, MonthDayDateType.INSTANCE)
+        .contributeType(typeContributions, MonthDayIntegerType.INSTANCE)
+        .contributeType(typeContributions, YearMonthDateType.INSTANCE)
+        .contributeType(typeContributions, YearMonthEpochType.INSTANCE)
+        .contributeType(typeContributions, YearMonthIntegerType.INSTANCE)
+        .contributeType(typeContributions, YearMonthTimestampType.INSTANCE)
         /* JSON */
-        typeContributions.contributeType(JsonType.INSTANCE);
+        .contributeType(typeContributions, JsonType.INSTANCE);
+    }
+
+    private HibernateTypesContributor contributeType(TypeContributions typeContributions, BasicType type) {
+        typeContributions.contributeType(type);
+        return this;
+    }
+
+    private HibernateTypesContributor contributeType(TypeContributions typeContributions, UserType type) {
+        if(type instanceof ImmutableType) {
+            ImmutableType immutableType = (ImmutableType) type;
+            typeContributions.contributeType(immutableType, immutableType.getName());
+        } else {
+            typeContributions.contributeType(type, type.getClass().getSimpleName());
+        }
+        return this;
     }
 }

@@ -1,5 +1,6 @@
 package com.vladmihalcea.hibernate.util.providers;
 
+import org.hibernate.dialect.HSQLDialect;
 import org.hsqldb.jdbc.JDBCDataSource;
 
 import javax.sql.DataSource;
@@ -12,7 +13,7 @@ public class HSQLDBDataSourceProvider implements DataSourceProvider {
 
     @Override
     public String hibernateDialect() {
-        return "org.hibernate.dialect.HSQLDialect";
+        return HSQLDialect.class.getName();
     }
 
     @Override
