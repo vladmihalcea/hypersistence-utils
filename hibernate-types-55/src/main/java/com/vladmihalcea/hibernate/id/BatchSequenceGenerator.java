@@ -46,13 +46,13 @@ import java.util.concurrent.locks.ReentrantLock;
  * <h2>SQL</h2>
  * Per default the generated SELECT will look something like this
  * <pre><code>
- * WITH RECURSIVE t(n, level_num) AS (
- *   SELECT nextval(seq_xxx) AS n, 1 AS level_num
+ * WITH RECURSIVE t(n) AS (
+ *   SELECT 1
  *     UNION ALL
- *   SELECT nextval(seq_xxx) AS n, level_num + 1 AS level_num
+ *   SELECT n + 1
  *   FROM t
- *   WHERE level_num &lt; ?)
- * SELECT n
+ *   WHERE n &lt; ?)
+ * SELECT nextval(seq_xxx)
  *   FROM t;
  * </code></pre>
  *
@@ -215,13 +215,13 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
                             + " WHERE level_num < ?) "
                             + "SELECT n FROM t";
         }
-        return "WITH RECURSIVE t(n, level_num) AS ("
-        + "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " AS n, 1 AS level_num "
+        return "WITH RECURSIVE t(n) AS ("
+        + "SELECT 1 "
         + "UNION ALL "
-        + "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " AS n, level_num + 1 AS level_num "
+        + "SELECT n + 1"
         + " FROM t "
-        + " WHERE level_num < ?) "
-        + "SELECT n FROM t";
+        + " WHERE n < ?) "
+        + "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " FROM t";
     }
 
     private SequenceStructure buildDatabaseStructure(Type type, String sequenceName, JdbcEnvironment jdbcEnvironment) {
