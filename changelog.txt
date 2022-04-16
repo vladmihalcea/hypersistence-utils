@@ -1,11 +1,18 @@
+Version 2.16.1 - April 16, 2022
+================================================================================
+
+Fix the batch sequence generation for the 2.x version of H2 #428
+
+Remove warning generated on startup "Type [org.hibernate.type.CustomType@6142b9dd] defined no registration keys; ignoring" #427
+
 Version 2.16.0 - April 12, 2022
 ================================================================================
 
-Add support for customizing the JsonType underlying Oracle column type enhancement #424
+Add support for customizing the JsonType underlying Oracle column type #424
 
-Change JsonBinarySqlTypeDescriptor to bind the JSON object as String enhancement #423
+Change JsonBinarySqlTypeDescriptor to bind the JSON object as String #423
 
-Add support for Oracle 21c JSON columns enhancement #422
+Add support for Oracle 21c JSON columns #422
 
 Version 2.15.2 - April 10, 2022
 ================================================================================
@@ -15,42 +22,42 @@ Register the PostgreSQLGuavaRangeType only if Guava Range is available on the cl
 Version 2.15.1 - April 07, 2022
 ================================================================================
 
-Rename the Hibernate 6 Dynamic mutable and immutable abstract types enhancement #419
+Rename the Hibernate 6 Dynamic mutable and immutable abstract types #419
 
-Add support for Hibernate 5.6 in BatchSequenceGenerator enhancement #417
+Add support for Hibernate 5.6 in BatchSequenceGenerator #417
 
 Version 2.15.0 - April 06, 2022
 ================================================================================
 
-Add support for Hibernate 6 enhancement #401
+Add support for Hibernate 6 #401
 
 Support for Jakarta EE 9? requires investigation #380
 
-Create a TypeContributor that registers all supported types enhancement #166
+Create a TypeContributor that registers all supported types #166
 
 Version 2.14.1 - March 23, 2022
 ================================================================================
 
-Add support for using OffsetDateTime in JSON objects enhancement #408
+Add support for using OffsetDateTime in JSON objects #408
 
-Add support for LocalDateTime[] mappings enhancement #407
+Add support for LocalDateTime[] mappings #407
 
-Add support for LocalDate[] mappings enhancement #406
+Add support for LocalDate[] mappings #406
 
-PostgreSQLEnumType#sqlTypes() should always return Types.VARCHAR enhancement #399
+PostgreSQLEnumType#sqlTypes() should always return Types.VARCHAR #399
 
 Version 2.14.0 - October 24, 2021
 ================================================================================
 
-Move SQLExtractor to the query package enhancement #359
+Move SQLExtractor to the query package #359
 
-Move the type/util classes that are not associated to types to the generic util package enhancement #358
+Move the type/util classes that are not associated to types to the generic util package #358
 
-Move the ResultTransformer implementations to the query package enhancement #357
+Move the ResultTransformer implementations to the query package #357
 
-Move CamelCaseToSnakeCaseNamingStrategy to the naming package enhancement #356
+Move CamelCaseToSnakeCaseNamingStrategy to the naming package #356
 
-Add BatchSequenceGenerator enhancement #354
+Add BatchSequenceGenerator #354
 
 Version 2.13.0 - October 09, 2021
 ================================================================================
@@ -69,7 +76,7 @@ Version 2.12.0 - June 14, 2021
 
 Add hibernate-type-55 module #324
 
-Prevent NullPointerException caused by sqlArrayType in the ListArrayTypeDescriptor bug #320
+Prevent NullPointerException caused by sqlArrayType in the ListArrayTypeDescriptor #320
 
 Version 2.11.1 - May 11, 2021
 ================================================================================
@@ -84,7 +91,7 @@ Add generic JsonType that auto-resolves the SqlTypeDescriptor #174
 Version 2.10.4 - March 24, 2021
 ================================================================================
 
-Add fractional support to PostgreSQLIntervalType enhancement #307
+Add fractional support to PostgreSQLIntervalType #307
 
 Use the provided delimiter parameter in the StringUtils.join method #302
 
@@ -103,13 +110,13 @@ Support PostgreSQL empty & inf range and OffsetDateTime for Guava ranges #287
 Version 2.10.1 - December 08, 2020
 ================================================================================
 
-Log a WARN message if the JSON object does not implement equals and hashCode enhancement #281
+Log a WARN message if the JSON object does not implement equals and hashCode #281
 
-Convert parsing or processing errors to HibernateException enhancement #280
+Convert parsing or processing errors to HibernateException #280
 
-The NotSerializableException is thrown when mapping a Map<String, List<>> entity attribute to a JSON column bug #243
+The NotSerializableException is thrown when mapping a Map<String, List<>> entity attribute to a JSON column #243
 
-Add MySQL BinaryType enhancement #23
+Add MySQL BinaryType #23
 
 Version 2.10.0 - October 07, 2020
 ================================================================================
@@ -194,15 +201,15 @@ Switch to using a single Logger instance #197
 Version 2.9.4 - February 26, 2020
 ================================================================================
 
-A NullPointerException is thrown when adding a ListArrayType definition to a MappedSuperClass bug #189
+A NullPointerException is thrown when adding a ListArrayType definition to a MappedSuperClass #189
 
-The ListArrayTypeDescriptor deepCopy method should not convert a List to an Java array bug #187
+The ListArrayTypeDescriptor deepCopy method should not convert a List to an Java array #187
 
 Add support for double arrays #183
 
 Improve logging of array parameters in BasicBinder #182
 
-ListArrayType generates an extra UPDATE when persisting an entity bug #180
+ListArrayType generates an extra UPDATE when persisting an entity #180
 
 Version 2.9.3 - January 26, 2020
 ================================================================================
