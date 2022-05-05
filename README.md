@@ -65,27 +65,30 @@ For more details, check out [this article](https://vladmihalcea.com/how-to-map-j
 
 ###### Oracle
 
-You should use the `JsonStringType` to map a `VARCHAR2` column type storing JSON.
+When using Oracle, you have several options:
 
-You should use the `JsonBlobType` to map a `BLOB` column type storing JSON.
+- you can use the generic `JsonType` that can work with the `JSON`, `VARCHAR`, or `BLOB` column types,
+as long as you hint the column type using the `columnDefinition` attribute of the JPA `@Column` annotation.
+- you can use the `JsonStringType` to map a `VARCHAR2` column type storing JSON.
+- you can use the `JsonBlobType` to map a `BLOB` column type storing JSON.
 
 For more details, check out [this article](https://vladmihalcea.com/oracle-json-jpa-hibernate/).
 
 ###### SQL Server
 
-You should use this `JsonStringType` to map an `NVARCHAR` column type storing JSON.
+When using SQL Server, you can use the generic `JsonType` or the `JsonStringType` to map an `NVARCHAR` column type storing JSON.
 
 For more details, check out [this article](https://vladmihalcea.com/sql-server-json-hibernate/).
 
 ###### PostgreSQL
 
-You should use this `JsonBinaryType` to map both `jsonb` and `json` column types.
+When using PostgreSQL, you can use the generic `JsonType` or the `JsonBinaryType` to map both `jsonb` and `json` column types.
 
 For more details, check out [this article](https://vladmihalcea.com/how-to-map-json-objects-using-generic-hibernate-types/).
 
 ###### MySQL
 
-You should use this `JsonStringType` to map the `json` column type.
+When using MySQL, you can use the generic `JsonType` or the `JsonStringType` to map the `json` column type.
 
 For more details, check out [this article](https://vladmihalcea.com/how-to-map-json-objects-using-generic-hibernate-types/).
 
