@@ -161,7 +161,7 @@ Depending on the Hibernate version you are using, you need to add the following 
         <version>2.16.2</version>
     </dependency>
 
-#### Hibernate 5.5
+#### Hibernate 5.6 and 5.5
 
     <dependency>
         <groupId>com.vladmihalcea</groupId>
