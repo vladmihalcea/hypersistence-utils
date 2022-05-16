@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.HibernateException;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.lang.reflect.Type;
 
 /**
@@ -14,7 +15,7 @@ import java.lang.reflect.Type;
  * @author Vlad Mihalcea
  * @since 2.1.0
  */
-public class ObjectMapperWrapper {
+public class ObjectMapperWrapper implements Serializable {
 
     public static final ObjectMapperWrapper INSTANCE = new ObjectMapperWrapper();
 

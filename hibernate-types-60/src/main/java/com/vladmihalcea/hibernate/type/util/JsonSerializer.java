@@ -1,11 +1,13 @@
 package com.vladmihalcea.hibernate.type.util;
 
+import java.io.Serializable;
+
 /**
  * Contract for serializing JSON objects.
  *
  * @author Vlad Mihalcea
  */
-public interface JsonSerializer {
+public interface JsonSerializer extends Serializable {
 
     /**
      * Clone JSON object.

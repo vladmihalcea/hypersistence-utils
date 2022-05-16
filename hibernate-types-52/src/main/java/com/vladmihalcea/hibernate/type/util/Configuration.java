@@ -10,6 +10,7 @@ import javax.persistence.EntityManagerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
@@ -28,7 +29,7 @@ import static com.vladmihalcea.hibernate.util.LogUtils.LOGGER;
  * @author Vlad Mihalcea
  * @since 2.1.0
  */
-public class Configuration {
+public class Configuration implements Serializable {
 
     public static final Configuration INSTANCE = new Configuration();
 

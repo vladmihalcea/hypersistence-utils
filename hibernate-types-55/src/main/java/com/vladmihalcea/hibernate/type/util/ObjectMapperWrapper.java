@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.hibernate.HibernateException;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.time.OffsetDateTime;
 
@@ -19,7 +20,7 @@ import static java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME;
  * @author Vlad Mihalcea
  * @since 2.1.0
  */
-public class ObjectMapperWrapper {
+public class ObjectMapperWrapper implements Serializable {
 
     public static final ObjectMapperWrapper INSTANCE = new ObjectMapperWrapper();
 
