@@ -31,7 +31,7 @@ public class HibernateTypesContributor implements TypeContributor {
         JdbcServices jdbcServices = serviceRegistry.getService(JdbcServices.class);
         Dialect dialect = jdbcServices.getDialect();
 
-        if(dialect instanceof PostgreSQLDialect) {
+        if(dialect instanceof PostgreSQL82Dialect) {
             /* Arrays */
             this
             .contributeType(typeContributions, BooleanArrayType.INSTANCE)
