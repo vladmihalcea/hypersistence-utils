@@ -30,7 +30,7 @@ public class HibernateTypesContributor implements TypeContributor {
         JdbcServices jdbcServices = serviceRegistry.getService(JdbcServices.class);
         Dialect dialect = jdbcServices.getDialect();
 
-        if(dialect instanceof PostgreSQLDialect) {
+        if(dialect instanceof PostgreSQL82Dialect) {
             /* Arrays */
             this
             .contributeType(typeContributions, BooleanArrayType.INSTANCE)
@@ -62,11 +62,11 @@ public class HibernateTypesContributor implements TypeContributor {
             this
             .contributeType(typeContributions, JsonStringType.INSTANCE)
             .contributeType(typeContributions, JsonNodeStringType.INSTANCE);
-        } else if(dialect instanceof SQLServerDialect) {
+        } else if(dialect instanceof SQLServer2005Dialect) {
             /* JSON */
             this
             .contributeType(typeContributions, JsonStringType.INSTANCE);
-        } else if(dialect instanceof OracleDialect) {
+        } else if(dialect instanceof Oracle8iDialect) {
             /* Date/Time */
             this
             /* JSON */
