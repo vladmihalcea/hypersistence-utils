@@ -41,7 +41,13 @@
         <connection>scm:git:git@github.com:vladmihalcea/hibernate-types.git</connection>
         <tag>HEAD</tag>
     </scm>
-
+    <repositories>
+        <repository>
+            <id>netbeans</id>
+            <name>NetBeans</name>
+            <url>http://netbeans.apidesign.org/maven2/</url>
+        </repository>
+    </repositories>
     <modules>
         <module>hibernate-types-60</module>
         <module>hibernate-types-55</module>
