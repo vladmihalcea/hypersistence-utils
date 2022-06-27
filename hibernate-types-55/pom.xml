@@ -66,7 +66,7 @@
     <properties>
         <jdk.version>8</jdk.version>
 
-        <hibernate.version>5.6.7.Final</hibernate.version>
+        <hibernate.version>5.6.9.Final</hibernate.version>
         <postgresql.version>42.3.3</postgresql.version>
 
         <mysql.version>8.0.28</mysql.version>
