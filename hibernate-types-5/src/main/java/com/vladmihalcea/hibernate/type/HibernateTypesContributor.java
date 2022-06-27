@@ -1,10 +1,7 @@
 package com.vladmihalcea.hibernate.type;
 
 import com.vladmihalcea.hibernate.type.array.*;
-import com.vladmihalcea.hibernate.type.basic.NullableCharacterType;
-import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
-import com.vladmihalcea.hibernate.type.basic.PostgreSQLHStoreType;
-import com.vladmihalcea.hibernate.type.basic.PostgreSQLInetType;
+import com.vladmihalcea.hibernate.type.basic.*;
 import com.vladmihalcea.hibernate.type.json.*;
 import com.vladmihalcea.hibernate.type.range.PostgreSQLRangeType;
 import com.vladmihalcea.hibernate.type.range.guava.PostgreSQLGuavaRangeType;
@@ -52,7 +49,8 @@ public class HibernateTypesContributor implements TypeContributor {
             .contributeType(typeContributions, PostgreSQLEnumType.INSTANCE)
             .contributeType(typeContributions, PostgreSQLHStoreType.INSTANCE)
             .contributeType(typeContributions, PostgreSQLInetType.INSTANCE)
-            .contributeType(typeContributions, PostgreSQLRangeType.INSTANCE);
+            .contributeType(typeContributions, PostgreSQLRangeType.INSTANCE)
+            .contributeType(typeContributions, PostgreSQLCITextType.INSTANCE);
 
             if(ReflectionUtils.getClassOrNull("com.google.common.collect.Range") != null) {
                 this.contributeType(typeContributions, PostgreSQLGuavaRangeType.INSTANCE);

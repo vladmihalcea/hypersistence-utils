@@ -59,7 +59,8 @@ public class HibernateTypesContributor implements TypeContributor {
             .contributeType(typeContributions, PostgreSQLEnumType.INSTANCE)
             .contributeType(typeContributions, PostgreSQLHStoreType.INSTANCE)
             .contributeType(typeContributions, PostgreSQLInetType.INSTANCE)
-            .contributeType(typeContributions, PostgreSQLRangeType.INSTANCE);
+            .contributeType(typeContributions, PostgreSQLRangeType.INSTANCE)
+            .contributeType(typeContributions, PostgreSQLCITextType.INSTANCE);
 
             if(ReflectionUtils.getClassOrNull("com.google.common.collect.Range") != null) {
                 this.contributeType(typeContributions, PostgreSQLGuavaRangeType.INSTANCE);
