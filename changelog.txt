@@ -1,3 +1,14 @@
+Version 2.16.3 - June 27, 2022
+================================================================================
+
+Update Readme to include information regarding building the project #447
+
+Add PostgreSQLCITextType to TypeContributor #445
+
+HibernateTypesContributor does not register Types on Hibernate 5 and 4 for Oracle, SQL Server, and PostgreSQL #441
+
+Make the Configuration objects Serializable #438
+
 Version 2.16.2 - May 03, 2022
 ================================================================================
 
