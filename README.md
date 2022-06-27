@@ -264,3 +264,14 @@ Or, if you prefer reading books, you are going to love my [High-Performance Java
 <img src="https://i0.wp.com/vladmihalcea.com/wp-content/uploads/2018/01/HPJP_Video_Vertical_h200.jpg" alt="High-Performance Java Persistence video course">
 </a>
 
+#### Contributing Guide
+
+The project uses [Maven Toolchains](https://maven.apache.org/guides/mini/guide-using-toolchains.html) as different modules are compiled and tested using different Java versions. Hibernate Types 6 requires Java 17 while Hibernate Types 4 compiles with Java 1.6.
+
+To see how to configure Maven Toolchains, check out [this article](https://vladmihalcea.com/maven-and-java-multi-version-modules/).
+
+The project uses various database systems for integration testing, and you can configure the JDBC connection settings using the 
+`DatasourceProvider` instances (e.g., `PostgreSQLDataSourceProvider`).
+
+If you want to fix an issue or add support for a new feature, please provide the associated integration test case that proves the improvement is working as expected.
+
