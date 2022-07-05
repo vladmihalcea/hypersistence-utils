@@ -73,7 +73,7 @@
         <mysql.version>8.0.28</mysql.version>
         <jackson-databind.version>2.12.6.1</jackson-databind.version>
         <jackson-module-jaxb-annotation>2.12.6</jackson-module-jaxb-annotation>
-        <guava.version>29.0-jre</guava.version>
+        <guava.version>31.1-jre</guava.version>
 
     </properties>
 
