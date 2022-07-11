@@ -40,7 +40,6 @@ public class HibernateTypesContributor implements TypeContributor {
             .contributeType(typeContributions, DoubleArrayType.INSTANCE)
             .contributeType(typeContributions, EnumArrayType.INSTANCE)
             .contributeType(typeContributions, IntArrayType.INSTANCE)
-            .contributeType(typeContributions, DoubleArrayType.INSTANCE)
             .contributeType(typeContributions, ListArrayType.INSTANCE)
             .contributeType(typeContributions, LocalDateArrayType.INSTANCE)
             .contributeType(typeContributions, LocalDateTimeArrayType.INSTANCE)
@@ -96,12 +95,12 @@ public class HibernateTypesContributor implements TypeContributor {
         /* JSON */
         .contributeType(typeContributions, JsonType.INSTANCE);
     }
-    
+
     private HibernateTypesContributor contributeType(TypeContributions typeContributions, BasicType type) {
         typeContributions.contributeType(type);
         return this;
     }
-    
+
     private HibernateTypesContributor contributeType(TypeContributions typeContributions, UserType type) {
         if(type instanceof ImmutableType) {
             ImmutableType immutableType = (ImmutableType) type;
