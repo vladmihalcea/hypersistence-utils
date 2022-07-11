@@ -51,6 +51,14 @@
         <module>hibernate-types-4</module>
     </modules>
 
+    <repositories>
+        <repository>
+            <id>netbeans</id>
+            <name>NetBeans</name>
+            <url>http://netbeans.apidesign.org/maven2/</url>
+        </repository>
+    </repositories>
+
     <dependencies>
 
         <!-- Required dependencies -->
@@ -130,6 +138,8 @@
     </dependencies>
 
     <build>
+
+
         <defaultGoal>test</defaultGoal>
 
         <testResources>
@@ -349,19 +359,21 @@
         <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
         <maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
 
-        <slf4j.version>1.7.25</slf4j.version>
-        <logback.version>1.2.3</logback.version>
+        <slf4j.version>1.7.36</slf4j.version>
+        <logback.version>1.2.11</logback.version>
 
-        <junit.version>4.8.1</junit.version>
-        <mockito.version>1.8.5</mockito.version>
-        <datasource-proxy.version>1.6</datasource-proxy.version>
+        <junit.version>4.13.2</junit.version>
+        <mockito.version>4.6.1</mockito.version>
+        <datasource-proxy.version>1.8</datasource-proxy.version>
 
-        <hsqldb.version>2.2.8</hsqldb.version>
-        <h2.version>1.4.200</h2.version>
-        <mysql.version>5.1.47</mysql.version>
+        <hsqldb.version>2.6.1</hsqldb.version>
+        <h2.version>2.1.212</h2.version>
+        <mysql.version>8.0.29</mysql.version>
         <oracle.version>21.5.0.0</oracle.version>
-        <mssql.version>6.4.0.jre8</mssql.version>
+        <mssql.version>10.2.1.jre8</mssql.version>
 
     </properties>
+
+
 
 </project>
