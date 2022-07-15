@@ -11,10 +11,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * @author Vlad Mihalcea
@@ -24,13 +27,13 @@ public class GenericOffsetDateTimeJsonTest extends AbstractPostgreSQLIntegration
     @Override
     protected Class<?>[] entities() {
         return new Class<?>[]{
-            Event.class,
+                Event.class,
         };
     }
 
     @Test
     public void test() {
-        OffsetDateTime dateTime = OffsetDateTime.of(2015, 10, 1, 9, 0 , 0, 0, ZoneOffset.ofHours(2));
+        OffsetDateTime dateTime = OffsetDateTime.of(2015, 10, 1, 9, 0, 0, 0, ZoneOffset.ofHours(2));
 
         doInJPA(entityManager -> {
             Location location = new Location();
@@ -42,6 +45,36 @@ public class GenericOffsetDateTimeJsonTest extends AbstractPostgreSQLIntegration
             event.setId(1L);
             event.setLocation(location);
             entityManager.persist(event);
+        });
+
+        doInJPA(entityManager -> {
+            Event event = entityManager.find(Event.class, 1L);
+            assertEquals(dateTime, event.getLocation().getRentedAt());
+        });
+    }
+
+    @Test
+    public void testWithDouble() {
+        OffsetDateTime dateTime = OffsetDateTime.of(2022, 7, 14, 11, 37, 0, 0, ZoneOffset.ofHours(0));
+
+        //2022-07-14T11:37Z
+        String dateAsDouble = "1657798620.121624";
+        String json = String.format("{\n" +
+                "\"country\":\"Romania\",\n" +
+                "\"city\":\"Cluj-Napoca\",\n" +
+                "\"rentedAt\": %s\n" +
+                "}", dateAsDouble);
+
+        doInJDBC(connection -> {
+            String sql = "INSERT INTO EVENT (ID, LOCATION) VALUES (1, ?::JSON)";
+            try (
+                    PreparedStatement statement = connection.prepareStatement(sql);
+            ) {
+                statement.setObject(1, json);
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                fail(e.getMessage());
+            }
         });
 
         doInJPA(entityManager -> {
