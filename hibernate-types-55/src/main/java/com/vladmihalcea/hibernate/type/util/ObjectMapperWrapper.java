@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeParseException;
+import java.util.Date;
 
 import static java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
@@ -152,7 +155,12 @@ public class ObjectMapperWrapper implements Serializable {
         @Override
         public OffsetDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
             if (jsonParser.getText() != null) {
-                return OffsetDateTime.parse(jsonParser.getText(), ISO_OFFSET_DATE_TIME);
+                try {
+                    return OffsetDateTime.parse(jsonParser.getText(), ISO_OFFSET_DATE_TIME);
+                } catch (DateTimeParseException e) {
+                    Date date = new Date((long) jsonParser.getDoubleValue() * 1000);
+                    return date.toInstant().atOffset(ZoneOffset.UTC);
+                }
             }
             return null;
         }
