@@ -135,6 +135,10 @@ For more details, check out [this article](https://vladmihalcea.com/how-to-map-j
 
 #### Utilities
 
+##### Spring Repository
+
+* [`HibernateRepository` - The best Spring Data JpaRepository](https://vladmihalcea.com/best-spring-data-jparepository/)
+
 ##### Identifier Generators
 
 * [`BatchSequenceGenerator` - Hibernate Batch Sequence Generator](https://vladmihalcea.com/hibernate-batch-sequence-generator/)
@@ -158,7 +162,7 @@ Depending on the Hibernate version you are using, you need to add the following 
     <dependency>
         <groupId>com.vladmihalcea</groupId>
         <artifactId>hibernate-types-60</artifactId>
-        <version>2.16.3</version>
+        <version>2.17.0</version>
     </dependency>
 
 #### Hibernate 5.6 and 5.5
@@ -166,7 +170,7 @@ Depending on the Hibernate version you are using, you need to add the following 
     <dependency>
         <groupId>com.vladmihalcea</groupId>
         <artifactId>hibernate-types-55</artifactId>
-        <version>2.16.3</version>
+        <version>2.17.0</version>
     </dependency>
     
 #### Hibernate 5.4, 5.3 and 5.2
@@ -174,7 +178,7 @@ Depending on the Hibernate version you are using, you need to add the following 
     <dependency>
         <groupId>com.vladmihalcea</groupId>
         <artifactId>hibernate-types-52</artifactId>
-        <version>2.16.3</version>
+        <version>2.17.0</version>
     </dependency>
 
 #### Hibernate 5.1 and 5.0
@@ -182,7 +186,7 @@ Depending on the Hibernate version you are using, you need to add the following 
     <dependency>
         <groupId>com.vladmihalcea</groupId>
         <artifactId>hibernate-types-5</artifactId>
-        <version>2.16.3</version>
+        <version>2.17.0</version>
     </dependency>
     
 #### Hibernate 4.3
@@ -190,7 +194,7 @@ Depending on the Hibernate version you are using, you need to add the following 
     <dependency>
         <groupId>com.vladmihalcea</groupId>
         <artifactId>hibernate-types-43</artifactId>
-        <version>2.16.3</version>
+        <version>2.17.0</version>
     </dependency>
 
 #### Hibernate 4.2 and 4.1
@@ -198,7 +202,7 @@ Depending on the Hibernate version you are using, you need to add the following 
     <dependency>
         <groupId>com.vladmihalcea</groupId>
         <artifactId>hibernate-types-4</artifactId>
-        <version>2.16.3</version>
+        <version>2.17.0</version>
     </dependency>
 
 ### Requirements
