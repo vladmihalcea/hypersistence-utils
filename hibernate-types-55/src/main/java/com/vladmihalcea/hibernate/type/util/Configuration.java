@@ -66,8 +66,6 @@ public class Configuration implements Serializable {
     public Configuration(Map<String, Object> settings) {
         load();
         properties.putAll(settings);
-
-        this.printBanner();
     }
 
     /**
@@ -289,91 +287,4 @@ public class Configuration implements Serializable {
         }
         return object;
     }
-
-    /**
-     * Print the banner into the log.
-     */
-    private void printBanner() {
-        if (this.isHypersistenceOptimizer() || bannerPrinted) {
-            return;
-        }
-        String printBannerValue = properties.getProperty(PropertyKey.PRINT_BANNER.getKey());
-        if(printBannerValue != null && !Boolean.valueOf(printBannerValue)) {
-            return;
-        }
-
-        LOGGER.info(
-            StringUtils.join(
-                StringUtils.LINE_SEPARATOR,
-                "This framework is proudly powered by:",
-                "",
-                ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
-                " _    _                           _     _",
-                "| |  | |                         (_)   | |",
-                "| |__| |_   _ _ __   ___ _ __ ___ _ ___| |_ ___ _ __   ___ ___",
-                "|  __  | | | | '_ \\ / _ \\ '__/ __| / __| __/ _ \\ '_ \\ / __/ _ \\",
-                "| |  | | |_| | |_) |  __/ |  \\__ \\ \\__ \\ ||  __/ | | | (_|  __/",
-                "|_|  |_|\\__, | .__/ \\___|_|  |___/_|___/\\__\\___|_| |_|\\___\\___|",
-                "         __/ | |",
-                "        |___/|_|",
-                "",
-                "At Hypersistence, we only build amazing tools, like Hibernate Types, Flexy Pool, or Hypersistence Optimizer.",
-                "",
-                "What if there were a tool that could automatically detect JPA and Hibernate performance issues?",
-                "",
-                "Hypersistence Optimizer is that tool! For more details, go to: ",
-                "",
-                "https://vladmihalcea.com/hypersistence-optimizer/",
-                "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<",
-                ""
-            )
-        );
-        bannerPrinted = true;
-    }
-
-    private boolean isHypersistenceOptimizer() {
-        try {
-            Class licenseClass = ReflectionUtils.getClassOrNull("io.hypersistence.optimizer.core.License");
-
-            if(licenseClass != null) {
-                Class jpaConfigClass = ReflectionUtils.getClassOrNull("io.hypersistence.optimizer.core.config.JpaConfig");
-                Object jpaConfig = ReflectionUtils.newInstance(
-                    jpaConfigClass,
-                    new Object[] {
-                        null
-                    },
-                    new Class[] {
-                        EntityManagerFactory.class
-                    }
-                );
-
-                Object license = ReflectionUtils.newInstance(
-                    licenseClass,
-                    new Object[] {
-                        jpaConfig
-                    },
-                    new Class[] {
-                        ReflectionUtils.getClassOrNull("io.hypersistence.optimizer.core.LicenseConfig")
-                    }
-                );
-
-                Properties properties = ReflectionUtils.invokeGetter(license, "properties");
-                Class propertyClass = ReflectionUtils.getClassOrNull("io.hypersistence.optimizer.core.License$Property");
-                Object trialVersionKey = Enum.valueOf(propertyClass, "TRIAL_VERSION");
-                Object validUntilMillisKey = Enum.valueOf(propertyClass, "VALID_UNTIL_MILLIS");
-
-                boolean trialVersion = Boolean.parseBoolean(properties.getProperty(ReflectionUtils.invokeGetter(trialVersionKey, "key")));
-                long validUntilMillis = Long.parseLong(properties.getProperty(ReflectionUtils.invokeGetter(validUntilMillisKey, "key")));
-
-                if(!trialVersion && validUntilMillis > System.currentTimeMillis()) {
-                    return true;
-                }
-            }
-        } catch (Exception ignore) {
-        }
-
-        return false;
-    }
-
-    private static boolean bannerPrinted = false;
 }
