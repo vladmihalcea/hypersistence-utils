@@ -4,7 +4,6 @@ import com.vladmihalcea.hibernate.type.array.internal.AbstractArrayType;
 import com.vladmihalcea.hibernate.type.array.internal.BooleanArrayTypeDescriptor;
 import com.vladmihalcea.hibernate.type.util.Configuration;
 import com.vladmihalcea.hibernate.type.util.ParameterizedParameterType;
-import org.hibernate.type.spi.TypeBootstrapContext;
 import org.hibernate.usertype.DynamicParameterizedType;
 
 import java.util.Properties;
