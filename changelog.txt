@@ -1,3 +1,14 @@
+Version 2.17.0 - July 21, 2022
+================================================================================
+
+Avoid the double registration of DoubleArrayType in HibernateTypesContributor for PostgreSQL82Dialect #453
+
+Update Guava version to version 31.1 #451
+
+Add support for JavaMoney (JSR 354) with the MonetaryAmountType #450
+
+Add the amazing HibernateRepository #444
+
 Version 2.16.3 - June 27, 2022
 ================================================================================
 
