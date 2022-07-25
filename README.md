@@ -139,6 +139,22 @@ For more details, check out [this article](https://vladmihalcea.com/how-to-map-j
 
 * [`HibernateRepository` - The best Spring Data JpaRepository](https://vladmihalcea.com/best-spring-data-jparepository/)
 
+When using the `HibernateRepository`, make sure that you include the `com.vladmihalcea.spring.repository` package
+in your `@EnableJpaRepositories` configuration:
+
+````java
+@Configuration
+@EnableJpaRepositories(
+    basePackages = {
+        "com.vladmihalcea.spring.repository",
+        ...
+    }
+)
+public class JpaConfiguration {
+    ...
+}
+````
+
 ##### Identifier Generators
 
 * [`BatchSequenceGenerator` - Hibernate Batch Sequence Generator](https://vladmihalcea.com/hibernate-batch-sequence-generator/)
