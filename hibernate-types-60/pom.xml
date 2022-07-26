@@ -25,17 +25,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson-databind.version}</version>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-jaxb-annotations</artifactId>
-            <version>${jackson-module-jaxb-annotation}</version>
+            <artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
+            <version>${jackson-module-jakarta-xmlbind-annotation}</version>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
@@ -82,9 +74,13 @@
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
-            <version>2.3.0</version>
-            <scope>provided</scope>
-            <optional>true</optional>
+            <version>${jaxb-api.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>${jakarta-bind.api.version}</version>
         </dependency>
 
     </dependencies>
@@ -96,12 +92,13 @@
         <postgresql.version>42.3.3</postgresql.version>
 
         <mysql.version>8.0.28</mysql.version>
-        <jackson-databind.version>2.12.6.1</jackson-databind.version>
-        <jackson-module-jaxb-annotation>2.12.6</jackson-module-jaxb-annotation>
+        <jackson-module-jakarta-xmlbind-annotation>2.13.3</jackson-module-jakarta-xmlbind-annotation>
         <guava.version>31.1-jre</guava.version>
         <moneta.version>1.4.2</moneta.version>
 
         <ehcache.version>3.10.0</ehcache.version>
+        <jaxb-api.version>2.3.0</jaxb-api.version>
+        <jakarta-bind.api.version>3.0.1</jakarta-bind.api.version>
 
     </properties>
 
