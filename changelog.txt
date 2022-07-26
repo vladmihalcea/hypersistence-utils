@@ -1,3 +1,12 @@
+Version 2.17.1 - July 26, 2022
+================================================================================
+
+Make all jackson-module-jaxb-annotations optional #462
+
+Spring Boot 3 throws NoClassDefFoundError - javax/xml/bind/annotation/XmlElement #459
+
+Allow OffsetDateTime to be parsed from a Double value  #457
+
 Version 2.17.0 - July 21, 2022
 ================================================================================
 
