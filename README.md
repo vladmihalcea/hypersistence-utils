@@ -128,6 +128,7 @@ For more details, check out [this article](https://vladmihalcea.com/how-to-map-j
 
 #### Generic Types
 
+* [The best way to map `MonetaryAmount` with JPA and Hibernate](https://vladmihalcea.com/monetaryamount-jpa-hibernate/)
 * [How to map `java.time.YearMonth` to DATE or INTEGER column](https://vladmihalcea.com/java-yearmonth-jpa-hibernate/)
 * [How to map `java.time.Year` and `java.time.Month` with JPA and Hibernate](https://vladmihalcea.com/java-time-year-month-jpa-hibernate/)
 * [`Character` to nullable CHAR column](https://vladmihalcea.com/how-to-implement-a-custom-basic-type-using-hibernate-usertype/)

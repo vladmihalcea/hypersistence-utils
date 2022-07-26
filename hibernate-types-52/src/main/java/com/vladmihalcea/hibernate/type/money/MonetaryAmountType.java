@@ -20,7 +20,12 @@ import static java.sql.Types.DECIMAL;
 import static java.sql.Types.VARCHAR;
 
 /**
- * Maps a {@link MonetaryAmount} object type to composite columns (with amount and with currency).
+ * Maps a {@link MonetaryAmount} object type onto two columns (amount and currency).
+ *
+ * <p>
+ * For more details about how to use it,
+ * check out <a href="https://vladmihalcea.com/monetaryamount-jpa-hibernate/">this article</a>
+ * on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
  *
  * @author Piotr Olaszewski
  */
