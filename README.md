@@ -4,9 +4,148 @@
 
 ### Introduction
 
-The Hibernate Types repository gives you extra types and general-purpose utilities that are not supported by the Hibernate ORM core. 
+The Hibernate Types project gives you extra types and general-purpose utilities that are not supported by the Hibernate ORM core. 
 
 The main advantage of this project is that it supports a broad range of Hibernate versions, spanning from **Hibernate ORM 6** to **5.6**, **5.5**, **5.4**, **5.3**, **5.2**, **5.1**, **5**, **4.3**, **4.2**, and Hibernate **4.1**.
+
+### Installation
+
+Depending on the Hibernate version you are using, you need to add the following dependency:
+
+#### Hibernate 6.0
+
+    <dependency>
+        <groupId>com.vladmihalcea</groupId>
+        <artifactId>hibernate-types-60</artifactId>
+        <version>2.17.1</version>
+    </dependency>
+
+#### Hibernate 5.6 and 5.5
+
+    <dependency>
+        <groupId>com.vladmihalcea</groupId>
+        <artifactId>hibernate-types-55</artifactId>
+        <version>2.17.1</version>
+    </dependency>
+
+#### Hibernate 5.4, 5.3 and 5.2
+
+    <dependency>
+        <groupId>com.vladmihalcea</groupId>
+        <artifactId>hibernate-types-52</artifactId>
+        <version>2.17.1</version>
+    </dependency>
+
+#### Hibernate 5.1 and 5.0
+
+    <dependency>
+        <groupId>com.vladmihalcea</groupId>
+        <artifactId>hibernate-types-5</artifactId>
+        <version>2.17.1</version>
+    </dependency>
+
+#### Hibernate 4.3
+
+    <dependency>
+        <groupId>com.vladmihalcea</groupId>
+        <artifactId>hibernate-types-43</artifactId>
+        <version>2.17.1</version>
+    </dependency>
+
+#### Hibernate 4.2 and 4.1
+
+    <dependency>
+        <groupId>com.vladmihalcea</groupId>
+        <artifactId>hibernate-types-4</artifactId>
+        <version>2.17.1</version>
+    </dependency>
+
+#### Optional Maven Dependencies
+
+The Hibernate Types project defines a list of optional dependencies that you will have to declare explicitly in your project in order to use them.
+
+The reason why all these dependencies are optional, like Guava, Jackson, or PostgreSQL JDBC Driver, is because not all projects may need them.
+
+More, the dependency version is extremely important because if you forget to upgrade a certain dependency, your application could be at risk in case the old dependency version suffers from security issues that have been recently discovered.
+
+For all these reasons, it is your responsibility to define explicitly all the dependencies that you are planning to use.
+
+##### JSON Optional Maven Dependencies
+
+If you are using JSON Types, then you might be interested in setting the following dependencies based on your Hibernate version:
+
+###### Hibernate 6.0
+
+````xml
+<dependency>
+    <groupId>com.fasterxml.jackson.module</groupId>
+    <artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
+    <version>${jackson-module-jakarta-xmlbind-annotation}</version>
+</dependency>
+````
+
+###### Hibernate 5,5, 5.5, 5.4, 5.3, and 5.2
+
+````xml
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>${jackson-databind.version}</version>
+</dependency>
+
+<dependency>
+    <groupId>com.fasterxml.jackson.module</groupId>
+    <artifactId>jackson-module-jaxb-annotations</artifactId>
+    <version>${jackson-module-jaxb-annotation}</version>
+</dependency>
+````
+
+###### Hibernate 5.1, 5.0, 4.3, 4.2, and 4.1
+
+````xml
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>${jackson.version}</version>
+</dependency>
+````
+
+##### Guava Optional Maven Dependency
+
+If you are mapping a `Range` using Guava, then you have to provide the Guava dependency explicitly:
+
+````xml
+<dependency>
+    <groupId>com.google.guava</groupId>
+    <artifactId>guava</artifactId>
+    <version>${guava.version}</version>
+</dependency>
+````
+
+##### Java Money and Currency API Optional Maven Dependency
+
+If you are mapping a `MonetaryAmount`, then you have to provide the Moneta dependency explicitly:
+
+````xml
+<dependency>
+    <groupId>org.javamoney</groupId>
+    <artifactId>moneta</artifactId>
+    <version>${moneta.version}</version>
+    <type>pom</type>
+</dependency>
+````
+
+##### PostgreSQL Optional Maven Dependency
+
+If you are mapping a PostgreSQL-specific column type (e.g., `inet`, `hstore`, `array`, `interval`), then you have to provide the PostgreSQL dependency explicitly:
+
+````xml
+<dependency>
+    <groupId>org.postgresql</groupId>
+    <artifactId>postgresql</artifactId>
+    <version>${postgresql.version}</version>
+</dependency>
+````
 
 ### Features
 
@@ -169,58 +308,6 @@ public class JpaConfiguration {
 * [`ClassImportIntegrator` - How to write a compact DTO projection query with JPA](https://vladmihalcea.com/dto-projection-jpa-query/)
 * [`ListResultTransformer` - The best way to use a Hibernate ResultTransformer](https://vladmihalcea.com/hibernate-resulttransformer/)
 * [`MapResultTransformer` - How to return a Map result from a JPA or Hibernate query](https://vladmihalcea.com/jpa-query-map-result/)
-
-### Installation
-
-Depending on the Hibernate version you are using, you need to add the following dependency:
-
-#### Hibernate 6.0
-
-    <dependency>
-        <groupId>com.vladmihalcea</groupId>
-        <artifactId>hibernate-types-60</artifactId>
-        <version>2.17.1</version>
-    </dependency>
-
-#### Hibernate 5.6 and 5.5
-
-    <dependency>
-        <groupId>com.vladmihalcea</groupId>
-        <artifactId>hibernate-types-55</artifactId>
-        <version>2.17.1</version>
-    </dependency>
-    
-#### Hibernate 5.4, 5.3 and 5.2
-
-    <dependency>
-        <groupId>com.vladmihalcea</groupId>
-        <artifactId>hibernate-types-52</artifactId>
-        <version>2.17.1</version>
-    </dependency>
-
-#### Hibernate 5.1 and 5.0
-
-    <dependency>
-        <groupId>com.vladmihalcea</groupId>
-        <artifactId>hibernate-types-5</artifactId>
-        <version>2.17.1</version>
-    </dependency>
-    
-#### Hibernate 4.3
-
-    <dependency>
-        <groupId>com.vladmihalcea</groupId>
-        <artifactId>hibernate-types-43</artifactId>
-        <version>2.17.1</version>
-    </dependency>
-
-#### Hibernate 4.2 and 4.1
-
-    <dependency>
-        <groupId>com.vladmihalcea</groupId>
-        <artifactId>hibernate-types-4</artifactId>
-        <version>2.17.1</version>
-    </dependency>
 
 ### Requirements
 
