@@ -3,6 +3,7 @@ package com.vladmihalcea.hibernate.type.money;
 import com.vladmihalcea.hibernate.util.AbstractMySQLIntegrationTest;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CompositeType;
+import org.hibernate.envers.Audited;
 import org.javamoney.moneta.Money;
 import org.junit.Test;
 
@@ -88,6 +89,7 @@ public class MySQLMonetaryAmountTypeTest extends AbstractMySQLIntegrationTest {
         });
     }
 
+    @Audited
     @Entity(name = "Salary")
     @Table(name = "salary")
     public static class Salary {

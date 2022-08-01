@@ -30,6 +30,8 @@ import static java.sql.Types.VARCHAR;
  */
 public class MonetaryAmountType extends ImmutableCompositeType<MonetaryAmount> {
 
+    public static final MonetaryAmountType INSTANCE = new MonetaryAmountType();
+
     public MonetaryAmountType() {
         super(MonetaryAmount.class);
     }

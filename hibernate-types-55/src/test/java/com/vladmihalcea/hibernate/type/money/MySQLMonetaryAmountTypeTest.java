@@ -4,6 +4,7 @@ import com.vladmihalcea.hibernate.util.AbstractMySQLIntegrationTest;
 import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.hibernate.envers.Audited;
 import org.javamoney.moneta.Money;
 import org.junit.Test;
 
@@ -90,6 +91,7 @@ public class MySQLMonetaryAmountTypeTest extends AbstractMySQLIntegrationTest {
         });
     }
 
+    @Audited
     @Entity(name = "Salary")
     @Table(name = "salary")
     @TypeDef(name = "monetary-amount-currency", typeClass = MonetaryAmountType.class, defaultForType = MonetaryAmount.class)

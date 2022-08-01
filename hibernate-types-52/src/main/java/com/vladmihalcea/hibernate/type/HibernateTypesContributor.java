@@ -6,6 +6,7 @@ import com.vladmihalcea.hibernate.type.interval.OracleIntervalDayToSecondType;
 import com.vladmihalcea.hibernate.type.interval.PostgreSQLIntervalType;
 import com.vladmihalcea.hibernate.type.interval.PostgreSQLPeriodType;
 import com.vladmihalcea.hibernate.type.json.*;
+import com.vladmihalcea.hibernate.type.money.MonetaryAmountType;
 import com.vladmihalcea.hibernate.type.range.PostgreSQLRangeType;
 import com.vladmihalcea.hibernate.type.range.guava.PostgreSQLGuavaRangeType;
 import com.vladmihalcea.hibernate.type.search.PostgreSQLTSVectorType;
@@ -16,6 +17,7 @@ import org.hibernate.dialect.*;
 import org.hibernate.engine.jdbc.spi.JdbcServices;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.type.BasicType;
+import org.hibernate.usertype.CompositeUserType;
 import org.hibernate.usertype.UserType;
 
 /**
@@ -92,21 +94,22 @@ public class HibernateTypesContributor implements TypeContributor {
         .contributeType(typeContributions, YearMonthEpochType.INSTANCE)
         .contributeType(typeContributions, YearMonthIntegerType.INSTANCE)
         .contributeType(typeContributions, YearMonthTimestampType.INSTANCE)
+        .contributeType(typeContributions, MonetaryAmountType.INSTANCE)
         /* JSON */
         .contributeType(typeContributions, JsonType.INSTANCE);
     }
 
-    private HibernateTypesContributor contributeType(TypeContributions typeContributions, BasicType type) {
-        typeContributions.contributeType(type);
-        return this;
-    }
-
-    private HibernateTypesContributor contributeType(TypeContributions typeContributions, UserType type) {
-        if(type instanceof ImmutableType) {
-            ImmutableType immutableType = (ImmutableType) type;
-            typeContributions.contributeType(immutableType, immutableType.getName());
+    private HibernateTypesContributor contributeType(TypeContributions typeContributions, Object type) {
+        if (type instanceof BasicType) {
+            typeContributions.contributeType((BasicType) type);
+        } else if (type instanceof UserType) {
+            typeContributions.contributeType((UserType) type, type.getClass().getSimpleName());
+        } else if (type instanceof CompositeUserType) {
+            typeContributions.contributeType((CompositeUserType) type, type.getClass().getSimpleName());
         } else {
-            typeContributions.contributeType(type, type.getClass().getSimpleName());
+            throw new UnsupportedOperationException(
+                String.format("The [%s] is not supported!", type.getClass())
+            );
         }
         return this;
     }

@@ -5,6 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.hibernate.envers.Audited;
 import org.junit.Test;
 
 import javax.persistence.*;
@@ -67,6 +68,7 @@ public class PostgreSQLHStoreTypeTest extends AbstractPostgreSQLIntegrationTest 
         });
     }
 
+    @Audited
     @Entity(name = "Book")
     @Table(name = "book")
     @TypeDef(name = "hstore", typeClass = PostgreSQLHStoreType.class)

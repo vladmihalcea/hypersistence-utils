@@ -21,7 +21,8 @@ import java.util.Objects;
  *
  * @author Piotr Olaszewski
  */
-public class MonetaryAmountType implements CompositeUserType<MonetaryAmount> {
+public class MonetaryAmountType implements CompositeUserType<MonetaryAmount>
+{
     public static class MonetaryAmountMapper {
         BigDecimal amount;
         String currency;

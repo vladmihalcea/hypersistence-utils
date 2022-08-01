@@ -8,6 +8,7 @@ import org.hibernate.engine.spi.Mapping;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.internal.util.collections.ArrayHelper;
+import org.hibernate.type.BasicType;
 import org.hibernate.type.ForeignKeyDirection;
 import org.hibernate.type.Type;
 import org.hibernate.type.descriptor.java.IncomparableComparator;
@@ -32,7 +33,7 @@ import java.util.stream.Collectors;
  *
  * @author Vlad Mihalcea
  */
-public abstract class ImmutableCompositeType<T> implements CompositeUserType, Type {
+public abstract class ImmutableCompositeType<T> implements CompositeUserType, BasicType {
 
     private final Configuration configuration;
 
@@ -324,5 +325,12 @@ public abstract class ImmutableCompositeType<T> implements CompositeUserType, Ty
     @Override
     public boolean[] toColumnNullness(Object value, Mapping mapping) {
         return value == null ? ArrayHelper.FALSE : ArrayHelper.TRUE;
+    }
+
+    @Override
+    public String[] getRegistrationKeys() {
+        return new String[]{
+            getName()
+        };
     }
 }
