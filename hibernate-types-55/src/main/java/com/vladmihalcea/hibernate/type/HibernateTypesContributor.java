@@ -101,13 +101,13 @@ public class HibernateTypesContributor implements TypeContributor {
         return this;
     }
 
+    private HibernateTypesContributor contributeType(TypeContributions typeContributions, ImmutableType<?> type) {
+        typeContributions.contributeType(type);
+        return this;
+    }
+
     private HibernateTypesContributor contributeType(TypeContributions typeContributions, UserType type) {
-        if(type instanceof ImmutableType) {
-            ImmutableType immutableType = (ImmutableType) type;
-            typeContributions.contributeType(immutableType, immutableType.getName());
-        } else {
-            typeContributions.contributeType(type, type.getClass().getSimpleName());
-        }
+        typeContributions.contributeType(type, type.getClass().getSimpleName());
         return this;
     }
 }

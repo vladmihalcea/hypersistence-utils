@@ -8,10 +8,10 @@ import org.hibernate.engine.spi.Mapping;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.internal.util.collections.ArrayHelper;
+import org.hibernate.type.BasicType;
 import org.hibernate.type.ForeignKeyDirection;
 import org.hibernate.type.Type;
 import org.hibernate.type.descriptor.java.IncomparableComparator;
-import org.hibernate.type.spi.TypeBootstrapContext;
 import org.hibernate.usertype.UserType;
 
 import java.io.Serializable;
@@ -29,7 +29,7 @@ import java.util.Map;
  *
  * @author Vlad Mihalcea
  */
-public abstract class ImmutableType<T> implements UserType, Type {
+public abstract class ImmutableType<T> implements UserType, BasicType {
 
     private final Configuration configuration;
 
@@ -319,5 +319,10 @@ public abstract class ImmutableType<T> implements UserType, Type {
     @Override
     public boolean[] toColumnNullness(Object value, Mapping mapping) {
         return value == null ? ArrayHelper.FALSE : ArrayHelper.TRUE;
+    }
+
+    @Override
+    public String[] getRegistrationKeys() {
+        return new String[]{getName()};
     }
 }
