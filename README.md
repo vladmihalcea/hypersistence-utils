@@ -66,9 +66,13 @@ The Hibernate Types project defines a list of optional dependencies that you wil
 
 The reason why all these dependencies are optional, like Guava, Jackson, or PostgreSQL JDBC Driver, is because not all projects may need them.
 
-More, the dependency version is extremely important because if you forget to upgrade a certain dependency, your application could be at risk in case the old dependency version suffers from security issues that have been recently discovered.
+More, the dependency version is extremely important because, from time to time, security issues may be discovered that get fixed in newer versions.
 
-For all these reasons, it is your responsibility to define explicitly all the dependencies that you are planning to use.
+> So, relying on this library to supply you with the dependency versions is a very dangerous thing to do. 
+> 
+> For instance, there have been [65 security issues discovered in the Jackson Data Bind library](https://www.cvedetails.com/vulnerability-list/vendor_id-15866/product_id-42991/Fasterxml-Jackson-databind.html) this project is heavily relying on. 
+> 
+> To avoid risking security issues, you need to take the responsibility of constantly upgrading all the dependencies that you are using along with the Hibernate Types library.
 
 ##### JSON Optional Maven Dependencies
 
