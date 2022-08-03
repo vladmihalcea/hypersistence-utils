@@ -1,3 +1,10 @@
+Version 2.17.2 - August 03, 2022
+================================================================================
+
+MonetaryAmountType throws NullPointerException when reading a null column value #465
+
+Envers throws MappingException: Type not supported for auditing #463
+
 Version 2.17.1 - July 26, 2022
 ================================================================================
 
