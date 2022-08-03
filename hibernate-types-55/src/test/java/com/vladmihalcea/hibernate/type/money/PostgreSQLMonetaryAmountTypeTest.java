@@ -12,6 +12,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author Piotr Olaszewski
@@ -64,6 +65,31 @@ public class PostgreSQLMonetaryAmountTypeTest extends AbstractPostgreSQLIntegrat
         });
     }
 
+    @Test
+    public void testReturnNullMoney() {
+        Long _id = doInJPA(entityManager -> {
+            Salary salary = new Salary();
+            entityManager.persist(salary);
+            return salary.getId();
+        });
+
+        doInJPA(entityManager -> {
+            Salary salary = entityManager.createQuery("select s from Salary s where s.id = :id", Salary.class)
+                .setParameter("id", _id)
+                .getSingleResult();
+
+            assertNull(salary.getSalary());
+        });
+
+        doInJPA(entityManager -> {
+            MonetaryAmount money = entityManager.createQuery("select s.salary from Salary s where s.id = :id", MonetaryAmount.class)
+                .setParameter("id", _id)
+                .getSingleResult();
+
+            assertNull(money);
+        });
+    }
+
     @Entity(name = "Salary")
     @Table(name = "salary")
     @TypeDef(name = "monetary-amount-currency", typeClass = MonetaryAmountType.class, defaultForType = MonetaryAmount.class)
@@ -71,6 +97,8 @@ public class PostgreSQLMonetaryAmountTypeTest extends AbstractPostgreSQLIntegrat
         @Id
         @GeneratedValue
         private Long id;
+
+        private String other;
 
         @Columns(columns = {
                 @Column(name = "salary_amount"),
@@ -93,6 +121,14 @@ public class PostgreSQLMonetaryAmountTypeTest extends AbstractPostgreSQLIntegrat
 
         public void setSalary(MonetaryAmount salary) {
             this.salary = salary;
+        }
+
+        public String getOther() {
+            return other;
+        }
+
+        public void setOther(String other) {
+            this.other = other;
         }
     }
 }

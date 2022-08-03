@@ -1,20 +1,19 @@
 package com.vladmihalcea.hibernate.type.money;
 
+import com.vladmihalcea.hibernate.type.ImmutableCompositeType;
+import com.vladmihalcea.hibernate.type.util.Configuration;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.BigDecimalType;
 import org.hibernate.type.StringType;
 import org.hibernate.type.Type;
-import org.hibernate.usertype.CompositeUserType;
 import org.javamoney.moneta.Money;
 
 import javax.money.MonetaryAmount;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Objects;
 
 import static java.sql.Types.DECIMAL;
 import static java.sql.Types.VARCHAR;
@@ -29,7 +28,15 @@ import static java.sql.Types.VARCHAR;
  *
  * @author Piotr Olaszewski
  */
-public class MonetaryAmountType implements CompositeUserType {
+public class MonetaryAmountType extends ImmutableCompositeType<MonetaryAmount> {
+
+    public MonetaryAmountType() {
+        super(MonetaryAmount.class);
+    }
+
+    public MonetaryAmountType(Configuration configuration) {
+        super(MonetaryAmount.class, configuration);
+    }
 
     @Override
     public String[] getPropertyNames() {
@@ -59,75 +66,35 @@ public class MonetaryAmountType implements CompositeUserType {
     }
 
     @Override
-    public Class returnedClass() {
-        return MonetaryAmount.class;
-    }
-
-    @Override
-    public boolean equals(Object x, Object y) throws HibernateException {
-        return Objects.equals(x, y);
-    }
-
-    @Override
-    public int hashCode(Object x) throws HibernateException {
-        return x.hashCode();
-    }
-
-    @Override
-    public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner) throws HibernateException, SQLException {
-        if (rs.wasNull()) {
-            return null;
-        }
-
+    protected MonetaryAmount get(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner) throws SQLException {
         String amountColumnName = names[0];
         String currencyColumnName = names[1];
 
         BigDecimal amount = rs.getBigDecimal(amountColumnName);
+        if(amount == null) {
+            return null;
+        }
         String currency = rs.getString(currencyColumnName);
+        if(currency == null) {
+            return null;
+        }
 
         return Money.of(amount, currency);
     }
 
     @Override
-    public void nullSafeSet(PreparedStatement st, Object value, int amountColumnIndex, SharedSessionContractImplementor session) throws HibernateException, SQLException {
+    protected void set(PreparedStatement st, MonetaryAmount value, int amountColumnIndex, SharedSessionContractImplementor session) throws SQLException {
         int currencyColumnIndex = amountColumnIndex + 1;
 
         if (value == null) {
             st.setNull(amountColumnIndex, DECIMAL);
             st.setNull(currencyColumnIndex, VARCHAR);
         } else {
-            MonetaryAmount monetaryAmount = (MonetaryAmount) value;
-
-            BigDecimal amount = monetaryAmount.getNumber().numberValue(BigDecimal.class);
-            String currency = monetaryAmount.getCurrency().getCurrencyCode();
+            BigDecimal amount = value.getNumber().numberValue(BigDecimal.class);
+            String currency = value.getCurrency().getCurrencyCode();
 
             st.setBigDecimal(amountColumnIndex, amount);
             st.setString(currencyColumnIndex, currency);
         }
-    }
-
-    @Override
-    public Object deepCopy(Object value) throws HibernateException {
-        return value;
-    }
-
-    @Override
-    public boolean isMutable() {
-        return false;
-    }
-
-    @Override
-    public Serializable disassemble(Object value, SharedSessionContractImplementor session) throws HibernateException {
-        return (Serializable) value;
-    }
-
-    @Override
-    public Object assemble(Serializable cached, SharedSessionContractImplementor session, Object owner) throws HibernateException {
-        return cached;
-    }
-
-    @Override
-    public Object replace(Object original, Object target, SharedSessionContractImplementor session, Object owner) throws HibernateException {
-        return original;
     }
 }
