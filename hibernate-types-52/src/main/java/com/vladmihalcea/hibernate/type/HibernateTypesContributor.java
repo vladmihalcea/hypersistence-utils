@@ -94,9 +94,12 @@ public class HibernateTypesContributor implements TypeContributor {
         .contributeType(typeContributions, YearMonthEpochType.INSTANCE)
         .contributeType(typeContributions, YearMonthIntegerType.INSTANCE)
         .contributeType(typeContributions, YearMonthTimestampType.INSTANCE)
-        .contributeType(typeContributions, MonetaryAmountType.INSTANCE)
         /* JSON */
         .contributeType(typeContributions, JsonType.INSTANCE);
+        /* Money and Currency API */
+        if(ReflectionUtils.getClassOrNull("org.javamoney.moneta.Money") != null) {
+            this.contributeType(typeContributions, MonetaryAmountType.INSTANCE);
+        }
     }
 
     private HibernateTypesContributor contributeType(TypeContributions typeContributions, Object type) {
