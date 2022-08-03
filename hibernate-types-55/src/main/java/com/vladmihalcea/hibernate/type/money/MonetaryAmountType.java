@@ -75,14 +75,14 @@ public class MonetaryAmountType implements CompositeUserType {
 
     @Override
     public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner) throws HibernateException, SQLException {
-        if (rs.wasNull()) {
-            return null;
-        }
-
         String amountColumnName = names[0];
         String currencyColumnName = names[1];
 
         BigDecimal amount = rs.getBigDecimal(amountColumnName);
+        if(amount == null) {
+            return null;
+        }
+
         String currency = rs.getString(currencyColumnName);
 
         return Money.of(amount, currency);
