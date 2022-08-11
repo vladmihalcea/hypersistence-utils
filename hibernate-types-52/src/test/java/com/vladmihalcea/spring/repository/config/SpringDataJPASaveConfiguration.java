@@ -18,7 +18,6 @@ import java.util.Properties;
     }
 )
 @EnableJpaRepositories("com.vladmihalcea.spring.repository")
-@PropertySource({"/META-INF/jdbc-postgresql.properties"})
 public class SpringDataJPASaveConfiguration extends SpringDataJPABaseConfiguration {
 
     @Override

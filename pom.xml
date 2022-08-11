@@ -51,6 +51,18 @@
         <module>hibernate-types-4</module>
     </modules>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers-bom</artifactId>
+                <version>${testcontainers.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
 
         <!-- Required dependencies -->
@@ -127,6 +139,32 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Test containers -->
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>mysql</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>oracle-xe</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>mssqlserver</artifactId>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -154,7 +192,7 @@
                 <configuration>
                     <toolchains>
                         <jdk>
-                            <version>${jdk.version}</version>
+                            <version>${jdk-test.version}</version>
                         </jdk>
                     </toolchains>
                 </configuration>
@@ -166,6 +204,8 @@
                 <configuration>
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
+                    <testSource>${jdk-test.version}</testSource>
+                    <testTarget>${jdk-test.version}</testTarget>
                     <showDeprecation>true</showDeprecation>
                     <showWarnings>true</showWarnings>
                 </configuration>
@@ -175,7 +215,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
-                    <jvm>${jdk8}/bin/java</jvm>
                     <excludes>
                         <exclude>**/*JvmForkTest.java</exclude>
                     </excludes>
@@ -305,7 +344,6 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>${maven-surefire-plugin.version}</version>
                         <configuration>
-                            <jvm>${jdk8}/bin/java</jvm>
                             <reuseForks>false</reuseForks>
                             <useSystemClassLoader>false</useSystemClassLoader>
                         </configuration>
@@ -328,7 +366,7 @@
 
     <properties>
         <jdk.version>6</jdk.version>
-        <jdk8>${env.JAVA_HOME_8}</jdk8>
+        <jdk-test.version>8</jdk-test.version>
 
         <console.log.level>DEBUG</console.log.level>
 
@@ -356,6 +394,7 @@
         <mockito.version>1.8.5</mockito.version>
         <datasource-proxy.version>1.6</datasource-proxy.version>
 
+        <testcontainers.version>1.17.3</testcontainers.version>
         <hsqldb.version>2.2.8</hsqldb.version>
         <h2.version>1.4.200</h2.version>
         <mysql.version>5.1.47</mysql.version>

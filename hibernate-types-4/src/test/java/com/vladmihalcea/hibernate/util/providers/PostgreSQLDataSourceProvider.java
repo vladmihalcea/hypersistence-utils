@@ -9,7 +9,7 @@ import java.util.Properties;
 /**
  * @author Vlad Mihalcea
  */
-public class PostgreSQLDataSourceProvider implements DataSourceProvider {
+public class PostgreSQLDataSourceProvider extends AbstractContainerDataSourceProvider {
 
     @Override
     public String hibernateDialect() {
@@ -17,12 +17,16 @@ public class PostgreSQLDataSourceProvider implements DataSourceProvider {
     }
 
     @Override
-    public DataSource dataSource() {
+    protected String defaultJdbcUrl() {
+        return "jdbc:postgresql://localhost/high_performance_java_persistence";
+    }
+
+    protected DataSource newDataSource() {
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setDatabaseName("high_performance_java_persistence");
-        dataSource.setServerName("localhost");
-        dataSource.setUser("postgres");
-        dataSource.setPassword("admin");
+        dataSource.setUrl(url());
+        dataSource.setUser(username());
+        dataSource.setPassword(password());
+
         return dataSource;
     }
 
@@ -39,11 +43,6 @@ public class PostgreSQLDataSourceProvider implements DataSourceProvider {
         properties.setProperty("user", username());
         properties.setProperty("password", password());
         return properties;
-    }
-
-    @Override
-    public String url() {
-        return null;
     }
 
     @Override

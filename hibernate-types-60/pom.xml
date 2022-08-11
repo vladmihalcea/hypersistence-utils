@@ -96,6 +96,7 @@
 
     <properties>
         <jdk.version>11</jdk.version>
+        <jdk-test.version>11</jdk-test.version>
 
         <hibernate.version>6.0.2.Final</hibernate.version>
         <postgresql.version>42.4.1</postgresql.version>

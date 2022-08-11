@@ -378,12 +378,16 @@ Or, if you prefer reading books, you are going to love my [High-Performance Java
 
 #### Contributing Guide
 
-The project uses [Maven Toolchains](https://maven.apache.org/guides/mini/guide-using-toolchains.html) as different modules are compiled and tested using different Java versions. Hibernate Types 6 requires Java 17 while Hibernate Types 4 compiles with Java 1.6.
+The project uses [Maven Toolchains](https://maven.apache.org/guides/mini/guide-using-toolchains.html) as different modules are compiled and tested using different Java versions. Hibernate Types 6 requires Java 17 while the other modules are compiled with either Java 1.8 or 1.6.
 
 To see how to configure Maven Toolchains, check out [this article](https://vladmihalcea.com/maven-and-java-multi-version-modules/).
 
 The project uses various database systems for integration testing, and you can configure the JDBC connection settings using the 
-`DatasourceProvider` instances (e.g., `PostgreSQLDataSourceProvider`).
+`DatasourceProvider` instances (e.g., `PostgreSQLDataSourceProvider`), and the project uses Testcontainers to bootstrap a Docker container
+with the required Oracle, SQL Server, PostgreSQL, or MySQL instance on demand. 
+
+> If you are a regular contributor, it's advisable to set up the required database locally or use the Docker Compose configuration provided in the `docker` folder,
+> as bootstrapping the containers on demand is slower, and your tests are going to take longer to run.
 
 If you want to fix an issue or add support for a new feature, please provide the associated integration test case that proves the improvement is working as expected.
 

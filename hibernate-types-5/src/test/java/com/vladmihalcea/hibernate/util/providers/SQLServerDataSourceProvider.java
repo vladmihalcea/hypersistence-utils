@@ -1,6 +1,7 @@
 package com.vladmihalcea.hibernate.util.providers;
 
-import com.vladmihalcea.hibernate.util.ReflectionUtils;
+import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
+import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import javax.sql.DataSource;
 import java.util.Properties;
@@ -8,25 +9,36 @@ import java.util.Properties;
 /**
  * @author Vlad Mihalcea
  */
-public class SQLServerDataSourceProvider implements DataSourceProvider {
+public class SQLServerDataSourceProvider extends AbstractContainerDataSourceProvider {
+
 	@Override
 	public String hibernateDialect() {
 		return "org.hibernate.dialect.SQLServer2012Dialect";
 	}
 
 	@Override
-	public DataSource dataSource() {
-		DataSource dataSource = ReflectionUtils.newInstance("com.microsoft.sqlserver.jdbc.SQLServerDataSource");
-		ReflectionUtils.invokeMethod(dataSource, "setURL", "jdbc:sqlserver://localhost;instance=SQLEXPRESS;" +
-			"databaseName=high_performance_java_persistence;");
-		ReflectionUtils.invokeMethod(dataSource, "setUser", "sa");
-		ReflectionUtils.invokeMethod(dataSource, "setPassword", "adm1n");
+	public String defaultJdbcUrl() {
+		return "jdbc:sqlserver://localhost;instance=SQLEXPRESS;databaseName=high_performance_java_persistence;user=sa;password=adm1n";
+	}
+
+	@Override
+	public DataSource newDataSource() {
+		SQLServerDataSource dataSource = new SQLServerDataSource();
+		dataSource.setURL(url());
+		JdbcDatabaseContainer container = database().getContainer();
+		if(container == null) {
+			dataSource.setUser(username());
+			dataSource.setPassword(password());
+		} else {
+			dataSource.setUser(container.getUsername());
+			dataSource.setPassword(container.getPassword());
+		}
 		return dataSource;
 	}
 
 	@Override
 	public Class<? extends DataSource> dataSourceClassName() {
-		return ReflectionUtils.getClass("com.microsoft.sqlserver.jdbc.SQLServerDataSource");
+		return SQLServerDataSource.class;
 	}
 
 	@Override
@@ -34,11 +46,6 @@ public class SQLServerDataSourceProvider implements DataSourceProvider {
 		Properties properties = new Properties();
 		properties.setProperty( "URL", url() );
 		return properties;
-	}
-
-	@Override
-	public String url() {
-		return "jdbc:sqlserver://localhost;instance=SQLEXPRESS;databaseName=high_performance_java_persistence;user=sa;password=adm1n";
 	}
 
 	@Override

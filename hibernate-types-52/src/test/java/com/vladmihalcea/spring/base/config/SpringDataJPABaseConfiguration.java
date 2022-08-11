@@ -1,12 +1,13 @@
 package com.vladmihalcea.spring.base.config;
 
 import com.vladmihalcea.hibernate.util.logging.InlineQueryLogEntryCreator;
+import com.vladmihalcea.hibernate.util.providers.DataSourceProvider;
+import com.vladmihalcea.hibernate.util.providers.PostgreSQLDataSourceProvider;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import net.ttddyy.dsproxy.listener.logging.SLF4JQueryLoggingListener;
 import net.ttddyy.dsproxy.support.ProxyDataSourceBuilder;
 import org.hibernate.jpa.HibernatePersistenceProvider;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -32,20 +33,7 @@ import java.util.Properties;
 @EnableAspectJAutoProxy
 public abstract class SpringDataJPABaseConfiguration {
 
-    @Value("${jdbc.dataSourceClassName}")
-    private String dataSourceClassName;
-
-    @Value("${jdbc.url}")
-    private String jdbcUrl;
-
-    @Value("${jdbc.username}")
-    private String jdbcUser;
-
-    @Value("${jdbc.password}")
-    private String jdbcPassword;
-
-    @Value("${hibernate.dialect}")
-    private String hibernateDialect;
+    private DataSourceProvider dataSourceProvider = new PostgreSQLDataSourceProvider();
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySources() {
@@ -54,17 +42,11 @@ public abstract class SpringDataJPABaseConfiguration {
 
     @Bean(destroyMethod = "close")
     public HikariDataSource actualDataSource() {
-        Properties driverProperties = new Properties();
-        driverProperties.setProperty("url", jdbcUrl);
-        driverProperties.setProperty("user", jdbcUser);
-        driverProperties.setProperty("password", jdbcPassword);
-
         Properties properties = new Properties();
-        properties.put("dataSourceClassName", dataSourceClassName);
-        properties.put("dataSourceProperties", driverProperties);
         properties.setProperty("maximumPoolSize", String.valueOf(3));
         HikariConfig hikariConfig = new HikariConfig(properties);
         hikariConfig.setAutoCommit(false);
+        hikariConfig.setDataSource(dataSourceProvider.dataSource());
         return new HikariDataSource(hikariConfig);
     }
 
@@ -113,7 +95,7 @@ public abstract class SpringDataJPABaseConfiguration {
 
     protected Properties properties() {
         Properties properties = new Properties();
-        properties.setProperty("hibernate.dialect", hibernateDialect);
+        properties.setProperty("hibernate.dialect", dataSourceProvider.hibernateDialect());
         properties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
         additionalProperties(properties);
         return properties;
