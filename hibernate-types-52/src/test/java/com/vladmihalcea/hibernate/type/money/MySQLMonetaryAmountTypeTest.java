@@ -57,7 +57,7 @@ public class MySQLMonetaryAmountTypeTest extends AbstractMySQLIntegrationTest {
 
         doInJPA(entityManager -> {
             Money money = Money.of(new BigDecimal("10.23"), "USD");
-            Salary salary = entityManager.createQuery("select s from Salary s where salary = :salary", Salary.class)
+            Salary salary = entityManager.createQuery("select s from Salary s where s.salary = :salary", Salary.class)
                     .setParameter("salary", money)
                     .getSingleResult();
 

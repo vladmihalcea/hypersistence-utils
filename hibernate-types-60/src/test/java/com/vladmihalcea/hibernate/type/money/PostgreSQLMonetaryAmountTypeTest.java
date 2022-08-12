@@ -55,7 +55,7 @@ public class PostgreSQLMonetaryAmountTypeTest extends AbstractPostgreSQLIntegrat
 
         doInJPA(entityManager -> {
             Money money = Money.of(new BigDecimal("10.23"), "USD");
-            Salary salary = entityManager.createQuery("select s from Salary s where salary = :salary", Salary.class)
+            Salary salary = entityManager.createQuery("select s from Salary s where s.salary = :salary", Salary.class)
                     .setParameter("salary", money)
                     .getSingleResult();
 
@@ -73,16 +73,16 @@ public class PostgreSQLMonetaryAmountTypeTest extends AbstractPostgreSQLIntegrat
 
         doInJPA(entityManager -> {
             Salary salary = entityManager.createQuery("select s from Salary s where s.id = :id", Salary.class)
-                .setParameter("id", _id)
-                .getSingleResult();
+                    .setParameter("id", _id)
+                    .getSingleResult();
 
             assertNull(salary.getSalary());
         });
 
         doInJPA(entityManager -> {
             MonetaryAmount money = entityManager.createQuery("select s.salary from Salary s where s.id = :id", MonetaryAmount.class)
-                .setParameter("id", _id)
-                .getSingleResult();
+                    .setParameter("id", _id)
+                    .getSingleResult();
 
             assertNull(money);
         });

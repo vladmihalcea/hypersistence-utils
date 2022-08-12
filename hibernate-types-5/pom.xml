@@ -48,15 +48,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.javamoney</groupId>
-            <artifactId>moneta</artifactId>
-            <version>${moneta.version}</version>
-            <type>pom</type>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-ehcache</artifactId>
             <version>${hibernate.version}</version>
@@ -79,7 +70,6 @@
 
         <jackson.version>2.7.9.6</jackson.version>
         <guava.version>12.0</guava.version>
-        <moneta.version>1.4.2</moneta.version>
     </properties>
 
     <build>

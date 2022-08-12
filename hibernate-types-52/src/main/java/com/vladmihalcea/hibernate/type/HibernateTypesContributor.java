@@ -6,6 +6,7 @@ import com.vladmihalcea.hibernate.type.interval.OracleIntervalDayToSecondType;
 import com.vladmihalcea.hibernate.type.interval.PostgreSQLIntervalType;
 import com.vladmihalcea.hibernate.type.interval.PostgreSQLPeriodType;
 import com.vladmihalcea.hibernate.type.json.*;
+import com.vladmihalcea.hibernate.type.money.CurrencyType;
 import com.vladmihalcea.hibernate.type.money.MonetaryAmountType;
 import com.vladmihalcea.hibernate.type.range.PostgreSQLRangeType;
 import com.vladmihalcea.hibernate.type.range.guava.PostgreSQLGuavaRangeType;
@@ -98,7 +99,8 @@ public class HibernateTypesContributor implements TypeContributor {
         .contributeType(typeContributions, JsonType.INSTANCE);
         /* Money and Currency API */
         if(ReflectionUtils.getClassOrNull("org.javamoney.moneta.Money") != null) {
-            this.contributeType(typeContributions, MonetaryAmountType.INSTANCE);
+            this.contributeType(typeContributions, CurrencyType.INSTANCE)
+                .contributeType(typeContributions, MonetaryAmountType.INSTANCE);
         }
     }
 
