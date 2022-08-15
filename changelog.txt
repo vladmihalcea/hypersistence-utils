@@ -1,3 +1,12 @@
+Version 2.18.0 - August 15, 2022
+================================================================================
+
+Reuse the DB containers bootstrapped by Testcontainers #477
+
+Add support for Testcontainers #476
+
+Add support for the JavaMoney (JSR 354) CurrencyUnit #473
+
 Version 2.17.3 - August 03, 2022
 ================================================================================
 
