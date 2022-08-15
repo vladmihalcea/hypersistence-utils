@@ -59,6 +59,7 @@ public enum Database {
 
     public void initContainer(String username, String password) {
         container = (JdbcDatabaseContainer) newJdbcDatabaseContainer()
+            .withReuse(true)
             .withEnv(Collections.singletonMap("ACCEPT_EULA", "Y"));
         if(supportsDatabaseName()) {
             container.withDatabaseName("high-performance-java-persistence");
