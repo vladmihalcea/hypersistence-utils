@@ -1,33 +1,57 @@
-version: '3.2'
+version: "3.9"
+
+volumes:
+  mypostgresdata:
+  mymysqldata:
+  mysqldata:
+  myoracledata:
 
 services:
-  postgresql-hibernate:
-    image: postgres:11.1
-    container_name: postgresql-hibernate-types
-    restart: unless-stopped
+
+  postgres:
+    image: postgres:12.5
+    environment:
+      POSTGRES_DB: high_performance_java_persistence
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    volumes:
+      - mypostgresdata:/var/lib/postgresql/data
     ports:
       - 5432:5432
-    volumes:
-      - ./postgresql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "50m"
-        max-file: "1"
+    restart: on-failure
 
-  mysql-hibernate:
-    image: mysql:5.7
-    container_name: mysql-hibernate-types
-    restart: unless-stopped
+  mysql:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_USER: mysql
+      MYSQL_PASSWORD: admin
+      MYSQL_DATABASE: high_performance_java_persistence
+    volumes:
+      - mymysqldata:/var/lib/mysql
     ports:
       - 3306:3306
+    restart: on-failure
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    container_name: sql1
     environment:
-      - MYSQL_ALLOW_EMPTY_PASSWORD=true
-    volumes :
-      - ./mysql/etc/mysql/conf.d:/etc/mysql/conf.d
-      - ./mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "50m"
-        max-file: "1"
+      ACCEPT_EULA: Y
+      SA_PASSWORD: adminPassword1!
+      MYSQL_PID: Express
+    volumes:
+      - mysqldata:/var/opt/mssql
+    ports:
+      - 1433:1433
+    restart: on-failure
+
+  oracle:
+    image: gvenzl/oracle-xe:18
+    container_name: oraclexe
+    environment:
+      ORACLE_PASSWORD: admin
+    volumes:
+      - myoracledata:/opt/oracle/oradata
+    ports:
+      - 1521:1521
