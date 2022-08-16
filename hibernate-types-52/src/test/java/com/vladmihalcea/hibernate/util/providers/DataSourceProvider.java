@@ -8,24 +8,15 @@ import java.util.Properties;
  */
 public interface DataSourceProvider {
 
+    Database database();
+
     String hibernateDialect();
 
     DataSource dataSource();
-
-    Class<? extends DataSource> dataSourceClassName();
-
-    Properties dataSourceProperties();
 
     String url();
 
     String username();
 
     String password();
-
-    Database database();
-
-    enum IdentifierStrategy {
-        IDENTITY,
-        SEQUENCE
-    }
 }

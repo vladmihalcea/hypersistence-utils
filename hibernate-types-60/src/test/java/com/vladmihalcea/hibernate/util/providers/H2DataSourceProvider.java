@@ -27,20 +27,6 @@ public class H2DataSourceProvider implements DataSourceProvider {
     }
 
     @Override
-    public Class<? extends DataSource> dataSourceClassName() {
-        return JdbcDataSource.class;
-    }
-
-    @Override
-    public Properties dataSourceProperties() {
-        Properties properties = new Properties();
-        properties.setProperty("url", url());
-        properties.setProperty("user", username());
-        properties.setProperty("password", password());
-        return properties;
-    }
-
-    @Override
     public String url() {
         return "jdbc:h2:mem:test";
     }

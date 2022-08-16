@@ -44,21 +44,6 @@ public class OracleDataSourceProvider extends AbstractContainerDataSourceProvide
     }
 
     @Override
-    public Class<? extends DataSource> dataSourceClassName() {
-        return OracleDataSource.class;
-    }
-
-    @Override
-    public Properties dataSourceProperties() {
-        Properties properties = new Properties();
-        properties.setProperty("databaseName", "high_performance_java_persistence");
-        properties.setProperty("URL", url());
-        properties.setProperty("user", username());
-        properties.setProperty("password", password());
-        return properties;
-    }
-
-    @Override
     public String username() {
         return "oracle";
     }

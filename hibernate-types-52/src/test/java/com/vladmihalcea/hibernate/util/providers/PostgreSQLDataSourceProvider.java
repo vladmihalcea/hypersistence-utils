@@ -31,21 +31,6 @@ public class PostgreSQLDataSourceProvider extends AbstractContainerDataSourcePro
     }
 
     @Override
-    public Class<? extends DataSource> dataSourceClassName() {
-        return PGSimpleDataSource.class;
-    }
-
-    @Override
-    public Properties dataSourceProperties() {
-        Properties properties = new Properties();
-        properties.setProperty("databaseName", "high_performance_java_persistence");
-        properties.setProperty("serverName", "localhost");
-        properties.setProperty("user", username());
-        properties.setProperty("password", password());
-        return properties;
-    }
-
-    @Override
     public String username() {
         return "postgres";
     }

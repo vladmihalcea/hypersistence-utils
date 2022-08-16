@@ -8,8 +8,6 @@ import java.util.Collections;
  * @author Vlad Mihalcea
  */
 public enum Database {
-    HSQLDB,
-    H2,
     POSTGRESQL {
         @Override
         protected JdbcDatabaseContainer newJdbcDatabaseContainer() {
@@ -49,7 +47,9 @@ public enum Database {
             return false;
         }
     },
-    COCKROACHDB;
+    HSQLDB,
+    H2
+    ;
 
     private JdbcDatabaseContainer container;
 

@@ -37,18 +37,6 @@ public class SQLServerDataSourceProvider extends AbstractContainerDataSourceProv
 	}
 
 	@Override
-	public Class<? extends DataSource> dataSourceClassName() {
-		return SQLServerDataSource.class;
-	}
-
-	@Override
-	public Properties dataSourceProperties() {
-		Properties properties = new Properties();
-		properties.setProperty( "URL", url() );
-		return properties;
-	}
-
-	@Override
 	public String username() {
 		return "sa";
 	}
