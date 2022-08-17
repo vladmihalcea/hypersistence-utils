@@ -59,14 +59,15 @@ public enum Database {
 
     public void initContainer(String username, String password) {
         container = (JdbcDatabaseContainer) newJdbcDatabaseContainer()
-            .withEnv(Collections.singletonMap("ACCEPT_EULA", "Y"));
+            .withReuse(true)
+            .withEnv(Collections.singletonMap("ACCEPT_EULA", "Y"))
+            .withTmpFs(Collections.singletonMap("/testtmpfs", "rw"));
         if(supportsDatabaseName()) {
             container.withDatabaseName("high-performance-java-persistence");
         }
         if(supportsCredentials()) {
             container.withUsername(username).withPassword(password);
         }
-        container.withTmpFs(Collections.singletonMap("/testtmpfs", "rw"));
         container.start();
     }
 
