@@ -27,7 +27,7 @@ import java.util.function.Function;
  * @author Edgar Asatryan
  * @author Vlad Mihalcea
  */
-public final class Range<T extends Comparable> implements Serializable {
+public final class Range<T extends Comparable<? super T>> implements Serializable {
 
     public static final int LOWER_INCLUSIVE = 1 << 1;
     public static final int LOWER_EXCLUSIVE = 1 << 2;
@@ -88,7 +88,7 @@ public final class Range<T extends Comparable> implements Serializable {
      * @return The closed range.
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Comparable<?>> Range<T> closed(T lower, T upper) {
+    public static <T extends Comparable<? super T>> Range<T> closed(T lower, T upper) {
         Objects.requireNonNull(lower);
         Objects.requireNonNull(upper);
         return new Range<>(lower, upper, LOWER_INCLUSIVE | UPPER_INCLUSIVE, (Class<T>) lower.getClass());
@@ -109,7 +109,7 @@ public final class Range<T extends Comparable> implements Serializable {
      * @return The range.
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Comparable<?>> Range<T> open(T lower, T upper) {
+    public static <T extends Comparable<? super T>> Range<T> open(T lower, T upper) {
         Objects.requireNonNull(lower);
         Objects.requireNonNull(upper);
         return new Range<>(lower, upper, LOWER_EXCLUSIVE | UPPER_EXCLUSIVE, (Class<T>) lower.getClass());
@@ -130,7 +130,7 @@ public final class Range<T extends Comparable> implements Serializable {
      * @return The range.
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Comparable<?>> Range<T> openClosed(T lower, T upper) {
+    public static <T extends Comparable<? super T>> Range<T> openClosed(T lower, T upper) {
         Objects.requireNonNull(lower);
         Objects.requireNonNull(upper);
         return new Range<>(lower, upper, LOWER_EXCLUSIVE | UPPER_INCLUSIVE, (Class<T>) lower.getClass());
@@ -151,7 +151,7 @@ public final class Range<T extends Comparable> implements Serializable {
      * @return The range.
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Comparable<?>> Range<T> closedOpen(T lower, T upper) {
+    public static <T extends Comparable<? super T>> Range<T> closedOpen(T lower, T upper) {
         Objects.requireNonNull(lower);
         Objects.requireNonNull(upper);
         return new Range<>(lower, upper, LOWER_INCLUSIVE | UPPER_EXCLUSIVE, (Class<T>) lower.getClass());
@@ -171,7 +171,7 @@ public final class Range<T extends Comparable> implements Serializable {
      * @return The range.
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Comparable<?>> Range<T> openInfinite(T lower) {
+    public static <T extends Comparable<? super T>> Range<T> openInfinite(T lower) {
         Objects.requireNonNull(lower);
         return new Range<>(lower, null, LOWER_EXCLUSIVE | UPPER_INFINITE, (Class<T>) lower.getClass());
     }
@@ -190,9 +190,9 @@ public final class Range<T extends Comparable> implements Serializable {
      * @return The range.
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Comparable<?>> Range<T> closedInfinite(T lower) {
+    public static <T extends Comparable<? super T>> Range<T> closedInfinite(T lower) {
         Objects.requireNonNull(lower);
-        return new Range(lower, null, LOWER_INCLUSIVE | UPPER_INFINITE, lower.getClass());
+        return new Range<>(lower, null, LOWER_INCLUSIVE | UPPER_INFINITE, (Class<T>) lower.getClass());
     }
 
     /**
@@ -209,7 +209,7 @@ public final class Range<T extends Comparable> implements Serializable {
      * @return The range.
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Comparable<?>> Range<T> infiniteOpen(T upper) {
+    public static <T extends Comparable<? super T>> Range<T> infiniteOpen(T upper) {
         Objects.requireNonNull(upper);
         return new Range<>(null, upper, UPPER_EXCLUSIVE | LOWER_INFINITE, (Class<T>) upper.getClass());
     }
@@ -228,7 +228,7 @@ public final class Range<T extends Comparable> implements Serializable {
      * @return The range.
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Comparable<?>> Range<T> infiniteClosed(T upper) {
+    public static <T extends Comparable<? super T>> Range<T> infiniteClosed(T upper) {
         Objects.requireNonNull(upper);
         return new Range<>(null, upper, UPPER_INCLUSIVE | LOWER_INFINITE, (Class<T>) upper.getClass());
     }
@@ -246,13 +246,11 @@ public final class Range<T extends Comparable> implements Serializable {
      *
      * @return The infinite range.
      */
-    @SuppressWarnings("unchecked")
-    public static <T extends Comparable<?>> Range<T> infinite(Class<T> cls) {
+    public static <T extends Comparable<? super T>> Range<T> infinite(Class<T> cls) {
         return new Range<>(null, null, LOWER_INFINITE | UPPER_INFINITE, cls);
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T extends Comparable> Range<T> ofString(String str, Function<String, T> converter, Class<T> clazz) {
+    public static <T extends Comparable<? super T>> Range<T> ofString(String str, Function<String, T> converter, Class<T> clazz) {
         if(str.equals(EMPTY)) {
             return emptyRange(clazz);
         }
@@ -485,9 +483,9 @@ public final class Range<T extends Comparable> implements Serializable {
         if (!(o instanceof Range)) return false;
         Range<?> range = (Range<?>) o;
         return mask == range.mask &&
-                Objects.equals(lower, range.lower) &&
-                Objects.equals(upper, range.upper) &&
-                Objects.equals(clazz, range.clazz);
+            Objects.equals(lower, range.lower) &&
+            Objects.equals(upper, range.upper) &&
+            Objects.equals(clazz, range.clazz);
     }
 
     @Override
@@ -498,22 +496,22 @@ public final class Range<T extends Comparable> implements Serializable {
     @Override
     public String toString() {
         return "Range{" + "lower=" + lower +
-                ", upper=" + upper +
-                ", mask=" + mask +
-                ", clazz=" + clazz +
-                '}';
+            ", upper=" + upper +
+            ", mask=" + mask +
+            ", clazz=" + clazz +
+            '}';
     }
 
     public boolean hasMask(int flag) {
         return (mask & flag) == flag;
     }
-    
+
     public boolean isLowerBoundClosed() {
-    	return hasLowerBound() && hasMask(LOWER_INCLUSIVE);
+        return hasLowerBound() && hasMask(LOWER_INCLUSIVE);
     }
-    
+
     public boolean isUpperBoundClosed() {
-    	return hasUpperBound() && hasMask(UPPER_INCLUSIVE);
+        return hasUpperBound() && hasMask(UPPER_INCLUSIVE);
     }
 
     public boolean hasLowerBound() {
@@ -562,7 +560,6 @@ public final class Range<T extends Comparable> implements Serializable {
      *
      * @return Whether {@code point} in this range or not.
      */
-    @SuppressWarnings("unchecked")
     public boolean contains(T point) {
         boolean l = hasLowerBound();
         boolean u = hasUpperBound();
@@ -606,10 +603,10 @@ public final class Range<T extends Comparable> implements Serializable {
         StringBuilder sb = new StringBuilder();
 
         sb.append(hasMask(LOWER_INCLUSIVE) ? '[' : '(')
-                .append(hasLowerBound() ? boundToString().apply(lower) : "")
-                .append(",")
-                .append(hasUpperBound() ? boundToString().apply(upper) : "")
-                .append(hasMask(UPPER_INCLUSIVE) ? ']' : ')');
+            .append(hasLowerBound() ? boundToString().apply(lower) : "")
+            .append(",")
+            .append(hasUpperBound() ? boundToString().apply(upper) : "")
+            .append(hasMask(UPPER_INCLUSIVE) ? ']' : ')');
 
         return sb.toString();
     }
@@ -628,8 +625,8 @@ public final class Range<T extends Comparable> implements Serializable {
         return clazz;
     }
 
-    public static <R extends Comparable<R>> Range<R> emptyRange(Class<R> clazz) {
-        return new Range<R>(
+    public static <R extends Comparable<? super R>> Range<R> emptyRange(Class<R> clazz) {
+        return new Range<>(
             null,
             null,
             LOWER_INFINITE|UPPER_INFINITE,

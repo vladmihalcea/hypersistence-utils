@@ -23,7 +23,7 @@ import java.util.Arrays;
  * @author Edgar Asatryan
  * @author Vlad Mihalcea
  */
-public final class Range<T extends Comparable> implements Serializable {
+public final class Range<T extends Comparable<? super T>> implements Serializable {
 
     public static final int LOWER_INCLUSIVE = 1 << 1;
     public static final int LOWER_EXCLUSIVE = 1 << 2;
@@ -67,7 +67,7 @@ public final class Range<T extends Comparable> implements Serializable {
      * @return The closed range.
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Comparable<?>> Range<T> closed(T lower, T upper) {
+    public static <T extends Comparable<? super T>> Range<T> closed(T lower, T upper) {
         Objects.requireNonNull(lower);
         Objects.requireNonNull(upper);
         return new Range<T>(lower, upper, LOWER_INCLUSIVE | UPPER_INCLUSIVE, (Class<T>) lower.getClass());
@@ -88,7 +88,7 @@ public final class Range<T extends Comparable> implements Serializable {
      * @return The range.
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Comparable<?>> Range<T> open(T lower, T upper) {
+    public static <T extends Comparable<? super T>> Range<T> open(T lower, T upper) {
         Objects.requireNonNull(lower);
         Objects.requireNonNull(upper);
         return new Range<T>(lower, upper, LOWER_EXCLUSIVE | UPPER_EXCLUSIVE, (Class<T>) lower.getClass());
@@ -109,7 +109,7 @@ public final class Range<T extends Comparable> implements Serializable {
      * @return The range.
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Comparable<?>> Range<T> openClosed(T lower, T upper) {
+    public static <T extends Comparable<? super T>> Range<T> openClosed(T lower, T upper) {
         Objects.requireNonNull(lower);
         Objects.requireNonNull(upper);
         return new Range<T>(lower, upper, LOWER_EXCLUSIVE | UPPER_INCLUSIVE, (Class<T>) lower.getClass());
@@ -130,7 +130,7 @@ public final class Range<T extends Comparable> implements Serializable {
      * @return The range.
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Comparable<?>> Range<T> closedOpen(T lower, T upper) {
+    public static <T extends Comparable<? super T>> Range<T> closedOpen(T lower, T upper) {
         Objects.requireNonNull(lower);
         Objects.requireNonNull(upper);
         return new Range<T>(lower, upper, LOWER_INCLUSIVE | UPPER_EXCLUSIVE, (Class<T>) lower.getClass());
@@ -150,7 +150,7 @@ public final class Range<T extends Comparable> implements Serializable {
      * @return The range.
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Comparable<?>> Range<T> openInfinite(T lower) {
+    public static <T extends Comparable<? super T>> Range<T> openInfinite(T lower) {
         Objects.requireNonNull(lower);
         return new Range<T>(lower, null, LOWER_EXCLUSIVE | UPPER_INFINITE, (Class<T>) lower.getClass());
     }
@@ -169,7 +169,7 @@ public final class Range<T extends Comparable> implements Serializable {
      * @return The range.
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Comparable<?>> Range<T> closedInfinite(T lower) {
+    public static <T extends Comparable<? super T>> Range<T> closedInfinite(T lower) {
         Objects.requireNonNull(lower);
         return new Range(lower, null, LOWER_INCLUSIVE | UPPER_INFINITE, lower.getClass());
     }
@@ -188,7 +188,7 @@ public final class Range<T extends Comparable> implements Serializable {
      * @return The range.
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Comparable<?>> Range<T> infiniteOpen(T upper) {
+    public static <T extends Comparable<? super T>> Range<T> infiniteOpen(T upper) {
         Objects.requireNonNull(upper);
         return new Range<T>(null, upper, UPPER_EXCLUSIVE | LOWER_INFINITE, (Class<T>) upper.getClass());
     }
@@ -207,7 +207,7 @@ public final class Range<T extends Comparable> implements Serializable {
      * @return The range.
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Comparable<?>> Range<T> infiniteClosed(T upper) {
+    public static <T extends Comparable<? super T>> Range<T> infiniteClosed(T upper) {
         Objects.requireNonNull(upper);
         return new Range<T>(null, upper, UPPER_INCLUSIVE | LOWER_INFINITE, (Class<T>) upper.getClass());
     }
@@ -226,12 +226,12 @@ public final class Range<T extends Comparable> implements Serializable {
      * @return The infinite range.
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Comparable<?>> Range<T> infinite(Class<T> cls) {
+    public static <T extends Comparable<? super T>> Range<T> infinite(Class<T> cls) {
         return new Range<T>(null, null, LOWER_INFINITE | UPPER_INFINITE, cls);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends Comparable> Range<T> ofString(String str, Function<String, T> converter, Class<T> clazz) {
+    public static <T extends Comparable<? super T>> Range<T> ofString(String str, Function<String, T> converter, Class<T> clazz) {
         if(str.equals(EMPTY)) {
             return emptyRange(clazz);
         }
@@ -514,7 +514,7 @@ public final class Range<T extends Comparable> implements Serializable {
         R apply(T t);
     }
 
-    public static <R extends Comparable<R>> Range<R> emptyRange(Class<R> clazz) {
+    public static <R extends Comparable<? super R>> Range<R> emptyRange(Class<R> clazz) {
         return new Range<R>(
             null,
             null,
