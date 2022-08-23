@@ -42,6 +42,16 @@
         <tag>HEAD</tag>
     </scm>
 
+    <repositories>
+        <repository>
+            <id>Spring</id>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <url>https://repo.spring.io/milestone</url>
+        </repository>
+    </repositories>
+
     <modules>
         <module>hibernate-types-60</module>
         <module>hibernate-types-55</module>
