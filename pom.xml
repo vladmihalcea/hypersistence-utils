@@ -212,10 +212,6 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <source>${jdk.version}</source>
-                    <target>${jdk.version}</target>
-                    <testSource>${jdk-test.version}</testSource>
-                    <testTarget>${jdk-test.version}</testTarget>
                     <showDeprecation>true</showDeprecation>
                     <showWarnings>true</showWarnings>
                 </configuration>
@@ -377,6 +373,11 @@
     <properties>
         <jdk.version>6</jdk.version>
         <jdk-test.version>8</jdk-test.version>
+
+        <maven.compiler.source>${jdk.version}</maven.compiler.source>
+        <maven.compiler.target>${jdk.version}</maven.compiler.target>
+        <maven.compiler.testSource>${jdk-test.version}</maven.compiler.testSource>
+        <maven.compiler.testTarget>${jdk-test.version}</maven.compiler.testTarget>
 
         <console.log.level>DEBUG</console.log.level>
 
