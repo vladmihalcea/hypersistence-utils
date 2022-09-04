@@ -24,7 +24,7 @@ public class PostgreSQLTSVectorTypeDescriptor extends AbstractClassJavaType<Obje
     public void setParameterValues(Properties parameters) {
         final XProperty xProperty = (XProperty) parameters.get(DynamicParameterizedType.XPROPERTY);
         if (xProperty instanceof JavaXMember) {
-            type = ReflectionUtils.invokeGetter(xProperty, "javaType");
+            type = ((JavaXMember) xProperty).getJavaType();
         } else {
             type = ((ParameterType) parameters.get(PARAMETER_TYPE)).getReturnedClass();
         }
