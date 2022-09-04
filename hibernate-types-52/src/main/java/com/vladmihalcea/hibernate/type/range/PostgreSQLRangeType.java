@@ -1,7 +1,6 @@
 package com.vladmihalcea.hibernate.type.range;
 
 import com.vladmihalcea.hibernate.type.ImmutableType;
-import com.vladmihalcea.hibernate.util.ReflectionUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.annotations.common.reflection.XProperty;
 import org.hibernate.annotations.common.reflection.java.JavaXMember;
@@ -128,7 +127,7 @@ public class PostgreSQLRangeType extends ImmutableType<Range> implements Dynamic
     public void setParameterValues(Properties parameters) {
         final XProperty xProperty = (XProperty) parameters.get(DynamicParameterizedType.XPROPERTY);
         if (xProperty instanceof JavaXMember) {
-            type = ReflectionUtils.invokeGetter(xProperty, "javaType");
+            type = ((JavaXMember) xProperty).getJavaType();
         } else {
             type = ((ParameterType) parameters.get(PARAMETER_TYPE)).getReturnedClass();
         }

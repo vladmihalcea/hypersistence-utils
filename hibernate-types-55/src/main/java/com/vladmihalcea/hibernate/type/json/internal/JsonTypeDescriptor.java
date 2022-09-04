@@ -66,7 +66,7 @@ public class JsonTypeDescriptor
     public void setParameterValues(Properties parameters) {
         final XProperty xProperty = (XProperty) parameters.get(DynamicParameterizedType.XPROPERTY);
         Type type = (xProperty instanceof JavaXMember) ?
-            ReflectionUtils.invokeGetter(xProperty, "javaType") :
+            ((JavaXMember) xProperty).getJavaType() :
             ((ParameterType) parameters.get(PARAMETER_TYPE)).getReturnedClass();
         setPropertyClass(type);
     }

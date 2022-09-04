@@ -3,7 +3,6 @@ package com.vladmihalcea.hibernate.type.range.guava;
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 import com.vladmihalcea.hibernate.type.ImmutableType;
-import com.vladmihalcea.hibernate.util.ReflectionUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.annotations.common.reflection.XProperty;
 import org.hibernate.annotations.common.reflection.java.JavaXMember;
@@ -515,7 +514,7 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
     public void setParameterValues(Properties parameters) {
         final XProperty xProperty = (XProperty) parameters.get(DynamicParameterizedType.XPROPERTY);
         if (xProperty instanceof JavaXMember) {
-            type = ReflectionUtils.invokeGetter(xProperty, "javaType");
+            type = ((JavaXMember) xProperty).getJavaType();
         } else {
             type = ((ParameterType) parameters.get(PARAMETER_TYPE)).getReturnedClass();
         }
