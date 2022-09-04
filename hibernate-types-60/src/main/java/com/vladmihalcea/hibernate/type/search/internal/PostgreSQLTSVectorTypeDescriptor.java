@@ -1,6 +1,5 @@
 package com.vladmihalcea.hibernate.type.search.internal;
 
-import com.vladmihalcea.hibernate.util.ReflectionUtils;
 import org.hibernate.annotations.common.reflection.XProperty;
 import org.hibernate.annotations.common.reflection.java.JavaXMember;
 import org.hibernate.type.descriptor.WrapperOptions;
