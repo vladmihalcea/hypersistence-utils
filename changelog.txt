@@ -1,3 +1,10 @@
+Version 2.19.0 - September 05, 2022
+================================================================================
+
+Generify the Comparable type in the Range class #478
+
+Add support for GraalVM native images #343
+
 Version 2.18.0 - August 15, 2022
 ================================================================================
 
