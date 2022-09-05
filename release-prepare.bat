@@ -3,7 +3,7 @@
 if "%1" == "" goto usage
 
 SET passphrase=%1
-mvn -P release -Dgpg.passphrase=%passphrase% -DignoreSnapshots=true release:clean release:prepare
+mvn362 -P release -Dgpg.passphrase=%passphrase% -DignoreSnapshots=true release:clean release:prepare
 goto:eof
 
 :usage
