@@ -20,23 +20,28 @@ public class HibernateRepositoryImpl<T> implements HibernateRepository<T> {
     private EntityManager entityManager;
 
     @Override
+    public List<T> findAll() {
+        throw new UnsupportedOperationException("Fetching all records from a given database table is a terrible idea!");
+    }
+
+    @Override
     public <S extends T> S save(S entity) {
-        return unsupported();
+        return unsupportedSave();
     }
 
     @Override
     public <S extends T> List<S> saveAll(Iterable<S> entities) {
-        return unsupported();
+        return unsupportedSave();
     }
 
     @Override
     public <S extends T> S saveAndFlush(S entity) {
-        return unsupported();
+        return unsupportedSave();
     }
 
     @Override
     public <S extends T> List<S> saveAllAndFlush(Iterable<S> entities) {
-        return unsupported();
+        return unsupportedSave();
     }
 
     public <S extends T> S persist(S entity) {
@@ -161,7 +166,7 @@ public class HibernateRepositoryImpl<T> implements HibernateRepository<T> {
         return entityManager.unwrap(Session.class);
     }
 
-    protected <S extends T> S unsupported() {
+    protected <S extends T> S unsupportedSave() {
         throw new UnsupportedOperationException("There's no such thing as a save method in JPA, so don't use this hack!");
     }
 }

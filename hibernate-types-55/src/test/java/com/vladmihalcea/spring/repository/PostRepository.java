@@ -8,6 +8,6 @@ import com.vladmihalcea.spring.repository.domain.Post;
  * @author Vlad Mihalcea
  */
 @Repository
-public interface PostRepository extends JpaRepository<Post, Long>, HibernateRepository<Post> {
+public interface PostRepository extends HibernateRepository<Post>, JpaRepository<Post, Long> {
 
 }

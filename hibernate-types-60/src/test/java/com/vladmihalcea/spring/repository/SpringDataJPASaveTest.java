@@ -105,5 +105,19 @@ public class SpringDataJPASaveTest {
             LOGGER.warn("You shouldn't call the JpaRepository save method!");
         }
     }
+
+    @Test
+    public void testFindAll() {
+        try {
+            transactionTemplate.execute((TransactionCallback<Void>) transactionStatus -> {
+                postRepository.findAll();
+                return null;
+            });
+
+            fail("Should throw UnsupportedOperationException!");
+        } catch (UnsupportedOperationException expected) {
+            LOGGER.warn("You shouldn't call the JpaRepository findAll method!");
+        }
+    }
 }
 

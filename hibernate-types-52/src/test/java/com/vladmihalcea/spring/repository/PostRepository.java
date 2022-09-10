@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
  * @author Vlad Mihalcea
  */
 @Repository
-public interface PostRepository extends JpaRepository<Post, Long>, HibernateRepository<Post> {
+public interface PostRepository extends HibernateRepository<Post>, JpaRepository<Post, Long> {
 
 }
