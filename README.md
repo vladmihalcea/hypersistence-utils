@@ -12,7 +12,7 @@ The main advantage of this project is that it supports a broad range of Hibernat
 
 Depending on the Hibernate version you are using, you need to add the following dependency:
 
-#### Hibernate 6.0
+#### Hibernate 6.1 and 6.0
 
     <dependency>
         <groupId>com.vladmihalcea</groupId>
@@ -78,7 +78,7 @@ More, the dependency version is extremely important because, from time to time, 
 
 If you are using JSON Types, then you might be interested in setting the following dependencies based on your Hibernate version:
 
-###### Hibernate 6.0
+###### Hibernate 6.1 and 6.0
 
 ````xml
 <dependency>
@@ -282,6 +282,7 @@ For more details, check out [this article](https://vladmihalcea.com/how-to-map-j
 ##### Spring Repository
 
 * [`HibernateRepository` - The best Spring Data JpaRepository](https://vladmihalcea.com/best-spring-data-jparepository/)
+* [The Spring Data `findAll` Anti-Pattern](https://vladmihalcea.com/spring-data-findall-anti-pattern/)
 
 When using the `HibernateRepository`, make sure that you include the `com.vladmihalcea.spring.repository` package
 in your `@EnableJpaRepositories` configuration:
