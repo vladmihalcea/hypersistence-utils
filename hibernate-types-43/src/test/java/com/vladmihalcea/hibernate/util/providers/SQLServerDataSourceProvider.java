@@ -18,7 +18,7 @@ public class SQLServerDataSourceProvider extends AbstractContainerDataSourceProv
 
 	@Override
 	public String defaultJdbcUrl() {
-		return "jdbc:sqlserver://localhost;instance=SQLEXPRESS;databaseName=high_performance_java_persistence;user=sa;password=adm1n";
+		return "jdbc:sqlserver://localhost;instance=SQLEXPRESS;databaseName=high_performance_java_persistence;encrypt=true;trustServerCertificate=true";
 	}
 
 	@Override

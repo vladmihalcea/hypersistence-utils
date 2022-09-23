@@ -5,7 +5,6 @@ import org.hibernate.dialect.MySQLDialect;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
-import java.util.Properties;
 
 /**
  * @author Vlad Mihalcea

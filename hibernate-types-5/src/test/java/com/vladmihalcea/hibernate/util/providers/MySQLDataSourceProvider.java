@@ -1,9 +1,9 @@
 package com.vladmihalcea.hibernate.util.providers;
 
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+import com.mysql.cj.jdbc.MysqlDataSource;
 
 import javax.sql.DataSource;
-import java.util.Properties;
+import java.sql.SQLException;
 
 /**
  * @author Vlad Mihalcea
@@ -81,15 +81,19 @@ public class MySQLDataSourceProvider extends AbstractContainerDataSourceProvider
     }
 
     protected DataSource newDataSource() {
-        MysqlDataSource dataSource = new MysqlDataSource();
-        dataSource.setURL(url());
-        dataSource.setUser(username());
-        dataSource.setPassword(password());
-        dataSource.setRewriteBatchedStatements(rewriteBatchedStatements);
-        dataSource.setCachePrepStmts(cachePrepStmts);
-        dataSource.setUseServerPrepStmts(useServerPrepStmts);
+        try {
+            MysqlDataSource dataSource = new MysqlDataSource();
+            dataSource.setURL(url());
+            dataSource.setUser(username());
+            dataSource.setPassword(password());
+            dataSource.setRewriteBatchedStatements(rewriteBatchedStatements);
+            dataSource.setCachePrepStmts(cachePrepStmts);
+            dataSource.setUseServerPrepStmts(useServerPrepStmts);
 
-        return dataSource;
+            return dataSource;
+        } catch (SQLException e) {
+            throw new IllegalStateException("The DataSource could not be instantiated!");
+        }
     }
 
     @Override

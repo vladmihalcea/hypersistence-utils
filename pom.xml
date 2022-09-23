@@ -417,9 +417,9 @@
         <hsqldb.version>2.2.8</hsqldb.version>
         <h2.version>1.4.200</h2.version>
         <postgresql.version>42.4.1</postgresql.version>
-        <mysql.version>5.1.47</mysql.version>
+        <mysql.version>8.0.30</mysql.version>
         <oracle.version>21.5.0.0</oracle.version>
-        <mssql.version>6.4.0.jre8</mssql.version>
+        <mssql.version>11.2.1.jre8</mssql.version>
 
     </properties>
 
