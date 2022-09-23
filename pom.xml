@@ -129,6 +129,14 @@
         </dependency>
 
         <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql.version}</version>
@@ -408,6 +416,7 @@
         <testcontainers.version>1.17.3</testcontainers.version>
         <hsqldb.version>2.2.8</hsqldb.version>
         <h2.version>1.4.200</h2.version>
+        <postgresql.version>42.4.1</postgresql.version>
         <mysql.version>5.1.47</mysql.version>
         <oracle.version>21.5.0.0</oracle.version>
         <mssql.version>6.4.0.jre8</mssql.version>

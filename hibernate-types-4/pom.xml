@@ -54,19 +54,10 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${postgresql.version}</version>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-
     </dependencies>
 
     <properties>
         <hibernate.version>4.2.21.Final</hibernate.version>
-        <postgresql.version>9.4-1202-jdbc4</postgresql.version>
 
         <jackson-databind.version>2.12.6.1</jackson-databind.version>
         <guava.version>12.0</guava.version>

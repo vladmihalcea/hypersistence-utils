@@ -3,8 +3,6 @@ package com.vladmihalcea.hibernate.type.basic;
 import com.vladmihalcea.hibernate.type.ImmutableType;
 import com.vladmihalcea.hibernate.type.util.Configuration;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.postgresql.util.HStoreConverter;
-import org.postgresql.util.PGobject;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

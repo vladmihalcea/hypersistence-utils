@@ -3,12 +3,12 @@ package com.vladmihalcea.hibernate.type.range.guava;
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 import com.vladmihalcea.hibernate.type.ImmutableType;
+import com.vladmihalcea.hibernate.util.ReflectionUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.annotations.common.reflection.XProperty;
 import org.hibernate.annotations.common.reflection.java.JavaXMember;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.DynamicParameterizedType;
-import org.postgresql.util.PGobject;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -125,14 +125,14 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
 
     @Override
     protected Range get(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner) throws SQLException {
-        PGobject pgObject = (PGobject) rs.getObject(names[0]);
+        Object pgObject = rs.getObject(names[0]);
 
         if (pgObject == null) {
             return null;
         }
 
-        String type = pgObject.getType();
-        String value = pgObject.getValue();
+        String type = ReflectionUtils.invokeGetter(pgObject, "type");
+        String value = ReflectionUtils.invokeGetter(pgObject, "value");
 
         switch (type) {
             case "int4range":
@@ -159,10 +159,10 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
         if (range == null) {
             st.setNull(index, Types.OTHER);
         } else {
-            PGobject object = new PGobject();
-            object.setType(determineRangeType(range));
-            object.setValue(asString(range));
-            st.setObject(index, object);
+            Object holder = ReflectionUtils.newInstance("org.postgresql.util.PGobject");
+            ReflectionUtils.invokeSetter(holder, "type", determineRangeType(range));
+            ReflectionUtils.invokeSetter(holder, "value", asString(range));
+            st.setObject(index, holder);
         }
     }
 

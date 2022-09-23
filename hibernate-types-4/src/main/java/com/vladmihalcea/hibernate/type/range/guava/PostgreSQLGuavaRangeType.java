@@ -4,9 +4,9 @@ import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 import com.google.common.collect.Ranges;
 import com.vladmihalcea.hibernate.type.ImmutableType;
+import com.vladmihalcea.hibernate.util.ReflectionUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
-import org.postgresql.util.PGobject;
 
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
@@ -47,14 +47,14 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> {
 
     @Override
     protected Range get(ResultSet rs, String[] names, SessionImplementor session, Object owner) throws SQLException {
-        PGobject pgObject = (PGobject) rs.getObject(names[0]);
+        Object pgObject = rs.getObject(names[0]);
 
         if (pgObject == null) {
             return null;
         }
 
-        String type = pgObject.getType();
-        String value = pgObject.getValue();
+        String type = ReflectionUtils.invokeGetter(pgObject, "type");
+        String value = ReflectionUtils.invokeGetter(pgObject, "value");
 
         if("int4range".equals(type)) {
             return integerRange(value);
@@ -75,11 +75,10 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> {
         if (range == null) {
             st.setNull(index, Types.OTHER);
         } else {
-            PGobject object = new PGobject();
-            object.setType(determineRangeType(range));
-            object.setValue(asString(range));
-
-            st.setObject(index, object);
+            Object holder = ReflectionUtils.newInstance("org.postgresql.util.PGobject");
+            ReflectionUtils.invokeSetter(holder, "type", determineRangeType(range));
+            ReflectionUtils.invokeSetter(holder, "value", asString(range));
+            st.setObject(index, holder);
         }
     }
 

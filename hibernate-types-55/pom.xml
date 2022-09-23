@@ -65,14 +65,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${postgresql.version}</version>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>${hikari.version}</version>
@@ -165,7 +157,6 @@
         <jdk.version>8</jdk.version>
 
         <hibernate.version>5.6.10.Final</hibernate.version>
-        <postgresql.version>42.4.1</postgresql.version>
 
         <mysql.version>8.0.28</mysql.version>
         <jackson-databind.version>2.12.6.1</jackson-databind.version>

@@ -2,12 +2,12 @@ package com.vladmihalcea.hibernate.type.range;
 
 import com.vladmihalcea.hibernate.type.ImmutableType;
 import com.vladmihalcea.hibernate.type.util.Configuration;
+import com.vladmihalcea.hibernate.util.ReflectionUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.annotations.common.reflection.XProperty;
 import org.hibernate.annotations.common.reflection.java.JavaXMember;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.DynamicParameterizedType;
-import org.postgresql.util.PGobject;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -63,14 +63,14 @@ public class PostgreSQLRangeType extends ImmutableType<Range> implements Dynamic
 
     @Override
     protected Range get(ResultSet rs, int position, SharedSessionContractImplementor session, Object owner) throws SQLException {
-        PGobject pgObject = (PGobject) rs.getObject(position);
+        Object pgObject = rs.getObject(position);
 
         if (pgObject == null) {
             return null;
         }
 
-        String type = pgObject.getType();
-        String value = pgObject.getValue();
+        String type = ReflectionUtils.invokeGetter(pgObject, "type");
+        String value = ReflectionUtils.invokeGetter(pgObject, "value");
 
         switch (type) {
             case "int4range":
@@ -98,11 +98,10 @@ public class PostgreSQLRangeType extends ImmutableType<Range> implements Dynamic
         if (range == null) {
             st.setNull(index, Types.OTHER);
         } else {
-            PGobject object = new PGobject();
-            object.setType(determineRangeType(range));
-            object.setValue(range.asString());
-
-            st.setObject(index, object);
+            Object holder = ReflectionUtils.newInstance("org.postgresql.util.PGobject");
+            ReflectionUtils.invokeSetter(holder, "type", determineRangeType(range));
+            ReflectionUtils.invokeSetter(holder, "value", range.asString());
+            st.setObject(index, holder);
         }
     }
 
