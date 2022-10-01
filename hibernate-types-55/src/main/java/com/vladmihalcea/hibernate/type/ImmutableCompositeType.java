@@ -1,27 +1,26 @@
 package com.vladmihalcea.hibernate.type;
 
 import com.vladmihalcea.hibernate.type.util.Configuration;
+import org.hibernate.EntityMode;
+import org.hibernate.FetchMode;
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
 import org.hibernate.engine.jdbc.Size;
-import org.hibernate.engine.spi.Mapping;
-import org.hibernate.engine.spi.SessionFactoryImplementor;
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.engine.spi.*;
 import org.hibernate.internal.util.collections.ArrayHelper;
 import org.hibernate.type.BasicType;
+import org.hibernate.type.CompositeType;
 import org.hibernate.type.ForeignKeyDirection;
 import org.hibernate.type.Type;
 import org.hibernate.type.descriptor.java.IncomparableComparator;
 import org.hibernate.usertype.CompositeUserType;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -33,11 +32,13 @@ import java.util.stream.Collectors;
  *
  * @author Vlad Mihalcea
  */
-public abstract class ImmutableCompositeType<T> implements CompositeUserType, BasicType {
+public abstract class ImmutableCompositeType<T> implements CompositeUserType, CompositeType, BasicType {
 
     private final Configuration configuration;
 
     private final Class<T> clazz;
+
+    private final List<Method> clazzMethods;
 
     /**
      * Initialization constructor taking the {@link Class}
@@ -46,8 +47,7 @@ public abstract class ImmutableCompositeType<T> implements CompositeUserType, Ba
      * @param clazz the entity attribute {@link Class} type to be handled
      */
     protected ImmutableCompositeType(Class<T> clazz) {
-        this.clazz = clazz;
-        this.configuration = Configuration.INSTANCE;
+        this(clazz, Configuration.INSTANCE);
     }
 
     /**
@@ -59,6 +59,7 @@ public abstract class ImmutableCompositeType<T> implements CompositeUserType, Ba
     protected ImmutableCompositeType(Class<T> clazz, Configuration configuration) {
         this.clazz = clazz;
         this.configuration = configuration;
+        this.clazzMethods = Collections.unmodifiableList(Arrays.asList(clazz.getMethods()));
     }
 
     /**
@@ -173,7 +174,7 @@ public abstract class ImmutableCompositeType<T> implements CompositeUserType, Ba
 
     @Override
     public boolean isComponentType() {
-        return false;
+        return true;
     }
 
     @Override
@@ -332,5 +333,60 @@ public abstract class ImmutableCompositeType<T> implements CompositeUserType, Ba
         return new String[]{
             getName()
         };
+    }
+
+    @Override
+    public Type[] getSubtypes() {
+        return getPropertyTypes();
+    }
+
+    @Override
+    public boolean[] getPropertyNullability() {
+        return new boolean[]{false, false};
+    }
+
+    @Override
+    public Object[] getPropertyValues(Object component, SharedSessionContractImplementor session) throws HibernateException {
+        return new Object[]{getPropertyValue(component, 0), getPropertyValue(component, 1)};
+    }
+
+    @Override
+    public Object[] getPropertyValues(Object component, EntityMode entityMode) throws HibernateException {
+        return new Object[]{getPropertyValue(component, 0), getPropertyValue(component, 1)};
+    }
+
+    @Override
+    public Object getPropertyValue(Object component, int index, SharedSessionContractImplementor session) throws HibernateException {
+        return getPropertyValue(component, index);
+    }
+
+    @Override
+    public void setPropertyValues(Object component, Object[] values, EntityMode entityMode) throws HibernateException {
+        throw new HibernateException("Calling setPropertyValues is illegal on on " + clazz.getName() + " because it's an immutable object!");
+    }
+
+    @Override
+    public CascadeStyle getCascadeStyle(int index) {
+        return CascadeStyles.NONE;
+    }
+
+    @Override
+    public FetchMode getFetchMode(int index) {
+        return FetchMode.DEFAULT;
+    }
+
+    @Override
+    public boolean isMethodOf(Method method) {
+        return clazzMethods.contains(method);
+    }
+
+    @Override
+    public boolean isEmbedded() {
+        return false;
+    }
+
+    @Override
+    public boolean hasNotNullProperty() {
+        return true;
     }
 }

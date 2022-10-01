@@ -27,6 +27,7 @@ import static java.sql.Types.VARCHAR;
  * on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
  *
  * @author Piotr Olaszewski
+ * @author Edgar Asatryan
  */
 public class MonetaryAmountType extends ImmutableCompositeType<MonetaryAmount> {
 
@@ -97,6 +98,15 @@ public class MonetaryAmountType extends ImmutableCompositeType<MonetaryAmount> {
 
             st.setBigDecimal(amountColumnIndex, amount);
             st.setString(currencyColumnIndex, currency);
+        }
+    }
+
+    @Override
+    public int getPropertyIndex(String propertyName) {
+        switch (propertyName) {
+            case "amount": return 0;
+            case "property": return 1;
+            default: throw new IllegalArgumentException("Unknown property name: " + propertyName);
         }
     }
 }
