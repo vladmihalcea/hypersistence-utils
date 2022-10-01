@@ -10,6 +10,7 @@ import org.junit.Test;
 import javax.money.MonetaryAmount;
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -61,7 +62,7 @@ public class PostgreSQLMonetaryAmountTypeTest extends AbstractPostgreSQLIntegrat
                     .setParameter("salary", money)
                     .getSingleResult();
 
-            assertEquals(Long.valueOf(1), salary.getId());
+            assertEquals(1L, salary.getId());
         });
     }
 
@@ -90,13 +91,46 @@ public class PostgreSQLMonetaryAmountTypeTest extends AbstractPostgreSQLIntegrat
         });
     }
 
+    @Test
+    public void testSearchByComponents() {
+        doInJPA(entityManager -> {
+            Salary salary1 = new Salary();
+            salary1.setSalary(Money.of(new BigDecimal("10.23"), "USD"));
+            entityManager.persist(salary1);
+
+            Salary salary2 = new Salary();
+            salary2.setSalary(Money.of(new BigDecimal("20.23"), "EUR"));
+            entityManager.persist(salary2);
+        });
+
+        doInJPA(entityManager -> {
+            BigDecimal amount = BigDecimal.TEN;
+            List<Salary> salaries = entityManager.createQuery("select s from Salary s where s.salary.amount >= :amount", Salary.class)
+                .setParameter("amount", amount)
+                .getResultList();
+
+
+            assertEquals(1L, salaries.get(0).getId());
+            assertEquals(2L, salaries.get(1).getId());
+        });
+
+        doInJPA(entityManager -> {
+            String currency = "USD";
+            Salary salary = entityManager.createQuery("select s from Salary s where s.salary.currency = :currency", Salary.class)
+                .setParameter("currency", currency)
+                .getSingleResult();
+
+            assertEquals(1L, salary.getId());
+        });
+    }
+
     @Entity(name = "Salary")
     @Table(name = "salary")
     @TypeDef(name = "monetary-amount-currency", typeClass = MonetaryAmountType.class, defaultForType = MonetaryAmount.class)
     public static class Salary {
         @Id
         @GeneratedValue
-        private Long id;
+        private long id;
 
         private String other;
 
@@ -107,11 +141,11 @@ public class PostgreSQLMonetaryAmountTypeTest extends AbstractPostgreSQLIntegrat
         @Type(type = "monetary-amount-currency")
         private MonetaryAmount salary;
 
-        public Long getId() {
+        public long getId() {
             return id;
         }
 
-        public void setId(Long id) {
+        public void setId(long id) {
             this.id = id;
         }
 
