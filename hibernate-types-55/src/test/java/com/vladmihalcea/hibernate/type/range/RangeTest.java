@@ -5,8 +5,15 @@ import org.junit.Test;
 import static com.vladmihalcea.hibernate.type.range.Range.integerRange;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
+import java.time.LocalDate;
 
 /**
  * @author Edgar Asatryan
@@ -36,6 +43,9 @@ public class RangeTest {
 
         assertThat(integerRange("(-5,5]").isUpperBoundClosed(), is(true));
         assertThat(integerRange("(-5,5]").isLowerBoundClosed(), is(false));
+        assertThat(integerRange("(,)").contains(integerRange("empty")), is(true));
+
+        assertThat(integerRange("empty").contains(integerRange("(,)")), is(false));
     }
 
     @Test
@@ -73,5 +83,53 @@ public class RangeTest {
     	assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.123456-06,)"));
     	assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.123456+05:30,)"));
     	assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.123456-06,infinity)"));
+    }
+
+
+    @Test
+    public void emptyInfinityEquality() {
+        assertEquals(integerRange("empty"), integerRange("empty"));
+        assertEquals(integerRange("(infinity,infinity)"), integerRange("(infinity,infinity)"));
+        assertEquals(integerRange("(,)"), integerRange("(infinity,infinity)"));
+        assertEquals(integerRange("(infinity,infinity)"), integerRange("(,)"));
+
+        assertNotEquals(integerRange("empty"), integerRange("(infinity,infinity)"));
+        assertNotEquals(integerRange("empty"), integerRange("(,)"));
+        assertNotEquals(integerRange("empty"), integerRange("(5,5)"));
+    }
+
+    @Test
+    public void emptyRangeWithEmptyKeyword() {
+        Range<LocalDate> empty = Range.localDateRange("empty");
+
+        assertTrue(empty.isEmpty());
+
+        assertFalse(empty.contains(LocalDate.MIN));
+        assertFalse(empty.contains((LocalDate) null));
+        assertFalse(empty.contains(LocalDate.now()));
+        assertFalse(empty.contains(LocalDate.MAX));
+
+        assertNull(empty.upper());
+        assertNull(empty.lower());
+    }
+
+    @Test
+    public void emptyRangeWithValues() {
+        Range<LocalDate> empty = Range.localDateRange("(2019-03-27,2019-03-27)");
+
+        assertTrue(empty.isEmpty());
+        assertFalse(empty.contains(LocalDate.MIN));
+        assertFalse(empty.contains(LocalDate.now()));
+        assertFalse(empty.contains(LocalDate.MAX));
+
+        assertTrue(integerRange("(5,5)").isEmpty());
+    }
+
+    @Test
+    public void notEmptyWithValues() {
+        assertFalse(integerRange("(5,)").isEmpty());
+        assertFalse(integerRange("(5,5]").isEmpty());
+        assertFalse(integerRange("(,5)").isEmpty());
+        assertFalse(integerRange("(,)").isEmpty());
     }
 }

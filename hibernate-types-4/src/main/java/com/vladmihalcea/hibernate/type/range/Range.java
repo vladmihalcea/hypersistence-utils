@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 /**
  * Represents the range/interval with two bounds. Abstraction follows the semantics of the mathematical interval. The
- * range can be unbounded or open from the left or/and unbounded from the right. The range supports half-open or closed
+ * range can be unbounded, empty or open from the left or/and unbounded from the right. The range supports half-open or closed
  * bounds on both sides.
  *
  * <p>
@@ -47,7 +47,7 @@ public final class Range<T extends Comparable<? super T>> implements Serializabl
         this.mask = mask;
         this.clazz = clazz;
 
-        if (isBounded() && lower.compareTo(upper) > 0) {
+        if (isBounded() && lower != null && upper != null && lower.compareTo(upper) > 0) {
             throw new IllegalArgumentException("The lower bound is greater then upper!");
         }
     }
@@ -228,6 +228,28 @@ public final class Range<T extends Comparable<? super T>> implements Serializabl
     @SuppressWarnings("unchecked")
     public static <T extends Comparable<? super T>> Range<T> infinite(Class<T> cls) {
         return new Range<T>(null, null, LOWER_INFINITE | UPPER_INFINITE, cls);
+    }
+
+    /**
+     * Creates the empty range. In other words the range that contains no points.
+     * <p>
+     * The mathematical equivalent will be:
+     * <pre>{@code
+     *     (a, a) = ∅
+     * }</pre>
+     *
+     * @param cls The range class, never null.
+     * @param <R> The type of bounds.
+     *
+     * @return The empty range.
+     */
+    public static <R extends Comparable<? super R>> Range<R> emptyRange(Class<R> cls) {
+        return new Range<R>(
+            null,
+            null,
+            LOWER_EXCLUSIVE | UPPER_EXCLUSIVE,
+            cls
+        );
     }
 
     @SuppressWarnings("unchecked")
@@ -446,6 +468,10 @@ public final class Range<T extends Comparable<? super T>> implements Serializabl
      */
     @SuppressWarnings("unchecked")
     public boolean contains(T point) {
+        if (isEmpty()) {
+            return false;
+        }
+
         boolean l = hasLowerBound();
         boolean u = hasUpperBound();
 
@@ -481,7 +507,30 @@ public final class Range<T extends Comparable<? super T>> implements Serializabl
      * @return Whether {@code range} in this range or not.
      */
     public boolean contains(Range<T> range) {
-        return (!range.hasLowerBound() || contains(range.lower)) && (!range.hasUpperBound() || contains(range.upper));
+        return !isEmpty() && (!range.hasLowerBound() || contains(range.lower)) && (!range.hasUpperBound() || contains(range.upper));
+    }
+
+    /**
+     * Determines whether this range is empty or not.
+     * <p>
+     * For example:
+     * <pre>{@code
+     *     assertFalse(integerRange("empty").contains(1))
+     * }</pre>
+     *
+     * @return Whether {@code range} in this range or not.
+     */
+    public boolean isEmpty() {
+        boolean boundedExclusive = isBounded()
+            && hasMask(LOWER_EXCLUSIVE)
+            && hasMask(UPPER_EXCLUSIVE);
+
+        return boundedExclusive && hasEqualBounds();
+    }
+
+    private boolean hasEqualBounds() {
+        return lower == null && upper == null
+            || lower != null && upper != null && lower.compareTo(upper) == 0;
     }
 
     public String asString() {
@@ -512,14 +561,5 @@ public final class Range<T extends Comparable<? super T>> implements Serializabl
     public interface Function<T, R> {
         
         R apply(T t);
-    }
-
-    public static <R extends Comparable<? super R>> Range<R> emptyRange(Class<R> clazz) {
-        return new Range<R>(
-            null,
-            null,
-            LOWER_INFINITE|UPPER_INFINITE,
-            clazz
-        );
     }
 }
