@@ -28,7 +28,7 @@ public class EnumArrayTypeDescriptor
 
     @Override
     public void setParameterValues(Properties parameters) {
-        sqlArrayType = parameters.getProperty(EnumArrayType.SQL_ARRAY_TYPE);
+        sqlArrayType = parameters.getProperty(AbstractArrayType.SQL_ARRAY_TYPE);
         super.setParameterValues(parameters);
     }
 }

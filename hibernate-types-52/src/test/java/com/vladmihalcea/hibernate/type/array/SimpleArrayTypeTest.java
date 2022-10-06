@@ -1,5 +1,6 @@
 package com.vladmihalcea.hibernate.type.array;
 
+import com.vladmihalcea.hibernate.type.array.internal.AbstractArrayType;
 import com.vladmihalcea.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import com.vladmihalcea.hibernate.util.providers.DataSourceProvider;
 import com.vladmihalcea.hibernate.util.providers.PostgreSQLDataSourceProvider;
@@ -103,7 +104,7 @@ public class SimpleArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             defaultForType = SensorState[].class,
             parameters = {
                 @Parameter(
-                    name = EnumArrayType.SQL_ARRAY_TYPE,
+                    name = AbstractArrayType.SQL_ARRAY_TYPE,
                     value = "sensor_state"
                 )
             }

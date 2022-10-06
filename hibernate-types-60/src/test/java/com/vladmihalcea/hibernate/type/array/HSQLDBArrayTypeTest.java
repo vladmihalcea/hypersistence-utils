@@ -1,5 +1,6 @@
 package com.vladmihalcea.hibernate.type.array;
 
+import com.vladmihalcea.hibernate.type.array.internal.AbstractArrayType;
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
 import com.vladmihalcea.hibernate.util.AbstractTest;
 import jakarta.persistence.Column;
@@ -86,7 +87,7 @@ public class HSQLDBArrayTypeTest extends AbstractTest {
 
         @Type(
             value = StringArrayType.class,
-            parameters = @Parameter(name = EnumArrayType.SQL_ARRAY_TYPE, value = "varchar")
+            parameters = @Parameter(name = AbstractArrayType.SQL_ARRAY_TYPE, value = "varchar")
         )
         @Column(name = "sensor_names", columnDefinition = "VARCHAR(20) ARRAY[10]")
         private String[] sensorNames;
@@ -101,7 +102,7 @@ public class HSQLDBArrayTypeTest extends AbstractTest {
 
         @Type(
             value = DoubleArrayType.class,
-            parameters = @Parameter(name = EnumArrayType.SQL_ARRAY_TYPE, value = "double")
+            parameters = @Parameter(name = AbstractArrayType.SQL_ARRAY_TYPE, value = "double")
         )
         @Column(name = "sensor_double_values", columnDefinition = "DOUBLE ARRAY DEFAULT ARRAY[]")
         private double[] sensorDoubleValues;

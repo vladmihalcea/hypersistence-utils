@@ -1,8 +1,7 @@
 package com.vladmihalcea.hibernate.type.array;
 
+import com.vladmihalcea.hibernate.type.array.internal.AbstractArrayType;
 import com.vladmihalcea.hibernate.util.AbstractPostgreSQLIntegrationTest;
-import com.vladmihalcea.hibernate.util.providers.DataSourceProvider;
-import com.vladmihalcea.hibernate.util.providers.PostgreSQLDataSourceProvider;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -100,7 +99,7 @@ public class SimpleArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         @Type(
             value = EnumArrayType.class,
             parameters = @Parameter(
-                name = EnumArrayType.SQL_ARRAY_TYPE,
+                name = AbstractArrayType.SQL_ARRAY_TYPE,
                 value = "sensor_state"
             )
         )

@@ -1,5 +1,6 @@
 package com.vladmihalcea.hibernate.type.array;
 
+import com.vladmihalcea.hibernate.type.array.internal.AbstractArrayType;
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
 import com.vladmihalcea.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import com.vladmihalcea.hibernate.util.providers.DataSourceProvider;
@@ -14,15 +15,9 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Tuple;
 import javax.sql.DataSource;
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -111,7 +106,7 @@ public class WrapperArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
     @Entity(name = "Event")
     @Table(name = "event")
     @TypeDef(name = "sensor-state-array", typeClass = EnumArrayType.class, parameters = {
-            @Parameter(name = EnumArrayType.SQL_ARRAY_TYPE, value = "sensor_state")}
+            @Parameter(name = AbstractArrayType.SQL_ARRAY_TYPE, value = "sensor_state")}
     )
     public static class Event extends BaseEntity {
         @Type(type = "uuid-array")

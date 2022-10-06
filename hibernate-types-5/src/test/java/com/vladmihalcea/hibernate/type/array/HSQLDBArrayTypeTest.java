@@ -1,5 +1,6 @@
 package com.vladmihalcea.hibernate.type.array;
 
+import com.vladmihalcea.hibernate.type.array.internal.AbstractArrayType;
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
 import com.vladmihalcea.hibernate.util.AbstractTest;
 import com.vladmihalcea.hibernate.util.transaction.JPATransactionFunction;
@@ -86,14 +87,14 @@ public class HSQLDBArrayTypeTest extends AbstractTest {
             name = "hsqldb-double-array",
             typeClass = DoubleArrayType.class,
             parameters = {
-                @Parameter(name = EnumArrayType.SQL_ARRAY_TYPE, value = "double")
+                @Parameter(name = AbstractArrayType.SQL_ARRAY_TYPE, value = "double")
             }
         ),
         @TypeDef(
             name = "hsqldb-string-array",
-            typeClass = DoubleArrayType.class,
+            typeClass = StringArrayType.class,
             parameters = {
-                @Parameter(name = EnumArrayType.SQL_ARRAY_TYPE, value = "varchar")
+                @Parameter(name = AbstractArrayType.SQL_ARRAY_TYPE, value = "varchar")
             }
         )
     })
