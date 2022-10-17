@@ -117,6 +117,15 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 event.setDateValues(Arrays.asList(date1, date2));
                 event.setTimestampValues(Arrays.asList(date1, date2));
                 event.setDecimalValues(Arrays.asList(BigDecimal.ONE, BigDecimal.ZERO));
+                event.setLocalDateTimeSetValues(
+                    new LinkedHashSet<Date>(
+                        Arrays.asList(
+                            date1,
+                            date1,
+                            date2
+                        )
+                    )
+                );
 
                 entityManager.persist(event);
 
@@ -148,6 +157,16 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 assertEquals(date1.getTime(), event.getTimestampValues().get(0).getTime());
                 assertEquals(date2.getTime(), event.getTimestampValues().get(1).getTime());
                 assertArrayEquals(new BigDecimal[]{BigDecimal.ONE, BigDecimal.ZERO}, event.getDecimalValues().toArray());
+
+                assertEquals(
+                    new HashSet<Date>(
+                        Arrays.asList(
+                            date1,
+                            date2
+                        )
+                    ),
+                    event.getLocalDateTimeSetValues()
+                );
 
                 return null;
             }
@@ -427,6 +446,13 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         @Column(name = "decimal_values", columnDefinition = "decimal[]")
         private List<BigDecimal> decimalValues;
 
+        @Type(type = "list-array")
+        @Column(
+            name = "localdatetime_set_values",
+            columnDefinition = "timestamp[]"
+        )
+        private Set<Date> localDateTimeSetValues;
+
         public List<UUID> getSensorIds() {
             return sensorIds;
         }
@@ -505,6 +531,15 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
         public void setDecimalValues(List<BigDecimal> decimalValues) {
             this.decimalValues = decimalValues;
+        }
+
+        public Set<Date> getLocalDateTimeSetValues() {
+            return localDateTimeSetValues;
+        }
+
+        public Event setLocalDateTimeSetValues(Set<Date> localDateTimeSetValues) {
+            this.localDateTimeSetValues = localDateTimeSetValues;
+            return this;
         }
     }
 

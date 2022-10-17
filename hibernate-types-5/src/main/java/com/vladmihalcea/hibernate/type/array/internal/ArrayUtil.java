@@ -3,6 +3,7 @@ package com.vladmihalcea.hibernate.type.array.internal;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -117,15 +118,15 @@ public class ArrayUtil {
                 array[i] = fromArray[i];
             }
             return array;
-        } else if (originalArray instanceof List) {
-            return ((List) originalArray).toArray();
+        } else if (originalArray instanceof Collection) {
+            return ((Collection) originalArray).toArray();
         } else {
             return (Object[]) originalArray;
         }
     }
 
     /**
-     * Unwarp {@link Object[]} array to an array of the provided type
+     * Unwrap {@link Object[]} array to an array of the provided type
      *
      * @param originalArray original array
      * @param arrayClass array class

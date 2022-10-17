@@ -3,6 +3,9 @@ package com.vladmihalcea.hibernate.type.array;
 import com.vladmihalcea.hibernate.type.array.internal.AbstractArrayType;
 import com.vladmihalcea.hibernate.type.array.internal.ListArrayTypeDescriptor;
 import com.vladmihalcea.hibernate.type.util.Configuration;
+import org.hibernate.usertype.DynamicParameterizedType;
+
+import java.util.Properties;
 
 /**
  * Maps an {@link java.util.List} entity attribute on a PostgreSQL ARRAY column type.
@@ -11,7 +14,7 @@ import com.vladmihalcea.hibernate.type.util.Configuration;
  *
  * @author Vlad Mihalcea
  */
-public class ListArrayType extends AbstractArrayType<Object> {
+public class ListArrayType extends AbstractArrayType<Object> implements DynamicParameterizedType {
 
     public static final ListArrayType INSTANCE = new ListArrayType();
 
@@ -33,5 +36,10 @@ public class ListArrayType extends AbstractArrayType<Object> {
 
     public String getName() {
         return "list-array";
+    }
+
+    @Override
+    public void setParameterValues(Properties parameters) {
+        ((DynamicParameterizedType) getJavaTypeDescriptor()).setParameterValues(parameters);
     }
 }

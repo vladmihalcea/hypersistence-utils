@@ -21,13 +21,19 @@ public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Object>
 
     private String sqlArrayType;
 
+    private Class entityClass;
+
+    private String propertyName;
+
+    private Class propertyClass;
+
     public ListArrayTypeDescriptor() {
         super(Object.class, new MutableMutabilityPlan<Object>() {
             @Override
             protected Object deepCopyNotNull(Object value) {
-                if (value instanceof List) {
-                    Object[] array = ((List) value).toArray();
-                    return ArrayUtil.asList((Object[]) ArrayUtil.deepCopy(array));
+                if (value instanceof Collection) {
+                    Object[] array = ((Collection<Object>) value).toArray();
+                    return ArrayUtil.asList(ArrayUtil.deepCopy(array));
                 } else if (value.getClass().isArray()) {
                     Object[] array = (Object[]) value;
                     return ArrayUtil.deepCopy(array);
@@ -56,8 +62,8 @@ public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Object>
     public Object unwrap(Object value, Class type, WrapperOptions options) {
         if (value instanceof Object[]) {
             return value;
-        } else if (value instanceof List) {
-            return super.unwrap(((List) value).toArray(), type, options);
+        } else if (value instanceof Collection) {
+            return super.unwrap(((Collection) value).toArray(), type, options);
         } else {
             throw new UnsupportedOperationException("The provided " + value + " is not a Object[] or List!");
         }
@@ -66,9 +72,9 @@ public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Object>
     @Override
     public Object wrap(Object value, WrapperOptions options) {
         Object wrappedObject = super.wrap(value, options);
-        List list = null;
+        Collection list = null;
         if (wrappedObject != null) {
-            list = new ArrayList<>();
+            list = newPropertyCollectionInstance();
             if (wrappedObject instanceof Object[]) {
                 Object[] wrappedArray = (Object[]) wrappedObject;
                 Collections.addAll(list, wrappedArray);
@@ -87,8 +93,8 @@ public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Object>
         if (one == null || another == null) {
             return false;
         }
-        if (one instanceof List && another instanceof List) {
-            return ArrayUtil.isEquals(((List) one).toArray(), ((List) another).toArray());
+        if (one instanceof Collection && another instanceof Collection) {
+            return ArrayUtil.isEquals(((Collection) one).toArray(), ((Collection) another).toArray());
         }
         if (one instanceof Object[] && another instanceof Object[]) {
             return ArrayUtil.isEquals(one, another);
@@ -99,9 +105,10 @@ public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Object>
 
     @Override
     public void setParameterValues(Properties parameters) {
-        Class entityClass = ReflectionUtils.getClass(parameters.getProperty(DynamicParameterizedType.ENTITY));
-        String property = parameters.getProperty(DynamicParameterizedType.PROPERTY);
-        Type memberGenericType = ReflectionUtils.getMemberGenericTypeOrNull(entityClass, property);
+        this.entityClass = ReflectionUtils.getClass(parameters.getProperty(DynamicParameterizedType.ENTITY));
+        this.propertyName = parameters.getProperty(DynamicParameterizedType.PROPERTY);
+        this.propertyClass = ReflectionUtils.getClass(parameters.getProperty(DynamicParameterizedType.RETURNED_CLASS));
+        Type memberGenericType = ReflectionUtils.getMemberGenericTypeOrNull(entityClass, propertyName);
         if (memberGenericType instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) memberGenericType;
             Type genericType = parameterizedType.getActualTypeArguments()[0];
@@ -138,9 +145,17 @@ public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Object>
                     throw new UnsupportedOperationException("The " + arrayElementClass + " is not supported yet!");
                 }
             }
-
         } else {
-            throw new UnsupportedOperationException("The property " + property + " in the " + entityClass + " entity is not parameterized!");
+            throw new UnsupportedOperationException("The property " + propertyName + " in the " + entityClass + " entity is not parameterized!");
         }
+    }
+
+    private Collection newPropertyCollectionInstance() {
+        if(List.class.isAssignableFrom(propertyClass)) {
+            return new ArrayList();
+        } else if(Set.class.isAssignableFrom(propertyClass)) {
+            return new LinkedHashSet();
+        }
+        throw new UnsupportedOperationException("The property " + propertyName + " in the " + entityClass + " entity is not supported by the ListArrayType!");
     }
 }

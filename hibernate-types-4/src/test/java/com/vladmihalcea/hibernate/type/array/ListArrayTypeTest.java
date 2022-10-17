@@ -117,6 +117,15 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 event.setDateValues(Arrays.asList(date1, date2));
                 event.setTimestampValues(Arrays.asList(date1, date2));
                 event.setDecimalValues(Arrays.asList(BigDecimal.ONE, BigDecimal.ZERO));
+                event.setLocalDateTimeSetValues(
+                    new LinkedHashSet<Date>(
+                        Arrays.asList(
+                            date1,
+                            date1,
+                            date2
+                        )
+                    )
+                );
 
                 entityManager.persist(event);
 
@@ -148,6 +157,16 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 assertEquals(date1.getTime(), event.getTimestampValues().get(0).getTime());
                 assertEquals(date2.getTime(), event.getTimestampValues().get(1).getTime());
                 assertArrayEquals(new BigDecimal[]{BigDecimal.ONE, BigDecimal.ZERO}, event.getDecimalValues().toArray());
+
+                assertEquals(
+                    new HashSet<Date>(
+                        Arrays.asList(
+                            date1,
+                            date2
+                        )
+                    ),
+                    event.getLocalDateTimeSetValues()
+                );
 
                 return null;
             }
@@ -374,18 +393,19 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
     @Entity(name = "Event")
     @TypeDefs({
-            @TypeDef(name = "uuid-list-array", typeClass = ListArrayType.class),
-            @TypeDef(name = "string-list-array", typeClass = ListArrayType.class),
-            @TypeDef(name = "int-list-array", typeClass = ListArrayType.class),
-            @TypeDef(name = "long-list-array", typeClass = ListArrayType.class),
-            @TypeDef(name = "boolean-list-array", typeClass = ListArrayType.class),
-            @TypeDef(name = "double-list-array", typeClass = ListArrayType.class),
-            @TypeDef(name = "date-list-array", typeClass = ListArrayType.class),
-            @TypeDef(name = "timestamp-list-array", typeClass = ListArrayType.class),
-            @TypeDef(name = "decimal-list-array", typeClass = ListArrayType.class),
-            @TypeDef(name = "sensor-state-array", typeClass = ListArrayType.class, parameters = {
-                    @Parameter(name = ListArrayType.SQL_ARRAY_TYPE, value = "sensor_state")}
-            )
+        @TypeDef(name = "uuid-list-array", typeClass = ListArrayType.class),
+        @TypeDef(name = "string-list-array", typeClass = ListArrayType.class),
+        @TypeDef(name = "int-list-array", typeClass = ListArrayType.class),
+        @TypeDef(name = "long-list-array", typeClass = ListArrayType.class),
+        @TypeDef(name = "boolean-list-array", typeClass = ListArrayType.class),
+        @TypeDef(name = "double-list-array", typeClass = ListArrayType.class),
+        @TypeDef(name = "date-list-array", typeClass = ListArrayType.class),
+        @TypeDef(name = "timestamp-list-array", typeClass = ListArrayType.class),
+        @TypeDef(name = "decimal-list-array", typeClass = ListArrayType.class),
+        @TypeDef(name = "sensor-state-array", typeClass = ListArrayType.class, parameters = {
+            @Parameter(name = ListArrayType.SQL_ARRAY_TYPE, value = "sensor_state")}
+        ),
+        @TypeDef(name = "set-list-array", typeClass = ListArrayType.class)
     })
     @Table(name = "event")
     public static class Event extends BaseEntity {
@@ -434,6 +454,13 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         @Type(type = "decimal-list-array")
         @Column(name = "decimal_values", columnDefinition = "decimal[]")
         private List<BigDecimal> decimalValues;
+
+        @Type(type = "set-list-array")
+        @Column(
+            name = "localdatetime_set_values",
+            columnDefinition = "timestamp[]"
+        )
+        private Set<Date> localDateTimeSetValues;
 
         public List<UUID> getSensorIds() {
             return sensorIds;
@@ -513,6 +540,15 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
         public void setDecimalValues(List<BigDecimal> decimalValues) {
             this.decimalValues = decimalValues;
+        }
+
+        public Set<Date> getLocalDateTimeSetValues() {
+            return localDateTimeSetValues;
+        }
+
+        public Event setLocalDateTimeSetValues(Set<Date> localDateTimeSetValues) {
+            this.localDateTimeSetValues = localDateTimeSetValues;
+            return this;
         }
     }
 

@@ -1,8 +1,5 @@
 package com.vladmihalcea.hibernate.type.array;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.vladmihalcea.hibernate.type.array.internal.EnumArrayTypeDescriptor;
-import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import com.vladmihalcea.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Parameter;
@@ -136,6 +133,15 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                             LocalDateTime.of(2021, 4, 21, 22, 33, 44)
                         )
                     )
+                    .setLocalDateTimeSetValues(
+                        new LinkedHashSet<>(
+                            Arrays.asList(
+                                LocalDateTime.of(2022, 3, 22, 11, 22, 33),
+                                LocalDateTime.of(2022, 3, 22, 11, 22, 33),
+                                LocalDateTime.of(2021, 4, 21, 22, 33, 44)
+                            )
+                        )
+                    )
             );
         });
     }
@@ -224,6 +230,15 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                     LocalDateTime.of(2021, 4, 21, 22, 33, 44)
                 ),
                 event.getLocalDateTimeValues()
+            );
+            assertEquals(
+                new HashSet<>(
+                    Arrays.asList(
+                        LocalDateTime.of(2022, 3, 22, 11, 22, 33),
+                        LocalDateTime.of(2021, 4, 21, 22, 33, 44)
+                    )
+                ),
+                event.getLocalDateTimeSetValues()
             );
         });
 
@@ -502,6 +517,13 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         )
         private List<LocalDateTime> localDateTimeValues;
 
+        @Type(ListArrayType.class)
+        @Column(
+            name = "localdatetime_set_values",
+            columnDefinition = "timestamp[]"
+        )
+        private Set<LocalDateTime> localDateTimeSetValues;
+
         public Long getId() {
             return id;
         }
@@ -616,6 +638,15 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
         public Event setLocalDateTimeValues(List<LocalDateTime> localDateTimeValues) {
             this.localDateTimeValues = localDateTimeValues;
+            return this;
+        }
+
+        public Set<LocalDateTime> getLocalDateTimeSetValues() {
+            return localDateTimeSetValues;
+        }
+
+        public Event setLocalDateTimeSetValues(Set<LocalDateTime> localDateTimeSetValues) {
+            this.localDateTimeSetValues = localDateTimeSetValues;
             return this;
         }
     }
