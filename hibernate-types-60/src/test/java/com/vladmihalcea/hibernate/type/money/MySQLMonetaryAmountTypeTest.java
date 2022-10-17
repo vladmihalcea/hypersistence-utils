@@ -25,7 +25,36 @@ public class MySQLMonetaryAmountTypeTest extends AbstractMySQLIntegrationTest {
     }
 
     @Test
-    public void testReadAndWrite() {
+    public void testPersistAndReadMoney() {
+        Salary _salaryInUSD = doInJPA(entityManager -> {
+            Salary salary = new Salary();
+            salary.setSalary(Money.of(new BigDecimal("10.23"), "USD"));
+
+            entityManager.persist(salary);
+
+            return salary;
+        });
+
+        Salary _salaryInPYG = doInJPA(entityManager -> {
+            Salary salary = new Salary();
+            salary.setSalary(Money.of(new BigDecimal("123.456"), "PYG"));
+
+            entityManager.persist(salary);
+
+            return salary;
+        });
+
+        doInJPA(entityManager -> {
+            Salary salaryInUSD = entityManager.find(Salary.class, _salaryInUSD.getId());
+            Salary salaryInPYG = entityManager.find(Salary.class, _salaryInPYG.getId());
+
+            assertEquals(salaryInUSD.getSalary(), Money.of(new BigDecimal("10.23"), "USD"));
+            assertEquals(salaryInPYG.getSalary(), Money.of(new BigDecimal("123.00"), "PYG"));
+        });
+    }
+
+    @Test
+    public void testPersistAndReadMoney() {
         Salary _salary = doInJPA(entityManager -> {
             Salary salary = new Salary();
             salary.setSalary(Money.of(new BigDecimal("10.23"), "USD"));
@@ -39,16 +68,6 @@ public class MySQLMonetaryAmountTypeTest extends AbstractMySQLIntegrationTest {
             Salary salary = entityManager.find(Salary.class, _salary.getId());
 
             assertEquals(salary.getSalary(), Money.of(new BigDecimal("10.23"), "USD"));
-        });
-
-        Salary salary = doInJPA(entityManager -> {
-            return entityManager.find(Salary.class, _salary.getId());
-        });
-
-        salary.setSalary(Money.of(new BigDecimal("10.49"), "USD"));
-
-        doInJPA(entityManager -> {
-            entityManager.merge(salary);
         });
     }
 

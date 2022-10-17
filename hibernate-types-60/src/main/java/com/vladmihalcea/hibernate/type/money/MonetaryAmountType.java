@@ -1,5 +1,8 @@
 package com.vladmihalcea.hibernate.type.money;
 
+import java.math.RoundingMode;
+import javax.money.Monetary;
+import javax.money.MonetaryContextBuilder;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.metamodel.spi.ValueAccess;
@@ -36,7 +39,13 @@ public class MonetaryAmountType implements CompositeUserType<MonetaryAmount>
         // alphabetical (amount, currency)
         switch (property) {
             case 0:
-                return component.getNumber().numberValue(BigDecimal.class);
+                return component
+                    .getNumber()
+                    .numberValue(BigDecimal.class)
+                    .setScale(
+                        component.getCurrency().getDefaultFractionDigits(),
+                        component.getContext().get(RoundingMode.class)
+                    );
             case 1:
                 return component.getCurrency().getCurrencyCode();
         }
