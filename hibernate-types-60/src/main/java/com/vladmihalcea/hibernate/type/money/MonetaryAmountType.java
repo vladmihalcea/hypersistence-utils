@@ -43,7 +43,7 @@ public class MonetaryAmountType implements CompositeUserType<MonetaryAmount>
                     .numberValue(BigDecimal.class)
                     .setScale(
                         component.getCurrency().getDefaultFractionDigits(),
-                        RoundingMode.HALF_EVEN
+                        RoundingMode.HALF_UP
                     );
             case 1:
                 return component.getCurrency().getCurrencyCode();
