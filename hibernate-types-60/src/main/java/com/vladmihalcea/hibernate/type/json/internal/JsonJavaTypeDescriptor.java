@@ -89,7 +89,8 @@ public class JsonJavaTypeDescriptor extends AbstractClassJavaType<Object> implem
         if (one instanceof String && another instanceof String) {
             return one.equals(another);
         }
-        if (one instanceof Collection && another instanceof Collection) {
+        if ((one instanceof Collection && another instanceof Collection) ||
+            (one instanceof Map && another instanceof Map)) {
             return Objects.equals(one, another);
         }
         if (one.getClass().equals(another.getClass()) &&
