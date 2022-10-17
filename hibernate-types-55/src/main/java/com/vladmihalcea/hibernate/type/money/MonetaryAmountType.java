@@ -2,6 +2,7 @@ package com.vladmihalcea.hibernate.type.money;
 
 import com.vladmihalcea.hibernate.type.ImmutableCompositeType;
 import com.vladmihalcea.hibernate.type.util.Configuration;
+import java.math.RoundingMode;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.BigDecimalType;
@@ -55,7 +56,13 @@ public class MonetaryAmountType extends ImmutableCompositeType<MonetaryAmount> {
     public Object getPropertyValue(Object component, int property) throws HibernateException {
         MonetaryAmount monetaryAmount = (MonetaryAmount) component;
         if (property == 0) {
-            return monetaryAmount.getNumber().numberValue(BigDecimal.class);
+            return monetaryAmount
+                .getNumber()
+                .numberValue(BigDecimal.class)
+                .setScale(
+                    monetaryAmount.getCurrency().getDefaultFractionDigits(),
+                    monetaryAmount.getContext().get(RoundingMode.class)
+                );
         } else if (property == 1) {
             return monetaryAmount.getCurrency();
         }
