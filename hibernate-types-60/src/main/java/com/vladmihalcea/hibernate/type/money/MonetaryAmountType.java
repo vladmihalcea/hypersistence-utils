@@ -2,6 +2,7 @@ package com.vladmihalcea.hibernate.type.money;
 
 import java.math.RoundingMode;
 import javax.money.Monetary;
+import javax.money.MonetaryContextBuilder;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.metamodel.spi.ValueAccess;
@@ -43,7 +44,7 @@ public class MonetaryAmountType implements CompositeUserType<MonetaryAmount>
                     .numberValue(BigDecimal.class)
                     .setScale(
                         component.getCurrency().getDefaultFractionDigits(),
-                        RoundingMode.HALF_UP
+                        component.getContext().get(RoundingMode.class)
                     );
             case 1:
                 return component.getCurrency().getCurrencyCode();
