@@ -1,3 +1,14 @@
+Version 2.20.0 - October 17, 2022
+================================================================================
+
+Add support for querying by the embedded MonetaryAmount attributes #497
+
+Allow the ListArrayType to support Set entity attributes #496
+
+JsonTypeDescriptor should use Objects.equals for both Collections and Maps #494
+
+Add support for the PostgreSQL 'empty' range that's distinct from the (,) infinite range #492
+
 Version 2.19.2 - September 12, 2022
 ================================================================================
 
