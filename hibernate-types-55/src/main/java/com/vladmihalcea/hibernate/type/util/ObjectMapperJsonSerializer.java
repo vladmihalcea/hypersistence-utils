@@ -46,6 +46,10 @@ public class ObjectMapperJsonSerializer implements JsonSerializer {
                 }
             }
         }
+        if (object instanceof String) {
+            // String is immutable, no need to clone it.
+            return object;
+        }
         if (object instanceof Serializable) {
             try {
                 return (T) SerializationHelper.clone((Serializable) object);
