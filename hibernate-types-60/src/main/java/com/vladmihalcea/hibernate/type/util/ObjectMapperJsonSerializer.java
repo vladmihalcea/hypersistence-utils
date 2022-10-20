@@ -23,19 +23,15 @@ public class ObjectMapperJsonSerializer implements JsonSerializer {
 
     @Override
     public <T> T clone(T object) {
-        if (object instanceof JsonNode) {
-            return (T) ((JsonNode) object).deepCopy();
-        }
-
-        if (object instanceof Collection) {
+        if (object instanceof String) {
+            return object;
+        } else if (object instanceof Collection) {
             Object firstElement = findFirstNonNullElement((Collection) object);
             if (firstElement != null && !(firstElement instanceof Serializable)) {
                 JavaType type = TypeFactory.defaultInstance().constructParametricType(object.getClass(), firstElement.getClass());
                 return objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(object), type);
             }
-        }
-
-        if (object instanceof Map) {
+        } else if (object instanceof Map) {
             Map.Entry firstEntry = this.findFirstNonNullEntry((Map) object);
             if (firstEntry != null) {
                 Object key = firstEntry.getKey();
@@ -45,18 +41,20 @@ public class ObjectMapperJsonSerializer implements JsonSerializer {
                     return (T) objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(object), type);
                 }
             }
+        } else if (object instanceof JsonNode) {
+            return (T) ((JsonNode) object).deepCopy();
         }
+
         if (object instanceof Serializable) {
             try {
                 return (T) SerializationHelper.clone((Serializable) object);
             } catch (SerializationException e) {
                 //it is possible that object itself implements java.io.Serializable, but underlying structure does not
                 //in this case we switch to the other JSON marshaling strategy which doesn't use the Java serialization
-                return jsonClone(object);
             }
-        } else {
-            return jsonClone(object);
         }
+
+        return jsonClone(object);
     }
 
     private Object findFirstNonNullElement(Collection collection) {
