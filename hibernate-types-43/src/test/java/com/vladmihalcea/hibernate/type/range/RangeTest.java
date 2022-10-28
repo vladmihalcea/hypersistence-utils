@@ -82,6 +82,27 @@ public class RangeTest {
     }
 
     @Test
+    public void asStringWithEmptyKeyword() {
+        Range<Integer> empty = Range.integerRange("empty");
+
+        assertEquals("empty", empty.asString());
+    }
+
+    @Test
+    public void asStringWithEmptyValue() {
+        Range<Integer> empty = Range.integerRange("(5,5)");
+
+        assertEquals("(5,5)", empty.asString());
+    }
+
+    @Test
+    public void asStringWithInfinity() {
+        Range<Integer> infinity = Range.integerRange("(,)");
+
+        assertEquals("(,)", infinity.asString());
+    }
+
+    @Test
     public void emptyRangeWithValues() {
         Range<Long> empty = Range.longRange("(1,1)");
 

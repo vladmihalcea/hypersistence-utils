@@ -636,11 +636,7 @@ public final class Range<T extends Comparable<? super T>> implements Serializabl
      * @return Whether {@code range} in this range or not.
      */
     public boolean isEmpty() {
-        boolean boundedExclusive = isBounded()
-            && hasMask(LOWER_EXCLUSIVE)
-            && hasMask(UPPER_EXCLUSIVE);
-
-        return boundedExclusive && hasEqualBounds();
+        return isBoundedOpen() && hasEqualBounds();
     }
 
     private boolean hasEqualBounds() {
@@ -648,7 +644,15 @@ public final class Range<T extends Comparable<? super T>> implements Serializabl
             || lower != null && upper != null && lower.compareTo(upper) == 0;
     }
 
+    private boolean isBoundedOpen() {
+        return isBounded() && !isLowerBoundClosed() && !isUpperBoundClosed();
+    }
+
     public String asString() {
+        if (lower == null && upper == null && isBoundedOpen()) {
+          return EMPTY;
+        }
+
         StringBuilder sb = new StringBuilder();
 
         sb.append(hasMask(LOWER_INCLUSIVE) ? '[' : '(')
