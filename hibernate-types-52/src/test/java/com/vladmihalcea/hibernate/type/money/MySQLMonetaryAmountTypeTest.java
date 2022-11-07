@@ -26,7 +26,7 @@ public class MySQLMonetaryAmountTypeTest extends AbstractMySQLIntegrationTest {
     }
 
     @Test
-    public void testPersistAndReadMoney() {
+    public void testReadAndWrite() {
         Salary _salary = doInJPA(entityManager -> {
             Salary salary = new Salary();
             salary.setSalary(Money.of(new BigDecimal("10.23"), "USD"));
@@ -40,6 +40,16 @@ public class MySQLMonetaryAmountTypeTest extends AbstractMySQLIntegrationTest {
             Salary salary = entityManager.find(Salary.class, _salary.getId());
 
             assertEquals(salary.getSalary(), Money.of(new BigDecimal("10.23"), "USD"));
+        });
+
+        Salary salary = doInJPA(entityManager -> {
+            return entityManager.find(Salary.class, _salary.getId());
+        });
+
+        salary.setSalary(Money.of(new BigDecimal("10.49"), "USD"));
+
+        doInJPA(entityManager -> {
+            entityManager.merge(salary);
         });
     }
 
