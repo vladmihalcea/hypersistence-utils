@@ -4,6 +4,7 @@ import com.vladmihalcea.hibernate.util.AbstractMySQLIntegrationTest;
 import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.hibernate.envers.Audited;
 import org.javamoney.moneta.Money;
 import org.junit.Test;
 
@@ -21,7 +22,8 @@ public class MySQLMonetaryAmountTypeTest extends AbstractMySQLIntegrationTest {
     @Override
     protected Class<?>[] entities() {
         return new Class[]{
-                Salary.class
+            Salary.class,
+            Bonus.class,
         };
     }
 
@@ -50,6 +52,32 @@ public class MySQLMonetaryAmountTypeTest extends AbstractMySQLIntegrationTest {
 
         doInJPA(entityManager -> {
             entityManager.merge(salary);
+        });
+    }
+
+    @Test
+    public void testSaveUsingMerge() {
+        Salary _salary = doInJPA(entityManager -> {
+            Salary salary = new Salary();
+            salary.setSalary(Money.of(new BigDecimal("10.23"), "USD"));
+
+            return entityManager.merge(salary);
+        });
+
+        Bonus _bonus = doInJPA(entityManager -> {
+            Bonus bonus = new Bonus();
+            bonus.setId(1L);
+            bonus.setBonus(Money.of(new BigDecimal("1.23"), "EUR"));
+
+            return entityManager.merge(bonus);
+        });
+
+        doInJPA(entityManager -> {
+            Salary salary = entityManager.find(Salary.class, _salary.getId());
+            assertEquals(salary.getSalary(), Money.of(new BigDecimal("10.23"), "USD"));
+
+            Bonus bonus = entityManager.find(Bonus.class, 1L);
+            assertEquals(bonus.getBonus(), Money.of(new BigDecimal("1.23"), "EUR"));
         });
     }
 
@@ -139,6 +167,38 @@ public class MySQLMonetaryAmountTypeTest extends AbstractMySQLIntegrationTest {
 
         public void setOther(String other) {
             this.other = other;
+        }
+    }
+
+    @Audited
+    @Entity(name = "Bonus")
+    @Table(name = "bonus")
+    @TypeDef(name = "monetary-amount-currency", typeClass = MonetaryAmountType.class, defaultForType = MonetaryAmount.class)
+    public static class Bonus {
+        @Id
+        private Long id;
+
+        @Columns(columns = {
+            @Column(name = "salary_amount"),
+            @Column(name = "salary_currency")
+        })
+        @Type(type = "monetary-amount-currency")
+        private MonetaryAmount bonus;
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public MonetaryAmount getBonus() {
+            return bonus;
+        }
+
+        public void setBonus(MonetaryAmount bonus) {
+            this.bonus = bonus;
         }
     }
 }
