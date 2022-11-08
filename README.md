@@ -292,6 +292,7 @@ in your `@EnableJpaRepositories` configuration:
 @EnableJpaRepositories(
     basePackages = {
         "com.vladmihalcea.spring.repository",
+        "your.repository.package",
         ...
     }
 )
@@ -299,6 +300,8 @@ public class JpaConfiguration {
     ...
 }
 ````
+
+The `your.repository.package` is the Java package of your Spring repositories.
 
 ##### Identifier Generators
 
