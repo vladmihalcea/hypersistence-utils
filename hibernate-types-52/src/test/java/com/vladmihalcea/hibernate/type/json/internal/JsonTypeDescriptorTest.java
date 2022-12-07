@@ -1,6 +1,7 @@
 package com.vladmihalcea.hibernate.type.json.internal;
 
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
+import com.vladmihalcea.hibernate.type.util.Configuration;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -38,6 +39,15 @@ public class JsonTypeDescriptorTest {
         Form theFirst = createForm(1, 2, 3);
         Form theSecond = createForm(3, 2, 1);
         assertTrue(descriptor.areEqual(theFirst, theSecond));
+    }
+
+    @Test
+    public void testFromString() {
+        JsonTypeDescriptor descriptor = new JsonTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper());
+
+        Object result = descriptor.fromString("{\"locale\":\"en-US\"}");
+
+        assertTrue(result instanceof Object);
     }
 
     private Form createForm(Integer... numbers) {
