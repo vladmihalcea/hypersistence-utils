@@ -1,12 +1,14 @@
 package com.vladmihalcea.spring.repository;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import org.hibernate.Session;
 import org.hibernate.engine.jdbc.spi.JdbcServices;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.internal.AbstractSharedSessionContract;
+import org.springframework.data.jpa.repository.support.JpaEntityInformation;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -14,37 +16,16 @@ import java.util.function.Supplier;
 /**
  * @author Vlad Mihalcea
  */
-public class HibernateRepositoryImpl<T> implements HibernateRepository<T> {
+public class BaseJpaRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID>
+    implements BaseJpaRepository<T, ID> {
 
     private final EntityManager entityManager;
+    private final JpaEntityInformation entityInformation;
 
-    public HibernateRepositoryImpl(EntityManager entityManager) {
+    public BaseJpaRepositoryImpl(JpaEntityInformation<T, ?> entityInformation, EntityManager entityManager) {
+        super(entityInformation, entityManager);
+        this.entityInformation = entityInformation;
         this.entityManager = entityManager;
-    }
-
-    @Override
-    public List<T> findAll() {
-        throw new UnsupportedOperationException("Fetching all records from a given database table is a terrible idea!");
-    }
-
-    @Override
-    public <S extends T> S save(S entity) {
-        return unsupportedSave();
-    }
-
-    @Override
-    public <S extends T> List<S> saveAll(Iterable<S> entities) {
-        return unsupportedSave();
-    }
-
-    @Override
-    public <S extends T> S saveAndFlush(S entity) {
-        return unsupportedSave();
-    }
-
-    @Override
-    public <S extends T> List<S> saveAllAndFlush(Iterable<S> entities) {
-        return unsupportedSave();
     }
 
     public <S extends T> S persist(S entity) {
@@ -142,6 +123,11 @@ public class HibernateRepositoryImpl<T> implements HibernateRepository<T> {
         });
     }
 
+    @Override
+    public T lockById(ID id, LockModeType lockMode) {
+        return (T) entityManager.find(entityInformation.getJavaType(), id, lockMode);
+    }
+
     protected Integer getBatchSize(Session session) {
         SessionFactoryImplementor sessionFactory = session.getSessionFactory().unwrap(SessionFactoryImplementor.class);
         final JdbcServices jdbcServices = sessionFactory.getServiceRegistry().getService(JdbcServices.class);
@@ -167,9 +153,5 @@ public class HibernateRepositoryImpl<T> implements HibernateRepository<T> {
 
     protected Session session() {
         return entityManager.unwrap(Session.class);
-    }
-
-    protected <S extends T> S unsupportedSave() {
-        throw new UnsupportedOperationException("There's no such thing as a save method in JPA, so don't use this hack!");
     }
 }

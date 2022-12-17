@@ -1,5 +1,7 @@
 package com.vladmihalcea.spring.repository;
 
+import org.springframework.data.repository.NoRepositoryBean;
+
 import java.util.List;
 
 /**

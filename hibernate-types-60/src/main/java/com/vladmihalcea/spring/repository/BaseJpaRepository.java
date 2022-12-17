@@ -1,5 +1,6 @@
 package com.vladmihalcea.spring.repository;
 
+import jakarta.persistence.LockModeType;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.QueryByExampleExecutor;
@@ -39,4 +40,133 @@ public interface BaseJpaRepository<T, ID> extends Repository<T, ID>, QueryByExam
     void deleteAllByIdInBatch(Iterable<ID> ids);
 
     void flush();
+
+    /**
+     * The persist method allows you to pass the provided entity to the {@code persist} method of the
+     * underlying JPA {@code EntityManager}.
+     *
+     * @param entity entity to persist
+     * @param <S>    entity type
+     * @return entity
+     */
+    <S extends T> S persist(S entity);
+
+    /**
+     * The persistAndFlush method allows you to pass the provided entity to the {@code persist} method of the
+     * underlying JPA {@code EntityManager} and call {@code flush} afterwards.
+     *
+     * @param entity entity to persist
+     * @param <S>    entity type
+     * @return entity
+     */
+    <S extends T> S persistAndFlush(S entity);
+
+    /**
+     * The persistAll method allows you to pass the provided entities to the {@code persist} method of the
+     * underlying JPA {@code EntityManager}.
+     *
+     * @param entities entities to persist
+     * @param <S>    entity type
+     * @return entities
+     */
+    <S extends T> List<S> persistAll(Iterable<S> entities);
+
+    /**
+     * The persistAll method allows you to pass the provided entities to the {@code persist} method of the
+     * underlying JPA {@code EntityManager} and call {@code flush} afterwards.
+     *
+     * @param entities entities to persist
+     * @param <S>    entity type
+     * @return entities
+     */
+    <S extends T> List<S> peristAllAndFlush(Iterable<S> entities);
+
+    /**
+     * The persist method allows you to pass the provided entity to the {@code merge} method of the
+     * underlying JPA {@code EntityManager}.
+     *
+     * @param entity entity to merge
+     * @param <S>    entity type
+     * @return entity
+     */
+    <S extends T> S merge(S entity);
+
+    /**
+     * The mergeAndFlush method allows you to pass the provided entity to the {@code merge} method of the
+     * underlying JPA {@code EntityManager} and call {@code flush} afterwards.
+     *
+     * @param entity entity to merge
+     * @param <S>    entity type
+     * @return entity
+     */
+    <S extends T> S mergeAndFlush(S entity);
+
+    /**
+     * The mergeAll method allows you to pass the provided entities to the {@code merge} method of the
+     * underlying JPA {@code EntityManager}.
+     *
+     * @param entities entities to merge
+     * @param <S>    entity type
+     * @return entities
+     */
+    <S extends T> List<S> mergeAll(Iterable<S> entities);
+
+    /**
+     * The mergeAllAndFlush method allows you to pass the provided entities to the {@code merge} method of the
+     * underlying JPA {@code EntityManager} and call {@code flush} afterwards.
+     *
+     * @param entities entities to persist
+     * @param <S>    entity type
+     * @return entities
+     */
+    <S extends T> List<S> mergeAllAndFlush(Iterable<S> entities);
+
+    /**
+     * The update method allows you to pass the provided entity to the {@code update} method of the
+     * underlying JPA {@code EntityManager}.
+     *
+     * @param entity entity to update
+     * @param <S>    entity type
+     * @return entity
+     */
+    <S extends T> S update(S entity);
+
+    /**
+     * The updateAndFlush method allows you to pass the provided entity to the {@code update} method of the
+     * underlying JPA {@code EntityManager} and call {@code flush} afterwards.
+     *
+     * @param entity entity to update
+     * @param <S>    entity type
+     * @return entity
+     */
+    <S extends T> S updateAndFlush(S entity);
+
+    /**
+     * The updateAll method allows you to pass the provided entities to the {@code update} method of the
+     * underlying JPA {@code EntityManager}.
+     *
+     * @param entities entities to update
+     * @param <S>    entity type
+     * @return entities
+     */
+    <S extends T> List<S> updateAll(Iterable<S> entities);
+
+    /**
+     * The updateAllAndFlush method allows you to pass the provided entities to the {@code update} method of the
+     * underlying JPA {@code EntityManager} and call {@code flush} afterwards.
+     *
+     * @param entities entities to update
+     * @param <S>    entity type
+     * @return entities
+     */
+    <S extends T> List<S> updateAllAndFlush(Iterable<S> entities);
+
+    /**
+     * Lock the entity with the provided identifier.
+     *
+     * @param id entity identifier
+     * @param lockMode entity lock mode
+     * @return entity
+     */
+    T lockById(ID id, LockModeType lockMode);
 }

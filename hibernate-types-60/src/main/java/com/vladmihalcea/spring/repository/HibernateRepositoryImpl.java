@@ -1,7 +1,6 @@
 package com.vladmihalcea.spring.repository;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.hibernate.Session;
 import org.hibernate.engine.jdbc.spi.JdbcServices;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
@@ -16,8 +15,11 @@ import java.util.function.Supplier;
  */
 public class HibernateRepositoryImpl<T> implements HibernateRepository<T> {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
+
+    public HibernateRepositoryImpl(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
     @Override
     public List<T> findAll() {
