@@ -1,13 +1,12 @@
 package com.vladmihalcea.spring.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 import com.vladmihalcea.spring.repository.domain.Post;
+import org.springframework.stereotype.Repository;
 
 /**
  * @author Vlad Mihalcea
  */
 @Repository
-public interface PostRepository extends HibernateRepository<Post>, JpaRepository<Post, Long> {
+public interface PostRepository extends HibernateRepository<Post>, BaseJpaRepository<Post, Long> {
 
 }
