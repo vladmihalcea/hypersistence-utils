@@ -25,6 +25,14 @@ import static java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME;
  */
 public class ObjectMapperWrapper implements Serializable {
 
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+        .findAndRegisterModules()
+        .registerModule(
+            new SimpleModule()
+                .addSerializer(OffsetDateTime.class, OffsetDateTimeSerializer.INSTANCE)
+                .addDeserializer(OffsetDateTime.class, OffsetDateTimeDeserializer.INSTANCE)
+        );
+
     public static final ObjectMapperWrapper INSTANCE = new ObjectMapperWrapper();
 
     private final ObjectMapper objectMapper;
@@ -32,14 +40,7 @@ public class ObjectMapperWrapper implements Serializable {
     private JsonSerializer jsonSerializer;
 
     public ObjectMapperWrapper() {
-        this(new ObjectMapper()
-            .findAndRegisterModules()
-            .registerModule(
-                new SimpleModule()
-                    .addSerializer(OffsetDateTime.class, OffsetDateTimeSerializer.INSTANCE)
-                    .addDeserializer(OffsetDateTime.class, OffsetDateTimeDeserializer.INSTANCE)
-            )
-        );
+        this(OBJECT_MAPPER);
     }
 
     public ObjectMapperWrapper(ObjectMapper objectMapper) {

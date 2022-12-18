@@ -53,10 +53,52 @@ public class Configuration implements Serializable {
         }
     }
 
+    private final ObjectMapperWrapper objectMapperWrapper;
+
     private final Properties properties = Environment.getProperties();
 
     private Configuration() {
         load();
+
+        Object objectMapperPropertyInstance = instantiateClass(PropertyKey.JACKSON_OBJECT_MAPPER);
+
+        ObjectMapperWrapper objectMapperWrapper = new ObjectMapperWrapper();
+
+        if (objectMapperPropertyInstance != null) {
+            if (objectMapperPropertyInstance instanceof ObjectMapperSupplier) {
+                ObjectMapper objectMapper = ((ObjectMapperSupplier) objectMapperPropertyInstance).get();
+                if (objectMapper != null) {
+                    objectMapperWrapper = new ObjectMapperWrapper(objectMapper);
+                }
+            } else if (objectMapperPropertyInstance instanceof Supplier) {
+                Supplier<ObjectMapper> objectMapperSupplier = (Supplier<ObjectMapper>) objectMapperPropertyInstance;
+                objectMapperWrapper = new ObjectMapperWrapper(objectMapperSupplier.get());
+            } else if (objectMapperPropertyInstance instanceof ObjectMapper) {
+                ObjectMapper objectMapper = (ObjectMapper) objectMapperPropertyInstance;
+                objectMapperWrapper = new ObjectMapperWrapper(objectMapper);
+            }
+        }
+
+        Object jsonSerializerPropertyInstance = instantiateClass(PropertyKey.JSON_SERIALIZER);
+
+        if (jsonSerializerPropertyInstance != null) {
+            JsonSerializer jsonSerializer = null;
+
+            if (jsonSerializerPropertyInstance instanceof JsonSerializerSupplier) {
+                jsonSerializer = ((JsonSerializerSupplier) jsonSerializerPropertyInstance).get();
+            } else if (jsonSerializerPropertyInstance instanceof Supplier) {
+                Supplier<JsonSerializer> jsonSerializerSupplier = (Supplier<JsonSerializer>) jsonSerializerPropertyInstance;
+                jsonSerializer = jsonSerializerSupplier.get();
+            } else if (jsonSerializerPropertyInstance instanceof JsonSerializer) {
+                jsonSerializer = (JsonSerializer) jsonSerializerPropertyInstance;
+            }
+
+            if (jsonSerializer != null) {
+                objectMapperWrapper.setJsonSerializer(jsonSerializer);
+            }
+        }
+
+        this.objectMapperWrapper = objectMapperWrapper;
     }
 
     /**
@@ -143,48 +185,6 @@ public class Configuration implements Serializable {
      * @return {@link ObjectMapperWrapper} reference
      */
     public ObjectMapperWrapper getObjectMapperWrapper() {
-        Object objectMapperPropertyInstance = instantiateClass(PropertyKey.JACKSON_OBJECT_MAPPER);
-
-        ObjectMapperWrapper objectMapperWrapper = new ObjectMapperWrapper();
-
-        if (objectMapperPropertyInstance != null) {
-            if(objectMapperPropertyInstance instanceof ObjectMapperSupplier) {
-                ObjectMapper objectMapper = ((ObjectMapperSupplier) objectMapperPropertyInstance).get();
-                if(objectMapper != null) {
-                    objectMapperWrapper = new ObjectMapperWrapper(objectMapper);
-                }
-            }
-            else if (objectMapperPropertyInstance instanceof Supplier) {
-                Supplier<ObjectMapper> objectMapperSupplier = (Supplier<ObjectMapper>) objectMapperPropertyInstance;
-                objectMapperWrapper = new ObjectMapperWrapper(objectMapperSupplier.get());
-            }
-            else if (objectMapperPropertyInstance instanceof ObjectMapper) {
-                ObjectMapper objectMapper = (ObjectMapper) objectMapperPropertyInstance;
-                objectMapperWrapper = new ObjectMapperWrapper(objectMapper);
-            }
-        }
-
-        Object jsonSerializerPropertyInstance = instantiateClass(PropertyKey.JSON_SERIALIZER);
-
-        if (jsonSerializerPropertyInstance != null) {
-            JsonSerializer jsonSerializer = null;
-
-            if(jsonSerializerPropertyInstance instanceof JsonSerializerSupplier) {
-                jsonSerializer = ((JsonSerializerSupplier) jsonSerializerPropertyInstance).get();
-            }
-            else if (jsonSerializerPropertyInstance instanceof Supplier) {
-                Supplier<JsonSerializer> jsonSerializerSupplier = (Supplier<JsonSerializer>) jsonSerializerPropertyInstance;
-                jsonSerializer = jsonSerializerSupplier.get();
-            }
-            else if (jsonSerializerPropertyInstance instanceof JsonSerializer) {
-                jsonSerializer = (JsonSerializer) jsonSerializerPropertyInstance;
-            }
-
-            if (jsonSerializer != null) {
-                objectMapperWrapper.setJsonSerializer(jsonSerializer);
-            }
-        }
-
         return objectMapperWrapper;
     }
 

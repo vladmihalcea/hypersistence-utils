@@ -1,6 +1,7 @@
 package com.vladmihalcea.hibernate.type.json.polymorphic;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.vladmihalcea.hibernate.type.json.JsonType;
 import com.vladmihalcea.hibernate.type.util.ObjectMapperWrapper;
 import com.vladmihalcea.hibernate.util.AbstractPostgreSQLIntegrationTest;
@@ -13,6 +14,7 @@ import org.junit.Test;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -33,7 +35,14 @@ public class PostgreSQLJsonPolymorphicListCustomTypeTest extends AbstractPostgre
 
     @Override
     protected void additionalProperties(Properties properties) {
-        ObjectMapper objectMapper = new ObjectMapperWrapper().getObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper()
+            .findAndRegisterModules()
+            .registerModule(
+                new SimpleModule()
+                    .addSerializer(OffsetDateTime.class, ObjectMapperWrapper.OffsetDateTimeSerializer.INSTANCE)
+                    .addDeserializer(OffsetDateTime.class, ObjectMapperWrapper.OffsetDateTimeDeserializer.INSTANCE)
+            );
+
         properties.put("hibernate.type_contributors",
             (TypeContributorList) () -> Collections.singletonList(
                 (typeContributions, serviceRegistry) ->

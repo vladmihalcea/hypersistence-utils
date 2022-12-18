@@ -17,6 +17,9 @@ import java.lang.reflect.Type;
  */
 public class ObjectMapperWrapper implements Serializable {
 
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+        .findAndRegisterModules();
+
     public static final ObjectMapperWrapper INSTANCE = new ObjectMapperWrapper();
 
     private final ObjectMapper objectMapper;
@@ -24,7 +27,7 @@ public class ObjectMapperWrapper implements Serializable {
     private JsonSerializer jsonSerializer;
 
     public ObjectMapperWrapper() {
-        this(new ObjectMapper().findAndRegisterModules());
+        this(OBJECT_MAPPER);
     }
 
     public ObjectMapperWrapper(ObjectMapper objectMapper) {
