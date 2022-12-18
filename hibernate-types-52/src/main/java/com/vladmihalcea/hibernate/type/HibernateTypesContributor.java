@@ -34,6 +34,8 @@ public class HibernateTypesContributor implements TypeContributor {
         JdbcServices jdbcServices = serviceRegistry.getService(JdbcServices.class);
         Dialect dialect = jdbcServices.getDialect();
 
+        boolean enableJson = ReflectionUtils.getClassOrNull("com.fasterxml.jackson.databind.ObjectMapper") != null;
+
         if(dialect instanceof PostgreSQL82Dialect) {
             /* Arrays */
             this
@@ -53,9 +55,6 @@ public class HibernateTypesContributor implements TypeContributor {
             /* Date/Time */
             .contributeType(typeContributions, PostgreSQLIntervalType.INSTANCE)
             .contributeType(typeContributions, PostgreSQLPeriodType.INSTANCE)
-            /* JSON */
-            .contributeType(typeContributions, JsonBinaryType.INSTANCE)
-
             /* Specific-types */
             .contributeType(typeContributions, PostgreSQLTSVectorType.INSTANCE)
             .contributeType(typeContributions, PostgreSQLEnumType.INSTANCE)
@@ -67,22 +66,30 @@ public class HibernateTypesContributor implements TypeContributor {
             if(ReflectionUtils.getClassOrNull("com.google.common.collect.Range") != null) {
                 this.contributeType(typeContributions, PostgreSQLGuavaRangeType.INSTANCE);
             }
+            if(enableJson) {
+                /* JSON */
+                this.contributeType(typeContributions, JsonBinaryType.INSTANCE);
+            }
         } else if(dialect instanceof MySQLDialect) {
             /* JSON */
-            this
-            .contributeType(typeContributions, JsonStringType.INSTANCE)
-            .contributeType(typeContributions, JsonNodeStringType.INSTANCE);
+            if (enableJson) {
+                this.contributeType(typeContributions, JsonStringType.INSTANCE)
+                    .contributeType(typeContributions, JsonNodeStringType.INSTANCE);
+            }
         } else if(dialect instanceof SQLServer2005Dialect) {
             /* JSON */
-            this
-            .contributeType(typeContributions, JsonStringType.INSTANCE);
+            if (enableJson) {
+                this.contributeType(typeContributions, JsonStringType.INSTANCE);
+            }
         } else if(dialect instanceof Oracle8iDialect) {
             /* Date/Time */
             this
-            .contributeType(typeContributions, OracleIntervalDayToSecondType.INSTANCE)
+            .contributeType(typeContributions, OracleIntervalDayToSecondType.INSTANCE);
             /* JSON */
-            .contributeType(typeContributions, JsonStringType.INSTANCE)
-            .contributeType(typeContributions, JsonBlobType.INSTANCE);
+            if (enableJson) {
+                this.contributeType(typeContributions, JsonStringType.INSTANCE)
+                .contributeType(typeContributions, JsonBlobType.INSTANCE);
+            }
         }
 
         /* Basic */
@@ -94,9 +101,11 @@ public class HibernateTypesContributor implements TypeContributor {
         .contributeType(typeContributions, YearMonthDateType.INSTANCE)
         .contributeType(typeContributions, YearMonthEpochType.INSTANCE)
         .contributeType(typeContributions, YearMonthIntegerType.INSTANCE)
-        .contributeType(typeContributions, YearMonthTimestampType.INSTANCE)
+        .contributeType(typeContributions, YearMonthTimestampType.INSTANCE);
         /* JSON */
-        .contributeType(typeContributions, JsonType.INSTANCE);
+        if (enableJson) {
+            this.contributeType(typeContributions, JsonType.INSTANCE);
+        }
         /* Money and Currency API */
         if(ReflectionUtils.getClassOrNull("org.javamoney.moneta.Money") != null) {
             this.contributeType(typeContributions, CurrencyUnitType.INSTANCE)

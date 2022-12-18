@@ -28,54 +28,62 @@ public class HibernateTypesContributor implements TypeContributor {
         JdbcServices jdbcServices = serviceRegistry.getService(JdbcServices.class);
         Dialect dialect = jdbcServices.getDialect();
 
-        if(dialect instanceof PostgreSQL82Dialect) {
+        boolean enableJson = ReflectionUtils.getClassOrNull("com.fasterxml.jackson.databind.ObjectMapper") != null;
+
+        if (dialect instanceof PostgreSQL82Dialect) {
             /* Arrays */
             this
-            .contributeType(typeContributions, BooleanArrayType.INSTANCE)
-            .contributeType(typeContributions, DateArrayType.INSTANCE)
-            .contributeType(typeContributions, DecimalArrayType.INSTANCE)
-            .contributeType(typeContributions, DoubleArrayType.INSTANCE)
-            .contributeType(typeContributions, EnumArrayType.INSTANCE)
-            .contributeType(typeContributions, IntArrayType.INSTANCE)
-            .contributeType(typeContributions, ListArrayType.INSTANCE)
-            .contributeType(typeContributions, LongArrayType.INSTANCE)
-            .contributeType(typeContributions, StringArrayType.INSTANCE)
-            .contributeType(typeContributions, TimestampArrayType.INSTANCE)
-            .contributeType(typeContributions, UUIDArrayType.INSTANCE)
-            /* JSON */
-            .contributeType(typeContributions, JsonBinaryType.INSTANCE)
+                .contributeType(typeContributions, BooleanArrayType.INSTANCE)
+                .contributeType(typeContributions, DateArrayType.INSTANCE)
+                .contributeType(typeContributions, DecimalArrayType.INSTANCE)
+                .contributeType(typeContributions, DoubleArrayType.INSTANCE)
+                .contributeType(typeContributions, EnumArrayType.INSTANCE)
+                .contributeType(typeContributions, IntArrayType.INSTANCE)
+                .contributeType(typeContributions, ListArrayType.INSTANCE)
+                .contributeType(typeContributions, LongArrayType.INSTANCE)
+                .contributeType(typeContributions, StringArrayType.INSTANCE)
+                .contributeType(typeContributions, TimestampArrayType.INSTANCE)
+                .contributeType(typeContributions, UUIDArrayType.INSTANCE)
 
-            /* Specific-types */
-            .contributeType(typeContributions, PostgreSQLEnumType.INSTANCE)
-            .contributeType(typeContributions, PostgreSQLHStoreType.INSTANCE)
-            .contributeType(typeContributions, PostgreSQLInetType.INSTANCE)
-            .contributeType(typeContributions, PostgreSQLRangeType.INSTANCE)
-            .contributeType(typeContributions, PostgreSQLCITextType.INSTANCE);
+                /* Specific-types */
+                .contributeType(typeContributions, PostgreSQLEnumType.INSTANCE)
+                .contributeType(typeContributions, PostgreSQLHStoreType.INSTANCE)
+                .contributeType(typeContributions, PostgreSQLInetType.INSTANCE)
+                .contributeType(typeContributions, PostgreSQLRangeType.INSTANCE)
+                .contributeType(typeContributions, PostgreSQLCITextType.INSTANCE);
 
-            if(ReflectionUtils.getClassOrNull("com.google.common.collect.Range") != null) {
+            if (ReflectionUtils.getClassOrNull("com.google.common.collect.Range") != null) {
                 this.contributeType(typeContributions, PostgreSQLGuavaRangeType.INSTANCE);
             }
-        } else if(dialect instanceof MySQLDialect) {
+            if (enableJson) {
+                /* JSON */
+                this.contributeType(typeContributions, JsonBinaryType.INSTANCE);
+            }
+        } else if (dialect instanceof MySQLDialect) {
             /* JSON */
-            this
-            .contributeType(typeContributions, JsonStringType.INSTANCE)
-            .contributeType(typeContributions, JsonNodeStringType.INSTANCE);
-        } else if(dialect instanceof SQLServer2005Dialect) {
+            if (enableJson) {
+                this.contributeType(typeContributions, JsonStringType.INSTANCE)
+                    .contributeType(typeContributions, JsonNodeStringType.INSTANCE);
+            }
+        } else if (dialect instanceof SQLServer2005Dialect) {
             /* JSON */
-            this
-            .contributeType(typeContributions, JsonStringType.INSTANCE);
-        } else if(dialect instanceof Oracle8iDialect) {
-            /* Date/Time */
-            this
+            if (enableJson) {
+                this.contributeType(typeContributions, JsonStringType.INSTANCE);
+            }
+        } else if (dialect instanceof Oracle8iDialect) {
             /* JSON */
-            .contributeType(typeContributions, JsonStringType.INSTANCE)
-            .contributeType(typeContributions, JsonBlobType.INSTANCE);
+            if (enableJson) {
+                this.contributeType(typeContributions, JsonStringType.INSTANCE)
+                    .contributeType(typeContributions, JsonBlobType.INSTANCE);
+            }
         }
 
         /* Basic */
-        this.contributeType(typeContributions, NullableCharacterType.INSTANCE)
+        this.contributeType(typeContributions, NullableCharacterType.INSTANCE);
         /* JSON */
-        .contributeType(typeContributions, JsonType.INSTANCE);
+        if (enableJson) {
+            this.contributeType(typeContributions, JsonType.INSTANCE);
+        }
     }
 
     private HibernateTypesContributor contributeType(TypeContributions typeContributions, Object type) {

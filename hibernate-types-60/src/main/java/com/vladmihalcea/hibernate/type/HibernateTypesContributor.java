@@ -29,6 +29,8 @@ public class HibernateTypesContributor implements TypeContributor {
         JdbcServices jdbcServices = serviceRegistry.getService(JdbcServices.class);
         Dialect dialect = jdbcServices.getDialect();
 
+        boolean enableJson = ReflectionUtils.getClassOrNull("com.fasterxml.jackson.databind.ObjectMapper") != null;
+
         if(dialect instanceof PostgreSQLDialect) {
             /* Arrays */
             typeContributions.contributeType(BooleanArrayType.INSTANCE);
@@ -50,7 +52,9 @@ public class HibernateTypesContributor implements TypeContributor {
             typeContributions.contributeType(PostgreSQLPeriodType.INSTANCE);
 
             /* JSON */
-            typeContributions.contributeType(JsonBinaryType.INSTANCE);
+            if (enableJson) {
+                typeContributions.contributeType(JsonBinaryType.INSTANCE);
+            }
 
             /* Specific-types */
             typeContributions.contributeType(PostgreSQLTSVectorType.INSTANCE);
@@ -64,17 +68,23 @@ public class HibernateTypesContributor implements TypeContributor {
             }
         } else if(dialect instanceof MySQLDialect) {
             /* JSON */
-            typeContributions.contributeType(JsonStringType.INSTANCE);
-            typeContributions.contributeType(JsonNodeStringType.INSTANCE);
+            if (enableJson) {
+                typeContributions.contributeType(JsonStringType.INSTANCE);
+                typeContributions.contributeType(JsonNodeStringType.INSTANCE);
+            }
         } else if(dialect instanceof SQLServerDialect) {
             /* JSON */
-            typeContributions.contributeType(JsonStringType.INSTANCE);
+            if (enableJson) {
+                typeContributions.contributeType(JsonStringType.INSTANCE);
+            }
         } else if(dialect instanceof OracleDialect) {
             /* Date/Time */
             typeContributions.contributeType(OracleIntervalDayToSecondType.INSTANCE);
             /* JSON */
-            typeContributions.contributeType(JsonStringType.INSTANCE);
-            typeContributions.contributeType(JsonBlobType.INSTANCE);
+            if (enableJson) {
+                typeContributions.contributeType(JsonStringType.INSTANCE);
+                typeContributions.contributeType(JsonBlobType.INSTANCE);
+            }
         }
 
         /* Basic */
@@ -88,6 +98,8 @@ public class HibernateTypesContributor implements TypeContributor {
         typeContributions.contributeType(YearMonthIntegerType.INSTANCE);
         typeContributions.contributeType(YearMonthTimestampType.INSTANCE);
         /* JSON */
-        typeContributions.contributeType(JsonType.INSTANCE);
+        if (enableJson) {
+            typeContributions.contributeType(JsonType.INSTANCE);
+        }
     }
 }
