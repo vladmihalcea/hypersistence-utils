@@ -1,6 +1,7 @@
 package com.vladmihalcea.hibernate.type.json.internal;
 
 import com.vladmihalcea.hibernate.type.model.BaseEntity;
+import org.hibernate.HibernateException;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -9,6 +10,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class JsonTypeDescriptorTest {
 
@@ -38,6 +40,17 @@ public class JsonTypeDescriptorTest {
         Form theFirst = createForm(1, 2, 3);
         Form theSecond = createForm(3, 2, 1);
         assertTrue(descriptor.areEqual(theFirst, theSecond));
+    }
+
+    @Test
+    public void testNullPropertyType() {
+        JsonJavaTypeDescriptor descriptor = new JsonJavaTypeDescriptor();
+
+        try {
+            descriptor.wrap("a", null);
+            fail("Should fail because the propertyType is null!");
+        } catch (HibernateException expected) {
+        }
     }
 
     private Form createForm(Integer... numbers) {

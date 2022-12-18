@@ -109,6 +109,13 @@ public class JsonJavaTypeDescriptor extends AbstractClassJavaType<Object> implem
 
     @Override
     public Object fromString(CharSequence string) {
+        if(propertyClass == null) {
+            throw new HibernateException(
+                "The propertyClass in JsonTypeDescriptor is null, " +
+                    "hence it doesn't know to what Java Object type " +
+                    "to map the JSON column value that was read from the database!"
+            );
+        }
         if (String.class.isAssignableFrom(propertyClass)) {
             return string;
         }
