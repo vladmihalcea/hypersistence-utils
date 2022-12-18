@@ -5,14 +5,16 @@ import com.vladmihalcea.hibernate.type.basic.*;
 import com.vladmihalcea.hibernate.type.interval.OracleIntervalDayToSecondType;
 import com.vladmihalcea.hibernate.type.interval.PostgreSQLIntervalType;
 import com.vladmihalcea.hibernate.type.interval.PostgreSQLPeriodType;
-import com.vladmihalcea.hibernate.type.json.*;
+import com.vladmihalcea.hibernate.type.json.JsonNodeStringType;
 import com.vladmihalcea.hibernate.type.range.PostgreSQLRangeType;
 import com.vladmihalcea.hibernate.type.range.guava.PostgreSQLGuavaRangeType;
-import com.vladmihalcea.hibernate.type.search.PostgreSQLTSVectorType;
 import com.vladmihalcea.hibernate.util.ReflectionUtils;
 import org.hibernate.boot.model.TypeContributions;
 import org.hibernate.boot.model.TypeContributor;
-import org.hibernate.dialect.*;
+import org.hibernate.dialect.Dialect;
+import org.hibernate.dialect.MySQLDialect;
+import org.hibernate.dialect.OracleDialect;
+import org.hibernate.dialect.PostgreSQLDialect;
 import org.hibernate.engine.jdbc.spi.JdbcServices;
 import org.hibernate.service.ServiceRegistry;
 
@@ -31,6 +33,11 @@ public class HibernateTypesContributor implements TypeContributor {
 
         boolean enableJson = ReflectionUtils.getClassOrNull("com.fasterxml.jackson.databind.ObjectMapper") != null;
 
+        /*
+         * The JSON Types that map java.lang.Object as they can cause
+         * https://github.com/vladmihalcea/hibernate-types/issues/520
+         */
+
         if(dialect instanceof PostgreSQLDialect) {
             /* Arrays */
             typeContributions.contributeType(BooleanArrayType.INSTANCE);
@@ -39,7 +46,6 @@ public class HibernateTypesContributor implements TypeContributor {
             typeContributions.contributeType(DoubleArrayType.INSTANCE);
             typeContributions.contributeType(EnumArrayType.INSTANCE);
             typeContributions.contributeType(IntArrayType.INSTANCE);
-            typeContributions.contributeType(ListArrayType.INSTANCE);
             typeContributions.contributeType(LocalDateArrayType.INSTANCE);
             typeContributions.contributeType(LocalDateTimeArrayType.INSTANCE);
             typeContributions.contributeType(LongArrayType.INSTANCE);
@@ -51,13 +57,7 @@ public class HibernateTypesContributor implements TypeContributor {
             typeContributions.contributeType(PostgreSQLIntervalType.INSTANCE);
             typeContributions.contributeType(PostgreSQLPeriodType.INSTANCE);
 
-            /* JSON */
-            if (enableJson) {
-                typeContributions.contributeType(JsonBinaryType.INSTANCE);
-            }
-
             /* Specific-types */
-            typeContributions.contributeType(PostgreSQLTSVectorType.INSTANCE);
             typeContributions.contributeType(PostgreSQLEnumType.INSTANCE);
             typeContributions.contributeType(PostgreSQLHStoreType.INSTANCE);
             typeContributions.contributeType(PostgreSQLInetType.INSTANCE);
@@ -69,22 +69,11 @@ public class HibernateTypesContributor implements TypeContributor {
         } else if(dialect instanceof MySQLDialect) {
             /* JSON */
             if (enableJson) {
-                typeContributions.contributeType(JsonStringType.INSTANCE);
                 typeContributions.contributeType(JsonNodeStringType.INSTANCE);
-            }
-        } else if(dialect instanceof SQLServerDialect) {
-            /* JSON */
-            if (enableJson) {
-                typeContributions.contributeType(JsonStringType.INSTANCE);
             }
         } else if(dialect instanceof OracleDialect) {
             /* Date/Time */
             typeContributions.contributeType(OracleIntervalDayToSecondType.INSTANCE);
-            /* JSON */
-            if (enableJson) {
-                typeContributions.contributeType(JsonStringType.INSTANCE);
-                typeContributions.contributeType(JsonBlobType.INSTANCE);
-            }
         }
 
         /* Basic */
@@ -97,9 +86,5 @@ public class HibernateTypesContributor implements TypeContributor {
         typeContributions.contributeType(YearMonthEpochType.INSTANCE);
         typeContributions.contributeType(YearMonthIntegerType.INSTANCE);
         typeContributions.contributeType(YearMonthTimestampType.INSTANCE);
-        /* JSON */
-        if (enableJson) {
-            typeContributions.contributeType(JsonType.INSTANCE);
-        }
     }
 }
