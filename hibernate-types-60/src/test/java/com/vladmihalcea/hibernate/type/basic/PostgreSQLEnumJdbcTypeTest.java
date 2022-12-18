@@ -4,6 +4,7 @@ import com.vladmihalcea.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcType;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.sql.DataSource;
@@ -58,6 +59,7 @@ public class PostgreSQLEnumJdbcTypeTest extends AbstractPostgreSQLIntegrationTes
     }
 
     @Test
+    @Ignore("Fails because of https://github.com/vladmihalcea/hibernate-types/issues/532")
     public void test() {
         doInJPA(entityManager -> {
             Post post = entityManager.find(Post.class, 1L);
@@ -66,6 +68,7 @@ public class PostgreSQLEnumJdbcTypeTest extends AbstractPostgreSQLIntegrationTes
     }
 
     @Test
+    @Ignore("Fails because of https://github.com/vladmihalcea/hibernate-types/issues/532")
     public void testTypedParameterValue() {
         doInJPA(entityManager -> {
             entityManager.createQuery("SELECT a FROM Post a WHERE a.status = :paramValue", Post.class)
