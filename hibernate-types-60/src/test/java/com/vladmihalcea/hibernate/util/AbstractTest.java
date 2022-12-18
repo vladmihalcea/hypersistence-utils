@@ -39,6 +39,9 @@ import org.slf4j.LoggerFactory;
 import javax.sql.DataSource;
 import java.io.Closeable;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -531,5 +534,36 @@ public abstract class AbstractTest {
                 session.close();
             }
         }
+    }
+
+    public static String stringValue(Object value) {
+        return value.toString();
+    }
+
+    public static int intValue(Object number) {
+        return ((Number) number).intValue();
+    }
+
+    public static long longValue(Object number) {
+        if(number instanceof String) {
+            return Long.parseLong((String) number);
+        }
+        return ((Number) number).longValue();
+    }
+
+    public static double doubleValue(Object number) {
+        return ((Number) number).doubleValue();
+    }
+
+    public static URL urlValue(String url) {
+        try {
+            return url != null ? new URL(url) : null;
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    public static LocalDateTime localDateTimeValue(Object value) {
+        return (LocalDateTime) value;
     }
 }
