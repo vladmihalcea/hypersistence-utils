@@ -1,3 +1,28 @@
+Version 2.21.0 - December 18, 2022
+================================================================================
+
+Add support for Hibernate ORM 6.1 #531
+
+Avoid creating too many Jackson ObjectMapper instances #530
+
+Add lockById function to the BaseHibernateRepository #529
+
+ObjectMapperJsonSerializer should not clone a String JSON Object #528
+
+Hibernate Types 6 throws ClassCastException "CustomType cannot be cast to class EntityValuedModelPart" #520
+
+Add DistinctListTransformer to Hibernate Types 6 #517
+
+JsonTypeDescriptor throws NullPointerException when using a Kotlin var entity attribute #516
+
+HibernateRepository doesn't work with multiple DataSources #513
+
+Empty ranges cannot be converted back to their initial String representation #507
+
+HibernateTypesContributor throws java.lang.NoClassDefFoundError: com/fasterxml/jackson/databind/JsonSerializer #504
+
+Add the BaseJpaRepository as a better alternative to Spring Data JpaRepository #501
+
 Version 2.20.0 - October 17, 2022
 ================================================================================
 
