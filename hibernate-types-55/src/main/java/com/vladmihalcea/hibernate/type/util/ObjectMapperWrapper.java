@@ -35,12 +35,18 @@ public class ObjectMapperWrapper implements Serializable {
 
     public static final ObjectMapperWrapper INSTANCE = new ObjectMapperWrapper();
 
-    private final ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
+
+    private ObjectMapperSupplier objectMapperSupplier;
 
     private JsonSerializer jsonSerializer;
 
     public ObjectMapperWrapper() {
         this(OBJECT_MAPPER);
+    }
+
+    public ObjectMapperWrapper(ObjectMapperSupplier objectMapperSupplier) {
+        this.objectMapperSupplier = objectMapperSupplier;
     }
 
     public ObjectMapperWrapper(ObjectMapper objectMapper) {
@@ -53,12 +59,18 @@ public class ObjectMapperWrapper implements Serializable {
     }
 
     public ObjectMapper getObjectMapper() {
+        if(objectMapper == null && objectMapperSupplier != null) {
+            objectMapper = objectMapperSupplier.get();
+        }
+        if(objectMapper == null) {
+            throw new HibernateException("The provided ObjectMapper is null!");
+        }
         return objectMapper;
     }
 
     public <T> T fromString(String string, Class<T> clazz) {
         try {
-            return objectMapper.readValue(string, clazz);
+            return getObjectMapper().readValue(string, clazz);
         } catch (IOException e) {
             throw new HibernateException(
                 new IllegalArgumentException("The given string value: " + string + " cannot be transformed to Json object", e)
@@ -68,7 +80,7 @@ public class ObjectMapperWrapper implements Serializable {
 
     public <T> T fromString(String string, Type type) {
         try {
-            return objectMapper.readValue(string, objectMapper.getTypeFactory().constructType(type));
+            return getObjectMapper().readValue(string, getObjectMapper().getTypeFactory().constructType(type));
         } catch (IOException e) {
             throw new HibernateException(
                 new IllegalArgumentException("The given string value: " + string + " cannot be transformed to Json object", e)
@@ -78,7 +90,7 @@ public class ObjectMapperWrapper implements Serializable {
 
     public <T> T fromBytes(byte[] value, Class<T> clazz) {
         try {
-            return objectMapper.readValue(value, clazz);
+            return getObjectMapper().readValue(value, clazz);
         } catch (IOException e) {
             throw new HibernateException(
                 new IllegalArgumentException("The given byte array cannot be transformed to Json object", e)
@@ -88,7 +100,7 @@ public class ObjectMapperWrapper implements Serializable {
 
     public <T> T fromBytes(byte[] value, Type type) {
         try {
-            return objectMapper.readValue(value, objectMapper.getTypeFactory().constructType(type));
+            return getObjectMapper().readValue(value, getObjectMapper().getTypeFactory().constructType(type));
         } catch (IOException e) {
             throw new HibernateException(
                 new IllegalArgumentException("The given byte array cannot be transformed to Json object", e)
@@ -98,7 +110,7 @@ public class ObjectMapperWrapper implements Serializable {
 
     public String toString(Object value) {
         try {
-            return objectMapper.writeValueAsString(value);
+            return getObjectMapper().writeValueAsString(value);
         } catch (JsonProcessingException e) {
             throw new HibernateException(
                 new IllegalArgumentException("The given Json object value: " + value + " cannot be transformed to a String", e)
@@ -108,7 +120,7 @@ public class ObjectMapperWrapper implements Serializable {
 
     public byte[] toBytes(Object value) {
         try {
-            return objectMapper.writeValueAsBytes(value);
+            return getObjectMapper().writeValueAsBytes(value);
         } catch (JsonProcessingException e) {
             throw new HibernateException(
                 new IllegalArgumentException("The given Json object value: " + value + " cannot be transformed to a byte array", e)
@@ -118,7 +130,7 @@ public class ObjectMapperWrapper implements Serializable {
 
     public JsonNode toJsonNode(String value) {
         try {
-            return objectMapper.readTree(value);
+            return getObjectMapper().readTree(value);
         } catch (IOException e) {
             throw new HibernateException(
                 new IllegalArgumentException(e)

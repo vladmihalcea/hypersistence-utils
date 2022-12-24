@@ -74,13 +74,13 @@ public class Configuration implements Serializable {
 
         if (objectMapperPropertyInstance != null) {
             if (objectMapperPropertyInstance instanceof ObjectMapperSupplier) {
-                ObjectMapper objectMapper = ((ObjectMapperSupplier) objectMapperPropertyInstance).get();
-                if (objectMapper != null) {
-                    objectMapperWrapper = new ObjectMapperWrapper(objectMapper);
+                ObjectMapperSupplier objectMapperSupplier = (ObjectMapperSupplier) objectMapperPropertyInstance;
+                if (objectMapperSupplier != null) {
+                    objectMapperWrapper = new ObjectMapperWrapper(objectMapperSupplier);
                 }
             } else if (objectMapperPropertyInstance instanceof Supplier) {
                 Supplier<ObjectMapper> objectMapperSupplier = (Supplier<ObjectMapper>) objectMapperPropertyInstance;
-                objectMapperWrapper = new ObjectMapperWrapper(objectMapperSupplier.get());
+                objectMapperWrapper = new ObjectMapperWrapper((ObjectMapperSupplier) () -> objectMapperSupplier.get());
             } else if (objectMapperPropertyInstance instanceof ObjectMapper) {
                 ObjectMapper objectMapper = (ObjectMapper) objectMapperPropertyInstance;
                 objectMapperWrapper = new ObjectMapperWrapper(objectMapper);
