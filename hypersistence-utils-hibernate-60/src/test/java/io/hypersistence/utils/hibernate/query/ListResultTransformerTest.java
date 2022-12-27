@@ -152,7 +152,7 @@ public class ListResultTransformerTest extends AbstractPostgreSQLIntegrationTest
                     "   YEAR(p.createdOn)")
                 .unwrap(org.hibernate.query.Query.class)
                 .setResultTransformer(
-                    (io.hypersistence.utils.hibernate.type.util.ListResultTransformer) (tuple, aliases) -> new PostCountByYear(
+                    (ListResultTransformer) (tuple, aliases) -> new PostCountByYear(
                         ((Number) tuple[0]).intValue(),
                         ((Number) tuple[1]).intValue()
                     )

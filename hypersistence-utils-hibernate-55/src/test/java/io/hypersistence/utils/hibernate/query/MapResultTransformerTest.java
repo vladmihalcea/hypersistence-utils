@@ -144,7 +144,7 @@ public class MapResultTransformerTest extends AbstractPostgreSQLIntegrationTest 
                 "   YEAR(p.createdOn)")
             .unwrap(org.hibernate.query.Query.class)
             .setResultTransformer(
-                new io.hypersistence.utils.hibernate.type.util.MapResultTransformer<Number, Number>()
+                new MapResultTransformer<Number, Number>()
             )
             .getSingleResult();
 
@@ -167,7 +167,7 @@ public class MapResultTransformerTest extends AbstractPostgreSQLIntegrationTest 
                 "   YEAR(p.createdOn)")
             .unwrap(org.hibernate.query.Query.class)
             .setResultTransformer(
-                new io.hypersistence.utils.hibernate.type.util.MapResultTransformer<Number, Number>()
+                new MapResultTransformer<Number, Number>()
             )
             .getSingleResult();
 
