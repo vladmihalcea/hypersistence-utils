@@ -35,7 +35,7 @@ public class HibernateTypesContributor implements TypeContributor {
 
         /*
          * The JSON Types that map java.lang.Object as they can cause
-         * https://github.com/vladmihalcea/hibernate-types/issues/520
+         * https://github.com/vladmihalcea/hypersistence-utils/issues/520
          */
 
         if(dialect instanceof PostgreSQLDialect) {

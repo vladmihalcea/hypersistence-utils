@@ -59,7 +59,7 @@ public class PostgreSQLEnumJdbcTypeTest extends AbstractPostgreSQLIntegrationTes
     }
 
     @Test
-    @Ignore("Fails because of https://github.com/vladmihalcea/hibernate-types/issues/532")
+    @Ignore("Fails because of https://github.com/vladmihalcea/hypersistence-utils/issues/532")
     public void test() {
         doInJPA(entityManager -> {
             Post post = entityManager.find(Post.class, 1L);
@@ -68,7 +68,7 @@ public class PostgreSQLEnumJdbcTypeTest extends AbstractPostgreSQLIntegrationTes
     }
 
     @Test
-    @Ignore("Fails because of https://github.com/vladmihalcea/hibernate-types/issues/532")
+    @Ignore("Fails because of https://github.com/vladmihalcea/hypersistence-utils/issues/532")
     public void testTypedParameterValue() {
         doInJPA(entityManager -> {
             entityManager.createQuery("SELECT a FROM Post a WHERE a.status = :paramValue", Post.class)

@@ -8,17 +8,18 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.vladmihalcea</groupId>
-    <artifactId>hibernate-types-parent</artifactId>
+    <groupId>io.hypersistence</groupId>
+    <artifactId>hypersistence-utils-parent</artifactId>
     <version>2.21.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Hibernate Types</name>
+    <name>Hypersistence Utils</name>
     <description>
-        Hibernate Types adds extra types like JSON, Array, etc.
+        Hypersistence Utils adds extra utilities for Spring and Hibernate, like custom Hibernate Types and
+        better Spring Data Repositories.
     </description>
 
-    <url>https://github.com/vladmihalcea/hibernate-types</url>
+    <url>https://github.com/vladmihalcea/hypersistence-utils</url>
 
     <licenses>
         <license>
@@ -36,9 +37,9 @@
     </developers>
 
     <scm>
-        <developerConnection>scm:git:git@github.com:vladmihalcea/hibernate-types.git</developerConnection>
-        <url>scm:git:git@github.com:vladmihalcea/hibernate-types.git</url>
-        <connection>scm:git:git@github.com:vladmihalcea/hibernate-types.git</connection>
+        <developerConnection>scm:git:git@github.com:vladmihalcea/hypersistence-utils.git</developerConnection>
+        <url>scm:git:git@github.com:vladmihalcea/hypersistence-utils.git</url>
+        <connection>scm:git:git@github.com:vladmihalcea/hypersistence-utils.git</connection>
         <tag>HEAD</tag>
     </scm>
 

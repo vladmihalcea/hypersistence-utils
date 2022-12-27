@@ -1,6 +1,6 @@
-[![License](https://img.shields.io/github/license/vladmihalcea/hibernate-types.svg)](https://raw.githubusercontent.com/vladmihalcea/hibernate-types/master/LICENSE)
-[![Maven Central](https://img.shields.io/maven-central/v/com.vladmihalcea/hibernate-types-parent.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.vladmihalcea%22)
-[![JavaDoc](http://javadoc.io/badge/com.vladmihalcea/hibernate-types-55.svg)](http://www.javadoc.io/doc/com.vladmihalcea/hibernate-types-55)
+[![License](https://img.shields.io/github/license/vladmihalcea/hypersistence-utils.svg)](https://raw.githubusercontent.com/vladmihalcea/hypersistence-utils/master/LICENSE)
+[![Maven Central](https://img.shields.io/maven-central/v/com.vladmihalcea/hypersistence-utils-parent.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.vladmihalcea%22)
+[![JavaDoc](http://javadoc.io/badge/com.vladmihalcea/hypersistence-utils-55.svg)](http://www.javadoc.io/doc/com.vladmihalcea/hypersistence-utils-55)
 
 ### Introduction
 
@@ -15,7 +15,7 @@ Depending on the Hibernate version you are using, you need to add the following 
 #### Hibernate 6.1 and 6.0
 
     <dependency>
-        <groupId>com.vladmihalcea</groupId>
+        <groupId>io.hypersistence</groupId>
         <artifactId>hibernate-types-60</artifactId>
         <version>2.21.1</version>
     </dependency>
@@ -23,7 +23,7 @@ Depending on the Hibernate version you are using, you need to add the following 
 #### Hibernate 5.6 and 5.5
 
     <dependency>
-        <groupId>com.vladmihalcea</groupId>
+        <groupId>io.hypersistence</groupId>
         <artifactId>hibernate-types-55</artifactId>
         <version>2.21.1</version>
     </dependency>
@@ -31,7 +31,7 @@ Depending on the Hibernate version you are using, you need to add the following 
 #### Hibernate 5.4, 5.3 and 5.2
 
     <dependency>
-        <groupId>com.vladmihalcea</groupId>
+        <groupId>io.hypersistence</groupId>
         <artifactId>hibernate-types-52</artifactId>
         <version>2.21.1</version>
     </dependency>
@@ -39,7 +39,7 @@ Depending on the Hibernate version you are using, you need to add the following 
 #### Hibernate 5.1 and 5.0
 
     <dependency>
-        <groupId>com.vladmihalcea</groupId>
+        <groupId>io.hypersistence</groupId>
         <artifactId>hibernate-types-5</artifactId>
         <version>2.21.1</version>
     </dependency>
@@ -47,7 +47,7 @@ Depending on the Hibernate version you are using, you need to add the following 
 #### Hibernate 4.3
 
     <dependency>
-        <groupId>com.vladmihalcea</groupId>
+        <groupId>io.hypersistence</groupId>
         <artifactId>hibernate-types-43</artifactId>
         <version>2.21.1</version>
     </dependency>
@@ -55,7 +55,7 @@ Depending on the Hibernate version you are using, you need to add the following 
 #### Hibernate 4.2 and 4.1
 
     <dependency>
-        <groupId>com.vladmihalcea</groupId>
+        <groupId>io.hypersistence</groupId>
         <artifactId>hibernate-types-4</artifactId>
         <version>2.21.1</version>
     </dependency>
@@ -202,7 +202,7 @@ For more details, check out [this article](https://vladmihalcea.com/how-to-map-j
 
 > When mapping a JSON column type to a `POJO`, `List<POJO>` or `Map<String, POJO>`, you need to make sure that the `POJO` type overrides the default `equals` and `hashCode` methods and implements them according to the JSON object content. 
 > 
-> Otherwise, the Hibernate dirty checking mechanism may trigger unexpected UPDATE statements. Check out the [#134 issue for more details](https://github.com/vladmihalcea/hibernate-types/issues/138).
+> Otherwise, the Hibernate dirty checking mechanism may trigger unexpected UPDATE statements. Check out the [#134 issue for more details](https://github.com/vladmihalcea/hypersistence-utils/issues/138).
 
 ##### Database-specific JSON types
 
