@@ -11,7 +11,8 @@ For this reason, when migrating from the Hibernate Types 2.x to Hypersistence Ut
 you will need to follow these steps:
 
 1. First, you will need to change your Maven or Gradle dependency as illustrated by the [Installation Guide](#installation-guide).
-2. Second, you will need to change the package names from `com.vladmihalcea` to `io.hypersistence.utils`.
+2. Second, you will need to change the package name from `com.vladmihalcea.hibernate` to `io.hypersistence.utils.hibernate`.
+3. Third, you will need to change the package name from `com.vladmihalcea.spring` to `io.hypersistence.utils.spring`.
 
 That's it!
 
