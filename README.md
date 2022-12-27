@@ -4,7 +4,7 @@
 
 ### Introduction
 
-The Hibernate Types project gives you extra types and general-purpose utilities that are not supported by the Hibernate ORM core. 
+The Hypersistence Utils project gives you general-purpose utilities for both Spring and Hibernate. 
 
 The main advantage of this project is that it supports a broad range of Hibernate versions, spanning from **Hibernate ORM 6.1** to **6.0**, **5.6**, **5.5**, **5.4**, **5.3**, **5.2**, **5.1**, **5**, **4.3**, **4.2**, and Hibernate **4.1**.
 
@@ -62,7 +62,7 @@ Depending on the Hibernate version you are using, you need to add the following 
 
 #### Optional Maven Dependencies
 
-The Hibernate Types project defines a list of optional dependencies that you will have to declare explicitly in your project in order to use them.
+The Hypersistence Utils project defines a list of optional dependencies that you will have to declare explicitly in your project in order to use them.
 
 The reason why all these dependencies are optional, like Guava, Jackson, or PostgreSQL JDBC Driver, is because not all projects may need them.
 
@@ -72,7 +72,7 @@ More, the dependency version is extremely important because, from time to time, 
 > 
 > For instance, there have been [65 security issues discovered in the Jackson Data Bind library](https://www.cvedetails.com/vulnerability-list/vendor_id-15866/product_id-42991/Fasterxml-Jackson-databind.html) this project is heavily relying on. 
 > 
-> To avoid risking security issues, you need to take the responsibility of constantly upgrading all the dependencies that you are using along with the Hibernate Types library.
+> To avoid risking security issues, you need to take the responsibility of constantly upgrading all the dependencies that you are using along with the Hypersistence Utils library.
 
 ##### JSON Optional Maven Dependencies
 
@@ -382,7 +382,7 @@ Or, if you prefer reading books, you are going to love my [High-Performance Java
 
 #### Contributing Guide
 
-The project uses [Maven Toolchains](https://maven.apache.org/guides/mini/guide-using-toolchains.html) as different modules are compiled and tested using different Java versions. Hibernate Types 6 requires Java 17 while the other modules are compiled with either Java 1.8 or 1.6.
+The project uses [Maven Toolchains](https://maven.apache.org/guides/mini/guide-using-toolchains.html) as different modules are compiled and tested using different Java versions. Hypersistence Utils 6 requires Java 17 while the other modules are compiled with either Java 1.8 or 1.6.
 
 To see how to configure Maven Toolchains, check out [this article](https://vladmihalcea.com/maven-and-java-multi-version-modules/).
 
