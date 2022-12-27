@@ -58,8 +58,6 @@
         <module>hibernate-types-55</module>
         <module>hibernate-types-52</module>
         <module>hibernate-types-5</module>
-        <module>hibernate-types-43</module>
-        <module>hibernate-types-4</module>
     </modules>
 
     <dependencyManagement>
