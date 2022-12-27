@@ -1,6 +1,6 @@
 [![License](https://img.shields.io/github/license/vladmihalcea/hypersistence-utils.svg)](https://raw.githubusercontent.com/vladmihalcea/hypersistence-utils/master/LICENSE)
-[![Maven Central](https://img.shields.io/maven-central/v/com.vladmihalcea/hypersistence-utils-parent.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.vladmihalcea%22)
-[![JavaDoc](http://javadoc.io/badge/com.vladmihalcea/hypersistence-utils-55.svg)](http://www.javadoc.io/doc/com.vladmihalcea/hypersistence-utils-55)
+[![Maven Central](https://img.shields.io/maven-central/v/io.hypersistence/hypersistence-utils-parent.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.hypersistence%22)
+[![JavaDoc](http://javadoc.io/badge/io.hypersistence/hypersistence-utils-55.svg)](http://www.javadoc.io/doc/io.hypersistence/hypersistence-utils-55)
 
 ### Introduction
 
@@ -158,7 +158,7 @@ private Map<String, String> properties = new HashMap<>();
 If you're using Hibernate 5, you can either provide the fully-qualified name of the Hibernate Type:
 
 ````
-@Type(type = "com.vladmihalcea.hibernate.type.json.JsonType")
+@Type(type = "io.hypersistence.utils.hibernate.type.json.JsonType")
 ````
 
 Or, you can add the following mapping to your `package-info.java` class in the same package where your JPA entities are located:
@@ -169,7 +169,7 @@ Or, you can add the following mapping to your `package-info.java` class in the s
 )
 package io.hypersistence.optimizer;
 
-import com.vladmihalcea.hibernate.type.json.JsonType;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import org.hibernate.annotations.TypeDef;
 ````
 
@@ -268,14 +268,14 @@ For more details, check out [this article](https://vladmihalcea.com/how-to-map-j
 * [`HibernateRepository` - The best Spring Data JpaRepository](https://vladmihalcea.com/best-spring-data-jparepository/)
 * [The Spring Data `findAll` Anti-Pattern](https://vladmihalcea.com/spring-data-findall-anti-pattern/)
 
-When using the `HibernateRepository`, make sure that you include the `com.vladmihalcea.spring.repository` package
+When using the `HibernateRepository`, make sure that you include the `io.hypersistence.utils.spring.repository` package
 in your `@EnableJpaRepositories` configuration:
 
 ````java
 @Configuration
 @EnableJpaRepositories(
     basePackages = {
-        "com.vladmihalcea.spring.repository",
+        "io.hypersistence.utils.spring.repository",
         "your.repository.package",
         ...
     }

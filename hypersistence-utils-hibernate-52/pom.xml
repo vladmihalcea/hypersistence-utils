@@ -181,7 +181,7 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <Automatic-Module-Name>com.vladmihalcea.hibernate.type</Automatic-Module-Name>
+                            <Automatic-Module-Name>io.hypersistence.utils.hibernate.type</Automatic-Module-Name>
                         </manifestEntries>
                     </archive>
                 </configuration>

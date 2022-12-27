@@ -1,1 +1,1 @@
-com.vladmihalcea.hibernate.type.HibernateTypesContributor
+io.hypersistence.utils.hibernate.type.HibernateTypesContributor
