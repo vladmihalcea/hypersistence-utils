@@ -16,7 +16,7 @@ Depending on the Hibernate version you are using, you need to add the following 
 
     <dependency>
         <groupId>io.hypersistence</groupId>
-        <artifactId>hibernate-types-60</artifactId>
+        <artifactId>hypersistence-utils-hibernate-60</artifactId>
         <version>3.0.0</version>
     </dependency>
 
@@ -24,7 +24,7 @@ Depending on the Hibernate version you are using, you need to add the following 
 
     <dependency>
         <groupId>io.hypersistence</groupId>
-        <artifactId>hibernate-types-55</artifactId>
+        <artifactId>hypersistence-utils-hibernate-55</artifactId>
         <version>3.0.0</version>
     </dependency>
 
@@ -32,7 +32,7 @@ Depending on the Hibernate version you are using, you need to add the following 
 
     <dependency>
         <groupId>io.hypersistence</groupId>
-        <artifactId>hibernate-types-52</artifactId>
+        <artifactId>hypersistence-utils-hibernate-52</artifactId>
         <version>3.0.0</version>
     </dependency>
 
@@ -40,7 +40,7 @@ Depending on the Hibernate version you are using, you need to add the following 
 
     <dependency>
         <groupId>io.hypersistence</groupId>
-        <artifactId>hibernate-types-5</artifactId>
+        <artifactId>hypersistence-utils-hibernate-5</artifactId>
         <version>3.0.0</version>
     </dependency>
 
@@ -232,7 +232,7 @@ For more details, check out [this article](https://vladmihalcea.com/how-to-map-j
 * [Why you should use Hibernate Dynamic Update for JSON properties](https://vladmihalcea.com/hibernate-dynamic-update-json-properties/)
 * [How to map Oracle JSON columns using JPA and Hibernate](https://vladmihalcea.com/oracle-json-jpa-hibernate/)
 * [How to map SQL Server JSON columns using JPA and Hibernate](https://vladmihalcea.com/sql-server-json-hibernate/)
-* [How to customize the Jackson ObjectMapper used by Hibernate-Types](https://vladmihalcea.com/hibernate-types-customize-jackson-objectmapper/)
+* [How to customize the Jackson ObjectMapper used by Hibernate-Types](https://vladmihalcea.com/hypersistence-utils-hibernate-customize-jackson-objectmapper/)
 * [How to customize the JSON Serializer used by Hibernate-Types](https://vladmihalcea.com/how-to-customize-the-json-serializer-used-by-hibernate-types/)
 * [How to fix the Hibernate `No Dialect mapping for JDBC type: 1111` issue when mixing JSON types with native SQL queries](https://vladmihalcea.com/hibernate-no-dialect-mapping-for-jdbc-type/)
 * [How to fix the `column is of type jsonb but expression is of type record` or `bytea` issue](https://vladmihalcea.com/jpa-query-setparameter-hibernate/)
