@@ -8,34 +8,26 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>hibernate-types-55</artifactId>
+    <artifactId>hypersistence-utils-hibernate-60</artifactId>
     <version>2.21.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>hibernate-types-55</name>
-    <description>Hibernate ORM 5.5 extra Types</description>
+    <name>hypersistence-utils-hibernate-60</name>
+    <description>Utilities for Spring and Hibernate ORM 6.0 or newer</description>
 
     <dependencies>
 
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>${hibernate.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson-databind.version}</version>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-jaxb-annotations</artifactId>
-            <version>${jackson-module-jaxb-annotation}</version>
+            <artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
+            <version>${jackson-module-jakarta-xmlbind-annotation}</version>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
@@ -59,9 +51,34 @@
 
         <dependency>
             <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-ehcache</artifactId>
+            <artifactId>hibernate-jcache</artifactId>
             <version>${hibernate.version}</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+            <version>${ehcache.version}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.glassfish.jaxb</groupId>
+                    <artifactId>jaxb-runtime</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>${jaxb-api.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>${jakarta-bind.api.version}</version>
         </dependency>
 
         <dependency>
@@ -153,24 +170,6 @@
 
     </dependencies>
 
-    <properties>
-        <jdk.version>8</jdk.version>
-
-        <hibernate.version>5.6.10.Final</hibernate.version>
-
-        <mysql.version>8.0.28</mysql.version>
-        <jackson-databind.version>2.12.6.1</jackson-databind.version>
-        <jackson-module-jaxb-annotation>2.12.6</jackson-module-jaxb-annotation>
-        <guava.version>31.1-jre</guava.version>
-        <moneta.version>1.4.2</moneta.version>
-
-        <hikari.version>4.0.3</hikari.version>
-        <aspectj.version>1.8.7</aspectj.version>
-        <spring.version>5.3.18</spring.version>
-        <spring-data.version>2.6.0</spring-data.version>
-
-    </properties>
-
     <build>
         <plugins>
             <plugin>
@@ -194,5 +193,29 @@
             </plugin>
         </plugins>
     </build>
+
+    <properties>
+        <jdk.version>11</jdk.version>
+        <jdk-test.version>17</jdk-test.version>
+        <maven.compiler.release>${jdk.version}</maven.compiler.release>
+        <maven.compiler.testRelease>${jdk-test.version}</maven.compiler.testRelease>
+
+        <hibernate.version>6.1.6.Final</hibernate.version>
+
+        <mysql.version>8.0.28</mysql.version>
+        <jackson-module-jakarta-xmlbind-annotation>2.13.3</jackson-module-jakarta-xmlbind-annotation>
+        <guava.version>31.1-jre</guava.version>
+        <moneta.version>1.4.2</moneta.version>
+
+        <ehcache.version>3.10.0</ehcache.version>
+        <jaxb-api.version>2.3.0</jaxb-api.version>
+        <jakarta-bind.api.version>3.0.1</jakarta-bind.api.version>
+
+        <hikari.version>4.0.3</hikari.version>
+        <aspectj.version>1.8.7</aspectj.version>
+        <spring.version>6.0.0</spring.version>
+        <spring-data.version>3.0.0</spring-data.version>
+
+    </properties>
 
 </project>

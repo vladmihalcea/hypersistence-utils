@@ -8,12 +8,12 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>hibernate-types-5</artifactId>
+    <artifactId>hypersistence-utils-hibernate-5</artifactId>
     <version>2.21.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>hibernate-types-5</name>
-    <description>Hibernate ORM 5.0 and 5.1 extra Types</description>
+    <name>hypersistence-utils-hibernate-5</name>
+    <description>Utilities for Spring and Hibernate ORM 5.0 to 5.1</description>
 
     <dependencies>
 

@@ -44,22 +44,6 @@ Depending on the Hibernate version you are using, you need to add the following 
         <version>2.21.1</version>
     </dependency>
 
-#### Hibernate 4.3
-
-    <dependency>
-        <groupId>io.hypersistence</groupId>
-        <artifactId>hibernate-types-43</artifactId>
-        <version>2.21.1</version>
-    </dependency>
-
-#### Hibernate 4.2 and 4.1
-
-    <dependency>
-        <groupId>io.hypersistence</groupId>
-        <artifactId>hibernate-types-4</artifactId>
-        <version>2.21.1</version>
-    </dependency>
-
 #### Optional Maven Dependencies
 
 The Hypersistence Utils project defines a list of optional dependencies that you will have to declare explicitly in your project in order to use them.
@@ -104,7 +88,7 @@ If you are using JSON Types, then you might be interested in setting the followi
 </dependency>
 ````
 
-###### Hibernate 5.1, 5.0, 4.3, 4.2, and 4.1
+###### Hibernate 5.1, 5.0
 
 ````xml
 <dependency>
@@ -169,9 +153,9 @@ If you're using Hibernate 6, you can map any JSON column to `Map`, `List`, POJO,
 private Map<String, String> properties = new HashMap<>();
 ````
 
-###### Hibernate 5 and 4
+###### Hibernate 5
 
-If you're using Hibernate 5 or 4, you can either provide the fully-qualified name of the Hibernate Type:
+If you're using Hibernate 5, you can either provide the fully-qualified name of the Hibernate Type:
 
 ````
 @Type(type = "com.vladmihalcea.hibernate.type.json.JsonType")
