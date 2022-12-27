@@ -2,13 +2,26 @@
 [![Maven Central](https://img.shields.io/maven-central/v/io.hypersistence/hypersistence-utils-parent.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.hypersistence%22)
 [![JavaDoc](http://javadoc.io/badge/io.hypersistence/hypersistence-utils-55.svg)](http://www.javadoc.io/doc/io.hypersistence/hypersistence-utils-55)
 
+### Migrating to version 3
+
+The project name was changed from Hibernate Types to Hypersistence Utils because the scope
+of the project is much broader now, offering Spring utilities as well.
+
+For this reason, when migrating from the Hibernate Types 2.x to Hypersistence Utils 3.x,
+you will need to follow these steps:
+
+1. First, you will need to change your Maven or Gradle dependency as illustrated by the [Installation Guide](#installation-guide).
+2. Second, you will need to change the package names from `com.vladmihalcea` to `io.hypersistence.utils`.
+
+That's it!
+
 ### Introduction
 
 The Hypersistence Utils project gives you general-purpose utilities for both Spring and Hibernate. 
 
 The main advantage of this project is that it supports a broad range of Hibernate versions, spanning from **Hibernate ORM 6.1** to **6.0**, **5.6**, **5.5**, **5.4**, **5.3**, **5.2**, **5.1**, and Hibernate **5**.
 
-### Installation
+### [Installation Guide][installation-guide]
 
 Depending on the Hibernate version you are using, you need to add the following dependency:
 
