@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 
 /**
  * @author Philippe Marschall
@@ -46,8 +45,8 @@ public abstract class AbstractBatchSequenceGeneratorTest extends AbstractTest {
 
     @Test
     public void test() {
-
         QueryCountHolder.clear();
+        
         doInJPA(entityManager -> {
             for (int i = 0; i < BATCH_SIZE; i++) {
                 Post post = new Post();

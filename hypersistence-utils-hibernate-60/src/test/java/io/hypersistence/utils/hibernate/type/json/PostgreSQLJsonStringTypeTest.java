@@ -4,6 +4,7 @@ import io.hypersistence.utils.hibernate.type.model.BaseEntity;
 import io.hypersistence.utils.hibernate.type.model.Location;
 import io.hypersistence.utils.hibernate.type.model.Ticket;
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
+import io.hypersistence.utils.jdbc.validator.SQLStatementCountValidator;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
@@ -68,7 +69,7 @@ public class PostgreSQLJsonStringTypeTest extends AbstractPostgreSQLIntegrationT
 
     @Test
     public void testLoad() {
-        QueryCountHolder.clear();
+        SQLStatementCountValidator.reset();
 
         doInJPA(entityManager -> {
             Event event = entityManager.find(Event.class, _event.getId());

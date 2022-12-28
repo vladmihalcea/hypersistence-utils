@@ -2,6 +2,7 @@ package io.hypersistence.utils.hibernate.type.json;
 
 import io.hypersistence.utils.hibernate.type.model.BaseEntity;
 import io.hypersistence.utils.hibernate.util.AbstractMySQLIntegrationTest;
+import io.hypersistence.utils.jdbc.validator.SQLStatementCountValidator;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -58,7 +59,7 @@ public class MySQLJsonTypeSetTest extends AbstractMySQLIntegrationTest {
         doInJPA(entityManager -> {
             User user = entityManager.find(User.class, _user.getId());
 
-            QueryCountHolder.clear();
+            SQLStatementCountValidator.reset();
 
             user.setPhones(new HashSet<>(asList("1592637", "9518473")));
             user.setRoles(EnumSet.of(Role.USER, Role.DEV));
@@ -68,9 +69,8 @@ public class MySQLJsonTypeSetTest extends AbstractMySQLIntegrationTest {
             )));
         });
 
-        QueryCount queryCount = QueryCountHolder.getGrandTotal();
-        assertEquals(1, queryCount.getTotal());
-        assertEquals(1, queryCount.getUpdate());
+        SQLStatementCountValidator.assertTotalCount(1);
+        SQLStatementCountValidator.assertUpdateCount(1);
 
         doInJPA(entityManager -> {
             User user = entityManager.find(User.class, _user.getId());
@@ -86,7 +86,7 @@ public class MySQLJsonTypeSetTest extends AbstractMySQLIntegrationTest {
 
     @Test
     public void testLoad() {
-        QueryCountHolder.clear();
+        SQLStatementCountValidator.reset();
 
         doInJPA(entityManager -> {
             User user = entityManager.find(User.class, _user.getId());
@@ -99,10 +99,9 @@ public class MySQLJsonTypeSetTest extends AbstractMySQLIntegrationTest {
             assertEquals(Integer.valueOf(0), user.getVersion());
         });
 
-        QueryCount queryCount = QueryCountHolder.getGrandTotal();
-        assertEquals(1, queryCount.getTotal());
-        assertEquals(1, queryCount.getSelect());
-        assertEquals(0, queryCount.getUpdate());
+        SQLStatementCountValidator.assertTotalCount(1);
+        SQLStatementCountValidator.assertSelectCount(1);
+        SQLStatementCountValidator.assertUpdateCount(0);
     }
 
     @Entity

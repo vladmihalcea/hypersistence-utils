@@ -4,6 +4,7 @@ import io.hypersistence.utils.hibernate.type.model.BaseEntity;
 import io.hypersistence.utils.hibernate.type.model.Location;
 import io.hypersistence.utils.hibernate.type.model.Ticket;
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
+import io.hypersistence.utils.jdbc.validator.SQLStatementCountValidator;
 import net.ttddyy.dsproxy.QueryCount;
 import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.annotations.Type;
@@ -61,7 +62,7 @@ public class PostgreSQLGenericJsonBinaryTypeTest extends AbstractPostgreSQLInteg
 
     @Test
     public void test() {
-        QueryCountHolder.clear();
+        SQLStatementCountValidator.reset();
 
         doInJPA(entityManager -> {
             Event event = entityManager.find(Event.class, _event.getId());
@@ -73,10 +74,9 @@ public class PostgreSQLGenericJsonBinaryTypeTest extends AbstractPostgreSQLInteg
             assertEquals("London", event.getAlternativeLocations().get(1).getCity());
         });
 
-        QueryCount queryCount = QueryCountHolder.getGrandTotal();
-        assertEquals(1, queryCount.getTotal());
-        assertEquals(1, queryCount.getSelect());
-        assertEquals(0, queryCount.getUpdate());
+        SQLStatementCountValidator.assertTotalCount(1);
+        SQLStatementCountValidator.assertSelectCount(1);
+        SQLStatementCountValidator.assertUpdateCount(0);
     }
 
     @Entity(name = "Event")

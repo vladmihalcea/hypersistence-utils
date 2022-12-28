@@ -5,12 +5,11 @@ import io.hypersistence.utils.hibernate.type.model.BaseEntity;
 import io.hypersistence.utils.hibernate.type.model.Location;
 import io.hypersistence.utils.hibernate.type.model.Ticket;
 import io.hypersistence.utils.hibernate.util.AbstractMySQLIntegrationTest;
+import io.hypersistence.utils.jdbc.validator.SQLStatementCountValidator;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import net.ttddyy.dsproxy.QueryCount;
-import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
 
@@ -77,7 +76,7 @@ public class GenericMySQLJsonTypeTest extends AbstractMySQLIntegrationTest {
 
     @Test
     public void testLoad() {
-        QueryCountHolder.clear();
+        SQLStatementCountValidator.reset();
 
         doInJPA(entityManager -> {
             Event event = entityManager.find(Event.class, _event.getId());
@@ -85,10 +84,9 @@ public class GenericMySQLJsonTypeTest extends AbstractMySQLIntegrationTest {
             assertEquals("Cluj-Napoca", event.getLocation().getCity());
         });
 
-        QueryCount queryCount = QueryCountHolder.getGrandTotal();
-        assertEquals(1, queryCount.getTotal());
-        assertEquals(1, queryCount.getSelect());
-        assertEquals(0, queryCount.getUpdate());
+        SQLStatementCountValidator.assertTotalCount(1);
+        SQLStatementCountValidator.assertSelectCount(1);
+        SQLStatementCountValidator.assertUpdateCount(0);
     }
 
     @Test

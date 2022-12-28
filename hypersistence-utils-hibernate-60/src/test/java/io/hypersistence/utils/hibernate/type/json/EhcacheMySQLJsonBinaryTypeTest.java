@@ -6,12 +6,11 @@ import io.hypersistence.utils.hibernate.type.model.BaseEntity;
 import io.hypersistence.utils.hibernate.type.model.Location;
 import io.hypersistence.utils.hibernate.type.model.Ticket;
 import io.hypersistence.utils.hibernate.util.AbstractMySQLIntegrationTest;
+import io.hypersistence.utils.jdbc.validator.SQLStatementCountValidator;
 import jakarta.persistence.Cacheable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import net.ttddyy.dsproxy.QueryCount;
-import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
@@ -86,13 +85,12 @@ public class EhcacheMySQLJsonBinaryTypeTest extends AbstractMySQLIntegrationTest
     @Test
     public void test() {
         doInJPA(entityManager -> {
-            QueryCountHolder.clear();
+            SQLStatementCountValidator.reset();
 
             Event event = entityManager.find(Event.class, _event.getId());
             assertNotNull(event.getProperties());
 
-            QueryCount queryCount = QueryCountHolder.getGrandTotal();
-            assertEquals(0, queryCount.getTotal());
+            SQLStatementCountValidator.assertTotalCount(0);
 
             List<String> properties = entityManager.createNativeQuery(
                 "select CAST(e.properties AS CHAR(1000)) " +

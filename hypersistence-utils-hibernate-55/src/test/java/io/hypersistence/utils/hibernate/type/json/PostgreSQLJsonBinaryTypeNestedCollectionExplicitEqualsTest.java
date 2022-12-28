@@ -1,8 +1,7 @@
 package io.hypersistence.utils.hibernate.type.json;
 
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
-import net.ttddyy.dsproxy.QueryCount;
-import net.ttddyy.dsproxy.QueryCountHolder;
+import io.hypersistence.utils.jdbc.validator.SQLStatementCountValidator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
@@ -32,7 +31,7 @@ public class PostgreSQLJsonBinaryTypeNestedCollectionExplicitEqualsTest extends 
 
     @Override
     protected void afterInit() {
-        QueryCountHolder.clear();
+        SQLStatementCountValidator.reset();
 
         doInJPA(entityManager -> {
             List<String> attributes = new ArrayList<>();
@@ -50,14 +49,13 @@ public class PostgreSQLJsonBinaryTypeNestedCollectionExplicitEqualsTest extends 
             _post = post;
         });
 
-        QueryCount queryCount = QueryCountHolder.getGrandTotal();
-        assertEquals(1, queryCount.getTotal());
-        assertEquals(1, queryCount.getInsert());
+        SQLStatementCountValidator.assertTotalCount(1);
+        SQLStatementCountValidator.assertInsertCount(1);
     }
 
     @Test
     public void testLoad() {
-        QueryCountHolder.clear();
+        SQLStatementCountValidator.reset();
 
         doInJPA(entityManager -> {
             Post post = entityManager.find(Post.class, _post.getId());
@@ -67,10 +65,9 @@ public class PostgreSQLJsonBinaryTypeNestedCollectionExplicitEqualsTest extends 
             assertTrue(attributes.contains("Hibernate"));
         });
 
-        QueryCount queryCount = QueryCountHolder.getGrandTotal();
-        assertEquals(1, queryCount.getTotal());
-        assertEquals(1, queryCount.getSelect());
-        assertEquals(0, queryCount.getUpdate());
+        SQLStatementCountValidator.assertTotalCount(1);
+        SQLStatementCountValidator.assertSelectCount(1);
+        SQLStatementCountValidator.assertUpdateCount(0);
     }
 
     @TypeDefs({@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)})

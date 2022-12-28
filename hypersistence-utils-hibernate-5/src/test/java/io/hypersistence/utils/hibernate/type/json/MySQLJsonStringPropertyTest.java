@@ -2,7 +2,6 @@ package io.hypersistence.utils.hibernate.type.json;
 
 import io.hypersistence.utils.hibernate.util.AbstractMySQLIntegrationTest;
 import io.hypersistence.utils.hibernate.util.transaction.JPATransactionFunction;
-import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
@@ -57,8 +56,6 @@ public class MySQLJsonStringPropertyTest extends AbstractMySQLIntegrationTest {
                 Book book = (Book) entityManager.unwrap(Session.class)
                     .bySimpleNaturalId(Book.class)
                     .load("978-9730228236");
-
-                QueryCountHolder.clear();
 
                 book.setProperties(
                     "{" +

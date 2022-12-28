@@ -3,7 +3,6 @@ package io.hypersistence.utils.hibernate.type.json.generic;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
-import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
@@ -52,8 +51,6 @@ public class GenericPostgreSQLJsonStringTest extends AbstractPostgreSQLIntegrati
                 .bySimpleNaturalId(Book.class)
                 .load("978-9730228236");
 
-            QueryCountHolder.clear();
-
             book.setProperties(
                 "{" +
                     "   \"title\": \"High-Performance Java Persistence\"," +
@@ -89,8 +86,6 @@ public class GenericPostgreSQLJsonStringTest extends AbstractPostgreSQLIntegrati
                 .bySimpleNaturalId(Book.class)
                 .load("978-9730228236");
 
-            QueryCountHolder.clear();
-
             book.setProperties(null);
         });
 
@@ -105,8 +100,6 @@ public class GenericPostgreSQLJsonStringTest extends AbstractPostgreSQLIntegrati
 
     @Test
     public void testLoad() {
-        QueryCountHolder.clear();
-
         doInJPA(entityManager -> {
             Session session = entityManager.unwrap(Session.class);
             Book book = session

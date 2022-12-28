@@ -1,5 +1,5 @@
 @echo off
 
-mvn -Ptest clean test -pl hibernate-types-%* -am
+mvn -Ptest clean test -pl hypersistence-utils-hibernate-%* -am
 
 goto:eof

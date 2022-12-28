@@ -3,8 +3,7 @@ package io.hypersistence.utils.hibernate.type.json;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import io.hypersistence.utils.hibernate.util.ExceptionUtil;
-import net.ttddyy.dsproxy.QueryCount;
-import net.ttddyy.dsproxy.QueryCountHolder;
+import io.hypersistence.utils.jdbc.validator.SQLStatementCountValidator;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
@@ -53,7 +52,7 @@ public class PostgreSQLJsonStringPropertyTest extends AbstractPostgreSQLIntegrat
                 .bySimpleNaturalId(Book.class)
                 .load("978-9730228236");
 
-            QueryCountHolder.clear();
+            SQLStatementCountValidator.reset();
 
             book.setProperties(
                 "{" +
@@ -66,9 +65,8 @@ public class PostgreSQLJsonStringPropertyTest extends AbstractPostgreSQLIntegrat
             );
         });
 
-        QueryCount queryCount = QueryCountHolder.getGrandTotal();
-        assertEquals(1, queryCount.getTotal());
-        assertEquals(1, queryCount.getUpdate());
+        SQLStatementCountValidator.assertTotalCount(1);
+        SQLStatementCountValidator.assertUpdateCount(1);
 
         doInJPA(entityManager -> {
             JsonNode properties = (JsonNode) entityManager
@@ -94,14 +92,13 @@ public class PostgreSQLJsonStringPropertyTest extends AbstractPostgreSQLIntegrat
                 .bySimpleNaturalId(Book.class)
                 .load("978-9730228236");
 
-            QueryCountHolder.clear();
+            SQLStatementCountValidator.reset();
 
             book.setProperties(null);
         });
 
-        QueryCount queryCount = QueryCountHolder.getGrandTotal();
-        assertEquals(1, queryCount.getTotal());
-        assertEquals(1, queryCount.getUpdate());
+        SQLStatementCountValidator.assertTotalCount(1);
+        SQLStatementCountValidator.assertUpdateCount(1);
 
         doInJPA(entityManager -> {
             Book book = entityManager.unwrap(Session.class)
@@ -114,7 +111,7 @@ public class PostgreSQLJsonStringPropertyTest extends AbstractPostgreSQLIntegrat
 
     @Test
     public void testLoad() {
-        QueryCountHolder.clear();
+        SQLStatementCountValidator.reset();
 
         doInJPA(entityManager -> {
             Session session = entityManager.unwrap(Session.class);
@@ -125,10 +122,9 @@ public class PostgreSQLJsonStringPropertyTest extends AbstractPostgreSQLIntegrat
             assertTrue(book.getProperties().contains("\"price\": 44.99"));
         });
 
-        QueryCount queryCount = QueryCountHolder.getGrandTotal();
-        assertEquals(2, queryCount.getTotal());
-        assertEquals(2, queryCount.getSelect());
-        assertEquals(0, queryCount.getUpdate());
+        SQLStatementCountValidator.assertTotalCount(2);
+        SQLStatementCountValidator.assertSelectCount(2);
+        SQLStatementCountValidator.assertUpdateCount(0);
     }
 
     @Test
@@ -139,7 +135,7 @@ public class PostgreSQLJsonStringPropertyTest extends AbstractPostgreSQLIntegrat
                     .bySimpleNaturalId(Book.class)
                     .load("978-9730228236");
 
-                QueryCountHolder.clear();
+                SQLStatementCountValidator.reset();
 
                 book.setProperties(
                     "{" +

@@ -65,8 +65,6 @@ public class GenericPostgreSQLJsonStringTest extends AbstractPostgreSQLIntegrati
                 .bySimpleNaturalId(Book.class)
                 .load("978-9730228236");
 
-            QueryCountHolder.clear();
-
             book.setProperties(
                 "{" +
                     "   \"title\": \"High-Performance Java Persistence\"," +
@@ -102,8 +100,6 @@ public class GenericPostgreSQLJsonStringTest extends AbstractPostgreSQLIntegrati
                 .bySimpleNaturalId(Book.class)
                 .load("978-9730228236");
 
-            QueryCountHolder.clear();
-
             book.setProperties(null);
         });
 
@@ -118,8 +114,6 @@ public class GenericPostgreSQLJsonStringTest extends AbstractPostgreSQLIntegrati
 
     @Test
     public void testLoad() {
-        QueryCountHolder.clear();
-
         doInJPA(entityManager -> {
             Session session = entityManager.unwrap(Session.class);
             Book book = session

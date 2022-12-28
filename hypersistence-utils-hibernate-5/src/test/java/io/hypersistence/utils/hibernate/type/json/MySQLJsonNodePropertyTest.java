@@ -5,8 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.hypersistence.utils.hibernate.util.AbstractMySQLIntegrationTest;
 import io.hypersistence.utils.hibernate.util.transaction.JPATransactionFunction;
-import net.ttddyy.dsproxy.QueryCount;
-import net.ttddyy.dsproxy.QueryCountHolder;
+import io.hypersistence.utils.jdbc.validator.SQLStatementCountValidator;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
@@ -55,7 +54,7 @@ public class MySQLJsonNodePropertyTest extends AbstractMySQLIntegrationTest {
 
     @Test
     public void test() {
-        QueryCountHolder.clear();
+        SQLStatementCountValidator.reset();
 
         doInJPA(new JPATransactionFunction<Void>() {
 
@@ -70,8 +69,7 @@ public class MySQLJsonNodePropertyTest extends AbstractMySQLIntegrationTest {
             }
         });
 
-        QueryCount queryCount = QueryCountHolder.getGrandTotal();
-        assertEquals(0, queryCount.getUpdate());
+        SQLStatementCountValidator.assertUpdateCount(0);
     }
 
     public static class MyJsonType extends JsonType {

@@ -1,6 +1,7 @@
 package io.hypersistence.utils.hibernate.type.json;
 
 import io.hypersistence.utils.hibernate.util.AbstractMySQLIntegrationTest;
+import io.hypersistence.utils.jdbc.validator.SQLStatementCountValidator;
 import net.ttddyy.dsproxy.QueryCount;
 import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.Session;
@@ -50,7 +51,7 @@ public class MySQLJsonStringPropertyTest extends AbstractMySQLIntegrationTest {
                 .bySimpleNaturalId(Book.class)
                 .load("978-9730228236");
 
-            QueryCountHolder.clear();
+            SQLStatementCountValidator.reset();
 
             book.setProperties(
                 "{" +
@@ -63,11 +64,10 @@ public class MySQLJsonStringPropertyTest extends AbstractMySQLIntegrationTest {
             );
         });
 
-        QueryCount queryCount = QueryCountHolder.getGrandTotal();
-        assertEquals(1, queryCount.getTotal());
-        assertEquals(1, queryCount.getUpdate());
+        SQLStatementCountValidator.assertTotalCount(1);
+        SQLStatementCountValidator.assertUpdateCount(1);
 
-        QueryCountHolder.clear();
+        SQLStatementCountValidator.reset();
 
         doInJPA(entityManager -> {
             Session session = entityManager.unwrap(Session.class);
@@ -78,10 +78,9 @@ public class MySQLJsonStringPropertyTest extends AbstractMySQLIntegrationTest {
             assertTrue(book.getProperties().contains("\"price\": 44.99"));
         });
 
-        queryCount = QueryCountHolder.getGrandTotal();
-        assertEquals(1, queryCount.getTotal());
-        assertEquals(1, queryCount.getSelect());
-        assertEquals(0, queryCount.getUpdate());
+        SQLStatementCountValidator.assertTotalCount(1);
+        SQLStatementCountValidator.assertSelectCount(1);
+        SQLStatementCountValidator.assertUpdateCount(0);
     }
 
     @Test
@@ -91,14 +90,13 @@ public class MySQLJsonStringPropertyTest extends AbstractMySQLIntegrationTest {
                 .bySimpleNaturalId(Book.class)
                 .load("978-9730228236");
 
-            QueryCountHolder.clear();
+            SQLStatementCountValidator.reset();
 
             book.setProperties(null);
         });
 
-        QueryCount queryCount = QueryCountHolder.getGrandTotal();
-        assertEquals(1, queryCount.getTotal());
-        assertEquals(1, queryCount.getUpdate());
+        SQLStatementCountValidator.assertTotalCount(1);
+        SQLStatementCountValidator.assertUpdateCount(1);
 
         doInJPA(entityManager -> {
             Book book = entityManager.unwrap(Session.class)

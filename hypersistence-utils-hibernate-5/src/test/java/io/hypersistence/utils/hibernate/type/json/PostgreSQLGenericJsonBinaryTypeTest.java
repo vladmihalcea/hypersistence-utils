@@ -5,6 +5,7 @@ import io.hypersistence.utils.hibernate.type.model.Location;
 import io.hypersistence.utils.hibernate.type.model.Ticket;
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import io.hypersistence.utils.hibernate.util.transaction.JPATransactionFunction;
+import io.hypersistence.utils.jdbc.validator.SQLStatementCountValidator;
 import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
@@ -51,7 +52,7 @@ public class PostgreSQLGenericJsonBinaryTypeTest extends AbstractPostgreSQLInteg
             }
         });
 
-        QueryCountHolder.clear();
+        SQLStatementCountValidator.reset();
         doInJPA(new JPATransactionFunction<Void>() {
             @Override
             public Void apply(EntityManager entityManager) {

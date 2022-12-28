@@ -315,6 +315,10 @@ The `your.repository.package` is the Java package of your Spring repositories.
 * [`ListResultTransformer` - The best way to use a Hibernate ResultTransformer](https://vladmihalcea.com/hibernate-resulttransformer/)
 * [`MapResultTransformer` - How to return a Map result from a JPA or Hibernate query](https://vladmihalcea.com/jpa-query-map-result/)
 
+##### SQL Statement Count Validator
+
+* [`SQLStatementCountValidator` - How to detect the Hibernate N+1 query problem during testing](https://vladmihalcea.com/how-to-detect-the-n-plus-one-query-problem-during-testing/)
+
 ### Requirements
 
 * Java version supported by the Hibernate ORM version you are using.

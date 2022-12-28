@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import io.hypersistence.utils.hibernate.util.transaction.JPATransactionFunction;
-import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
@@ -14,7 +13,7 @@ import org.junit.Test;
 
 import javax.persistence.*;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Vlad Mihalcea
@@ -61,8 +60,6 @@ public class GenericPostgreSQLJsonStringTest extends AbstractPostgreSQLIntegrati
                 Book book = entityManager.unwrap(Session.class)
                     .bySimpleNaturalId(Book.class)
                     .load("978-9730228236");
-
-                QueryCountHolder.clear();
 
                 book.setProperties(
                     "{" +

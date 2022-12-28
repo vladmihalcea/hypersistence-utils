@@ -90,17 +90,17 @@ public class EhcacheMySQLJsonBinaryTypeTest extends AbstractMySQLIntegrationTest
             @Override
             public Void apply(EntityManager entityManager) {
                 Event event = entityManager.find(Event.class, eventHolder.get().getId());
-            assertNotNull(event.getProperties());
+                assertNotNull(event.getProperties());
 
-            List<String> properties = entityManager.createNativeQuery(
-                "select CAST(e.properties AS CHAR(1000)) " +
-                "from event e " +
-                "where JSON_EXTRACT(e.properties, \"$.price\") > 1 ")
-                .getResultList();
+                List<String> properties = entityManager.createNativeQuery(
+                    "select CAST(e.properties AS CHAR(1000)) " +
+                    "from event e " +
+                    "where JSON_EXTRACT(e.properties, \"$.price\") > 1 ")
+                    .getResultList();
 
-            assertEquals(1, properties.size());
-            JsonNode jsonNode = JacksonUtil.toJsonNode(properties.get(0));
-            assertEquals("High-Performance Java Persistence", jsonNode.get("title").asText());
+                assertEquals(1, properties.size());
+                JsonNode jsonNode = JacksonUtil.toJsonNode(properties.get(0));
+                assertEquals("High-Performance Java Persistence", jsonNode.get("title").asText());
 
                 return null;
             }
