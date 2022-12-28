@@ -557,33 +557,33 @@ Optimize String equality checks in JsonTypeDescriptor.
 
 Migrate hibernate-types-52 to Jackson 2.9.0.
 
-Version 1.2.0 - November 28, 2018
+Version 1.2.0 - November 28, 2017
 ================================================================================
 
 Serialization problem when using JsonNodeBinaryType and Hibernate 2nd-level cache #14
 
 Add support for List, Set, Map to be saved as JSON #11
 
-Version 1.1.2 - November 11, 2018
+Version 1.1.2 - November 11, 2017
 ================================================================================
 
 JacksonUtil#clone should support Lists as well #8
 
 Add an INSTANCE constant to existing Types.
 
-Version 1.1.1 - October 26, 2018
+Version 1.1.1 - October 26, 2017
 ================================================================================
 
 Update JavaDocs to reference documentation.
 
-Version 1.1.0 - October 26, 2018
+Version 1.1.0 - October 26, 2017
 ================================================================================
 
 Add support for PostgreSQL Enum Type.
 
 Use ObjectMapper#findAndRegisterModules() for the default ObjectMapper.
 
-Version 1.0.0 - September 25, 2018
+Version 1.0.0 - September 25, 2017
 ================================================================================
 
 Initial release which adds the JSON, Array, Nullable Character and ImmutableType support.
