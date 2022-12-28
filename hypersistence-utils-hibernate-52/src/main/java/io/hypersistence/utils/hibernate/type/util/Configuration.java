@@ -30,26 +30,54 @@ public class Configuration implements Serializable {
 
     public static final Configuration INSTANCE = new Configuration();
 
-    public static final String PROPERTIES_FILE_PATH = "hibernate-types.properties.path";
-    public static final String PROPERTIES_FILE_NAME = "hibernate-types.properties";
+    @Deprecated
+    public static final String DEPRECATED_PROPERTIES_FILE_PATH = "hibernate-types.properties.path";
+    @Deprecated
+    public static final String DEPRECATED_PROPERTIES_FILE_NAME = "hibernate-types.properties";
+
+    public static final String PROPERTIES_FILE_PATH = "hypersistence-utils.properties.path";
+    public static final String PROPERTIES_FILE_NAME = "hypersistence-utils.properties";
     public static final String APPLICATION_PROPERTIES_FILE_NAME = "application.properties";
 
     /**
      * Each Property has a well-defined key.
      */
     public enum PropertyKey {
-        JACKSON_OBJECT_MAPPER("hibernate.types.jackson.object.mapper"),
-        JSON_SERIALIZER("hibernate.types.json.serializer"),
-        PRINT_BANNER("hibernate.types.print.banner");
+        JACKSON_OBJECT_MAPPER(
+            "hypersistence.utils.jackson.object.mapper",
+            "hibernate.types.jackson.object.mapper"
+        ),
+        JSON_SERIALIZER(
+            "hypersistence.utils.json.serializer",
+            "hibernate.types.json.serializer"
+        ),
+        PRINT_BANNER(
+            "hypersistence.utils.print.banner",
+            "hibernate.types.print.banner"
+        );
 
         private final String key;
+        @Deprecated
+        private final String deprecatedKey;
 
-        PropertyKey(String key) {
+        PropertyKey(String key, String deprecatedKey) {
             this.key = key;
+            this.deprecatedKey = deprecatedKey;
         }
 
-        public String getKey() {
-            return key;
+        public String resolve(Properties properties) {
+            String value = properties.getProperty(key);
+            if(value == null) {
+                value = properties.getProperty(deprecatedKey);
+                if(value != null) {
+                    LOGGER.warn(
+                        "The [{}] configuration property is deprecated. Use [{}] instead.",
+                        deprecatedKey,
+                        key
+                    );
+                }
+            }
+            return value;
         }
     }
 
@@ -107,10 +135,22 @@ public class Configuration implements Serializable {
      * Load {@link Properties} from the resolved {@link InputStream}
      */
     private void load() {
+        String customPropertiesFilePath = System.getProperty(DEPRECATED_PROPERTIES_FILE_PATH);
+        if(customPropertiesFilePath != null) {
+            LOGGER.warn(
+                "The [{}] System property is deprecated. Use [{}] instead.",
+                DEPRECATED_PROPERTIES_FILE_PATH,
+                PROPERTIES_FILE_PATH
+            );
+        } else {
+            customPropertiesFilePath = System.getProperty(PROPERTIES_FILE_PATH);
+        }
+
         String[] propertiesFilePaths = new String[] {
             APPLICATION_PROPERTIES_FILE_NAME,
+            DEPRECATED_PROPERTIES_FILE_NAME,
             PROPERTIES_FILE_NAME,
-            System.getProperty(PROPERTIES_FILE_PATH),
+            customPropertiesFilePath
         };
 
         for (String propertiesFilePath : propertiesFilePaths) {
@@ -120,6 +160,14 @@ public class Configuration implements Serializable {
                     propertiesInputStream = propertiesInputStream(propertiesFilePath);
                     if (propertiesInputStream != null) {
                         properties.load(propertiesInputStream);
+
+                        if(DEPRECATED_PROPERTIES_FILE_NAME.equals(propertiesFilePath)) {
+                            LOGGER.warn(
+                                "The [{}] property file is deprecated. Use [{}] instead.",
+                                DEPRECATED_PROPERTIES_FILE_NAME,
+                                PROPERTIES_FILE_NAME
+                            );
+                        }
                     }
                 } catch (IOException e) {
                     LOGGER.error("Can't load properties", e);
@@ -197,7 +245,7 @@ public class Configuration implements Serializable {
      */
     public Integer integerProperty(PropertyKey propertyKey) {
         Integer value = null;
-        String property = properties.getProperty(propertyKey.getKey());
+        String property = propertyKey.resolve(properties);
         if (property != null) {
             value = Integer.valueOf(property);
         }
@@ -212,7 +260,7 @@ public class Configuration implements Serializable {
      */
     public Long longProperty(PropertyKey propertyKey) {
         Long value = null;
-        String property = properties.getProperty(propertyKey.getKey());
+        String property = propertyKey.resolve(properties);
         if (property != null) {
             value = Long.valueOf(property);
         }
@@ -227,7 +275,7 @@ public class Configuration implements Serializable {
      */
     public Boolean booleanProperty(PropertyKey propertyKey) {
         Boolean value = null;
-        String property = properties.getProperty(propertyKey.getKey());
+        String property = propertyKey.resolve(properties);
         if (property != null) {
             value = Boolean.valueOf(property);
         }
@@ -243,7 +291,7 @@ public class Configuration implements Serializable {
      */
     public <T> Class<T> classProperty(PropertyKey propertyKey) {
         Class<T> clazz = null;
-        String property = properties.getProperty(propertyKey.getKey());
+        String property = propertyKey.resolve(properties);
         if (property != null) {
             try {
                 return ClassLoaderUtils.loadClass(property);
@@ -263,7 +311,7 @@ public class Configuration implements Serializable {
      */
     private <T> T instantiateClass(PropertyKey propertyKey) {
         T object = null;
-        String property = properties.getProperty(propertyKey.getKey());
+        String property = propertyKey.resolve(properties);
         if (property != null) {
             try {
                 Class<T> clazz = ClassLoaderUtils.loadClass(property);
