@@ -54,6 +54,10 @@ public class ObjectMapperWrapper implements Serializable {
         return objectMapper;
     }
 
+    public void setObjectMapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
     public <T> T fromString(String string, Class<T> clazz) {
         try {
             return getObjectMapper().readValue(string, clazz);
