@@ -1,3 +1,10 @@
+Version 3.0.1 - December 28, 2022
+================================================================================
+
+Cannot invoke "JsonSerializer.clone(Object)" because "this.jsonSerializer" is null #538
+
+Deprecate the hibernate-types configurations #535
+
 Version 3.0.0 - December 27, 2022
 ================================================================================
 
