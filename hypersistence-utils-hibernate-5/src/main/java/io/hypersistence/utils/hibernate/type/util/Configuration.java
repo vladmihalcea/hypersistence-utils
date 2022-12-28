@@ -61,18 +61,20 @@ public class Configuration implements Serializable {
 
         Object objectMapperPropertyInstance = instantiateClass(PropertyKey.JACKSON_OBJECT_MAPPER);
 
-        ObjectMapperWrapper objectMapperWrapper = new ObjectMapperWrapper();
+        ObjectMapperWrapper objectMapperWrapper = null;
 
         if (objectMapperPropertyInstance != null) {
             if (objectMapperPropertyInstance instanceof ObjectMapperSupplier) {
                 ObjectMapperSupplier objectMapperSupplier = (ObjectMapperSupplier) objectMapperPropertyInstance;
-                if (objectMapperSupplier != null) {
-                    objectMapperWrapper = new ObjectMapperWrapper(objectMapperSupplier);
-                }
+                objectMapperWrapper = new ObjectMapperWrapper(objectMapperSupplier);
             } else if (objectMapperPropertyInstance instanceof ObjectMapper) {
                 ObjectMapper objectMapper = (ObjectMapper) objectMapperPropertyInstance;
                 objectMapperWrapper = new ObjectMapperWrapper(objectMapper);
             }
+        }
+
+        if(objectMapperWrapper == null) {
+            objectMapperWrapper = new ObjectMapperWrapper();
         }
 
         Object jsonSerializerPropertyInstance = instantiateClass(PropertyKey.JSON_SERIALIZER);
@@ -101,8 +103,7 @@ public class Configuration implements Serializable {
         String[] propertiesFilePaths = new String[] {
             APPLICATION_PROPERTIES_FILE_NAME,
             PROPERTIES_FILE_NAME,
-            System.getProperty(PROPERTIES_FILE_NAME),
-
+            System.getProperty(PROPERTIES_FILE_PATH),
         };
 
         for (String propertiesFilePath : propertiesFilePaths) {

@@ -26,7 +26,7 @@ public class ObjectMapperWrapper implements Serializable {
 
     private ObjectMapperSupplier objectMapperSupplier;
 
-    private JsonSerializer jsonSerializer;
+    private JsonSerializer jsonSerializer = new ObjectMapperJsonSerializer(this);
 
     public ObjectMapperWrapper() {
         this(OBJECT_MAPPER);
@@ -38,7 +38,6 @@ public class ObjectMapperWrapper implements Serializable {
 
     public ObjectMapperWrapper(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
-        this.jsonSerializer = new ObjectMapperJsonSerializer(this);
     }
 
     public void setJsonSerializer(JsonSerializer jsonSerializer) {
