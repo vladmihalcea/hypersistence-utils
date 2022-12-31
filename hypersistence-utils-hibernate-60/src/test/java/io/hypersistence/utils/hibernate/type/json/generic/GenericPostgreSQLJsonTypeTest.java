@@ -5,15 +5,16 @@ import io.hypersistence.utils.hibernate.type.model.BaseEntity;
 import io.hypersistence.utils.hibernate.type.model.Location;
 import io.hypersistence.utils.hibernate.type.model.Ticket;
 import io.hypersistence.utils.hibernate.util.AbstractMySQLIntegrationTest;
+import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import io.hypersistence.utils.jdbc.validator.SQLStatementCountValidator;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import org.hibernate.annotations.Type;
 import org.hibernate.query.NativeQuery;
 import org.junit.Test;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -21,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Vlad Mihalcea
  */
-public class GenericMySQLJsonTypeTest extends AbstractMySQLIntegrationTest {
+public class GenericPostgreSQLJsonTypeTest extends AbstractPostgreSQLIntegrationTest {
 
     @Override
     protected Class<?>[] entities() {
@@ -91,29 +92,6 @@ public class GenericMySQLJsonTypeTest extends AbstractMySQLIntegrationTest {
     }
 
     @Test
-    public void test() {
-        
-        doInJPA(entityManager -> {
-            Event event = entityManager.find(Event.class, _event.getId());
-            assertEquals("Cluj-Napoca", event.getLocation().getCity());
-
-            Participant participant = entityManager.find(Participant.class, _participant.getId());
-            assertEquals("ABC123", participant.getTicket().getRegistrationCode());
-
-            List<String> participants = entityManager.createNativeQuery(
-                "select p.ticket -> \"$.registrationCode\" " +
-                "from participant p " +
-                "where JSON_EXTRACT(p.ticket, \"$.price\") > 1 ")
-            .getResultList();
-
-            event.getLocation().setCity("Constanța");
-            entityManager.flush();
-
-            assertEquals(1, participants.size());
-        });
-    }
-
-    @Test
     public void testBulkUpdate() {
         doInJPA(entityManager -> {
             Location location = new Location();
@@ -124,10 +102,10 @@ public class GenericMySQLJsonTypeTest extends AbstractMySQLIntegrationTest {
                 "update Event " +
                 "set location = :location " +
                 "where id = :id")
-                .setParameter("id", _event.getId())
-                .unwrap(NativeQuery.class)
-                .setParameter("location", location, new JsonType(Location.class))
-                .executeUpdate();
+            .setParameter("id", _event.getId())
+            .unwrap(NativeQuery.class)
+            .setParameter("location", location, new JsonType(Location.class))
+            .executeUpdate();
 
             Event event = entityManager.find(Event.class, _event.getId());
             assertEquals("Sibiu", event.getLocation().getCity());
@@ -138,8 +116,8 @@ public class GenericMySQLJsonTypeTest extends AbstractMySQLIntegrationTest {
     @Table(name = "event")
     public static class Event extends BaseEntity {
 
-        @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonType")
-        @Column(columnDefinition = "json")
+        @Type(JsonType.class)
+        @Column(columnDefinition = "jsonb")
         private Location location;
 
         public Location getLocation() {
@@ -155,8 +133,8 @@ public class GenericMySQLJsonTypeTest extends AbstractMySQLIntegrationTest {
     @Table(name = "participant")
     public static class Participant extends BaseEntity {
 
-        @Type(type = "json")
-        @Column(columnDefinition = "json")
+        @Type(JsonType.class)
+        @Column(columnDefinition = "jsonb")
         private Ticket ticket;
 
         @ManyToOne

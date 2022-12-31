@@ -1,11 +1,13 @@
 package io.hypersistence.utils.hibernate.type.json.generic;
 
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import io.hypersistence.utils.hibernate.type.model.BaseEntity;
 import io.hypersistence.utils.hibernate.type.model.Location;
 import io.hypersistence.utils.hibernate.type.model.Ticket;
 import io.hypersistence.utils.hibernate.util.AbstractMySQLIntegrationTest;
 import io.hypersistence.utils.jdbc.validator.SQLStatementCountValidator;
 import org.hibernate.annotations.Type;
+import org.hibernate.query.NativeQuery;
 import org.junit.Test;
 
 import javax.persistence.Column;
@@ -69,6 +71,27 @@ public class GenericMySQLJsonTypeTest extends AbstractMySQLIntegrationTest {
         SQLStatementCountValidator.assertTotalCount(1);
         SQLStatementCountValidator.assertSelectCount(1);
         SQLStatementCountValidator.assertUpdateCount(0);
+    }
+
+    @Test
+    public void testBulkUpdate() {
+        doInJPA(entityManager -> {
+            Location location = new Location();
+            location.setCountry("Romania");
+            location.setCity("Sibiu");
+
+            entityManager.createNativeQuery(
+                "update Event " +
+                "set location = :location " +
+                "where id = :id")
+                .setParameter("id", _event.getId())
+                .unwrap(NativeQuery.class)
+                .setParameter("location", location, new JsonType(Location.class))
+                .executeUpdate();
+
+            Event event = entityManager.find(Event.class, _event.getId());
+            assertEquals("Sibiu", event.getLocation().getCity());
+        });
     }
 
     @Entity(name = "Event")

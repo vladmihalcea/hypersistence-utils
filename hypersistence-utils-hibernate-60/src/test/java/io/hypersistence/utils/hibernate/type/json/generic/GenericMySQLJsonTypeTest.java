@@ -11,6 +11,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.Type;
+import org.hibernate.query.NativeQuery;
+import org.hibernate.query.Query;
+import org.hibernate.query.TypedParameterValue;
 import org.junit.Test;
 
 import java.util.List;
@@ -91,7 +94,6 @@ public class GenericMySQLJsonTypeTest extends AbstractMySQLIntegrationTest {
 
     @Test
     public void test() {
-        
         doInJPA(entityManager -> {
             Event event = entityManager.find(Event.class, _event.getId());
             assertEquals("Cluj-Napoca", event.getLocation().getCity());
@@ -110,6 +112,46 @@ public class GenericMySQLJsonTypeTest extends AbstractMySQLIntegrationTest {
             entityManager.flush();
 
             assertEquals(1, participants.size());
+        });
+    }
+
+    @Test
+    public void testBulkUpdateNativeQuery() {
+        doInJPA(entityManager -> {
+            Location location = new Location();
+            location.setCountry("Romania");
+            location.setCity("Sibiu");
+
+            entityManager.createNativeQuery(
+                "update event " +
+                "set location = :location " +
+                "where id = :id")
+            .setParameter("id", _event.getId())
+            .unwrap(NativeQuery.class)
+            .setParameter("location", location, new JsonType(Location.class))
+            .executeUpdate();
+
+            Event event = entityManager.find(Event.class, _event.getId());
+            assertEquals("Sibiu", event.getLocation().getCity());
+        });
+
+        doInJPA(entityManager -> {
+            Location location = new Location();
+            location.setCountry("Romania");
+            location.setCity("Sibiu");
+
+            entityManager.createNativeQuery(
+                "update event " +
+                "set location = :location " +
+                "where id = :id")
+            .setParameter("id", _event.getId())
+            .unwrap(NativeQuery.class)
+            .setParameter("location", new TypedParameterValue<>(new JsonType(Location.class), location))
+            .setParameter("location", location)
+            .executeUpdate();
+
+            Event event = entityManager.find(Event.class, _event.getId());
+            assertEquals("Sibiu", event.getLocation().getCity());
         });
     }
 
