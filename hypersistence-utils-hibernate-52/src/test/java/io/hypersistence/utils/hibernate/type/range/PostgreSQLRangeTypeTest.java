@@ -111,6 +111,65 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
         });
     }
 
+    @Test
+    public void testInfiniteClosedRange() {
+        int upperLimit = 10;
+
+        Restriction _restriction = doInJPA(entityManager -> {
+            Restriction restriction = new Restriction();
+            restriction.setRangeInt(Range.infiniteClosed(upperLimit));
+            entityManager.persist(restriction);
+
+            return restriction;
+        });
+
+        doInJPA(entityManager -> {
+            Restriction restriction = entityManager.find(Restriction.class, _restriction.getId());
+
+            assertEquals(upperLimit, restriction.getRangeInt().upper().intValue());
+        });
+    }
+
+    @Test
+    public void testClosedInfiniteRange() {
+        int lowerLimit = 5;
+
+        Restriction _restriction = doInJPA(entityManager -> {
+            Restriction restriction = new Restriction();
+            restriction.setRangeInt(Range.closedInfinite(lowerLimit));
+            entityManager.persist(restriction);
+
+            return restriction;
+        });
+
+        doInJPA(entityManager -> {
+            Restriction restriction = entityManager.find(Restriction.class, _restriction.getId());
+
+            assertEquals(lowerLimit, restriction.getRangeInt().lower().intValue());
+        });
+    }
+
+    @Test
+    public void testIntegerRange() {
+        int lowerLimit = 5;
+        int upperLimit = 10;
+
+        Restriction _restriction = doInJPA(entityManager -> {
+            Restriction restriction = new Restriction();
+            restriction.setRangeInt(Range.integerRange("[" + lowerLimit + "," + upperLimit + "]"));
+            entityManager.persist(restriction);
+
+            return restriction;
+        });
+
+        doInJPA(entityManager -> {
+            Restriction restriction = entityManager.find(Restriction.class, _restriction.getId());
+
+            assertEquals(lowerLimit, restriction.getRangeInt().lower().intValue());
+            assertEquals(upperLimit, restriction.getRangeInt().upper().intValue());
+        });
+    }
+
     @Entity(name = "AgeRestriction")
     @Table(name = "age_restriction")
     @TypeDef(name = "range", typeClass = PostgreSQLRangeType.class, defaultForType = Range.class)
