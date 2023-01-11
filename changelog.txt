@@ -1,3 +1,12 @@
+Version 3.1.0 - January 11, 2023
+================================================================================
+
+Add support for SQLStatementCountValidator #539
+
+Add support for Retry annotation #537
+
+Add the setObjectMapper method to the ObjectMapperWrapper class #304
+
 Version 3.0.1 - December 28, 2022
 ================================================================================
 
