@@ -220,7 +220,7 @@
         <jakarta-bind.api.version>3.0.1</jakarta-bind.api.version>
 
         <hikari.version>4.0.3</hikari.version>
-        <aspectj.version>1.8.7</aspectj.version>
+        <aspectj.version>1.9.19</aspectj.version>
         <spring.version>6.0.0</spring.version>
         <spring-data.version>3.0.0</spring-data.version>
 
