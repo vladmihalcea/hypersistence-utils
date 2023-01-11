@@ -298,7 +298,8 @@
                             <additionalOptions>
                                 <additionalOption>-Xdoclint:none</additionalOption>
                             </additionalOptions>
-                            <failOnError>false</failOnError>
+                            <source>8</source>
+                            <!--<failOnError>false</failOnError>-->
                         </configuration>
                     </plugin>
                     <plugin>
