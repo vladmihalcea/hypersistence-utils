@@ -241,11 +241,6 @@
 				<artifactId>maven-project-info-reports-plugin</artifactId>
 				<version>${maven-project-info-reports-plugin.version}</version>
 			</plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>${maven-javadoc-plugin.version}</version>
-            </plugin>
         </plugins>
 
     </build>
@@ -299,7 +294,6 @@
                                 <additionalOption>-Xdoclint:none</additionalOption>
                             </additionalOptions>
                             <source>8</source>
-                            <!--<failOnError>false</failOnError>-->
                         </configuration>
                     </plugin>
                     <plugin>
@@ -402,7 +396,7 @@
         <coveralls-maven-plugin.version>3.1.0</coveralls-maven-plugin.version>
         <jacoco-maven-plugin.version>0.7.5.201505241946</jacoco-maven-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-        <maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
+        <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <maven-release-plugin.version>2.5.2</maven-release-plugin.version>
         <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
