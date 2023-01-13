@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * @author Vlad Mihalcea
@@ -106,6 +107,30 @@ public class SpringDataJPABaseTest {
 
             return null;
         });
+    }
+
+    @Test
+    public void testGetReferenceById() {
+        transactionTemplate.execute((TransactionCallback<Void>) transactionStatus -> {
+            postRepository.persist(
+                new Post()
+                    .setId(1L)
+                    .setTitle("High-Performance Java Persistence")
+                    .setSlug("high-performance-java-persistence")
+            );
+            return null;
+        });
+
+        Post post = transactionTemplate.execute(transactionStatus -> postRepository.getReferenceById(1L));
+
+        assertEquals(Long.valueOf(1L), post.getId());
+
+        try {
+            post.getTitle();
+
+            fail("Should have thrown LazyInitializationException");
+        } catch (Exception expected) {
+        }
     }
 }
 

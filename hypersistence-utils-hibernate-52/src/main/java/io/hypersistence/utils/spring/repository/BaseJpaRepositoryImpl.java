@@ -1,11 +1,13 @@
 package io.hypersistence.utils.spring.repository;
 
+import io.hypersistence.utils.hibernate.util.ReflectionUtils;
 import org.hibernate.Session;
 import org.hibernate.engine.jdbc.spi.JdbcServices;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.internal.AbstractSharedSessionContract;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.util.Assert;
 
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
@@ -18,6 +20,8 @@ import java.util.function.Supplier;
  */
 public class BaseJpaRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID>
     implements BaseJpaRepository<T, ID> {
+
+    private static final String ID_MUST_NOT_BE_NULL = ReflectionUtils.getFieldValueOrNull(SimpleJpaRepository.class, "ID_MUST_NOT_BE_NULL");
 
     private final EntityManager entityManager;
     private final JpaEntityInformation entityInformation;
@@ -125,7 +129,8 @@ public class BaseJpaRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID>
 
     @Override
     public T getReferenceById(ID id) {
-        return getById(id);
+        Assert.notNull(id, ID_MUST_NOT_BE_NULL);
+        return entityManager.getReference(getDomainClass(), id);
     }
 
     @Override
