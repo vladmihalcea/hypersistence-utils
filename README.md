@@ -283,13 +283,35 @@ For more details, check out [this article](https://vladmihalcea.com/how-to-map-j
 * [The Spring Data `findAll` Anti-Pattern](https://vladmihalcea.com/spring-data-findall-anti-pattern/)
 * [The Spring `@Retry` annotation to automaticlaly retry on failure](https://vladmihalcea.com/optimistic-locking-retry-with-jpa/)
 
-When using the `HibernateRepository`, make sure that you include the `io.hypersistence.utils.spring.repository` package
-in your `@EnableJpaRepositories` configuration:
+###### BaseJpaRepository
+
+The `BaseJpaRepository` is a much better alternative to the default Spring Data `JpaRepository` because it does not provide a `findAll` method or a `save` method that makes no sense in JPA terminology.
+
+To use the `BaseJpaRepository` utility, make sure that you provide the `repositoryBaseClass` attribute in the `@EnableJpaRepositories` configuration to reference the `BaseJpaRepositoryImpl` from the Hypersistence Utils project:
 
 ````java
 @Configuration
 @EnableJpaRepositories(
-    basePackages = {
+    value = "your.repository.package",
+    repositoryBaseClass = BaseJpaRepositoryImpl.class
+)
+public class JpaConfiguration {
+    ...
+}
+````
+
+The `your.repository.package` is the Java package of your Spring repositories.
+
+###### HibernateRepository
+
+While the `BaseJpaRepository` is to be preferred, in case you need to use the default `JpaRepository`, then you can at least extend the `HibernateRepository` as well to deprecate the methods that may cause problems.
+
+To use the `HibernateRepository`, make sure that you include the `io.hypersistence.utils.spring.repository` package in your `@EnableJpaRepositories` configuration:
+
+````java
+@Configuration
+@EnableJpaRepositories(
+    value = {
         "io.hypersistence.utils.spring.repository",
         "your.repository.package",
         ...
