@@ -5,8 +5,6 @@ import io.hypersistence.utils.hibernate.type.json.internal.JacksonUtil;
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import io.hypersistence.utils.jdbc.validator.SQLStatementCountValidator;
 import jakarta.persistence.*;
-import net.ttddyy.dsproxy.QueryCount;
-import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
@@ -47,7 +45,7 @@ public class PostgreSQLJsonNodeTypeTest extends AbstractPostgreSQLIntegrationTes
         properties.put("hibernate.type_contributors",
             (TypeContributorList) () -> Collections.singletonList(
                 (typeContributions, serviceRegistry) -> {
-                    typeContributions.contributeType(new JsonStringType(JsonNode.class));
+                    typeContributions.contributeType(new JsonBinaryType(JsonNode.class));
                 }
             ));
     }
@@ -115,6 +113,28 @@ public class PostgreSQLJsonNodeTypeTest extends AbstractPostgreSQLIntegrationTes
         SQLStatementCountValidator.assertTotalCount(1);
         SQLStatementCountValidator.assertSelectCount(1);
         SQLStatementCountValidator.assertUpdateCount(0);
+    }
+
+    @Test
+    public void testQueryByJsonNode() {
+        Book book = doInJPA(entityManager -> {
+            Session session = entityManager.unwrap(Session.class);
+            return session
+                .bySimpleNaturalId(Book.class)
+                .load("978-9730228236");
+        });
+
+        Book _book = doInJPA(entityManager -> {
+            return entityManager
+                .createQuery(
+                    "select b " +
+                    "from Book b " +
+                    "where b.properties = :properties", Book.class)
+                .setParameter("properties", book.getProperties())
+                .getSingleResult();
+        });
+
+        assertEquals(book.getIsbn(), _book.getIsbn());
     }
 
     @Test

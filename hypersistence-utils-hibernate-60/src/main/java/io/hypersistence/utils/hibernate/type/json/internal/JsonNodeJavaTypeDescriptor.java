@@ -24,22 +24,7 @@ public class JsonNodeJavaTypeDescriptor
     }
 
     public JsonNodeJavaTypeDescriptor(final ObjectMapperWrapper objectMapperWrapper) {
-        super(JsonNode.class, new MutableMutabilityPlan<JsonNode>() {
-            @Override
-            public Serializable disassemble(JsonNode value, SharedSessionContract session) {
-                return JacksonUtil.toString(value);
-            }
-
-            @Override
-            public JsonNode assemble(Serializable cached, SharedSessionContract session) {
-                return JacksonUtil.toJsonNode((String) cached);
-            }
-
-            @Override
-            protected JsonNode deepCopyNotNull(JsonNode value) {
-                return objectMapperWrapper.clone(value);
-            }
-        });
+        super(JsonNode.class, JsonBinaryMutabilityPlan.INSTANCE);
         this.objectMapperWrapper = objectMapperWrapper;
     }
 
@@ -88,4 +73,23 @@ public class JsonNodeJavaTypeDescriptor
         return fromString(value.toString());
     }
 
+    static class JsonBinaryMutabilityPlan extends MutableMutabilityPlan<JsonNode> {
+
+        static final JsonBinaryMutabilityPlan INSTANCE = new JsonBinaryMutabilityPlan();
+
+        @Override
+        public Serializable disassemble(JsonNode value, SharedSessionContract session) {
+            return value != null ? value.deepCopy() : null;
+        }
+
+        @Override
+        public JsonNode assemble(Serializable cached, SharedSessionContract session) {
+            return (JsonNode) cached;
+        }
+
+        @Override
+        protected JsonNode deepCopyNotNull(JsonNode value) {
+            return value.deepCopy();
+        }
+    }
 }

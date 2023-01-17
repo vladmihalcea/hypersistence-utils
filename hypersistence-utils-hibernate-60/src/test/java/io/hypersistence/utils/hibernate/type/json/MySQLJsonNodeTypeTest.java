@@ -2,20 +2,22 @@ package io.hypersistence.utils.hibernate.type.json;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.hypersistence.utils.hibernate.type.json.internal.JacksonUtil;
+import io.hypersistence.utils.hibernate.util.AbstractMySQLIntegrationTest;
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import io.hypersistence.utils.jdbc.validator.SQLStatementCountValidator;
-import net.ttddyy.dsproxy.QueryCount;
-import net.ttddyy.dsproxy.QueryCountHolder;
+import jakarta.persistence.*;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.Type;
 import org.hibernate.boot.spi.MetadataBuilderContributor;
 import org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl;
+import org.hibernate.jpa.boot.spi.TypeContributorList;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.transform.AliasToBeanResultTransformer;
+import org.junit.Ignore;
 import org.junit.Test;
 
-import javax.persistence.*;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -24,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Vlad Mihalcea
  */
-public class PostgreSQLJsonNodeTypeTest extends AbstractPostgreSQLIntegrationTest {
+public class MySQLJsonNodeTypeTest extends AbstractMySQLIntegrationTest {
 
     @Override
     protected Class<?>[] entities() {
@@ -41,6 +43,12 @@ public class PostgreSQLJsonNodeTypeTest extends AbstractPostgreSQLIntegrationTes
                 JsonNodeBinaryType.INSTANCE
             )
         );
+        properties.put("hibernate.type_contributors",
+            (TypeContributorList) () -> Collections.singletonList(
+                (typeContributions, serviceRegistry) -> {
+                    typeContributions.contributeType(new JsonStringType(JsonNode.class));
+                }
+            ));
     }
 
     @Override
@@ -86,7 +94,6 @@ public class PostgreSQLJsonNodeTypeTest extends AbstractPostgreSQLIntegrationTes
                 )
             );
         });
-
         SQLStatementCountValidator.assertTotalCount(1);
         SQLStatementCountValidator.assertUpdateCount(1);
     }
@@ -118,54 +125,16 @@ public class PostgreSQLJsonNodeTypeTest extends AbstractPostgreSQLIntegrationTes
                 .load("978-9730228236");
         });
 
-        Book _book = doInJPA(entityManager -> {
-            return entityManager
-                .createQuery(
-                    "select b " +
-                    "from Book b " +
-                    "where b.properties = :properties", Book.class)
+        doInJPA(entityManager -> {
+            String isbn = (String) entityManager
+                .createNativeQuery(
+                    "select isbn " +
+                    "from book " +
+                    "where properties = CAST(:properties AS JSON)")
                 .setParameter("properties", book.getProperties())
                 .getSingleResult();
-        });
 
-        assertEquals(book.getIsbn(), _book.getIsbn());
-    }
-
-    @Test
-    public void testNativeQueryResultTransformer() {
-        doInJPA(entityManager -> {
-            List<BookDTO> books = entityManager.createNativeQuery(
-                "SELECT " +
-                "       b.id as id, " +
-                "       b.properties as properties " +
-                "FROM book b")
-            .unwrap(NativeQuery.class)
-            .setResultTransformer(new AliasToBeanResultTransformer(BookDTO.class))
-            .getResultList();
-
-            assertEquals(1, books.size());
-            BookDTO book = books.get(0);
-
-            assertEquals(expectedPrice(), book.getProperties().get("price").asText());
-        });
-    }
-
-    @Test
-    public void testNativeQueryResultMapping() {
-        doInJPA(entityManager -> {
-            List<BookDTO> books = entityManager.createNativeQuery(
-                "SELECT " +
-                "       b.id as id, " +
-                "       b.properties as properties " +
-                "FROM book b")
-            .unwrap(NativeQuery.class)
-            .setResultSetMapping("BookDTO")
-            .getResultList();
-
-            assertEquals(1, books.size());
-            BookDTO book = books.get(0);
-
-            assertEquals(expectedPrice(), book.getProperties().get("price").asText());
+            assertEquals(book.getIsbn(), isbn);
         });
     }
 
@@ -210,7 +179,6 @@ public class PostgreSQLJsonNodeTypeTest extends AbstractPostgreSQLIntegrationTes
 
     @Entity(name = "Book")
     @Table(name = "book")
-    @TypeDef(typeClass = JsonBinaryType.class, defaultForType = JsonNode.class)
     @SqlResultSetMapping(
         name = "BookDTO",
         classes = {
@@ -232,7 +200,8 @@ public class PostgreSQLJsonNodeTypeTest extends AbstractPostgreSQLIntegrationTes
         @NaturalId
         private String isbn;
 
-        @Column(columnDefinition = "jsonb")
+        @Type(JsonNodeStringType.class)
+        @Column(columnDefinition = "json")
         private JsonNode properties;
 
         public String getIsbn() {
