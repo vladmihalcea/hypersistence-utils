@@ -13,7 +13,7 @@ import java.util.Optional;
  * suffers from.
  * <p>
  * For more details about how to use it, check out <a href=
- * "https://vladmihalcea.com/spring-data-base-repository/">this article</a>.
+ * "https://vladmihalcea.com/basejparepository-hypersistence-utils/">this article</a> on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
  *
  * @author Vlad Mihalcea
  * @version 2.21.0
