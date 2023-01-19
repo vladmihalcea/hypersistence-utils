@@ -132,6 +132,24 @@ public final class ReflectionUtils {
     }
 
     /**
+     * Get the the value of {@link Field} with the given name belonging to the provided Java {@link Class} or {@code null}
+     * if no {@link Field} was found.
+     *
+     * @param targetClass the provided Java {@link Class} the field belongs to
+     * @param fieldName   the {@link Field} name
+     * @return the value of {@link Field} matching the given name or {@code null}
+     */
+    public static <T> T getFieldValueOrNull(Class targetClass, String fieldName) {
+        try {
+            Field field = getField(targetClass, fieldName);
+            T returnValue = (T) field.get(null);
+            return returnValue;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
      * Get the value of the field matching the given name and belonging to target {@link Object}.
      *
      * @param target    target {@link Object} whose field we are retrieving the value from

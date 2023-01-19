@@ -3,13 +3,13 @@
     <parent>
         <groupId>io.hypersistence</groupId>
         <artifactId>hypersistence-utils-parent</artifactId>
-        <version>3.0.2-SNAPSHOT</version>
+        <version>3.1.2-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>hypersistence-utils-hibernate-55</artifactId>
-    <version>3.0.2-SNAPSHOT</version>
+    <version>3.1.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>hypersistence-utils-hibernate-55</name>
@@ -164,7 +164,7 @@
     <properties>
         <jdk.version>8</jdk.version>
 
-        <hibernate.version>5.6.10.Final</hibernate.version>
+        <hibernate.version>5.6.14.Final</hibernate.version>
 
         <mysql.version>8.0.28</mysql.version>
         <jackson-databind.version>2.12.6.1</jackson-databind.version>
@@ -173,10 +173,9 @@
         <moneta.version>1.4.2</moneta.version>
 
         <hikari.version>4.0.3</hikari.version>
-        <aspectj.version>1.8.7</aspectj.version>
+        <aspectj.version>1.9.19</aspectj.version>
         <spring.version>5.3.18</spring.version>
-        <spring-data.version>2.6.0</spring-data.version>
-
+        <spring-data.version>2.7.6</spring-data.version>
     </properties>
 
     <build>

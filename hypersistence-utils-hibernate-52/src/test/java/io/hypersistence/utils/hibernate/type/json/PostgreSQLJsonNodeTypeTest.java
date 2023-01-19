@@ -108,6 +108,28 @@ public class PostgreSQLJsonNodeTypeTest extends AbstractPostgreSQLIntegrationTes
     }
 
     @Test
+    public void testQueryByJsonNode() {
+        Book book = doInJPA(entityManager -> {
+            Session session = entityManager.unwrap(Session.class);
+            return session
+                .bySimpleNaturalId(Book.class)
+                .load("978-9730228236");
+        });
+
+        Book _book = doInJPA(entityManager -> {
+            return entityManager
+                .createQuery(
+                    "select b " +
+                    "from Book b " +
+                    "where b.properties = :properties", Book.class)
+                .setParameter("properties", book.getProperties())
+                .getSingleResult();
+        });
+
+        assertEquals(book.getIsbn(), _book.getIsbn());
+    }
+
+    @Test
     public void testNativeQueryResultTransformer() {
         doInJPA(entityManager -> {
             List<BookDTO> books = entityManager.createNativeQuery(

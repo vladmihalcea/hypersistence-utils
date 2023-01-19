@@ -31,7 +31,7 @@ Depending on the Hibernate version you are using, you need to add the following 
     <dependency>
         <groupId>io.hypersistence</groupId>
         <artifactId>hypersistence-utils-hibernate-60</artifactId>
-        <version>3.0.1</version>
+        <version>3.1.1</version>
     </dependency>
 
 #### Hibernate 5.6 and 5.5
@@ -39,7 +39,7 @@ Depending on the Hibernate version you are using, you need to add the following 
     <dependency>
         <groupId>io.hypersistence</groupId>
         <artifactId>hypersistence-utils-hibernate-55</artifactId>
-        <version>3.0.1</version>
+        <version>3.1.1</version>
     </dependency>
 
 #### Hibernate 5.4, 5.3 and 5.2
@@ -47,7 +47,7 @@ Depending on the Hibernate version you are using, you need to add the following 
     <dependency>
         <groupId>io.hypersistence</groupId>
         <artifactId>hypersistence-utils-hibernate-52</artifactId>
-        <version>3.0.1</version>
+        <version>3.1.1</version>
     </dependency>
 
 #### Hibernate 5.1 and 5.0
@@ -55,7 +55,7 @@ Depending on the Hibernate version you are using, you need to add the following 
     <dependency>
         <groupId>io.hypersistence</groupId>
         <artifactId>hypersistence-utils-hibernate-5</artifactId>
-        <version>3.0.1</version>
+        <version>3.1.1</version>
     </dependency>
 
 #### Optional Maven Dependencies
@@ -246,8 +246,8 @@ For more details, check out [this article](https://vladmihalcea.com/how-to-map-j
 * [Why you should use Hibernate Dynamic Update for JSON properties](https://vladmihalcea.com/hibernate-dynamic-update-json-properties/)
 * [How to map Oracle JSON columns using JPA and Hibernate](https://vladmihalcea.com/oracle-json-jpa-hibernate/)
 * [How to map SQL Server JSON columns using JPA and Hibernate](https://vladmihalcea.com/sql-server-json-hibernate/)
-* [How to customize the Jackson ObjectMapper used by Hibernate-Types](https://vladmihalcea.com/hypersistence-utils-hibernate-customize-jackson-objectmapper/)
-* [How to customize the JSON Serializer used by Hibernate-Types](https://vladmihalcea.com/how-to-customize-the-json-serializer-used-by-hibernate-types/)
+* [How to customize the Jackson ObjectMapper used by Hypersistence Utils](https://vladmihalcea.com/hibernate-types-customize-jackson-objectmapper/)
+* [How to customize the JSON Serializer used by Hypersistence Utils](https://vladmihalcea.com/how-to-customize-the-json-serializer-used-by-hibernate-types/)
 * [How to fix the Hibernate `No Dialect mapping for JDBC type: 1111` issue when mixing JSON types with native SQL queries](https://vladmihalcea.com/hibernate-no-dialect-mapping-for-jdbc-type/)
 * [How to fix the `column is of type jsonb but expression is of type record` or `bytea` issue](https://vladmihalcea.com/jpa-query-setparameter-hibernate/)
 
@@ -277,18 +277,42 @@ For more details, check out [this article](https://vladmihalcea.com/how-to-map-j
 
 #### Utilities
 
-##### Spring Repository
+##### Spring
 
-* [`HibernateRepository` - The best Spring Data JpaRepository](https://vladmihalcea.com/best-spring-data-jparepository/)
+* [The awesome BaseJpaRepository](https://vladmihalcea.com/basejparepository-hypersistence-utils/)
+* [The best Spring Data JpaRepository](https://vladmihalcea.com/best-spring-data-jparepository/)
 * [The Spring Data `findAll` Anti-Pattern](https://vladmihalcea.com/spring-data-findall-anti-pattern/)
+* [The Spring `@Retry` annotation to automaticlaly retry on failure](https://vladmihalcea.com/optimistic-locking-retry-with-jpa/)
 
-When using the `HibernateRepository`, make sure that you include the `io.hypersistence.utils.spring.repository` package
-in your `@EnableJpaRepositories` configuration:
+###### BaseJpaRepository
+
+The `BaseJpaRepository` is a much better alternative to the default Spring Data `JpaRepository` because it does not provide a `findAll` method or a `save` method that makes no sense in JPA terminology.
+
+To use the `BaseJpaRepository` utility, make sure that you provide the `repositoryBaseClass` attribute in the `@EnableJpaRepositories` configuration to reference the `BaseJpaRepositoryImpl` from the Hypersistence Utils project:
 
 ````java
 @Configuration
 @EnableJpaRepositories(
-    basePackages = {
+    value = "your.repository.package",
+    repositoryBaseClass = BaseJpaRepositoryImpl.class
+)
+public class JpaConfiguration {
+    ...
+}
+````
+
+The `your.repository.package` is the Java package of your Spring repositories.
+
+###### HibernateRepository
+
+While the `BaseJpaRepository` is to be preferred, in case you need to use the default `JpaRepository`, then you can at least extend the `HibernateRepository` as well to deprecate the methods that may cause problems.
+
+To use the `HibernateRepository`, make sure that you include the `io.hypersistence.utils.spring.repository` package in your `@EnableJpaRepositories` configuration:
+
+````java
+@Configuration
+@EnableJpaRepositories(
+    value = {
         "io.hypersistence.utils.spring.repository",
         "your.repository.package",
         ...
