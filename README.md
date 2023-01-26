@@ -86,7 +86,7 @@ If you are using JSON Types, then you might be interested in setting the followi
 </dependency>
 ````
 
-###### Hibernate 5,5, 5.5, 5.4, 5.3, and 5.2
+###### Hibernate 5.6, 5.5, 5.4, 5.3, and 5.2
 
 ````xml
 <dependency>
