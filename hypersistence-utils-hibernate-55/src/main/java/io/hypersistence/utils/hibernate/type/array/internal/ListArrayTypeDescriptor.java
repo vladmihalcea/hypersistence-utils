@@ -151,6 +151,10 @@ public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Object>
     }
 
     private Collection newPropertyCollectionInstance() {
+        // propertyClass is not defind for the projection
+        if(propertyClass == null){
+            return new ArrayList();
+        }
         if(List.class.isAssignableFrom(propertyClass)) {
             return new ArrayList();
         } else if(Set.class.isAssignableFrom(propertyClass)) {
