@@ -151,7 +151,7 @@ public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Object>
         }
 
     private Collection newPropertyCollectionInstance() {
-        if(List.class.isAssignableFrom(propertyClass)) {
+        if (propertyClass == null || List.class.isAssignableFrom(propertyClass)) {
             return new ArrayList();
         } else if(Set.class.isAssignableFrom(propertyClass)) {
             return new LinkedHashSet();
