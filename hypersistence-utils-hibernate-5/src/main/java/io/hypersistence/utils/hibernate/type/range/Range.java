@@ -491,7 +491,7 @@ public final class Range<T extends Comparable<? super T>> implements Serializabl
     }
 
     /**
-     * Determines whether this range contains this point or not.
+     * Determines whether this range contains this range or not.
      * <p>
      * For example:
      * <pre>{@code
