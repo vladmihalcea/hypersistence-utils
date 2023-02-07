@@ -49,7 +49,7 @@ public class RetryAspect {
             );
         }
 
-        LOGGER.debug("Proceed with {} retries on {}", times, Arrays.toString(retryOn));
+        LOGGER.trace("Proceed with {} retries on {}", times, Arrays.toString(retryOn));
 
         return tryProceeding(pjp, times, retryOn);
     }
@@ -60,7 +60,7 @@ public class RetryAspect {
             return proceed(pjp);
         } catch (Throwable throwable) {
             if (isRetryThrowable(throwable, retryOn) && times-- > 0) {
-                LOGGER.debug(
+                LOGGER.info(
                     "Retryable failure was caught, {} remaining retr{} on {}",
                     times,
                     (times == 1 ? "y" : "ies"),
