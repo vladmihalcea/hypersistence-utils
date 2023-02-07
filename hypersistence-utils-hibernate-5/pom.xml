@@ -67,7 +67,7 @@
     <properties>
         <hibernate.version>5.1.17.Final</hibernate.version>
 
-        <jackson-databind.version>2.12.6.1</jackson-databind.version>
+        <jackson-databind.version>2.12.7.1</jackson-databind.version>
         <guava.version>12.0</guava.version>
     </properties>
 
