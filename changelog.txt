@@ -1,3 +1,10 @@
+Version 3.1.2 - February 07, 2023
+================================================================================
+
+Change the RetryAspect log levels #570
+
+JsonNodeBinaryType cannot bind a JsonNode parameter value #554
+
 Version 3.1.1 - January 13, 2023
 ================================================================================
 
