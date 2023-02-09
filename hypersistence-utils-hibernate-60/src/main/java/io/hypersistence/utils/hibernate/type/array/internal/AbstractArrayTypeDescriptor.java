@@ -55,7 +55,7 @@ public abstract class AbstractArrayTypeDescriptor<T>
     }
 
     @Override
-    public boolean areEqual(Object one, Object another) {
+    public boolean areEqual(T one, T another) {
         if (one == another) {
             return true;
         }
@@ -66,7 +66,7 @@ public abstract class AbstractArrayTypeDescriptor<T>
     }
 
     @Override
-    public String toString(Object value) {
+    public String toString(T value) {
         return Arrays.deepToString(ArrayUtil.wrapArray(value));
     }
 
