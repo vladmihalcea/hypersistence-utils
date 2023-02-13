@@ -162,8 +162,6 @@
     </dependencies>
 
     <properties>
-        <jdk.version>8</jdk.version>
-
         <hibernate.version>5.4.33.Final</hibernate.version>
         <!--<hibernate.version>5.2.18.Final</hibernate.version>-->
 

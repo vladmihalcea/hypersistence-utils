@@ -683,4 +683,23 @@ public final class ReflectionUtils {
     private static IllegalArgumentException handleException(InstantiationException e) {
         return new IllegalArgumentException(e);
     }
+
+    /**
+     * Get the Member type.
+     * @param member member
+     * @return member type
+     */
+    public static Class getMemberType(Member member) {
+        if(Field.class.isInstance(member)) {
+            return ((Field) member).getType();
+        } else if(Method.class.isInstance(member)) {
+            return ((Method) member).getReturnType();
+        }
+        throw new UnsupportedOperationException(
+            String.format(
+                "The [%s] member is neither a Field or a Method!",
+                member
+            )
+        );
+    }
 }

@@ -408,7 +408,9 @@ Or, if you prefer reading books, you are going to love my [High-Performance Java
 
 #### Contributing Guide
 
-The project uses [Maven Toolchains](https://maven.apache.org/guides/mini/guide-using-toolchains.html) as different modules are compiled and tested using different Java versions. Hypersistence Utils 6 requires Java 17 while the other modules are compiled with either Java 1.8 or 1.6.
+The project uses [Maven Toolchains](https://maven.apache.org/guides/mini/guide-using-toolchains.html) as different modules are compiled and tested using different Java versions. 
+
+Hypersistence Utils 6 requires Java 11 while the other modules are compiled with Java 8.
 
 To see how to configure Maven Toolchains, check out [this article](https://vladmihalcea.com/maven-and-java-multi-version-modules/).
 

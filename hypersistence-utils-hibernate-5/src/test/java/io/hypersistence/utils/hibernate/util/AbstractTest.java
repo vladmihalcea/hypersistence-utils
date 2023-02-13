@@ -43,8 +43,6 @@ import javax.persistence.spi.PersistenceUnitInfo;
 import javax.sql.DataSource;
 import java.io.Closeable;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -467,12 +465,7 @@ public abstract class AbstractTest {
         try {
             session = sessionFactory().openSession();
             txn = session.beginTransaction();
-            session.doWork(new Work() {
-                @Override
-                public void execute(Connection connection) throws SQLException {
-                    result.set(callable.execute(connection));
-                }
-            });
+            session.doWork(connection -> result.set(callable.execute(connection)));
             if (txn.getStatus() == TransactionStatus.ACTIVE) {
                 txn.commit();
             } else {
@@ -505,12 +498,7 @@ public abstract class AbstractTest {
         try {
             session = sessionFactory().openSession();
             txn = session.beginTransaction();
-            session.doWork(new Work() {
-                @Override
-                public void execute(Connection connection) throws SQLException {
-                    callable.execute(connection);
-                }
-            });
+            session.doWork(connection -> callable.execute(connection));
             if (txn.getStatus() == TransactionStatus.ACTIVE) {
                 txn.commit();
             } else {
