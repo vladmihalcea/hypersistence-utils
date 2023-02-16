@@ -1,6 +1,5 @@
 package io.hypersistence.utils.hibernate.type.array.internal;
 
-import io.hypersistence.utils.hibernate.type.array.ListArrayType;
 import org.hibernate.HibernateException;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.tool.schema.extract.spi.ColumnTypeInformation;
@@ -101,12 +100,12 @@ public abstract class AbstractArrayTypeDescriptor<T>
 
     @Override
     public JavaType getElementJavaType() {
-        return null;
+        return this;
     }
 
     @Override
     public BasicType<?> resolveType(TypeConfiguration typeConfiguration, Dialect dialect, BasicType elementType, ColumnTypeInformation columnTypeInformation) {
-        return null;
+        return typeConfiguration.standardBasicTypeForJavaType(arrayObjectClass);
     }
 
     protected String getSqlArrayType() {
