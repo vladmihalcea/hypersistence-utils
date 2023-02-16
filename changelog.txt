@@ -1,3 +1,14 @@
+Version 3.2.0 - February 16, 2023
+================================================================================
+
+The Range Javadoc mentions Point instead of Range documentation #579
+
+Change signature of toString and areEqual methods in AbstractArrayTypeDescriptor to match those of its superclass enhancement #569
+
+ListArrayTypeDescriptor doesn't support Spring JPA Projections #562
+
+Add support for TSID enhancement #526
+
 Version 3.1.2 - February 07, 2023
 ================================================================================
 
