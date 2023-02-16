@@ -77,8 +77,8 @@
         <!-- Required dependencies -->
         <dependency>
             <groupId>io.hypersistence</groupId>
-            <artifactId>tsid</artifactId>
-            <version>${tsid.version}</version>
+            <artifactId>hypersistence-tsid</artifactId>
+            <version>${hypersistence-tsid.version}</version>
         </dependency>
 
         <dependency>
@@ -410,7 +410,7 @@
         <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
         <maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
 
-        <tsid.version>1.1.0</tsid.version>
+        <hypersistence-tsid.version>2.0.0</hypersistence-tsid.version>
         <slf4j.version>1.7.25</slf4j.version>
         <logback.version>1.2.3</logback.version>
 
