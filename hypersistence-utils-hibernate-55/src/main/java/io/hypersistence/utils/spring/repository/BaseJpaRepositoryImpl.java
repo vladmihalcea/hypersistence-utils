@@ -10,6 +10,7 @@ import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.internal.AbstractSharedSessionContract;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
@@ -33,17 +34,20 @@ public class BaseJpaRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID>
         this.entityManager = entityManager;
     }
 
+    @Transactional
     public <S extends T> S persist(S entity) {
         entityManager.persist(entity);
         return entity;
     }
 
+    @Transactional
     public <S extends T> S persistAndFlush(S entity) {
         persist(entity);
         entityManager.flush();
         return entity;
     }
 
+    @Transactional
     public <S extends T> List<S> persistAll(Iterable<S> entities) {
         List<S> result = new ArrayList<>();
         for(S entity : entities) {
@@ -52,6 +56,7 @@ public class BaseJpaRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID>
         return result;
     }
 
+    @Transactional
     public <S extends T> List<S> peristAllAndFlush(Iterable<S> entities) {
         return executeBatch(() -> {
             List<S> result = new ArrayList<>();
@@ -62,12 +67,15 @@ public class BaseJpaRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID>
             return result;
         });
     }
-
+    
+    @Transactional
     public <S extends T> S merge(S entity) {
         return entityManager.merge(entity);
     }
 
+    
     @Override
+    @Transactional
     public <S extends T> S mergeAndFlush(S entity) {
         S result = merge(entity);
         entityManager.flush();
@@ -75,6 +83,7 @@ public class BaseJpaRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID>
     }
 
     @Override
+    @Transactional
     public <S extends T> List<S> mergeAll(Iterable<S> entities) {
         List<S> result = new ArrayList<>();
         for(S entity : entities) {
@@ -84,6 +93,7 @@ public class BaseJpaRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID>
     }
 
     @Override
+    @Transactional
     public <S extends T> List<S> mergeAllAndFlush(Iterable<S> entities) {
         return executeBatch(() -> {
             List<S> result = new ArrayList<>();
@@ -95,12 +105,14 @@ public class BaseJpaRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID>
         });
     }
 
+    @Transactional
     public <S extends T> S update(S entity) {
         session().update(entity);
         return entity;
     }
 
     @Override
+    @Transactional
     public <S extends T> S updateAndFlush(S entity) {
         update(entity);
         entityManager.flush();
@@ -108,6 +120,7 @@ public class BaseJpaRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID>
     }
 
     @Override
+    @Transactional
     public <S extends T> List<S> updateAll(Iterable<S> entities) {
         List<S> result = new ArrayList<>();
         for(S entity : entities) {
@@ -117,6 +130,7 @@ public class BaseJpaRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID>
     }
 
     @Override
+    @Transactional
     public <S extends T> List<S> updateAllAndFlush(Iterable<S> entities) {
         return executeBatch(() -> {
             List<S> result = new ArrayList<>();
