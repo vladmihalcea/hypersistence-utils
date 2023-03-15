@@ -9,17 +9,16 @@ import org.hibernate.annotations.TypeDefs;
 import org.junit.Test;
 
 import javax.persistence.*;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 
 
 public class PostgreSQLJsonBinaryTypeJacksonPropertyInclusionNonEmptyTest extends AbstractPostgreSQLIntegrationTest {
     @Override
     protected Class<?>[] entities() {
         return new Class[]{
-            MyEntity.class,
+                MyEntity.class,
         };
     }
 
@@ -39,11 +38,8 @@ public class PostgreSQLJsonBinaryTypeJacksonPropertyInclusionNonEmptyTest extend
         SQLStatementCountValidator.reset();
 
         doInJPA(entityManager -> {
-            Inside inside = new Inside();
-            inside.setAttribute("JPA");
             MyEntity entity = new MyEntity();
-            entity.addInside(inside);
-
+            entity.addAttr("JPA");
             entityManager.persist(entity);
 
             _myEntity = entity;
@@ -59,7 +55,19 @@ public class PostgreSQLJsonBinaryTypeJacksonPropertyInclusionNonEmptyTest extend
 
         doInJPA(entityManager -> {
             MyEntity myEntity = entityManager.find(MyEntity.class, _myEntity.getId());
-            myEntity.clearInside();
+            myEntity.addAttr("Hibernate");
+            entityManager.createQuery("select id from MyEntity where flag=false").getSingleResult();
+        });
+
+        SQLStatementCountValidator.assertTotalCount(3);
+        SQLStatementCountValidator.assertSelectCount(2);
+        SQLStatementCountValidator.assertUpdateCount(1);
+
+        SQLStatementCountValidator.reset();
+
+        doInJPA(entityManager -> {
+            MyEntity myEntity = entityManager.find(MyEntity.class, _myEntity.getId());
+            myEntity.clearAttr();
             entityManager.createQuery("select id from MyEntity where flag=false").getSingleResult();
         });
 
@@ -76,12 +84,12 @@ public class PostgreSQLJsonBinaryTypeJacksonPropertyInclusionNonEmptyTest extend
         @Id
         private Long id;
 
-        @Type(type = "jsonb")
-        @Column(columnDefinition = "jsonb")
-        private Outside outside;
-
         @Column
         private boolean flag;
+
+        @Type(type = "jsonb")
+        @Column(columnDefinition = "jsonb")
+        private Post post;
 
         public Long getId() {
             return id;
@@ -91,78 +99,56 @@ public class PostgreSQLJsonBinaryTypeJacksonPropertyInclusionNonEmptyTest extend
             this.id = id;
         }
 
-        public Outside getOutside() {
-            return outside;
+        public Post getPost() {
+            return post;
         }
 
-        public void addInside(Inside inside) {
-            if (outside == null) {
-                outside = new Outside();
+        public void addAttr(String attr) {
+            if (post == null) {
+                post = new Post();
             }
-            outside.addInside(inside);
+            post.addAttr(attr);
         }
 
-        public void clearInside() {
-           outside.clearInside();
+        public void clearAttr() {
+            if (post != null) {
+                post.clearAttr();
+            }
         }
     }
 
-    public static class Outside {
-        private Map<Long, Inside> insides;
+    public static class Post {
+        private List<String> attributes;
 
-        public Map<Long, Inside> getInsides() {
-            return insides;
+        public void addAttr(String attr) {
+            if (attributes == null) {
+                attributes = new ArrayList<>();
+            }
+            attributes.add(attr);
         }
 
-        public void addInside(Inside inside) {
-            if (insides == null) {
-                insides = new LinkedHashMap<>();
+        public void clearAttr() {
+            if (attributes != null) {
+                attributes.clear();
             }
-            insides.put(new Random().nextLong(), inside);
         }
 
-        public void clearInside() {
-            if (insides != null) {
-                insides.clear();
-            }
+        public List<String> getAttributes() {
+            return attributes;
         }
 
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            Outside outside = (Outside) o;
-            return Objects.equals(insides, outside.insides);
+            Post outside = (Post) o;
+            return Objects.equals(attributes, outside.attributes);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(insides);
+            return Objects.hash(attributes);
         }
     }
 
-    public static class Inside {
-       private String attribute;
-
-        public String getAttribute() {
-            return attribute;
-        }
-
-        public void setAttribute(String attribute) {
-            this.attribute = attribute;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Inside inside = (Inside) o;
-            return Objects.equals(attribute, inside.attribute);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(attribute);
-        }
-    }
 }
