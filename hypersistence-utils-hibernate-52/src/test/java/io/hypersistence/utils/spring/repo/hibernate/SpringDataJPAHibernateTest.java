@@ -56,7 +56,7 @@ public class SpringDataJPAHibernateTest {
                     .setSlug("hypersistence-optimizer")
             );
 
-            postRepository.peristAllAndFlush(
+            postRepository.persistAllAndFlush(
                 LongStream.range(3, 1000)
                     .mapToObj(i -> new Post()
                         .setId(i)
