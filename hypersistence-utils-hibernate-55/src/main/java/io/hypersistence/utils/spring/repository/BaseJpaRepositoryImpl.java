@@ -52,7 +52,7 @@ public class BaseJpaRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID>
         return result;
     }
 
-    public <S extends T> List<S> peristAllAndFlush(Iterable<S> entities) {
+    public <S extends T> List<S> persistAllAndFlush(Iterable<S> entities) {
         return executeBatch(() -> {
             List<S> result = new ArrayList<>();
             for(S entity : entities) {

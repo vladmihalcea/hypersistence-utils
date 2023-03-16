@@ -97,7 +97,7 @@ public interface HibernateRepository<T> {
      * @param <S>    entity type
      * @return entities
      */
-    <S extends T> List<S> peristAllAndFlush(Iterable<S> entities);
+    <S extends T> List<S> persistAllAndFlush(Iterable<S> entities);
 
     /**
      * The persist method allows you to pass the provided entity to the {@code merge} method of the
