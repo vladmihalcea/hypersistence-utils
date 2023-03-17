@@ -379,7 +379,7 @@ public final class Range<T extends Comparable<? super T>> implements Serializabl
         };
     }
 
-    private boolean isBounded() {
+    public boolean isBounded() {
         return !hasMask(LOWER_INFINITE) && !hasMask(UPPER_INFINITE);
     }
 
@@ -524,12 +524,12 @@ public final class Range<T extends Comparable<? super T>> implements Serializabl
         return isBoundedOpen() && hasEqualBounds();
     }
 
-    private boolean hasEqualBounds() {
+    public boolean hasEqualBounds() {
         return lower == null && upper == null
             || lower != null && upper != null && lower.compareTo(upper) == 0;
     }
 
-    private boolean isBoundedOpen() {
+    public boolean isBoundedOpen() {
         return isBounded() && !isLowerBoundClosed() && !isUpperBoundClosed();
     }
 
