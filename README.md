@@ -20,11 +20,19 @@ That's it!
 
 The Hypersistence Utils project gives you general-purpose utilities for both Spring and Hibernate. 
 
-The main advantage of this project is that it supports a broad range of Hibernate versions, spanning from **Hibernate ORM 6.1** to **6.0**, **5.6**, **5.5**, **5.4**, **5.3**, **5.2**, **5.1**, and Hibernate **5**.
+The main advantage of this project is that it supports a broad range of Hibernate versions, spanning from **Hibernate ORM 6.2** to **6.1**, **6.0**, **5.6**, **5.5**, **5.4**, **5.3**, **5.2**, **5.1**, and Hibernate **5**.
 
 ### Installation Guide
 
 Depending on the Hibernate version you are using, you need to add the following dependency:
+
+#### Hibernate 6.2
+
+    <dependency>
+        <groupId>io.hypersistence</groupId>
+        <artifactId>hypersistence-utils-hibernate-62</artifactId>
+        <version>3.2.0</version>
+    </dependency>
 
 #### Hibernate 6.1 and 6.0
 
@@ -76,7 +84,7 @@ More, the dependency version is extremely important because, from time to time, 
 
 If you are using JSON Types, then you might be interested in setting the following dependencies based on your Hibernate version:
 
-###### Hibernate 6.1 and 6.0
+###### Hibernate 6.2, 6.1 and 6.0
 
 ````xml
 <dependency>

@@ -1,0 +1,23 @@
+<configuration>
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${console.log.level}</level>
+        </filter>
+        <encoder>
+            <Pattern>%-5p [%t]: %c{1} - %m%n</Pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <logger name="Hibernate Types" level="debug"/>
+    <logger name="org.hibernate.engine.jdbc.spi.SqlExceptionHelper" level="error"/>
+
+    <!--<logger name="org.hibernate.SQL" level="trace"/>
+     <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="trace"/>-->
+
+    <root>
+        <appender-ref ref="console"/>
+    </root>
+
+
+</configuration>
