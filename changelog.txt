@@ -1,13 +1,26 @@
+Version 3.3.0 - February 26, 2023
+================================================================================
+
+Add support for PostgreSQL ltree column type #543
+
+Starting app fails if Jackson is not present on the classpath #559
+
+Add @Transactional annotation to BaseJpaRepository methods #584
+
+Rename peristAllAndFlush to persistAllAndFlush HibernateRepository #593
+
+Add support for Hibernate 6.2 #597
+
 Version 3.2.0 - February 16, 2023
 ================================================================================
 
 The Range Javadoc mentions Point instead of Range documentation #579
 
-Change signature of toString and areEqual methods in AbstractArrayTypeDescriptor to match those of its superclass enhancement #569
+Change signature of toString and areEqual methods in AbstractArrayTypeDescriptor to match those of its superclass #569
 
 ListArrayTypeDescriptor doesn't support Spring JPA Projections #562
 
-Add support for TSID enhancement #526
+Add support for TSID #526
 
 Version 3.1.2 - February 07, 2023
 ================================================================================
