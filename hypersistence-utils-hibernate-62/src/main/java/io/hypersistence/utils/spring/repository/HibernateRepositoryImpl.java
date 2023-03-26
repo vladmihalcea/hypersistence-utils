@@ -65,7 +65,7 @@ public class HibernateRepositoryImpl<T> implements HibernateRepository<T> {
         return result;
     }
 
-    public <S extends T> List<S> peristAllAndFlush(Iterable<S> entities) {
+    public <S extends T> List<S> persistAllAndFlush(Iterable<S> entities) {
         return executeBatch(() -> {
             List<S> result = new ArrayList<>();
             for(S entity : entities) {
