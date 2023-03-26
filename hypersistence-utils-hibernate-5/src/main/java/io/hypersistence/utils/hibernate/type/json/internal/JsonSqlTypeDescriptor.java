@@ -2,7 +2,10 @@ package io.hypersistence.utils.hibernate.type.json.internal;
 
 import io.hypersistence.utils.hibernate.type.util.ParameterTypeUtils;
 import io.hypersistence.utils.hibernate.util.StringUtils;
-import org.hibernate.dialect.*;
+import org.hibernate.dialect.Dialect;
+import org.hibernate.dialect.H2Dialect;
+import org.hibernate.dialect.Oracle8iDialect;
+import org.hibernate.dialect.PostgreSQL81Dialect;
 import org.hibernate.engine.jdbc.dialect.internal.StandardDialectResolver;
 import org.hibernate.engine.jdbc.dialect.spi.DatabaseMetaDataDialectResolutionInfoAdapter;
 import org.hibernate.type.descriptor.ValueBinder;

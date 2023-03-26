@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.hypersistence.utils.hibernate.type.AbstractHibernateType;
 import io.hypersistence.utils.hibernate.type.json.internal.JsonBinarySqlTypeDescriptor;
 import io.hypersistence.utils.hibernate.type.json.internal.JsonTypeDescriptor;
-import io.hypersistence.utils.hibernate.type.util.Configuration;
+import io.hypersistence.utils.hibernate.type.util.JsonConfiguration;
 import io.hypersistence.utils.hibernate.type.util.ObjectMapperWrapper;
 import org.hibernate.usertype.DynamicParameterizedType;
 
@@ -35,18 +35,18 @@ public class JsonBinaryType
     public JsonBinaryType() {
         super(
             JsonBinarySqlTypeDescriptor.INSTANCE,
-            new JsonTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper())
+            new JsonTypeDescriptor(JsonConfiguration.INSTANCE.getObjectMapperWrapper())
         );
     }
 
     public JsonBinaryType(Type javaType) {
         super(
             JsonBinarySqlTypeDescriptor.INSTANCE,
-            new JsonTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper(), javaType)
+            new JsonTypeDescriptor(JsonConfiguration.INSTANCE.getObjectMapperWrapper(), javaType)
         );
     }
 
-    public JsonBinaryType(Configuration configuration) {
+    public JsonBinaryType(JsonConfiguration configuration) {
         super(
             JsonBinarySqlTypeDescriptor.INSTANCE,
             new JsonTypeDescriptor(configuration.getObjectMapperWrapper()),

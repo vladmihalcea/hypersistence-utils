@@ -5,6 +5,7 @@ import io.hypersistence.utils.hibernate.type.MutableDynamicParameterizedType;
 import io.hypersistence.utils.hibernate.type.json.internal.JsonJavaTypeDescriptor;
 import io.hypersistence.utils.hibernate.type.json.internal.JsonJdbcTypeDescriptor;
 import io.hypersistence.utils.hibernate.type.util.Configuration;
+import io.hypersistence.utils.hibernate.type.util.JsonConfiguration;
 import io.hypersistence.utils.hibernate.type.util.ObjectMapperWrapper;
 
 import java.lang.reflect.Type;
@@ -57,7 +58,7 @@ public class JsonType extends MutableDynamicParameterizedType<Object, JsonJdbcTy
         super(
             Object.class,
             new JsonJdbcTypeDescriptor(),
-            new JsonJavaTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper())
+            new JsonJavaTypeDescriptor(JsonConfiguration.INSTANCE.getObjectMapperWrapper())
         );
     }
 
@@ -65,11 +66,11 @@ public class JsonType extends MutableDynamicParameterizedType<Object, JsonJdbcTy
         super(
             Object.class,
             new JsonJdbcTypeDescriptor(),
-            new JsonJavaTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper(), javaType)
+            new JsonJavaTypeDescriptor(JsonConfiguration.INSTANCE.getObjectMapperWrapper(), javaType)
         );
     }
 
-    public JsonType(Configuration configuration) {
+    public JsonType(JsonConfiguration configuration) {
         super(
             Object.class,
             new JsonJdbcTypeDescriptor(configuration.getProperties()),
@@ -79,7 +80,7 @@ public class JsonType extends MutableDynamicParameterizedType<Object, JsonJdbcTy
     }
 
     public JsonType(org.hibernate.type.spi.TypeBootstrapContext typeBootstrapContext) {
-        this(new Configuration(typeBootstrapContext.getConfigurationSettings()));
+        this(new JsonConfiguration(typeBootstrapContext.getConfigurationSettings()));
     }
 
     public JsonType(ObjectMapper objectMapper) {

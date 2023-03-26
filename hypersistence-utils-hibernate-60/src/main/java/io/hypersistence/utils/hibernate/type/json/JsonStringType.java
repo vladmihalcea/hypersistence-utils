@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.hypersistence.utils.hibernate.type.MutableDynamicParameterizedType;
 import io.hypersistence.utils.hibernate.type.json.internal.JsonJavaTypeDescriptor;
 import io.hypersistence.utils.hibernate.type.json.internal.JsonStringJdbcTypeDescriptor;
-import io.hypersistence.utils.hibernate.type.util.Configuration;
+import io.hypersistence.utils.hibernate.type.util.JsonConfiguration;
 import io.hypersistence.utils.hibernate.type.util.ObjectMapperWrapper;
 
 import java.lang.reflect.Type;
@@ -40,7 +40,7 @@ public class JsonStringType extends MutableDynamicParameterizedType<Object, Json
         super(
             Object.class,
             JsonStringJdbcTypeDescriptor.INSTANCE,
-            new JsonJavaTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper())
+            new JsonJavaTypeDescriptor(JsonConfiguration.INSTANCE.getObjectMapperWrapper())
         );
     }
 
@@ -48,11 +48,11 @@ public class JsonStringType extends MutableDynamicParameterizedType<Object, Json
         super(
             Object.class,
             JsonStringJdbcTypeDescriptor.INSTANCE,
-            new JsonJavaTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper(), javaType)
+            new JsonJavaTypeDescriptor(JsonConfiguration.INSTANCE.getObjectMapperWrapper(), javaType)
         );
     }
 
-    public JsonStringType(Configuration configuration) {
+    public JsonStringType(JsonConfiguration configuration) {
         super(
             Object.class,
             JsonStringJdbcTypeDescriptor.INSTANCE,
@@ -61,7 +61,7 @@ public class JsonStringType extends MutableDynamicParameterizedType<Object, Json
     }
 
     public JsonStringType(org.hibernate.type.spi.TypeBootstrapContext typeBootstrapContext) {
-        this(new Configuration(typeBootstrapContext.getConfigurationSettings()));
+        this(new JsonConfiguration(typeBootstrapContext.getConfigurationSettings()));
     }
 
     public JsonStringType(ObjectMapper objectMapper) {

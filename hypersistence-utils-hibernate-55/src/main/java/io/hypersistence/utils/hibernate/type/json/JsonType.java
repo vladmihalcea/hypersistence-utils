@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.hypersistence.utils.hibernate.type.AbstractHibernateType;
 import io.hypersistence.utils.hibernate.type.json.internal.JsonSqlTypeDescriptor;
 import io.hypersistence.utils.hibernate.type.json.internal.JsonTypeDescriptor;
-import io.hypersistence.utils.hibernate.type.util.Configuration;
+import io.hypersistence.utils.hibernate.type.util.JsonConfiguration;
 import io.hypersistence.utils.hibernate.type.util.ObjectMapperWrapper;
 import org.hibernate.type.descriptor.sql.SqlTypeDescriptor;
 import org.hibernate.usertype.DynamicParameterizedType;
@@ -62,18 +62,18 @@ public class JsonType
     public JsonType() {
         super(
             new JsonSqlTypeDescriptor(),
-            new JsonTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper())
+            new JsonTypeDescriptor(JsonConfiguration.INSTANCE.getObjectMapperWrapper())
         );
     }
 
     public JsonType(Type javaType) {
         super(
             new JsonSqlTypeDescriptor(),
-            new JsonTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper(), javaType)
+            new JsonTypeDescriptor(JsonConfiguration.INSTANCE.getObjectMapperWrapper(), javaType)
         );
     }
 
-    public JsonType(Configuration configuration) {
+    public JsonType(JsonConfiguration configuration) {
         super(
             new JsonSqlTypeDescriptor(configuration.getProperties()),
             new JsonTypeDescriptor(configuration.getObjectMapperWrapper()),
@@ -82,7 +82,7 @@ public class JsonType
     }
 
     public JsonType(org.hibernate.type.spi.TypeBootstrapContext typeBootstrapContext) {
-        this(new Configuration(typeBootstrapContext.getConfigurationSettings()));
+        this(new JsonConfiguration(typeBootstrapContext.getConfigurationSettings()));
     }
 
     public JsonType(ObjectMapper objectMapper) {

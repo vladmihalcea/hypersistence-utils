@@ -6,6 +6,7 @@ import io.hypersistence.utils.hibernate.type.MutableDynamicParameterizedType;
 import io.hypersistence.utils.hibernate.type.json.internal.JsonNodeJavaTypeDescriptor;
 import io.hypersistence.utils.hibernate.type.json.internal.JsonStringJdbcTypeDescriptor;
 import io.hypersistence.utils.hibernate.type.util.Configuration;
+import io.hypersistence.utils.hibernate.type.util.JsonConfiguration;
 import io.hypersistence.utils.hibernate.type.util.ObjectMapperWrapper;
 
 /**
@@ -32,11 +33,11 @@ public class JsonNodeStringType extends MutableDynamicParameterizedType<JsonNode
         super(
             JsonNode.class,
             JsonStringJdbcTypeDescriptor.INSTANCE,
-            new JsonNodeJavaTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper())
+            new JsonNodeJavaTypeDescriptor(JsonConfiguration.INSTANCE.getObjectMapperWrapper())
         );
     }
 
-    public JsonNodeStringType(Configuration configuration) {
+    public JsonNodeStringType(JsonConfiguration configuration) {
         super(
             JsonNode.class,
             JsonStringJdbcTypeDescriptor.INSTANCE,
@@ -45,7 +46,7 @@ public class JsonNodeStringType extends MutableDynamicParameterizedType<JsonNode
     }
 
     public JsonNodeStringType(org.hibernate.type.spi.TypeBootstrapContext typeBootstrapContext) {
-        this(new Configuration(typeBootstrapContext.getConfigurationSettings()));
+        this(new JsonConfiguration(typeBootstrapContext.getConfigurationSettings()));
     }
 
     public JsonNodeStringType(ObjectMapper objectMapper) {

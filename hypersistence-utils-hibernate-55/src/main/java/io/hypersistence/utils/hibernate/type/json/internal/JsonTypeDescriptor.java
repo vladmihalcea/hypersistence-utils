@@ -1,7 +1,7 @@
 package io.hypersistence.utils.hibernate.type.json.internal;
 
-import io.hypersistence.utils.hibernate.util.LogUtils;
 import io.hypersistence.utils.hibernate.type.util.ObjectMapperWrapper;
+import io.hypersistence.utils.hibernate.util.LogUtils;
 import io.hypersistence.utils.hibernate.util.ReflectionUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.annotations.common.reflection.XProperty;

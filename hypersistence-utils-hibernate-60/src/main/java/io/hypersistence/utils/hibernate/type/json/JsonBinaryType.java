@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.hypersistence.utils.hibernate.type.MutableDynamicParameterizedType;
 import io.hypersistence.utils.hibernate.type.json.internal.JsonBinaryJdbcTypeDescriptor;
 import io.hypersistence.utils.hibernate.type.json.internal.JsonJavaTypeDescriptor;
-import io.hypersistence.utils.hibernate.type.util.Configuration;
+import io.hypersistence.utils.hibernate.type.util.JsonConfiguration;
 import io.hypersistence.utils.hibernate.type.util.ObjectMapperWrapper;
 
 import java.lang.reflect.Type;
@@ -33,7 +33,7 @@ public class JsonBinaryType extends MutableDynamicParameterizedType<Object, Json
         super(
             Object.class,
             JsonBinaryJdbcTypeDescriptor.INSTANCE,
-            new JsonJavaTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper())
+            new JsonJavaTypeDescriptor(JsonConfiguration.INSTANCE.getObjectMapperWrapper())
         );
     }
 
@@ -41,11 +41,11 @@ public class JsonBinaryType extends MutableDynamicParameterizedType<Object, Json
         super(
             Object.class,
             JsonBinaryJdbcTypeDescriptor.INSTANCE,
-            new JsonJavaTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper(), javaType)
+            new JsonJavaTypeDescriptor(JsonConfiguration.INSTANCE.getObjectMapperWrapper(), javaType)
         );
     }
 
-    public JsonBinaryType(Configuration configuration) {
+    public JsonBinaryType(JsonConfiguration configuration) {
         super(
             Object.class,
             JsonBinaryJdbcTypeDescriptor.INSTANCE,
@@ -54,7 +54,7 @@ public class JsonBinaryType extends MutableDynamicParameterizedType<Object, Json
     }
 
     public JsonBinaryType(org.hibernate.type.spi.TypeBootstrapContext typeBootstrapContext) {
-        this(new Configuration(typeBootstrapContext.getConfigurationSettings()));
+        this(new JsonConfiguration(typeBootstrapContext.getConfigurationSettings()));
     }
 
     public JsonBinaryType(ObjectMapper objectMapper) {

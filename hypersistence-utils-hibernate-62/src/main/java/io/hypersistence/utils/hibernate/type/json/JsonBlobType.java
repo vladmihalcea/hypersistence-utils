@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.hypersistence.utils.hibernate.type.MutableDynamicParameterizedType;
 import io.hypersistence.utils.hibernate.type.json.internal.JsonBlobJdbcTypeDescriptor;
 import io.hypersistence.utils.hibernate.type.json.internal.JsonJavaTypeDescriptor;
-import io.hypersistence.utils.hibernate.type.util.Configuration;
+import io.hypersistence.utils.hibernate.type.util.JsonConfiguration;
 import io.hypersistence.utils.hibernate.type.util.ObjectMapperWrapper;
 
 import java.lang.reflect.Type;
@@ -34,7 +34,7 @@ public class JsonBlobType extends MutableDynamicParameterizedType<Object, JsonBl
         super(
             Object.class,
             JsonBlobJdbcTypeDescriptor.INSTANCE,
-            new JsonJavaTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper())
+            new JsonJavaTypeDescriptor(JsonConfiguration.INSTANCE.getObjectMapperWrapper())
         );
     }
 
@@ -42,11 +42,11 @@ public class JsonBlobType extends MutableDynamicParameterizedType<Object, JsonBl
         super(
             Object.class,
             JsonBlobJdbcTypeDescriptor.INSTANCE,
-            new JsonJavaTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper(), javaType)
+            new JsonJavaTypeDescriptor(JsonConfiguration.INSTANCE.getObjectMapperWrapper(), javaType)
         );
     }
 
-    public JsonBlobType(Configuration configuration) {
+    public JsonBlobType(JsonConfiguration configuration) {
         super(
             Object.class,
             JsonBlobJdbcTypeDescriptor.INSTANCE,
@@ -55,7 +55,7 @@ public class JsonBlobType extends MutableDynamicParameterizedType<Object, JsonBl
     }
 
     public JsonBlobType(org.hibernate.type.spi.TypeBootstrapContext typeBootstrapContext) {
-        this(new Configuration(typeBootstrapContext.getConfigurationSettings()));
+        this(new JsonConfiguration(typeBootstrapContext.getConfigurationSettings()));
     }
 
     public JsonBlobType(ObjectMapper objectMapper) {

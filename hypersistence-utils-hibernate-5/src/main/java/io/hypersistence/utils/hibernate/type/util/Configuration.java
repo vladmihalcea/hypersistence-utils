@@ -1,6 +1,5 @@
 package io.hypersistence.utils.hibernate.type.util;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.hypersistence.utils.hibernate.util.ClassLoaderUtils;
 import org.hibernate.cfg.Environment;
 
@@ -15,12 +14,7 @@ import java.util.Properties;
 import static io.hypersistence.utils.hibernate.util.LogUtils.LOGGER;
 
 /**
- * <code>Configuration</code> - It allows declarative configuration through the <code>hibernate.properties</code> file
- * or the <code>hibernate-types.properties</code> file.
- *
- * The properties from <code>hibernate-types.properties</code> can override the ones from the <code>hibernate.properties</code> file.
- *
- * It loads the {@link Properties} configuration file and makes them available to other components.
+ * <code>Configuration</code> - It allows you to configure various Hibernate Types.
  *
  * @author Vlad Mihalcea
  * @since 2.1.0
@@ -80,48 +74,10 @@ public class Configuration implements Serializable {
         }
     }
 
-    private final ObjectMapperWrapper objectMapperWrapper;
-
     private final Properties properties = Environment.getProperties();
 
-    private Configuration() {
+    protected Configuration() {
         load();
-
-        Object objectMapperPropertyInstance = instantiateClass(PropertyKey.JACKSON_OBJECT_MAPPER);
-
-        ObjectMapperWrapper objectMapperWrapper = null;
-
-        if (objectMapperPropertyInstance != null) {
-            if (objectMapperPropertyInstance instanceof ObjectMapperSupplier) {
-                ObjectMapperSupplier objectMapperSupplier = (ObjectMapperSupplier) objectMapperPropertyInstance;
-                objectMapperWrapper = new ObjectMapperWrapper(objectMapperSupplier);
-            } else if (objectMapperPropertyInstance instanceof ObjectMapper) {
-                ObjectMapper objectMapper = (ObjectMapper) objectMapperPropertyInstance;
-                objectMapperWrapper = new ObjectMapperWrapper(objectMapper);
-            }
-        }
-
-        if(objectMapperWrapper == null) {
-            objectMapperWrapper = new ObjectMapperWrapper();
-        }
-
-        Object jsonSerializerPropertyInstance = instantiateClass(PropertyKey.JSON_SERIALIZER);
-
-        if (jsonSerializerPropertyInstance != null) {
-            JsonSerializer jsonSerializer = null;
-
-            if (jsonSerializerPropertyInstance instanceof JsonSerializerSupplier) {
-                jsonSerializer = ((JsonSerializerSupplier) jsonSerializerPropertyInstance).get();
-            } else if (jsonSerializerPropertyInstance instanceof JsonSerializer) {
-                jsonSerializer = (JsonSerializer) jsonSerializerPropertyInstance;
-            }
-
-            if (jsonSerializer != null) {
-                objectMapperWrapper.setJsonSerializer(jsonSerializer);
-            }
-        }
-
-        this.objectMapperWrapper = objectMapperWrapper;
     }
 
     /**
@@ -222,15 +178,6 @@ public class Configuration implements Serializable {
     }
 
     /**
-     * Get {@link ObjectMapperWrapper} reference
-     *
-     * @return {@link ObjectMapperWrapper} reference
-     */
-    public ObjectMapperWrapper getObjectMapperWrapper() {
-        return objectMapperWrapper;
-    }
-
-    /**
      * Get Integer property value
      *
      * @param propertyKey property key
@@ -302,7 +249,7 @@ public class Configuration implements Serializable {
      * @param <T>         class parameter type
      * @return class instance
      */
-    private <T> T instantiateClass(PropertyKey propertyKey) {
+    protected  <T> T instantiateClass(PropertyKey propertyKey) {
         T object = null;
         String property = propertyKey.resolve(properties);
         if (property != null) {

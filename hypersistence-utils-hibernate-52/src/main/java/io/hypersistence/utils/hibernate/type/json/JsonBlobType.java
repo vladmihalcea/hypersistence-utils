@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.hypersistence.utils.hibernate.type.AbstractHibernateType;
 import io.hypersistence.utils.hibernate.type.json.internal.JsonBlobSqlTypeDescriptor;
 import io.hypersistence.utils.hibernate.type.json.internal.JsonTypeDescriptor;
-import io.hypersistence.utils.hibernate.type.util.Configuration;
+import io.hypersistence.utils.hibernate.type.util.JsonConfiguration;
 import io.hypersistence.utils.hibernate.type.util.ObjectMapperWrapper;
 import org.hibernate.usertype.DynamicParameterizedType;
 
@@ -35,18 +35,18 @@ public class JsonBlobType extends AbstractHibernateType<Object> implements Dynam
     public JsonBlobType() {
         super(
             JsonBlobSqlTypeDescriptor.INSTANCE,
-            new JsonTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper())
+            new JsonTypeDescriptor(JsonConfiguration.INSTANCE.getObjectMapperWrapper())
         );
     }
 
     public JsonBlobType(Type javaType) {
         super(
             JsonBlobSqlTypeDescriptor.INSTANCE,
-            new JsonTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper(), javaType)
+            new JsonTypeDescriptor(JsonConfiguration.INSTANCE.getObjectMapperWrapper(), javaType)
         );
     }
 
-    public JsonBlobType(Configuration configuration) {
+    public JsonBlobType(JsonConfiguration configuration) {
         super(
             JsonBlobSqlTypeDescriptor.INSTANCE,
             new JsonTypeDescriptor(configuration.getObjectMapperWrapper()),

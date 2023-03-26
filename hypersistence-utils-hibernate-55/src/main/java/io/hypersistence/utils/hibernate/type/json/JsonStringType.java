@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.hypersistence.utils.hibernate.type.AbstractHibernateType;
 import io.hypersistence.utils.hibernate.type.json.internal.JsonStringSqlTypeDescriptor;
 import io.hypersistence.utils.hibernate.type.json.internal.JsonTypeDescriptor;
-import io.hypersistence.utils.hibernate.type.util.Configuration;
+import io.hypersistence.utils.hibernate.type.util.JsonConfiguration;
 import io.hypersistence.utils.hibernate.type.util.ObjectMapperWrapper;
 import org.hibernate.usertype.DynamicParameterizedType;
 
@@ -41,18 +41,18 @@ public class JsonStringType extends AbstractHibernateType<Object> implements Dyn
     public JsonStringType() {
         super(
             JsonStringSqlTypeDescriptor.INSTANCE,
-            new JsonTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper())
+            new JsonTypeDescriptor(JsonConfiguration.INSTANCE.getObjectMapperWrapper())
         );
     }
 
     public JsonStringType(Type javaType) {
         super(
             JsonStringSqlTypeDescriptor.INSTANCE,
-            new JsonTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper(), javaType)
+            new JsonTypeDescriptor(JsonConfiguration.INSTANCE.getObjectMapperWrapper(), javaType)
         );
     }
 
-    public JsonStringType(Configuration configuration) {
+    public JsonStringType(JsonConfiguration configuration) {
         super(
             JsonStringSqlTypeDescriptor.INSTANCE,
             new JsonTypeDescriptor(configuration.getObjectMapperWrapper()),
@@ -61,7 +61,7 @@ public class JsonStringType extends AbstractHibernateType<Object> implements Dyn
     }
 
     public JsonStringType(org.hibernate.type.spi.TypeBootstrapContext typeBootstrapContext) {
-        this(new Configuration(typeBootstrapContext.getConfigurationSettings()));
+        this(new JsonConfiguration(typeBootstrapContext.getConfigurationSettings()));
     }
 
     public JsonStringType(ObjectMapper objectMapper) {

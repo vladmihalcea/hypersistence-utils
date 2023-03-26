@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.hypersistence.utils.hibernate.type.AbstractHibernateType;
 import io.hypersistence.utils.hibernate.type.json.internal.JsonBinarySqlTypeDescriptor;
 import io.hypersistence.utils.hibernate.type.json.internal.JsonNodeTypeDescriptor;
-import io.hypersistence.utils.hibernate.type.util.Configuration;
+import io.hypersistence.utils.hibernate.type.util.JsonConfiguration;
 import io.hypersistence.utils.hibernate.type.util.ObjectMapperWrapper;
 
 /**
@@ -31,11 +31,11 @@ public class JsonNodeBinaryType extends AbstractHibernateType<JsonNode> {
     public JsonNodeBinaryType() {
         super(
             JsonBinarySqlTypeDescriptor.INSTANCE,
-            new JsonNodeTypeDescriptor(Configuration.INSTANCE.getObjectMapperWrapper())
+            new JsonNodeTypeDescriptor(JsonConfiguration.INSTANCE.getObjectMapperWrapper())
         );
     }
 
-    public JsonNodeBinaryType(Configuration configuration) {
+    public JsonNodeBinaryType(JsonConfiguration configuration) {
         super(
             JsonBinarySqlTypeDescriptor.INSTANCE,
             new JsonNodeTypeDescriptor(configuration.getObjectMapperWrapper()),
