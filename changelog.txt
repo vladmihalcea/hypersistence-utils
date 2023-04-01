@@ -1,4 +1,9 @@
-Version 3.3.0 - February 26, 2023
+Version 3.3.1 - April 01, 2023
+================================================================================
+
+Adapt the Hibernate 6.2 module to the new Type and BasicPluralJavaType changes #602
+
+Version 3.3.0 - March 26, 2023
 ================================================================================
 
 Add support for PostgreSQL ltree column type #543
