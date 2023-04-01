@@ -6,6 +6,7 @@ import org.hibernate.tool.schema.extract.spi.ColumnTypeInformation;
 import org.hibernate.type.BasicType;
 import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.type.descriptor.java.*;
+import org.hibernate.type.descriptor.jdbc.JdbcTypeIndicators;
 import org.hibernate.type.spi.TypeConfiguration;
 import org.hibernate.usertype.DynamicParameterizedType;
 
@@ -20,7 +21,7 @@ import static io.hypersistence.utils.hibernate.type.array.internal.AbstractArray
  * @author Vlad Mihalcea
  */
 public abstract class AbstractArrayTypeDescriptor<T>
-        extends AbstractClassJavaType<T> implements DynamicParameterizedType, BasicPluralJavaType {
+        extends AbstractClassJavaType<T> implements DynamicParameterizedType, BasicPluralJavaType<T> {
 
     private Class<T> arrayObjectClass;
 
@@ -104,7 +105,7 @@ public abstract class AbstractArrayTypeDescriptor<T>
     }
 
     @Override
-    public BasicType<?> resolveType(TypeConfiguration typeConfiguration, Dialect dialect, BasicType elementType, ColumnTypeInformation columnTypeInformation) {
+    public BasicType<?> resolveType(TypeConfiguration typeConfiguration, Dialect dialect, BasicType elementType, ColumnTypeInformation columnTypeInformation, JdbcTypeIndicators jdbcTypeIndicators) {
         return typeConfiguration.standardBasicTypeForJavaType(arrayObjectClass);
     }
 
