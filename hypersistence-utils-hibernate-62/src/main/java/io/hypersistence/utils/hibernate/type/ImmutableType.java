@@ -206,6 +206,11 @@ public abstract class ImmutableType<T> implements UserType<T>, Type {
     }
 
     @Override
+    public int compare(Object x, Object y, SessionFactoryImplementor sessionFactoryImplementor) {
+        return compare(x, y);
+    }
+
+    @Override
     public int compare(Object x, Object y) {
         return IncomparableComparator.INSTANCE.compare(x, y);
     }
