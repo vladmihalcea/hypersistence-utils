@@ -45,6 +45,7 @@ public class HSQLDBArrayTypeTest extends AbstractTest {
             event.setSensorValues(new int[]{12, 756});
             event.setSensorLongValues(new long[]{42L, 9223372036854775800L});
             event.setSensorDoubleValues(new double[]{0.123, 456.789});
+            event.setSensorFloatValues(new float[]{1.23f, 45.789f});
             event.setDateValues(new Date[]{date1, date2});
             event.setTimestampValues(new Date[]{date1, date2});
 
@@ -58,6 +59,7 @@ public class HSQLDBArrayTypeTest extends AbstractTest {
             assertArrayEquals(new int[]{12, 756}, event.getSensorValues());
             assertArrayEquals(new long[]{42L, 9223372036854775800L}, event.getSensorLongValues());
             assertArrayEquals(new double[]{0.123, 456.789}, event.getSensorDoubleValues(), 0.01);
+            assertArrayEquals(new float[]{1.23f, 45.789f}, event.getSensorFloatValues(), 0.01f);
             assertArrayEquals(new Date[]{date1, date2}, event.getDateValues());
             assertArrayEquals(new Date[]{date1, date2}, event.getTimestampValues());
         });
@@ -107,6 +109,13 @@ public class HSQLDBArrayTypeTest extends AbstractTest {
         @Column(name = "sensor_double_values", columnDefinition = "DOUBLE ARRAY DEFAULT ARRAY[]")
         private double[] sensorDoubleValues;
 
+        @Type(
+            value = FloatArrayType.class,
+            parameters = @Parameter(name = AbstractArrayType.SQL_ARRAY_TYPE, value = "float")
+        )
+        @Column(name = "sensor_float_values", columnDefinition = "FLOAT ARRAY DEFAULT ARRAY[]")
+        private float[] sensorFloatValues;
+
         @Type(value = DateArrayType.class)
         @Column(name = "date_values", columnDefinition = "DATE ARRAY DEFAULT ARRAY[]")
         private Date[] dateValues;
@@ -145,6 +154,14 @@ public class HSQLDBArrayTypeTest extends AbstractTest {
 
         public void setSensorDoubleValues(double[] sensorDoubleValues) {
             this.sensorDoubleValues = sensorDoubleValues;
+        }
+
+        public float[] getSensorFloatValues() {
+            return sensorFloatValues;
+        }
+
+        public void setSensorFloatValues(float[] sensorFloatValues) {
+            this.sensorFloatValues = sensorFloatValues;
         }
 
         public Date[] getDateValues() {

@@ -52,6 +52,7 @@ public class HSQLDBArrayTypeTest extends AbstractTest {
                 event.setSensorValues(new int[]{12, 756});
                 event.setSensorLongValues(new long[]{42L, 9223372036854775800L});
                 event.setSensorDoubleValues(new double[]{0.123, 456.789});
+                event.setSensorFloatValues(new float[]{1.23f, 45.789f});
                 event.setDateValues(new Date[]{date1, date2});
                 event.setTimestampValues(new Date[]{date1, date2});
 
@@ -71,6 +72,7 @@ public class HSQLDBArrayTypeTest extends AbstractTest {
                 assertArrayEquals(new int[]{12, 756}, event.getSensorValues());
                 assertArrayEquals(new long[]{42L, 9223372036854775800L}, event.getSensorLongValues());
                 assertArrayEquals(new double[]{0.123, 456.789}, event.getSensorDoubleValues(), 0.01);
+                assertArrayEquals(new float[]{1.23f, 45.789f}, event.getSensorFloatValues(), 0.01f);
                 assertEquals(date1.getTime(), event.getDateValues()[0].getTime());
                 assertEquals(date2.getTime(), event.getDateValues()[1].getTime());
                 assertArrayEquals(new Date[]{date1, date2}, event.getTimestampValues());
@@ -88,6 +90,13 @@ public class HSQLDBArrayTypeTest extends AbstractTest {
             typeClass = DoubleArrayType.class,
             parameters = {
                 @Parameter(name = AbstractArrayType.SQL_ARRAY_TYPE, value = "double")
+            }
+        ),
+        @TypeDef(
+            name = "hsqldb-float-array",
+            typeClass = FloatArrayType.class,
+            parameters = {
+                @Parameter(name = AbstractArrayType.SQL_ARRAY_TYPE, value = "float")
             }
         ),
         @TypeDef(
@@ -115,6 +124,10 @@ public class HSQLDBArrayTypeTest extends AbstractTest {
         @Type(type = "hsqldb-double-array")
         @Column(name = "sensor_double_values", columnDefinition = "DOUBLE ARRAY DEFAULT ARRAY[]")
         private double[] sensorDoubleValues;
+
+        @Type(type = "hsqldb-float-array")
+        @Column(name = "sensor_float_values", columnDefinition = "FLOAT ARRAY DEFAULT ARRAY[]")
+        private float[] sensorFloatValues;
 
         @Type(type = "date-array")
         @Column(name = "date_values", columnDefinition = "DATE ARRAY DEFAULT ARRAY[]")
@@ -154,6 +167,14 @@ public class HSQLDBArrayTypeTest extends AbstractTest {
 
         public void setSensorDoubleValues(double[] sensorDoubleValues) {
             this.sensorDoubleValues = sensorDoubleValues;
+        }
+
+        public float[] getSensorFloatValues() {
+            return sensorFloatValues;
+        }
+
+        public void setSensorFloatValues(float[] sensorFloatValues) {
+            this.sensorFloatValues = sensorFloatValues;
         }
 
         public Date[] getDateValues() {

@@ -18,6 +18,7 @@ import javax.persistence.Version;
         @TypeDef(name = "int-array", typeClass = IntArrayType.class),
         @TypeDef(name = "long-array", typeClass = LongArrayType.class),
         @TypeDef(name = "double-array", typeClass = DoubleArrayType.class),
+        @TypeDef(name = "float-array", typeClass = FloatArrayType.class),
         @TypeDef(name = "boolean-array", typeClass = BooleanArrayType.class),
         @TypeDef(name = "date-array", typeClass = DateArrayType.class),
         @TypeDef(name = "timestamp-array", typeClass = TimestampArrayType.class),

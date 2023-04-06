@@ -168,7 +168,7 @@ public class ArrayUtil {
         } else if (float[].class.equals(arrayClass)) {
             float[] array = new float[originalArray.length];
             for (int i = 0; i < originalArray.length; i++) {
-                array[i] = originalArray[i] != null ? (Float) originalArray[i] : 0f;
+                array[i] = originalArray[i] != null ? ((Number) originalArray[i]).floatValue() : 0f;
             }
             return (T) array;
         } else if (double[].class.equals(arrayClass)) {

@@ -44,6 +44,7 @@ public class HibernateTypesContributor implements TypeContributor {
             typeContributions.contributeType(DateArrayType.INSTANCE);
             typeContributions.contributeType(DecimalArrayType.INSTANCE);
             typeContributions.contributeType(DoubleArrayType.INSTANCE);
+            typeContributions.contributeType(FloatArrayType.INSTANCE);
             typeContributions.contributeType(EnumArrayType.INSTANCE);
             typeContributions.contributeType(IntArrayType.INSTANCE);
             typeContributions.contributeType(LocalDateArrayType.INSTANCE);

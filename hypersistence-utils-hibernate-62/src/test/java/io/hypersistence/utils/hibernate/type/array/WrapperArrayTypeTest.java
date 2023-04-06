@@ -57,6 +57,7 @@ public class WrapperArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             event.setSensorValues(new Integer[]{12, 756});
             event.setSensorLongValues(new Long[]{42L, 9223372036854775800L});
             event.setSensorDoubleValues(new Double[]{0.123, 456.789});
+            event.setSensorFloatValues(new Float[]{1.23f, 45.89f});
 
             entityManager.persist(event);
         });
@@ -68,6 +69,7 @@ public class WrapperArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             assertArrayEquals(new Integer[]{12, 756}, event.getSensorValues());
             assertArrayEquals(new Long[]{42L, 9223372036854775800L}, event.getSensorLongValues());
             assertArrayEquals(new Double[]{0.123, 456.789}, event.getSensorDoubleValues());
+            assertArrayEquals(new Float[]{1.23f, 45.89f}, event.getSensorFloatValues());
         });
 
         doInJPA(entityManager -> {
@@ -76,12 +78,14 @@ public class WrapperArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 "   id, " +
                 "   sensor_ids, " +
                 "   sensor_values, " +
-                "   sensor_double_values   " +
+                "   sensor_double_values,   " +
+                "   sensor_float_values   " +
                 "from event ", Tuple.class)
             .unwrap(org.hibernate.query.NativeQuery.class)
             .addScalar("sensor_ids", UUID[].class)
             .addScalar("sensor_values", int[].class)
             .addScalar("sensor_double_values", double[].class)
+            .addScalar("sensor_float_values", float[].class)
             .getResultList();
 
             assertEquals(2, events.size());
@@ -106,6 +110,10 @@ public class WrapperArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         @Type(DoubleArrayType.class)
         @Column(name = "sensor_double_values", columnDefinition = "float8[]")
         private Double[] sensorDoubleValues;
+
+        @Type(FloatArrayType.class)
+        @Column(name = "sensor_float_values", columnDefinition = "float4[]")
+        private Float[] sensorFloatValues;
 
         public UUID[] getSensorIds() {
             return sensorIds;
@@ -137,6 +145,14 @@ public class WrapperArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
         public void setSensorDoubleValues(Double[] sensorDoubleValues) {
             this.sensorDoubleValues = sensorDoubleValues;
+        }
+
+        public Float[] getSensorFloatValues() {
+            return sensorFloatValues;
+        }
+
+        public void setSensorFloatValues(Float[] sensorFloatValues) {
+            this.sensorFloatValues = sensorFloatValues;
         }
     }
 }

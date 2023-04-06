@@ -35,7 +35,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
     @Override
     protected Class<?>[] entities() {
         return new Class<?>[]{
-            Event.class,
+                Event.class,
         };
     }
 
@@ -46,15 +46,15 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
              Statement statement = connection.createStatement()) {
             try {
                 statement.executeUpdate(
-                    "DROP TYPE sensor_state CASCADE"
+                        "DROP TYPE sensor_state CASCADE"
                 );
             } catch (SQLException ignore) {
             }
             statement.executeUpdate(
-                "CREATE TYPE sensor_state AS ENUM ('ONLINE', 'OFFLINE', 'UNKNOWN')"
+                    "CREATE TYPE sensor_state AS ENUM ('ONLINE', 'OFFLINE', 'UNKNOWN')"
             );
             statement.executeUpdate(
-                "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\""
+                    "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\""
             );
         } catch (SQLException e) {
             fail(e.getMessage());
@@ -80,6 +80,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             event.setSensorValues(new int[]{12, 756});
             event.setSensorLongValues(new long[]{42L, 9223372036854775800L});
             event.setSensorDoubleValues(new double[]{0.123, 456.789});
+            event.setSensorFloatValues(new float[]{1.2f, 4.35f});
             event.setSensorStates(new SensorState[]{SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN});
             event.setDateValues(new Date[]{date1, date2});
             event.setTimestampValues(new Date[]{date1, date2});
@@ -99,6 +100,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             assertArrayEquals(new int[]{12, 756}, event.getSensorValues());
             assertArrayEquals(new long[]{42L, 9223372036854775800L}, event.getSensorLongValues());
             assertArrayEquals(new double[]{0.123, 456.789}, event.getSensorDoubleValues(), 0.01);
+            assertArrayEquals(new float[]{1.2f, 4.35f}, event.getSensorFloatValues(), 0.01f);
             assertArrayEquals(new SensorState[]{SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN}, event.getSensorStates());
             assertArrayEquals(new Date[]{date1, date2}, event.getDateValues());
             assertArrayEquals(new Date[]{date1, date2}, event.getTimestampValues());
@@ -110,21 +112,21 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
         doInJPA(entityManager -> {
             List<Event> events = entityManager.createNativeQuery(
-                "select " +
-                    "   id, " +
-                    "   sensor_ids, " +
-                    "   sensor_names, " +
-                    "   sensor_values, " +
-                    "   date_values   " +
-                    "from event " +
-                    "where id >= :id", Tuple.class)
-                .setParameter("id", 0)
-                .unwrap(org.hibernate.query.NativeQuery.class)
-                .addScalar("sensor_ids", UUID[].class)
-                .addScalar("sensor_names", String[].class)
-                .addScalar("sensor_values", int[].class)
-                .addScalar("date_values", Date[].class)
-                .getResultList();
+                            "select " +
+                                    "   id, " +
+                                    "   sensor_ids, " +
+                                    "   sensor_names, " +
+                                    "   sensor_values, " +
+                                    "   date_values   " +
+                                    "from event " +
+                                    "where id >= :id", Tuple.class)
+                    .setParameter("id", 0)
+                    .unwrap(org.hibernate.query.NativeQuery.class)
+                    .addScalar("sensor_ids", UUID[].class)
+                    .addScalar("sensor_names", String[].class)
+                    .addScalar("sensor_values", int[].class)
+                    .addScalar("date_values", Date[].class)
+                    .getResultList();
 
             assertEquals(2, events.size());
         });
@@ -181,6 +183,10 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         @Column(name = "sensor_double_values", columnDefinition = "float8[]")
         private double[] sensorDoubleValues;
 
+        @Type(FloatArrayType.class)
+        @Column(name = "sensor_float_values", columnDefinition = "float4[]")
+        private float[] sensorFloatValues;
+
         @Type(DateArrayType.class)
         @Column(name = "date_values", columnDefinition = "date[]")
         private Date[] dateValues;
@@ -202,8 +208,8 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         private LocalDateTime[] localDateTimeValues;
 
         @Type(
-            value = EnumArrayType.class,
-            parameters = @Parameter(name = AbstractArrayType.SQL_ARRAY_TYPE, value = "sensor_state")
+                value = EnumArrayType.class,
+                parameters = @Parameter(name = AbstractArrayType.SQL_ARRAY_TYPE, value = "sensor_state")
         )
         @Column(name = "sensor_states", columnDefinition = "sensor_state[]")
         private SensorState[] sensorStates;
@@ -254,6 +260,14 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
         public void setSensorDoubleValues(double[] sensorDoubleValues) {
             this.sensorDoubleValues = sensorDoubleValues;
+        }
+
+        public float[] getSensorFloatValues() {
+            return sensorFloatValues;
+        }
+
+        public void setSensorFloatValues(float[] sensorFloatValues) {
+            this.sensorFloatValues = sensorFloatValues;
         }
 
         public SensorState[] getSensorStates() {

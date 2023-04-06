@@ -80,6 +80,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             event.setSensorValues(new int[]{12, 756});
             event.setSensorLongValues(new long[]{42L, 9223372036854775800L});
             event.setSensorDoubleValues(new double[]{0.123, 456.789});
+            event.setSensorFloatValues(new float[]{1.2f, 4.35f});
             event.setSensorStates(new SensorState[]{SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN});
             event.setDateValues(new Date[]{date1, date2});
             event.setTimestampValues(new Date[]{date1, date2});
@@ -99,6 +100,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             assertArrayEquals(new int[]{12, 756}, event.getSensorValues());
             assertArrayEquals(new long[]{42L, 9223372036854775800L}, event.getSensorLongValues());
             assertArrayEquals(new double[]{0.123, 456.789}, event.getSensorDoubleValues(), 0.01);
+            assertArrayEquals(new float[]{1.2f, 4.35f}, event.getSensorFloatValues(), 0.01f);
             assertArrayEquals(new SensorState[]{SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN}, event.getSensorStates());
             assertArrayEquals(new Date[]{date1, date2}, event.getDateValues());
             assertArrayEquals(new Date[]{date1, date2}, event.getTimestampValues());
@@ -181,6 +183,10 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         @Column(name = "sensor_double_values", columnDefinition = "float8[]")
         private double[] sensorDoubleValues;
 
+        @Type(FloatArrayType.class)
+        @Column(name = "sensor_float_values", columnDefinition = "float4[]")
+        private float[] sensorFloatValues;
+
         @Type(DateArrayType.class)
         @Column(name = "date_values", columnDefinition = "date[]")
         private Date[] dateValues;
@@ -254,6 +260,14 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
         public void setSensorDoubleValues(double[] sensorDoubleValues) {
             this.sensorDoubleValues = sensorDoubleValues;
+        }
+
+        public float[] getSensorFloatValues() {
+            return sensorFloatValues;
+        }
+
+        public void setSensorFloatValues(float[] sensorFloatValues) {
+            this.sensorFloatValues = sensorFloatValues;
         }
 
         public SensorState[] getSensorStates() {
