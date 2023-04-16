@@ -72,9 +72,20 @@ public class JsonJavaTypeDescriptor extends AbstractClassJavaType<Object> implem
     @Override
     public void setParameterValues(Properties parameters) {
         final XProperty xProperty = (XProperty) parameters.get(DynamicParameterizedType.XPROPERTY);
-        Type type = (xProperty instanceof JavaXMember) ?
-            ((JavaXMember) xProperty).getJavaType() :
-            ((ParameterType) parameters.get(PARAMETER_TYPE)).getReturnedClass();
+        Type type = null;
+        if(xProperty instanceof JavaXMember) {
+            type = ((JavaXMember) xProperty).getJavaType();
+        } else {
+            Object parameterType = parameters.get(PARAMETER_TYPE);
+            if(parameterType instanceof ParameterType) {
+                type = ((ParameterType) parameterType).getReturnedClass();
+            } else if(parameterType instanceof String) {
+                type = ReflectionUtils.getClass((String) parameterType);
+            }
+        }
+        if(type == null) {
+            throw new HibernateException("Could not resolve property type!");
+        }
         setPropertyClass(type);
     }
 

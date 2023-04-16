@@ -66,9 +66,20 @@ public class JsonTypeDescriptor
     @Override
     public void setParameterValues(Properties parameters) {
         final XProperty xProperty = (XProperty) parameters.get(DynamicParameterizedType.XPROPERTY);
-        Type type = (xProperty instanceof JavaXMember) ?
-            (Type) ReflectionUtils.invokeGetter(xProperty, "javaType") :
-            ((ParameterType) parameters.get(PARAMETER_TYPE)).getReturnedClass();
+        Type type = null;
+        if(xProperty instanceof JavaXMember) {
+            type = (Type) ReflectionUtils.invokeGetter(xProperty, "javaType");
+        } else {
+            Object parameterType = parameters.get(PARAMETER_TYPE);
+            if(parameterType instanceof ParameterType) {
+                type = ((ParameterType) parameterType).getReturnedClass();
+            } else if(parameterType instanceof String) {
+                type = ReflectionUtils.getClass((String) parameterType);
+            }
+        }
+        if(type == null) {
+            throw new HibernateException("Could not resolve property type!");
+        }
         setPropertyClass(type);
     }
 
