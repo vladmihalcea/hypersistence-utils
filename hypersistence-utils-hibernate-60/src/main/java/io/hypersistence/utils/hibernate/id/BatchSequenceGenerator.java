@@ -2,7 +2,9 @@ package io.hypersistence.utils.hibernate.id;
 
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
+import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.boot.model.relational.Database;
+import org.hibernate.boot.model.relational.QualifiedName;
 import org.hibernate.boot.model.relational.QualifiedNameParser;
 import org.hibernate.boot.model.relational.SqlStringGenerationContext;
 import org.hibernate.dialect.Dialect;
@@ -13,7 +15,6 @@ import org.hibernate.id.BulkInsertionCapableIdentifierGenerator;
 import org.hibernate.id.Configurable;
 import org.hibernate.id.IdentifierGenerationException;
 import org.hibernate.id.PersistentIdentifierGenerator;
-import org.hibernate.id.enhanced.DatabaseStructure;
 import org.hibernate.id.enhanced.Optimizer;
 import org.hibernate.id.enhanced.SequenceStructure;
 import org.hibernate.internal.util.config.ConfigurationHelper;
@@ -155,31 +156,51 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
 
     private final Lock lock = new ReentrantLock();
 
-    private String select;
+    // Initialized during configure phase
     private int fetchSize;
-    private IdentifierPool identifierPool;
+
+    private QualifiedName sequenceName;
+
     private IdentifierExtractor identifierExtractor;
-    private DatabaseStructure databaseStructure;
+
+    private SequenceStructure sequenceStructure;
+
+    // Initialized during initialize phase
+    private String select;
+
+    private IdentifierPool identifierPool;
 
     @Override
     public void configure(Type type, Properties params, ServiceRegistry serviceRegistry)
                     throws MappingException {
 
         JdbcEnvironment jdbcEnvironment = serviceRegistry.getService(JdbcEnvironment.class);
-        Dialect dialect = jdbcEnvironment.getDialect();
-        String sequenceName = determineSequenceName(params);
+        
+        this.sequenceName = determineSequenceName(params, jdbcEnvironment);
         this.fetchSize = determineFetchSize(params);
 
-        this.select = buildSelect(sequenceName, dialect);
-        this.identifierExtractor = IdentifierExtractor.getIdentifierExtractor(type.getReturnedClass());
-        this.identifierPool = IdentifierPool.empty();
-
-        this.databaseStructure = this.buildDatabaseStructure(type, sequenceName, jdbcEnvironment);
+        this.identifierExtractor = IdentifierExtractor.getIdentifierExtractor(type.getReturnedClass());        
+        this.sequenceStructure = this.buildSequenceStructure(type, sequenceName, jdbcEnvironment);
     }
 
-    private static String buildSelect(String sequenceName, Dialect dialect) {
+    @Override
+    public void initialize(SqlStringGenerationContext context) {
+        Dialect dialect = context.getDialect();
+        String sequenceNextValString = dialect
+            .getSequenceSupport()
+            .getSelectSequenceNextValString(
+                context.format(this.sequenceName)
+            );
+
+        this.identifierPool = IdentifierPool.empty();
+        this.sequenceStructure.initialize(context);
+
+        this.select = buildSelect(sequenceNextValString, dialect);
+    }
+
+    private static String buildSelect(String nextValString, Dialect dialect) {
         if (dialect instanceof org.hibernate.dialect.OracleDialect) {
-            return "SELECT " + dialect.getSequenceSupport().getSelectSequenceNextValString(sequenceName) + " FROM dual CONNECT BY rownum <= ?";
+            return "SELECT " + nextValString + " FROM dual CONNECT BY rownum <= ?";
         }
         if (dialect instanceof org.hibernate.dialect.SQLServerDialect) {
             // No RECURSIVE
@@ -188,7 +209,7 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
             + "UNION ALL "
             +"SELECT n + 1 AS n FROM t WHERE n < ?) "
             // sequence generation outside of WITH
-            + "SELECT " + dialect.getSequenceSupport().getSelectSequenceNextValString(sequenceName) + " AS n FROM t";
+            + "SELECT " + nextValString + " AS n FROM t";
         }
         if (dialect instanceof org.hibernate.dialect.DB2Dialect) {
             // No RECURSIVE
@@ -199,11 +220,11 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
             + "UNION ALL "
             +"SELECT n + 1 AS n FROM t WHERE n < ?) "
             // sequence generation outside of WITH
-            + "SELECT " + dialect.getSequenceSupport().getSelectSequenceNextValString(sequenceName) + " AS n FROM t";
+            + "SELECT " + nextValString + " AS n FROM t";
         }
         if (dialect instanceof org.hibernate.dialect.HSQLDialect) {
             // https://stackoverflow.com/questions/44472280/cte-based-sequence-generation-with-hsqldb/52329862
-            return "SELECT " + dialect.getSequenceSupport().getSelectSequenceNextValString(sequenceName) + " FROM UNNEST(SEQUENCE_ARRAY(1, ?, 1))";
+            return "SELECT " + nextValString + " FROM UNNEST(SEQUENCE_ARRAY(1, ?, 1))";
         }
         return "WITH RECURSIVE t(n) AS ("
         + "SELECT 1 "
@@ -211,20 +232,42 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
         + "SELECT n + 1"
         + " FROM t "
         + " WHERE n < ?) "
-        + "SELECT " + dialect.getSequenceSupport().getSelectSequenceNextValString(sequenceName) + " FROM t";
+        + "SELECT " + nextValString + " FROM t";
     }
 
-    private SequenceStructure buildDatabaseStructure(Type type, String sequenceName, JdbcEnvironment jdbcEnvironment) {
-        return new SequenceStructure(jdbcEnvironment, "orm",
-                        QualifiedNameParser.INSTANCE.parse(sequenceName), 1, 1, type.getReturnedClass());
+    private SequenceStructure buildSequenceStructure(Type type, QualifiedName sequenceName, JdbcEnvironment jdbcEnvironment) {
+        return new SequenceStructure(jdbcEnvironment, "orm", sequenceName, 1, 1, type.getReturnedClass());
     }
 
-    private  static String determineSequenceName(Properties params) {
+	/**
+	 * Determine the name of the sequence (or table if this resolves to a physical table)
+	 * to use.
+	 * <p/>
+	 * Called during {@linkplain #configure configuration}.
+	 *
+	 * @param params The params supplied in the generator config (plus some standard useful extras).
+	 * @param jdbcEnv The JdbcEnvironment
+	 * @return The sequence name
+	 */
+	private static QualifiedName determineSequenceName(
+			Properties params, JdbcEnvironment jdbcEnv) {
         String sequenceName = params.getProperty(SEQUENCE_PARAM);
         if (sequenceName == null) {
             throw new MappingException("no squence name specified");
         }
-        return sequenceName;
+
+		final Identifier catalog = jdbcEnv.getIdentifierHelper().toIdentifier(params.getProperty(CATALOG));
+		final Identifier schema =  jdbcEnv.getIdentifierHelper().toIdentifier(params.getProperty(SCHEMA));
+
+        if(sequenceName.contains(".")) {
+            return QualifiedNameParser.INSTANCE.parse(sequenceName);
+        }
+
+        return new QualifiedNameParser.NameParts(
+            catalog,
+            schema,
+            jdbcEnv.getIdentifierHelper().toIdentifier( sequenceName )
+            );
     }
 
     private static int determineFetchSize(Properties params) {
@@ -242,7 +285,7 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
 
     @Override
     public String determineBulkInsertionIdentifierGenerationSelectFragment(SqlStringGenerationContext sqlStringGenerationContext) {
-        return sqlStringGenerationContext.getDialect().getSequenceSupport().getSequenceNextValString(this.getSequenceName());
+        return sqlStringGenerationContext.getDialect().getSequenceSupport().getSequenceNextValString(sqlStringGenerationContext.format(sequenceStructure.getPhysicalName()));
     }
 
     @Override
@@ -259,12 +302,12 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
     }
 
     private String getSequenceName() {
-        return this.databaseStructure.getPhysicalName().render();
+        return this.sequenceStructure.getPhysicalName().render();
     }
 
     @Override
     public void registerExportables(Database database) {
-        this.databaseStructure.registerExportables(database);
+        this.sequenceStructure.registerExportables(database);
     }
 
     private IdentifierPool replenishIdentifierPool(SharedSessionContractImplementor session)
