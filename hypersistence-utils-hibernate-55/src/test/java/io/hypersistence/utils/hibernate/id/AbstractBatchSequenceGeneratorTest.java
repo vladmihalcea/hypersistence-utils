@@ -45,8 +45,8 @@ public abstract class AbstractBatchSequenceGeneratorTest extends AbstractTest {
 
     @Test
     public void test() {
-
         QueryCountHolder.clear();
+
         doInJPA(entityManager -> {
             for (int i = 0; i < BATCH_SIZE; i++) {
                 Post post = new Post();
@@ -77,10 +77,10 @@ public abstract class AbstractBatchSequenceGeneratorTest extends AbstractTest {
     protected long getSelectCount(QueryCount queryCount) {
         switch (dataSourceProvider().database()) {
             case ORACLE:
+            case POSTGRESQL:
                 return queryCount.getSelect();
             case SQLSERVER:
             case H2:
-            case POSTGRESQL:
                 return queryCount.getOther();
         }
         throw new UnsupportedOperationException(

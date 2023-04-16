@@ -207,6 +207,9 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
             // https://stackoverflow.com/questions/44472280/cte-based-sequence-generation-with-hsqldb/52329862
             return "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " FROM UNNEST(SEQUENCE_ARRAY(1, ?, 1))";
         }
+        if(dialect instanceof org.hibernate.dialect.PostgreSQL81Dialect) {
+            return "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " FROM generate_series(1, ?)";
+        }
         if (dialect instanceof org.hibernate.dialect.FirebirdDialect) {
             return "WITH RECURSIVE t(n, level_num) AS ("
                             + "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " AS n, 1 AS level_num "
