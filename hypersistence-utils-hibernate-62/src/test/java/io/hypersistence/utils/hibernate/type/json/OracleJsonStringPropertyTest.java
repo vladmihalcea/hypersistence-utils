@@ -27,7 +27,7 @@ public class OracleJsonStringPropertyTest extends AbstractOracleIntegrationTest 
     @Override
     protected Class<?>[] entities() {
         return new Class<?>[]{
-                Book.class
+            Book.class
         };
     }
 
@@ -93,6 +93,22 @@ public class OracleJsonStringPropertyTest extends AbstractOracleIntegrationTest 
                 .setParameter("isbn", "978-9730228236")
                 .unwrap(NativeQuery.class)
                 .addScalar("properties", JsonNode.class)
+                .getSingleResult();
+
+            assertEquals("High-Performance Java Persistence", properties.get("title").asText());
+        });
+
+        doInJPA(entityManager -> {
+            JsonNode properties = (JsonNode) entityManager
+                .createNativeQuery(
+                    "SELECT " +
+                    "  properties AS properties " +
+                    "FROM book " +
+                    "WHERE " +
+                    "  isbn = :isbn")
+                .setParameter("isbn", "978-9730228236")
+                .unwrap(NativeQuery.class)
+                .addScalar("properties", JsonStringType.INSTANCE)
                 .getSingleResult();
 
             assertEquals("High-Performance Java Persistence", properties.get("title").asText());

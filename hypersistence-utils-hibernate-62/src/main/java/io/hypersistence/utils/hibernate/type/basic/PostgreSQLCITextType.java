@@ -4,11 +4,10 @@ import io.hypersistence.utils.hibernate.type.ImmutableType;
 import io.hypersistence.utils.hibernate.type.util.Configuration;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.type.descriptor.jdbc.JdbcType;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.io.Serializable;
+import java.sql.*;
 
 /**
  * Maps a {@link String} object type to a PostgreSQL <a href="https://www.postgresql.org/docs/current/citext.html">citext</a>

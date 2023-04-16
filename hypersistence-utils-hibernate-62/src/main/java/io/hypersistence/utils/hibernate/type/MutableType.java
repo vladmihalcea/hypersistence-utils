@@ -9,6 +9,7 @@ import org.hibernate.internal.util.IndexedConsumer;
 import org.hibernate.metamodel.mapping.BasicValuedMapping;
 import org.hibernate.metamodel.mapping.JdbcMapping;
 import org.hibernate.metamodel.mapping.MappingType;
+import org.hibernate.metamodel.model.domain.BasicDomainType;
 import org.hibernate.query.BindableType;
 import org.hibernate.query.sqm.SqmExpressible;
 import org.hibernate.type.descriptor.java.JavaType;
@@ -17,6 +18,7 @@ import org.hibernate.type.internal.BasicTypeImpl;
 import org.hibernate.usertype.UserType;
 
 import java.io.Serializable;
+import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,7 +28,7 @@ import java.sql.SQLException;
  *
  * @author Vlad Mihalcea
  */
-public abstract class MutableType<T, JDBC extends JdbcType, JAVA extends JavaType<T>> implements UserType<T>, BindableType<T>, SqmExpressible<T>, BasicValuedMapping {
+public abstract class MutableType<T, JDBC extends JdbcType, JAVA extends JavaType<T>> implements UserType<T>, BindableType<T>, SqmExpressible<T>, BasicValuedMapping, BasicDomainType<T> {
 
     private final Class<T> clazz;
 
@@ -174,5 +176,30 @@ public abstract class MutableType<T, JDBC extends JdbcType, JAVA extends JavaTyp
     public int forEachJdbcType(int offset, IndexedConsumer<JdbcMapping> action) {
         action.accept(offset, jdbcMapping);
         return getJdbcTypeCount();
+    }
+
+    @Override
+    public Class<T> getJavaType() {
+        return returnedClass();
+    }
+
+    @Override
+    public boolean canDoExtraction() {
+        return true;
+    }
+
+    @Override
+    public JdbcType getJdbcType() {
+        return jdbcTypeDescriptor;
+    }
+
+    @Override
+    public T extract(CallableStatement callableStatement, int position, SharedSessionContractImplementor session) throws SQLException {
+        return jdbcTypeDescriptor.getExtractor(javaTypeDescriptor).extract(callableStatement, position, session);
+    }
+
+    @Override
+    public T extract(CallableStatement callableStatement, String position, SharedSessionContractImplementor session) throws SQLException {
+        return jdbcTypeDescriptor.getExtractor(javaTypeDescriptor).extract(callableStatement, position, session);
     }
 }

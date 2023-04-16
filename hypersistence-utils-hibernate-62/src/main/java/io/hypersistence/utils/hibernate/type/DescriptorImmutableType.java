@@ -3,12 +3,14 @@ package io.hypersistence.utils.hibernate.type;
 import io.hypersistence.utils.hibernate.type.util.Configuration;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.metamodel.model.domain.BasicDomainType;
 import org.hibernate.query.BindableType;
 import org.hibernate.query.sqm.SqmExpressible;
 import org.hibernate.type.descriptor.java.JavaType;
 import org.hibernate.type.descriptor.jdbc.JdbcType;
 import org.hibernate.usertype.UserType;
 
+import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,7 +20,7 @@ import java.sql.SQLException;
  *
  * @author Vlad Mihalcea
  */
-public abstract class DescriptorImmutableType<T, JDBC extends JdbcType, JAVA extends JavaType<T>> extends ImmutableType<T> implements BindableType<T>, SqmExpressible<T> {
+public abstract class DescriptorImmutableType<T, JDBC extends JdbcType, JAVA extends JavaType<T>> extends ImmutableType<T> implements BindableType<T>, SqmExpressible<T>, BasicDomainType<T> {
 
     private final JDBC jdbcTypeDescriptor;
     private final JAVA javaTypeDescriptor;
@@ -69,5 +71,30 @@ public abstract class DescriptorImmutableType<T, JDBC extends JdbcType, JAVA ext
     @Override
     public JavaType<T> getExpressibleJavaType() {
         return javaTypeDescriptor;
+    }
+
+    @Override
+    public Class<T> getJavaType() {
+        return returnedClass();
+    }
+
+    @Override
+    public boolean canDoExtraction() {
+        return true;
+    }
+
+    @Override
+    public JdbcType getJdbcType() {
+        return jdbcTypeDescriptor;
+    }
+
+    @Override
+    public T extract(CallableStatement callableStatement, int position, SharedSessionContractImplementor session) throws SQLException {
+        return jdbcTypeDescriptor.getExtractor(javaTypeDescriptor).extract(callableStatement, position, session);
+    }
+
+    @Override
+    public T extract(CallableStatement callableStatement, String position, SharedSessionContractImplementor session) throws SQLException {
+        return jdbcTypeDescriptor.getExtractor(javaTypeDescriptor).extract(callableStatement, position, session);
     }
 }

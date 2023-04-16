@@ -1,11 +1,14 @@
 package io.hypersistence.utils.hibernate.type;
 
 import io.hypersistence.utils.hibernate.type.util.Configuration;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.descriptor.java.JavaType;
 import org.hibernate.type.descriptor.jdbc.JdbcType;
 import org.hibernate.usertype.DynamicParameterizedType;
 import org.hibernate.usertype.ParameterizedType;
 
+import java.sql.CallableStatement;
+import java.sql.SQLException;
 import java.util.Properties;
 
 /**
