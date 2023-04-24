@@ -113,7 +113,7 @@ public class PostgreSQLJsonMapTest2 extends AbstractPostgreSQLIntegrationTest {
         public record BookInventory(Inventory global, Map<Long, Inventory> info) {
 
             public BookInventory {
-                Assert.notNull(info, "listings must be provided");
+                Assert.notNull(info, "info must be provided");
             }
 
             public record Inventory(Integer maxItems, Integer remainingItems) {
