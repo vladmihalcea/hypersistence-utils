@@ -35,7 +35,7 @@ public class PostgreSQLJsonMapTest2 extends AbstractPostgreSQLIntegrationTest {
     @Test
     public void test() {
         Map<String, Book.BookInventory> bookTypeMap = new HashMap<>();
-        bookTypeMap.put("FICTION",
+        bookTypeMap.put("Fiction",
                 new Book.BookInventory(new Book.BookInventory.Inventory(10, 1),
                         Collections.singletonMap(501L, new Book.BookInventory.Inventory(1,1))));
 
