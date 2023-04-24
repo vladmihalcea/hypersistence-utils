@@ -56,7 +56,7 @@ public class PostgreSQLJsonMapTest2 extends AbstractPostgreSQLIntegrationTest {
 
             assertEquals(
                     bookTypeMap,
-                bookProperties.get("Publisher 1")
+                    bookProperties.get("Publisher 1")
             );
 
             assertEquals(Long.valueOf(0), book.getVersion());

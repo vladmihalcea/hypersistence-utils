@@ -55,6 +55,8 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
                 "Vlad Mihalcea",
                 bookProperties.get("author")
             );
+
+            assertEquals(Long.valueOf(0), book.getVersion());
         });
     }
 
@@ -71,6 +73,9 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
         @Column(length = 15)
         private String isbn;
 
+        @Version
+        private Long version;
+
         @Type(type = "jsonb")
         @Column(columnDefinition = "jsonb")
         private Map<String, String> properties = new HashMap<>();
@@ -82,6 +87,10 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
         public Book setIsbn(String isbn) {
             this.isbn = isbn;
             return this;
+        }
+
+        public Long getVersion() {
+            return version;
         }
 
         public Map<String, String> getProperties() {
