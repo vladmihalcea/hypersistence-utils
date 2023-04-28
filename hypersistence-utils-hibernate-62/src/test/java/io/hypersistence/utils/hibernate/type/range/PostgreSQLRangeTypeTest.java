@@ -35,6 +35,8 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
 
     private final Range<ZonedDateTime> tsTz = zonedDateTimeRange("[\"2007-12-03T10:15:30+01:00\",\"2008-12-03T10:15:30+01:00\"]");
 
+    private final Range<ZonedDateTime> tsTzEmpty = zonedDateTimeRange("empty");
+
     private final Range<ZonedDateTime> infinityTsTz = zonedDateTimeRange("[\"2007-12-03T10:15:30+01:00\",infinity)");
 
     private final Range<LocalDate> dateRange = Range.localDateRange("[1992-01-13,1995-01-13)");
@@ -60,6 +62,7 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
             restriction.setRangeLocalDateTime(localDateTimeRange);
             restriction.setRangeZonedDateTime(tsTz);
             restriction.setRangeZonedDateTimeInfinity(infinityTsTz);
+            restriction.setRangeZonedDateTimeEmpty(tsTzEmpty);
             restriction.setRangeLocalDate(dateRange);
             entityManager.persist(restriction);
 
@@ -109,6 +112,7 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
             assertNull(restriction.getRangeLocalDate());
             assertNull(restriction.getRangeZonedDateTime());
             assertNull(restriction.getRangeZonedDateTimeInfinity());
+            assertNull(restriction.getRangeZonedDateTimeEmpty());
         });
     }
 
@@ -151,6 +155,10 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
         @Type(PostgreSQLRangeType.class)
         @Column(name = "r_ts_tz_infinity", columnDefinition = "tstzrange")
         private Range<ZonedDateTime> rangeZonedDateTimeInfinity;
+
+        @Type(PostgreSQLRangeType.class)
+        @Column(name = "r_ts_tz_empty", columnDefinition = "tstzrange")
+        private Range<ZonedDateTime> rangeZonedDateTimeEmpty;
 
         @Type(PostgreSQLRangeType.class)
         @Column(name = "r_date", columnDefinition = "daterange")
@@ -218,6 +226,14 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
 
         public Range<ZonedDateTime> getRangeZonedDateTimeInfinity() {
             return rangeZonedDateTimeInfinity;
+        }
+
+        public Range<ZonedDateTime> getRangeZonedDateTimeEmpty() {
+            return rangeZonedDateTimeEmpty;
+        }
+
+        public void setRangeZonedDateTimeEmpty(Range<ZonedDateTime> rangeZonedDateTimeEmpty) {
+            this.rangeZonedDateTimeEmpty = rangeZonedDateTimeEmpty;
         }
 
         public void setRangeZonedDateTimeInfinity(Range<ZonedDateTime> rangeZonedDateTimeInfinity) {

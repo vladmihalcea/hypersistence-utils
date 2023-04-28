@@ -442,7 +442,7 @@ public final class Range<T extends Comparable<? super T>> implements Serializabl
      */
     public static Range<ZonedDateTime> zonedDateTimeRange(String rangeStr) {
         Range<ZonedDateTime> range = ofString(rangeStr, parseZonedDateTime().compose(unquote()), ZonedDateTime.class);
-        if (range.hasLowerBound() && range.hasUpperBound()) {
+        if (range.hasLowerBound() && range.hasUpperBound() && !EMPTY.equals(rangeStr)) {
             ZoneId lowerZone = range.lower().getZone();
             ZoneId upperZone = range.upper().getZone();
             if (!lowerZone.equals(upperZone)) {

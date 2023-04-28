@@ -33,6 +33,7 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
     private final Range<LocalDateTime> localDateTimeRange = Range.localDateTimeRange("[2014-04-28 16:00:49,2015-04-28 16:00:49]");
 
     private final Range<ZonedDateTime> tsTz = zonedDateTimeRange("[\"2007-12-03T10:15:30+01:00\",\"2008-12-03T10:15:30+01:00\"]");
+
     private final Range<ZonedDateTime> tsTzEmpty = zonedDateTimeRange("empty");
 
     private final Range<ZonedDateTime> infinityTsTz = zonedDateTimeRange("[\"2007-12-03T10:15:30+01:00\",infinity)");
