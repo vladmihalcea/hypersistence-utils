@@ -77,6 +77,14 @@ public class PostgreSQLEnumType extends ImmutableDynamicParameterizedType<Enum> 
     }
 
     @Override
+    public Class<Enum> returnedClass() {
+        if (enumType != null) {
+            return enumType.returnedClass();
+        }
+        return super.returnedClass();
+    }
+
+    @Override
     public int getSqlType() {
         return Types.OTHER;
     }
