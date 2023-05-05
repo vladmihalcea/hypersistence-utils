@@ -76,6 +76,14 @@ public class PostgreSQLEnumTest extends AbstractPostgreSQLIntegrationTest {
         });
     }
 
+    @Test
+    public void testConstructorParameterMapping() {
+        doInJPA(entityManager -> {
+            entityManager.createQuery("SELECT new io.hypersistence.utils.hibernate.type.basic.StatusWrapper(a.status) FROM Post a", PostStatus.class)
+                    .getResultList();
+        });
+    }
+
     public enum PostStatus {
         PENDING,
         APPROVED,
