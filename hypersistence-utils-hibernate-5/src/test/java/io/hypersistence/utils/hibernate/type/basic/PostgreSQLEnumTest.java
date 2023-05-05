@@ -118,6 +118,28 @@ public class PostgreSQLEnumTest extends AbstractPostgreSQLIntegrationTest {
         });
     }
 
+    @Test
+    public void testConstructorExpressionWithEnumWrapper() {
+        doInJPA(new JPATransactionFunction<Void>() {
+
+            @Override
+            public Void apply(EntityManager entityManager) {
+                StatusWrapper statusWrapper = entityManager.createQuery(
+                    "SELECT " +
+                    "   new io.hypersistence.utils.hibernate.type.basic.PostgreSQLEnumTest$StatusWrapper(p.status) " +
+                    "FROM Post p " +
+                    "WHERE p.id = :id"
+                    , StatusWrapper.class)
+                    .setParameter("id", 1L)
+                    .getSingleResult();
+
+                assertEquals(PostStatus.PENDING, statusWrapper.getStatus());
+
+                return null;
+            }
+        });
+    }
+
     public enum PostStatus {
         PENDING,
         APPROVED,
@@ -166,6 +188,18 @@ public class PostgreSQLEnumTest extends AbstractPostgreSQLIntegrationTest {
 
         public void setStatus(PostStatus status) {
             this.status = status;
+        }
+    }
+
+    public static class StatusWrapper {
+        private PostStatus status;
+
+        public StatusWrapper(PostStatus status) {
+            this.status = status;
+        }
+
+        public PostStatus getStatus() {
+            return status;
         }
     }
 }

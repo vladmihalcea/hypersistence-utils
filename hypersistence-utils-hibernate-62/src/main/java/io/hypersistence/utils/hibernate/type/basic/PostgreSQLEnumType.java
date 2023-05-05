@@ -7,7 +7,6 @@ import org.hibernate.type.EnumType;
 import org.hibernate.type.descriptor.ValueBinder;
 import org.hibernate.type.descriptor.ValueExtractor;
 import org.hibernate.type.descriptor.converter.internal.NamedEnumValueConverter;
-import org.hibernate.type.descriptor.converter.spi.EnumValueConverter;
 import org.hibernate.type.descriptor.java.EnumJavaType;
 import org.hibernate.type.descriptor.java.JavaType;
 import org.hibernate.type.descriptor.java.ObjectJavaType;
@@ -74,6 +73,17 @@ public class PostgreSQLEnumType extends ImmutableDynamicParameterizedType<Enum> 
     @Override
     protected void set(PreparedStatement st, Enum value, int index, SharedSessionContractImplementor session) throws SQLException {
         enumType.nullSafeSet(st, value, index, session);
+    }
+
+    @Override
+    public Class<Enum> returnedClass() {
+        if (enumType != null) {
+            Class enumReturnClass = enumType.returnedClass();
+            if (enumReturnClass != null) {
+                return enumReturnClass;
+            }
+        }
+        return super.returnedClass();
     }
 
     @Override
