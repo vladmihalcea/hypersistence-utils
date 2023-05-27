@@ -1,3 +1,20 @@
+Version 3.4.0 - May 27, 2023
+================================================================================
+
+PostgreSQLEnumType returnedClass should be the Enum-specific class #627
+
+'empty' period causes NullPointerException in Range<ZonedDateTime> #622
+
+BatchSequenceGenerator should use PostgreSQL generate_series to speed up ID generation #614
+
+BatchSequenceGenerator should be able to search the DB sequence in the default schema #613
+
+BatchSequenceGenerator should be able to search the DB sequence in the default schema #611
+
+Add a FloatArrayType to map float[] as JPA entity properties #606
+
+Expose Range utility methods #594
+
 Version 3.3.2 - April 16, 2023
 ================================================================================
 
@@ -11,15 +28,15 @@ Adapt the Hibernate 6.2 module to the new Type and BasicPluralJavaType changes #
 Version 3.3.0 - March 26, 2023
 ================================================================================
 
-Add support for PostgreSQL ltree column type #543
-
-Starting app fails if Jackson is not present on the classpath #559
-
-Add @Transactional annotation to BaseJpaRepository methods #584
+Add support for Hibernate 6.2 #597
 
 Rename peristAllAndFlush to persistAllAndFlush HibernateRepository #593
 
-Add support for Hibernate 6.2 #597
+Add @Transactional annotation to BaseJpaRepository methods #584
+
+Starting app fails if Jackson is not present on the classpath #559
+
+Add support for PostgreSQL ltree column type #543
 
 Version 3.2.0 - February 16, 2023
 ================================================================================
