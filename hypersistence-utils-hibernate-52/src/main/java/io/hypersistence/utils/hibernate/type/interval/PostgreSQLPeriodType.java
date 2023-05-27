@@ -12,7 +12,7 @@ import java.time.Duration;
 import java.time.Period;
 
 /**
- * Maps a Java {@link Duration} object to a PostgreSQL Interval column type.
+ * Maps a Java {@link Period} object to a PostgreSQL Interval column type.
  *
  * @author Jan-Willem Gmelig Meyling
  * @author Vlad Mihalcea
