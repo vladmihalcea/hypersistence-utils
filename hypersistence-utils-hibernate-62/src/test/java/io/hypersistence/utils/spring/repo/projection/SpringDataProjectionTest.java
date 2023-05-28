@@ -1,6 +1,7 @@
 package io.hypersistence.utils.spring.repo.projection;
 
 import io.hypersistence.utils.spring.domain.Post;
+import io.hypersistence.utils.spring.domain.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 /**
  * @author Vlad Mihalcea
@@ -34,6 +36,9 @@ public class SpringDataProjectionTest {
 
     @Autowired
     private PostRepository postRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -70,6 +75,29 @@ public class SpringDataProjectionTest {
         expectedSlugs.add("slug1");
         expectedSlugs.add("slug2");
         assertEquals(expectedSlugs, result.getSlugs());
+    }
+
+    @Test
+    public void testMemberOf() {
+        transactionTemplate.execute((TransactionCallback<Void>) transactionStatus -> {
+            userRepository.persist(
+                new User()
+                    .setId(1L)
+                    .setFirstName("Vlad")
+                    .setLastName("Mihalcea")
+                    .addRole(User.Role.ADMIN)
+            );
+
+            return null;
+        });
+
+        List<User> users = transactionTemplate.execute(transactionStatus ->
+            userRepository.findByRole(User.Role.ADMIN)
+        );
+
+        assertEquals(1, users.size());
+        User user = users.get(0);
+        assertEquals(1L, user.getId().longValue());
     }
 }
 
