@@ -59,7 +59,6 @@ public class HibernateTypesContributor implements TypeContributor {
             typeContributions.contributeType(PostgreSQLPeriodType.INSTANCE);
 
             /* Specific-types */
-            typeContributions.contributeType(PostgreSQLEnumType.INSTANCE);
             typeContributions.contributeType(PostgreSQLHStoreType.INSTANCE);
             typeContributions.contributeType(PostgreSQLInetType.INSTANCE);
             typeContributions.contributeType(PostgreSQLRangeType.INSTANCE);
