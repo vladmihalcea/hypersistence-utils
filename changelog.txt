@@ -1,3 +1,8 @@
+Version 3.4.2 - May 30, 2023
+================================================================================
+
+Remove PostgreSQLEnumType from HibernateTypesContributor in Hibernate 6 modules #631
+
 Version 3.4.1 - May 28, 2023
 ================================================================================
 
