@@ -11,7 +11,7 @@ public enum Database {
     POSTGRESQL {
         @Override
         protected JdbcDatabaseContainer newJdbcDatabaseContainer() {
-            return new PostgreSQLContainer("postgres:13.7");
+            return new PostgreSQLContainer("postgres:15.3");
         }
     },
     ORACLE {

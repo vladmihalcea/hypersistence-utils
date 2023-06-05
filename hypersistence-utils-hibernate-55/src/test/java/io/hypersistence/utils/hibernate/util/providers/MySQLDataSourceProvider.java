@@ -80,6 +80,7 @@ public class MySQLDataSourceProvider extends AbstractContainerDataSourceProvider
         return "jdbc:mysql://localhost/high_performance_java_persistence?useSSL=false";
     }
 
+    @Override
     protected DataSource newDataSource() {
         try {
             MysqlDataSource dataSource = new MysqlDataSource();
