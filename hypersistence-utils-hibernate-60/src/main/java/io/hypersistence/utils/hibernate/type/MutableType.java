@@ -29,7 +29,7 @@ import java.sql.SQLException;
  */
 public abstract class MutableType<T, JDBC extends JdbcType, JAVA extends JavaType<T>> implements UserType<T>, BindableType<T>, SqmExpressible<T>, BasicValuedMapping {
 
-    private final Class<T> returnedClass;
+    private final Class<T> clazz;
 
     private final JDBC jdbcTypeDescriptor;
     private final JAVA javaTypeDescriptor;
@@ -41,25 +41,25 @@ public abstract class MutableType<T, JDBC extends JdbcType, JAVA extends JavaTyp
      * Initialization constructor taking the {@link Class}
      * and using the default {@link Configuration} object.
      *
-     * @param returnedClass The class returned by {@link UserType#nullSafeGet(ResultSet, int, SharedSessionContractImplementor, Object)}.
+     * @param clazz The class returned by {@link UserType#nullSafeGet(ResultSet, int, SharedSessionContractImplementor, Object)}.
      * @param jdbcTypeDescriptor the JDBC type descriptor
      * @param javaTypeDescriptor the Java type descriptor
      */
-    public MutableType(Class<T> returnedClass, JDBC jdbcTypeDescriptor, JAVA javaTypeDescriptor) {
-        this(returnedClass, jdbcTypeDescriptor, javaTypeDescriptor, Configuration.INSTANCE);
+    public MutableType(Class<T> clazz, JDBC jdbcTypeDescriptor, JAVA javaTypeDescriptor) {
+        this(clazz, jdbcTypeDescriptor, javaTypeDescriptor, Configuration.INSTANCE);
     }
 
     /**
      * Initialization constructor taking the {@link Class}
      * and using the provided {@link Configuration} object.
      *
-     * @param returnedClass The class returned by {@link UserType#nullSafeGet(ResultSet, int, SharedSessionContractImplementor, Object)}.
+     * @param clazz The class returned by {@link UserType#nullSafeGet(ResultSet, int, SharedSessionContractImplementor, Object)}.
      * @param jdbcTypeDescriptor the JDBC type descriptor
      * @param javaTypeDescriptor the Java type descriptor
      * @param configuration the configuration
      */
-    public MutableType(Class<T> returnedClass, JDBC jdbcTypeDescriptor, JAVA javaTypeDescriptor, Configuration configuration) {
-        this.returnedClass = returnedClass;
+    public MutableType(Class<T> clazz, JDBC jdbcTypeDescriptor, JAVA javaTypeDescriptor, Configuration configuration) {
+        this.clazz = clazz;
         this.jdbcTypeDescriptor = jdbcTypeDescriptor;
         this.javaTypeDescriptor = javaTypeDescriptor;
         this.configuration = configuration;
@@ -137,12 +137,12 @@ public abstract class MutableType<T, JDBC extends JdbcType, JAVA extends JavaTyp
 
     @Override
     public Class<T> returnedClass() {
-        return returnedClass;
+        return clazz;
     }
 
     @Override
     public Class<T> getBindableJavaType() {
-        return returnedClass;
+        return clazz;
     }
 
     @Override

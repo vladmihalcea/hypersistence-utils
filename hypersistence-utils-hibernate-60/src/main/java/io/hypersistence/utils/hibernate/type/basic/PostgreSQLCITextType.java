@@ -2,6 +2,7 @@ package io.hypersistence.utils.hibernate.type.basic;
 
 import io.hypersistence.utils.hibernate.type.ImmutableType;
 import io.hypersistence.utils.hibernate.type.util.Configuration;
+import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 
 import java.sql.PreparedStatement;
@@ -41,5 +42,10 @@ public class PostgreSQLCITextType extends ImmutableType<String> {
     @Override
     protected void set(PreparedStatement st, String value, int index, SharedSessionContractImplementor session) throws SQLException {
         st.setObject(index, value, Types.OTHER);
+    }
+
+    @Override
+    public String fromStringValue(CharSequence sequence) throws HibernateException {
+        return (String) sequence;
     }
 }

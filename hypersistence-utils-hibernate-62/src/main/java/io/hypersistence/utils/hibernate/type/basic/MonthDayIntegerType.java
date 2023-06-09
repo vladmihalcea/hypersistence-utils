@@ -1,8 +1,9 @@
 package io.hypersistence.utils.hibernate.type.basic;
 
-import io.hypersistence.utils.hibernate.type.MutableType;
+import io.hypersistence.utils.hibernate.type.DescriptorImmutableType;
 import io.hypersistence.utils.hibernate.type.basic.internal.MonthDayTypeDescriptor;
 import io.hypersistence.utils.hibernate.type.util.Configuration;
+import org.hibernate.HibernateException;
 import org.hibernate.type.descriptor.jdbc.IntegerJdbcType;
 
 import java.time.MonthDay;
@@ -12,7 +13,7 @@ import java.time.MonthDay;
  *
  * @author Mladen Savic (mladensavic94@gmail.com)
  */
-public class MonthDayIntegerType extends MutableType<MonthDay, IntegerJdbcType, MonthDayTypeDescriptor> {
+public class MonthDayIntegerType extends DescriptorImmutableType<MonthDay, IntegerJdbcType, MonthDayTypeDescriptor> {
 
     public static final MonthDayIntegerType INSTANCE = new MonthDayIntegerType();
 
@@ -39,5 +40,10 @@ public class MonthDayIntegerType extends MutableType<MonthDay, IntegerJdbcType, 
 
     public String getName() {
         return "monthday-int";
+    }
+
+    @Override
+    public MonthDay fromStringValue(CharSequence sequence) throws HibernateException {
+        return sequence != null ? MonthDay.parse(sequence) : null;
     }
 }

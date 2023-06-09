@@ -2,6 +2,7 @@ package io.hypersistence.utils.hibernate.type.interval;
 
 import io.hypersistence.utils.hibernate.type.ImmutableType;
 import io.hypersistence.utils.hibernate.type.util.Configuration;
+import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.postgresql.util.PGInterval;
 
@@ -76,4 +77,8 @@ public class PostgreSQLIntervalType extends ImmutableType<Duration> {
         return Types.OTHER;
     }
 
+    @Override
+    public Duration fromStringValue(CharSequence sequence) throws HibernateException {
+        return sequence != null ? Duration.parse(sequence) : null;
+    }
 }

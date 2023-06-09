@@ -87,4 +87,8 @@ public class OracleIntervalDayToSecondType extends ImmutableType<Duration> {
         return SQL_COLUMN_TYPE;
     }
 
+    @Override
+    public Duration fromStringValue(CharSequence sequence) throws HibernateException {
+        return sequence != null ? Duration.parse(sequence) : null;
+    }
 }

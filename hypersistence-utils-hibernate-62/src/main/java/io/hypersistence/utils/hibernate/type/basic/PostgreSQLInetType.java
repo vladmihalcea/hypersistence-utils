@@ -3,12 +3,14 @@ package io.hypersistence.utils.hibernate.type.basic;
 import io.hypersistence.utils.hibernate.type.ImmutableType;
 import io.hypersistence.utils.hibernate.type.util.Configuration;
 import io.hypersistence.utils.hibernate.util.ReflectionUtils;
+import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Map;
 
 /**
  * Maps an {@link Inet} object type to a PostgreSQL INET column type.
@@ -52,5 +54,10 @@ public class PostgreSQLInetType extends ImmutableType<Inet> {
             ReflectionUtils.invokeSetter(holder, "value", value.getAddress());
             st.setObject(index, holder);
         }
+    }
+
+    @Override
+    public Inet fromStringValue(CharSequence sequence) throws HibernateException {
+        return sequence != null ? new Inet((String) sequence): null;
     }
 }

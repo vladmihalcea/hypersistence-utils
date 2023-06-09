@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.hypersistence.utils.hibernate.type.MutableDynamicParameterizedType;
 import io.hypersistence.utils.hibernate.type.json.internal.JsonJavaTypeDescriptor;
 import io.hypersistence.utils.hibernate.type.json.internal.JsonStringJdbcTypeDescriptor;
-import io.hypersistence.utils.hibernate.type.util.Configuration;
 import io.hypersistence.utils.hibernate.type.util.JsonConfiguration;
 import io.hypersistence.utils.hibernate.type.util.ObjectMapperWrapper;
 

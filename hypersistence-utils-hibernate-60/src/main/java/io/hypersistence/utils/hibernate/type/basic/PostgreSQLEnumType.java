@@ -2,6 +2,7 @@ package io.hypersistence.utils.hibernate.type.basic;
 
 import io.hypersistence.utils.hibernate.type.ImmutableDynamicParameterizedType;
 import io.hypersistence.utils.hibernate.util.ReflectionUtils;
+import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.metamodel.model.convert.spi.EnumValueConverter;
 import org.hibernate.type.EnumType;
@@ -12,6 +13,7 @@ import org.hibernate.type.descriptor.java.ObjectJavaType;
 import org.hibernate.type.descriptor.jdbc.JdbcType;
 import org.hibernate.type.descriptor.jdbc.ObjectJdbcType;
 import org.hibernate.type.spi.TypeConfiguration;
+import org.hibernate.usertype.DynamicParameterizedType;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -84,5 +86,10 @@ public class PostgreSQLEnumType extends ImmutableDynamicParameterizedType<Enum> 
     @Override
     public int getSqlType() {
         return Types.OTHER;
+    }
+
+    @Override
+    public Enum fromStringValue(CharSequence charSequence) throws HibernateException {
+        return charSequence != null ? Enum.valueOf(enumType.returnedClass(), (String) charSequence) : null;
     }
 }

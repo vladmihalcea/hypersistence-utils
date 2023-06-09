@@ -142,4 +142,43 @@ public class PostgreSQLRangeType extends ImmutableType<Range> implements Dynamic
                 (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[0] : null;
     }
 
+    @Override
+    public Range fromStringValue(CharSequence sequence) throws HibernateException {
+        if (sequence != null) {
+            String stringValue = (String) sequence;
+            Class clazz = rangeClass();
+            if(clazz != null) {
+                if(Integer.class.isAssignableFrom(clazz)) {
+                    return Range.integerRange(stringValue);
+                }
+                if(Long.class.isAssignableFrom(clazz)) {
+                    return Range.longRange(stringValue);
+                }
+                if(BigDecimal.class.isAssignableFrom(clazz)) {
+                    return Range.bigDecimalRange(stringValue);
+                }
+                if(LocalDateTime.class.isAssignableFrom(clazz)) {
+                    return Range.localDateTimeRange(stringValue);
+                }
+                if(ZonedDateTime.class.isAssignableFrom(clazz)) {
+                    return Range.zonedDateTimeRange(stringValue);
+                }
+                if(LocalDate.class.isAssignableFrom(clazz)) {
+                    return Range.localDateRange(stringValue);
+                }
+                throw new HibernateException(
+                    new IllegalStateException("The range type [" + type + "] is not supported!")
+                );
+            }
+        }
+        return null;
+    }
+
+    private Class rangeClass() {
+        if (type instanceof ParameterizedType) {
+            Type[] types = ((ParameterizedType) type).getActualTypeArguments();
+            return (Class) types[0];
+        }
+        return null;
+    }
 }

@@ -1,11 +1,13 @@
 package io.hypersistence.utils.hibernate.type.basic;
 
-import io.hypersistence.utils.hibernate.type.MutableType;
+import io.hypersistence.utils.hibernate.type.DescriptorImmutableType;
 import io.hypersistence.utils.hibernate.type.basic.internal.YearTypeDescriptor;
 import io.hypersistence.utils.hibernate.type.util.Configuration;
+import org.hibernate.HibernateException;
 import org.hibernate.type.descriptor.jdbc.SmallIntJdbcType;
 
 import java.time.Year;
+import java.time.YearMonth;
 
 /**
  * Maps a Java {@link Year} object to an {@code INT} column type.
@@ -14,7 +16,7 @@ import java.time.Year;
  *
  * @author Vlad Mihalcea
  */
-public class YearType extends MutableType<Year, SmallIntJdbcType, YearTypeDescriptor> {
+public class YearType extends DescriptorImmutableType<Year, SmallIntJdbcType, YearTypeDescriptor> {
 
     public static final YearType INSTANCE = new YearType();
 
@@ -41,5 +43,10 @@ public class YearType extends MutableType<Year, SmallIntJdbcType, YearTypeDescri
 
     public String getName() {
         return "year";
+    }
+
+    @Override
+    public Year fromStringValue(CharSequence charSequence) throws HibernateException {
+        return charSequence != null ? Year.parse(charSequence) : null;
     }
 }

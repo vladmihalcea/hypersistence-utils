@@ -1,10 +1,12 @@
 package io.hypersistence.utils.hibernate.type.basic;
 
-import io.hypersistence.utils.hibernate.type.MutableType;
+import io.hypersistence.utils.hibernate.type.DescriptorImmutableType;
 import io.hypersistence.utils.hibernate.type.basic.internal.ZoneIdTypeDescriptor;
 import io.hypersistence.utils.hibernate.type.util.Configuration;
+import org.hibernate.HibernateException;
 import org.hibernate.type.descriptor.jdbc.VarcharJdbcType;
 
+import java.time.Year;
 import java.time.ZoneId;
 
 /**
@@ -12,7 +14,7 @@ import java.time.ZoneId;
  *
  * @author stonio
  */
-public class ZoneIdType extends MutableType<ZoneId, VarcharJdbcType, ZoneIdTypeDescriptor> {
+public class ZoneIdType extends DescriptorImmutableType<ZoneId, VarcharJdbcType, ZoneIdTypeDescriptor> {
 
     public static final ZoneIdType INSTANCE = new ZoneIdType();
 
@@ -39,5 +41,10 @@ public class ZoneIdType extends MutableType<ZoneId, VarcharJdbcType, ZoneIdTypeD
 
     public String getName() {
         return "zone-id";
+    }
+
+    @Override
+    public ZoneId fromStringValue(CharSequence charSequence) throws HibernateException {
+        return charSequence != null ? ZoneId.of((String) charSequence) : null;
     }
 }

@@ -9,8 +9,7 @@ import java.util.Objects;
 /**
  * @author Martin Panzer
  */
-public class Iso8601MonthMonthTypeDescriptor
-        extends AbstractClassJavaType<Month> {
+public class Iso8601MonthMonthTypeDescriptor extends AbstractClassJavaType<Month> {
 
     public static final Iso8601MonthMonthTypeDescriptor INSTANCE = new Iso8601MonthMonthTypeDescriptor();
 

@@ -56,16 +56,15 @@ public class PostgreSQLYearMonthEpochTest extends AbstractPostgreSQLIntegrationT
         });
 
         doInJPA(entityManager -> {
-            Book book = entityManager
-                    .createQuery(
-                            "select b " +
-                                    "from Book b " +
-                                    "where " +
-                                    "   b.title = :title and " +
-                                    "   b.publishedOn = :publishedOn", Book.class)
-                    .setParameter("title", "High-Performance Java Persistence")
-                    .setParameter("publishedOn", YearMonth.of(2016, 10))
-                    .getSingleResult();
+            Book book = entityManager.createQuery(
+                "select b " +
+                "from Book b " +
+                "where " +
+                "   b.title = :title and " +
+                "   b.publishedOn = :publishedOn", Book.class)
+            .setParameter("title", "High-Performance Java Persistence")
+            .setParameter("publishedOn", YearMonth.of(2016, 10))
+            .getSingleResult();
 
             assertEquals("978-9730228236", book.getIsbn());
         });
@@ -115,17 +114,17 @@ public class PostgreSQLYearMonthEpochTest extends AbstractPostgreSQLIntegrationT
 
         List<String> executionPlanLines = doInJPA(entityManager -> {
             return entityManager.createNativeQuery(
-                    "EXPLAIN ANALYZE " +
-                            "SELECT " +
-                            "    b.published_on " +
-                            "FROM " +
-                            "    book b " +
-                            "WHERE " +
-                            "   b.published_on BETWEEN :startYearMonth AND :endYearMonth ")
-                    .unwrap(NativeQuery.class)
-                    .setParameter("startYearMonth", YearMonth.of(2010, 12), YearMonthEpochType.INSTANCE)
-                    .setParameter("endYearMonth", YearMonth.of(2018, 1), YearMonthEpochType.INSTANCE)
-                    .getResultList();
+                "EXPLAIN ANALYZE " +
+                "SELECT " +
+                "    b.published_on " +
+                "FROM " +
+                "    book b " +
+                "WHERE " +
+                "   b.published_on BETWEEN :startYearMonth AND :endYearMonth ")
+            .unwrap(NativeQuery.class)
+            .setParameter("startYearMonth", YearMonth.of(2010, 12), YearMonthEpochType.INSTANCE)
+            .setParameter("endYearMonth", YearMonth.of(2018, 1), YearMonthEpochType.INSTANCE)
+            .getResultList();
         });
 
         LOGGER.info("Execution plan: \n{}", executionPlanLines.stream().collect(Collectors.joining("\n")));

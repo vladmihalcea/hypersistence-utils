@@ -1,8 +1,9 @@
 package io.hypersistence.utils.hibernate.type.basic;
 
-import io.hypersistence.utils.hibernate.type.MutableType;
+import io.hypersistence.utils.hibernate.type.DescriptorImmutableType;
 import io.hypersistence.utils.hibernate.type.basic.internal.Iso8601MonthMonthTypeDescriptor;
 import io.hypersistence.utils.hibernate.type.util.Configuration;
+import org.hibernate.HibernateException;
 import org.hibernate.type.descriptor.jdbc.IntegerJdbcType;
 
 import java.time.Month;
@@ -14,7 +15,7 @@ import java.time.Month;
  *
  * @author Martin Panzer
  */
-public class Iso8601MonthType extends MutableType<Month, IntegerJdbcType, Iso8601MonthMonthTypeDescriptor> {
+public class Iso8601MonthType extends DescriptorImmutableType<Month, IntegerJdbcType, Iso8601MonthMonthTypeDescriptor> {
 
     public static final Iso8601MonthType INSTANCE = new Iso8601MonthType();
 
@@ -41,5 +42,10 @@ public class Iso8601MonthType extends MutableType<Month, IntegerJdbcType, Iso860
 
     public String getName() {
         return "month";
+    }
+
+    @Override
+    public Month fromStringValue(CharSequence sequence) throws HibernateException {
+        return sequence != null ? Month.valueOf((String) sequence) : null;
     }
 }

@@ -2,6 +2,7 @@ package io.hypersistence.utils.hibernate.type.basic;
 
 import io.hypersistence.utils.hibernate.type.ImmutableType;
 import io.hypersistence.utils.hibernate.type.util.Configuration;
+import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 
 import java.sql.PreparedStatement;
@@ -48,5 +49,10 @@ public class NullableCharacterType extends ImmutableType<Character> {
         } else {
             st.setString(index, String.valueOf(value));
         }
+    }
+
+    @Override
+    public Character fromStringValue(CharSequence sequence) throws HibernateException {
+        return sequence != null ? sequence.charAt(0) : null;
     }
 }

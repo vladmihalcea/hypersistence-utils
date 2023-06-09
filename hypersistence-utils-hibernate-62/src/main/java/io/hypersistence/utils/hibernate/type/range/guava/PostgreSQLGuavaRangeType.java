@@ -17,13 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
@@ -528,4 +522,43 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
         return elementType;
     }
 
+    @Override
+    public Range fromStringValue(CharSequence sequence) throws HibernateException {
+        if (sequence != null) {
+            String stringValue = (String) sequence;
+            Class clazz = rangeClass();
+            if(clazz != null) {
+                if(Integer.class.isAssignableFrom(clazz)) {
+                    return integerRange(stringValue);
+                }
+                if(Long.class.isAssignableFrom(clazz)) {
+                    return longRange(stringValue);
+                }
+                if(BigDecimal.class.isAssignableFrom(clazz)) {
+                    return bigDecimalRange(stringValue);
+                }
+                if(LocalDateTime.class.isAssignableFrom(clazz)) {
+                    return localDateTimeRange(stringValue);
+                }
+                if(ZonedDateTime.class.isAssignableFrom(clazz)) {
+                    return zonedDateTimeRange(stringValue);
+                }
+                if(LocalDate.class.isAssignableFrom(clazz)) {
+                    return localDateRange(stringValue);
+                }
+                throw new HibernateException(
+                    new IllegalStateException("The range type [" + type + "] is not supported!")
+                );
+            }
+        }
+        return null;
+    }
+
+    private Class rangeClass() {
+        if (type instanceof ParameterizedType) {
+            Type[] types = ((ParameterizedType) type).getActualTypeArguments();
+            return (Class) types[0];
+        }
+        return null;
+    }
 }

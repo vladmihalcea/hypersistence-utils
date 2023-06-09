@@ -1,7 +1,9 @@
 package io.hypersistence.utils.hibernate.type.basic;
 
 import io.hypersistence.utils.hibernate.type.ImmutableType;
+import io.hypersistence.utils.hibernate.type.json.internal.JacksonUtil;
 import io.hypersistence.utils.hibernate.type.util.Configuration;
+import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 
 import java.sql.PreparedStatement;
@@ -46,5 +48,19 @@ public class PostgreSQLHStoreType extends ImmutableType<Map> {
     @Override
     protected void set(PreparedStatement st, Map value, int index, SharedSessionContractImplementor session) throws SQLException {
         st.setObject(index, value);
+    }
+
+    @Override
+    public Map fromStringValue(CharSequence sequence) throws HibernateException {
+        try {
+            return JacksonUtil.fromString((String) sequence, Map.class);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Could not transform the [%s] value to a Map!",
+                    sequence
+                )
+            );
+        }
     }
 }

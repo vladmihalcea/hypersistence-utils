@@ -11,6 +11,7 @@ import org.hibernate.metamodel.model.domain.BasicDomainType;
 import org.hibernate.type.ForeignKeyDirection;
 import org.hibernate.type.Type;
 import org.hibernate.type.descriptor.java.IncomparableComparator;
+import org.hibernate.usertype.EnhancedUserType;
 import org.hibernate.usertype.UserType;
 
 import java.io.Serializable;
@@ -28,7 +29,7 @@ import java.util.Map;
  *
  * @author Vlad Mihalcea
  */
-public abstract class ImmutableType<T> implements UserType<T>, Type {
+public abstract class ImmutableType<T> implements UserType<T>, Type, EnhancedUserType<T> {
 
     private final Configuration configuration;
 
@@ -282,5 +283,15 @@ public abstract class ImmutableType<T> implements UserType<T>, Type {
     @Override
     public int[] getSqlTypeCodes(Mapping mapping) throws MappingException {
         return new int[]{getSqlType()};
+    }
+
+    @Override
+    public String toSqlLiteral(T o) {
+        return toString(o);
+    }
+
+    @Override
+    public String toString(T o) throws HibernateException {
+        return o != null ? o.toString() : null;
     }
 }

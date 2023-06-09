@@ -1,8 +1,9 @@
 package io.hypersistence.utils.hibernate.type.basic;
 
-import io.hypersistence.utils.hibernate.type.MutableType;
+import io.hypersistence.utils.hibernate.type.DescriptorImmutableType;
 import io.hypersistence.utils.hibernate.type.basic.internal.YearMonthTypeDescriptor;
 import io.hypersistence.utils.hibernate.type.util.Configuration;
+import org.hibernate.HibernateException;
 import org.hibernate.type.descriptor.jdbc.IntegerJdbcType;
 
 import java.time.YearMonth;
@@ -14,7 +15,7 @@ import java.time.YearMonth;
  *
  * @author Vlad Mihalcea
  */
-public class YearMonthIntegerType extends MutableType<YearMonth, IntegerJdbcType, YearMonthTypeDescriptor> {
+public class YearMonthIntegerType extends DescriptorImmutableType<YearMonth, IntegerJdbcType, YearMonthTypeDescriptor> {
 
     public static final YearMonthIntegerType INSTANCE = new YearMonthIntegerType();
 
@@ -41,5 +42,10 @@ public class YearMonthIntegerType extends MutableType<YearMonth, IntegerJdbcType
 
     public String getName() {
         return "yearmonth-int";
+    }
+
+    @Override
+    public YearMonth fromStringValue(CharSequence charSequence) throws HibernateException {
+        return charSequence != null ? YearMonth.parse(charSequence) : null;
     }
 }
