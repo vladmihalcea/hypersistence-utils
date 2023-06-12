@@ -2,9 +2,7 @@ package io.hypersistence.utils.hibernate.util;
 
 import java.lang.reflect.*;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <code>ReflectionUtils</code> - Reflection utilities holder.
@@ -17,8 +15,6 @@ public final class ReflectionUtils {
     private static final String GETTER_PREFIX = "get";
 
     private static final String SETTER_PREFIX = "set";
-
-    private static final Map<String, Class> CLASS_MAP = new ConcurrentHashMap<>();
 
     /**
      * Prevent any instantiation.
@@ -503,12 +499,7 @@ public final class ReflectionUtils {
     @SuppressWarnings("unchecked")
     public static <T> Class<T> getClass(String className) {
         try {
-            Class<T> clazz = CLASS_MAP.get(className);
-            if(clazz == null) {
-                clazz = (Class<T>) Class.forName(className, false, Thread.currentThread().getContextClassLoader());
-                CLASS_MAP.put(className, clazz);
-            }
-            return clazz;
+            return (Class<T>) Class.forName(className, false, Thread.currentThread().getContextClassLoader());
         } catch (ClassNotFoundException e) {
             throw handleException(e);
         }
