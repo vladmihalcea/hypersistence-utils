@@ -9,14 +9,19 @@ import io.hypersistence.utils.hibernate.type.json.JsonNodeStringType;
 import io.hypersistence.utils.hibernate.type.range.PostgreSQLRangeType;
 import io.hypersistence.utils.hibernate.type.range.guava.PostgreSQLGuavaRangeType;
 import io.hypersistence.utils.hibernate.util.ReflectionUtils;
+import org.hibernate.HibernateException;
 import org.hibernate.boot.model.TypeContributions;
 import org.hibernate.boot.model.TypeContributor;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.MySQLDialect;
 import org.hibernate.dialect.OracleDialect;
 import org.hibernate.dialect.PostgreSQLDialect;
+import org.hibernate.engine.config.spi.ConfigurationService;
 import org.hibernate.engine.jdbc.spi.JdbcServices;
 import org.hibernate.service.ServiceRegistry;
+import org.hibernate.usertype.UserType;
+
+import java.util.function.Predicate;
 
 /**
  * The {@link HibernateTypesContributor} registers various types automatically.
@@ -26,8 +31,48 @@ import org.hibernate.service.ServiceRegistry;
  */
 public class HibernateTypesContributor implements TypeContributor {
 
+    public static final String ENABLE_TYPES_CONTRIBUTOR = "hypersistence.utils.enable_types_contributor";
+
+    public static final String TYPES_CONTRIBUTOR_FILTER = "hypersistence.utils.types_contributor_filter";
+
     @Override
     public void contribute(TypeContributions typeContributions, ServiceRegistry serviceRegistry) {
+        ConfigurationService configurationService = serviceRegistry.getService(ConfigurationService.class);
+        Boolean enableTypesContributor = (Boolean) configurationService.getSetting(ENABLE_TYPES_CONTRIBUTOR, value -> {
+            if(value instanceof Boolean) {
+                return value;
+            }
+            if(value instanceof String) {
+                return Boolean.getBoolean((String) value);
+            }
+            throw new HibernateException(
+                String.format("The value [%s] of the [%s] setting is not supported!", value, ENABLE_TYPES_CONTRIBUTOR)
+            );
+        });
+        if(Boolean.FALSE.equals(enableTypesContributor)) {
+            return;
+        }
+        @SuppressWarnings("unchecked")
+        Predicate<UserType> typeFilter = (Predicate<UserType>) configurationService.getSetting(TYPES_CONTRIBUTOR_FILTER, value -> {
+            if(value instanceof Predicate) {
+                return value;
+            }
+            if(value instanceof Class) {
+                return ReflectionUtils.newInstance((Class) value);
+            }
+            if(value instanceof String) {
+                return ReflectionUtils.newInstance(
+                    ReflectionUtils.getClass((String) value)
+                );
+            }
+            throw new HibernateException(
+                String.format("The value of the [%s] setting is not supported!", TYPES_CONTRIBUTOR_FILTER)
+            );
+        });
+        if(typeFilter == null) {
+            typeFilter = o -> true;
+        }
+
         JdbcServices jdbcServices = serviceRegistry.getService(JdbcServices.class);
         Dialect dialect = jdbcServices.getDialect();
 
@@ -40,51 +85,59 @@ public class HibernateTypesContributor implements TypeContributor {
 
         if(dialect instanceof PostgreSQLDialect) {
             /* Arrays */
-            typeContributions.contributeType(BooleanArrayType.INSTANCE);
-            typeContributions.contributeType(DateArrayType.INSTANCE);
-            typeContributions.contributeType(DecimalArrayType.INSTANCE);
-            typeContributions.contributeType(DoubleArrayType.INSTANCE);
-            typeContributions.contributeType(FloatArrayType.INSTANCE);
-            typeContributions.contributeType(EnumArrayType.INSTANCE);
-            typeContributions.contributeType(IntArrayType.INSTANCE);
-            typeContributions.contributeType(LocalDateArrayType.INSTANCE);
-            typeContributions.contributeType(LocalDateTimeArrayType.INSTANCE);
-            typeContributions.contributeType(LongArrayType.INSTANCE);
-            typeContributions.contributeType(StringArrayType.INSTANCE);
-            typeContributions.contributeType(TimestampArrayType.INSTANCE);
-            typeContributions.contributeType(UUIDArrayType.INSTANCE);
+            contributeType(typeContributions, BooleanArrayType.INSTANCE, typeFilter);
+            contributeType(typeContributions, DateArrayType.INSTANCE, typeFilter);
+            contributeType(typeContributions, DecimalArrayType.INSTANCE, typeFilter);
+            contributeType(typeContributions, DoubleArrayType.INSTANCE, typeFilter);
+            contributeType(typeContributions, FloatArrayType.INSTANCE, typeFilter);
+            contributeType(typeContributions, EnumArrayType.INSTANCE, typeFilter);
+            contributeType(typeContributions, IntArrayType.INSTANCE, typeFilter);
+            contributeType(typeContributions, LocalDateArrayType.INSTANCE, typeFilter);
+            contributeType(typeContributions, LocalDateTimeArrayType.INSTANCE, typeFilter);
+            contributeType(typeContributions, LongArrayType.INSTANCE, typeFilter);
+            contributeType(typeContributions, StringArrayType.INSTANCE, typeFilter);
+            contributeType(typeContributions, TimestampArrayType.INSTANCE, typeFilter);
+            contributeType(typeContributions, UUIDArrayType.INSTANCE, typeFilter);
 
             /* Date/Time */
-            typeContributions.contributeType(PostgreSQLIntervalType.INSTANCE);
-            typeContributions.contributeType(PostgreSQLPeriodType.INSTANCE);
+            contributeType(typeContributions, PostgreSQLIntervalType.INSTANCE, typeFilter);
+            contributeType(typeContributions, PostgreSQLPeriodType.INSTANCE, typeFilter);
 
             /* Specific-types */
-            typeContributions.contributeType(PostgreSQLHStoreType.INSTANCE);
-            typeContributions.contributeType(PostgreSQLInetType.INSTANCE);
-            typeContributions.contributeType(PostgreSQLRangeType.INSTANCE);
+            contributeType(typeContributions, PostgreSQLHStoreType.INSTANCE, typeFilter);
+            contributeType(typeContributions, PostgreSQLInetType.INSTANCE, typeFilter);
+            contributeType(typeContributions, PostgreSQLRangeType.INSTANCE, typeFilter);
 
             if(ReflectionUtils.getClassOrNull("com.google.common.collect.Range") != null) {
-                typeContributions.contributeType(PostgreSQLGuavaRangeType.INSTANCE);
+                contributeType(typeContributions, PostgreSQLGuavaRangeType.INSTANCE, typeFilter);
             }
         } else if(dialect instanceof MySQLDialect) {
             /* JSON */
             if (enableJson) {
-                typeContributions.contributeType(JsonNodeStringType.INSTANCE);
+                contributeType(typeContributions, JsonNodeStringType.INSTANCE, typeFilter);
             }
         } else if(dialect instanceof OracleDialect) {
             /* Date/Time */
-            typeContributions.contributeType(OracleIntervalDayToSecondType.INSTANCE);
+            contributeType(typeContributions, OracleIntervalDayToSecondType.INSTANCE, typeFilter);
         }
 
         /* Basic */
-        typeContributions.contributeType(NullableCharacterType.INSTANCE);
+        contributeType(typeContributions, NullableCharacterType.INSTANCE, typeFilter);
         /* Date/Time */
-        typeContributions.contributeType(Iso8601MonthType.INSTANCE);
-        typeContributions.contributeType(MonthDayDateType.INSTANCE);
-        typeContributions.contributeType(MonthDayIntegerType.INSTANCE);
-        typeContributions.contributeType(YearMonthDateType.INSTANCE);
-        typeContributions.contributeType(YearMonthEpochType.INSTANCE);
-        typeContributions.contributeType(YearMonthIntegerType.INSTANCE);
-        typeContributions.contributeType(YearMonthTimestampType.INSTANCE);
+        contributeType(typeContributions, Iso8601MonthType.INSTANCE, typeFilter);
+        contributeType(typeContributions, MonthDayDateType.INSTANCE, typeFilter);
+        contributeType(typeContributions, MonthDayIntegerType.INSTANCE, typeFilter);
+        contributeType(typeContributions, YearMonthDateType.INSTANCE, typeFilter);
+        contributeType(typeContributions, YearMonthEpochType.INSTANCE, typeFilter);
+        contributeType(typeContributions, YearMonthIntegerType.INSTANCE, typeFilter);
+        contributeType(typeContributions, YearMonthTimestampType.INSTANCE, typeFilter);
+    }
+
+    private HibernateTypesContributor contributeType(TypeContributions typeContributions, UserType type, Predicate<UserType> typeFilter) {
+        if (typeFilter.test(type)) {
+            typeContributions.contributeType(type);
+        }
+
+        return this;
     }
 }
