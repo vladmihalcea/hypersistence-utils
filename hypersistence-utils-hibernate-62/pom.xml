@@ -211,7 +211,7 @@
         <hibernate.version>6.2.5.Final</hibernate.version>
 
         <mysql.version>8.0.28</mysql.version>
-        <jackson-module-jakarta-xmlbind-annotation>2.15.0</jackson-module-jakarta-xmlbind-annotation>
+        <jackson-module-jakarta-xmlbind-annotation>2.15.2</jackson-module-jakarta-xmlbind-annotation>
         <guava.version>31.1-jre</guava.version>
         <moneta.version>1.4.2</moneta.version>
 
