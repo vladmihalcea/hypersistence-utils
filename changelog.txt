@@ -1,3 +1,8 @@
+Version 3.5.1 - June 26, 2023
+================================================================================
+
+The ESCAPE literal in the LIKE clause is not escaped and caused an "syntax error at end of input" error #638
+
 Version 3.5.0 - June 19, 2023
 ================================================================================
 
