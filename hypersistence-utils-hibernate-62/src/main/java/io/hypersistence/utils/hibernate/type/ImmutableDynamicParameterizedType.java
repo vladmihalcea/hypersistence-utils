@@ -5,6 +5,8 @@ import org.hibernate.HibernateException;
 import org.hibernate.usertype.DynamicParameterizedType;
 import org.hibernate.usertype.EnhancedUserType;
 
+import java.util.Locale;
+
 /**
  * @author Vlad Mihalcea
  */
@@ -26,7 +28,9 @@ public abstract class ImmutableDynamicParameterizedType<T> extends ImmutableType
 
     @Override
     public String toSqlLiteral(T o) {
-        return toString(o);
+        return o != null ?
+            String.format(Locale.ROOT, "'%s'", o) :
+            null;
     }
 
     @Override

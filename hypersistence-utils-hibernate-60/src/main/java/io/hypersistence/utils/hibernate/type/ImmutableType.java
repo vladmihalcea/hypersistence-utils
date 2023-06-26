@@ -18,6 +18,7 @@ import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -287,7 +288,9 @@ public abstract class ImmutableType<T> implements UserType<T>, Type, EnhancedUse
 
     @Override
     public String toSqlLiteral(T o) {
-        return toString(o);
+        return o != null ?
+            String.format(Locale.ROOT, "'%s'", o) :
+            null;
     }
 
     @Override
