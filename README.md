@@ -357,22 +357,23 @@ The `your.repository.package` is the Java package of your Spring repositories.
 * SLF4J
 * Jackson Databind
 
-### Issue management
+### Bug fixes and enhancements
 
-If you have an issue, then there are two ways to address it.
+**This project is Free, as in Libre, not Gratis.**
 
-#### Option 1: Providing your own fix
+> There is no free-of-charge support. Only the source code and the binaries are available for free.
+> 
+> If you need assistance with a given issue, you will need to purchase either the [Coaching Basic](https://vladmihalcea.teachable.com/p/high-performance-java-persistence-coaching-basic) or the [Coaching Pro](https://vladmihalcea.teachable.com/p/high-performance-java-persistence-coaching-pro) programs.
 
-Since this project is open-source, you have the ability to fix any issue you bump into.
-Therefore, when dealing with a problem, this is what you need to do:
+#### Providing your own fix
+
+Besides the Paid support options, you have the option of providing your own fix. For that, here's what you need to do:
 
 1. Provide a replicating test case using the existing test cases as a template
 2. Provide a fix proposal
-3. Send a Pull Request with the fix proposal and the test case
+3. Send a Pull Request with the fix proposal and the test case 
 
-#### Option 2: Paid support
-
-If you don't have the time to provide a fix, then I can fix your issue via [consulting](https://vladmihalcea.com/consulting/). If you're in a hurry, this is going to be your best option.
+However, due to lack of time, I will review the submitted Pull Requests from time to time, so you may need to wait several months until the Pull Request is reviewed and integrated.
 
 ### Are you struggling with application performance issues?
 
