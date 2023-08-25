@@ -18,7 +18,7 @@ import java.util.*;
 /**
  * @author Vlad Mihalcea
  */
-public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Object> {
+public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Collection> {
 
     private String sqlArrayType;
 
@@ -29,22 +29,15 @@ public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Object>
     private Class propertyClass;
 
     public ListArrayTypeDescriptor() {
-        super(Object.class, new MutableMutabilityPlan<Object>() {
+        super(Collection.class, new MutableMutabilityPlan<>() {
             @Override
-            protected Object deepCopyNotNull(Object value) {
-                if (value instanceof Collection) {
+            protected Collection deepCopyNotNull(Collection value) {
                     Object[] array = ((Collection<Object>) value).toArray();
                     return ArrayUtil.asList(ArrayUtil.deepCopy(array));
-                } else if (value.getClass().isArray()) {
-                    Object[] array = (Object[]) value;
-                    return ArrayUtil.deepCopy(array);
-                } else {
-                    throw new UnsupportedOperationException("The provided " + value + " is not a List!");
-                }
             }
 
             @Override
-            public Object assemble(Serializable cached, SharedSessionContract session) {
+            public Collection assemble(Serializable cached, SharedSessionContract session) {
                 if (cached != null && cached.getClass().isArray()) {
                     Object[] array = (Object[]) cached;
                     return Arrays.asList(array);
@@ -60,18 +53,12 @@ public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Object>
     }
 
     @Override
-    public Object unwrap(Object value, Class type, WrapperOptions options) {
-        if (value instanceof Object[]) {
-            return value;
-        } else if (value instanceof Collection) {
-            return super.unwrap(((Collection) value).toArray(), type, options);
-        } else {
-            throw new UnsupportedOperationException("The provided " + value + " is not a Object[] or List!");
-        }
+    public Object unwrap(Collection value, Class type, WrapperOptions options) {
+        return super.unwrap(value, type, options);
     }
 
     @Override
-    public Object wrap(Object value, WrapperOptions options) {
+    public Collection wrap(Object value, WrapperOptions options) {
         Object wrappedObject = super.wrap(value, options);
         Collection list = null;
         if (wrappedObject != null) {
@@ -87,21 +74,14 @@ public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Object>
     }
 
     @Override
-    public boolean areEqual(Object one, Object another) {
+    public boolean areEqual(Collection one, Collection another) {
         if (one == another) {
             return true;
         }
         if (one == null || another == null) {
             return false;
         }
-        if (one instanceof Collection && another instanceof Collection) {
-            return ArrayUtil.isEquals(((Collection) one).toArray(), ((Collection) another).toArray());
-        }
-        if (one instanceof Object[] && another instanceof Object[]) {
-            return ArrayUtil.isEquals(one, another);
-        } else {
-            throw new UnsupportedOperationException("The provided " + one + " and " + another + " are not Object[] or List!");
-        }
+        return ArrayUtil.isEquals(one.toArray(), another.toArray());
     }
 
     @Override

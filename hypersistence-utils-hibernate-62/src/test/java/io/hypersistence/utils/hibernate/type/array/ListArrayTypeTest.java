@@ -2,6 +2,7 @@ package io.hypersistence.utils.hibernate.type.array;
 
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import jakarta.persistence.*;
+import jakarta.persistence.metamodel.ManagedType;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.jpa.boot.spi.TypeContributorList;
@@ -417,6 +418,16 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         });
     }
 
+    @Test
+    public void testAttributeType() {
+        doInJPA(entityManager -> {
+            ManagedType<Event> eventManagedType = entityManager.getMetamodel().managedType(Event.class);
+            assertEquals(
+                Collection.class,
+                eventManagedType.getAttribute("sensorIds").getJavaType()
+            );
+        });
+    }
 
     @Entity(name = "Event")
     @Table(name = "event")

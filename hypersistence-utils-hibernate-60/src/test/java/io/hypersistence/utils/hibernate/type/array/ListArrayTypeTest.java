@@ -2,6 +2,7 @@ package io.hypersistence.utils.hibernate.type.array;
 
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import jakarta.persistence.*;
+import jakarta.persistence.metamodel.ManagedType;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.jpa.boot.spi.TypeContributorList;
@@ -245,12 +246,12 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         doInJPA(entityManager -> {
             List<Tuple> events = entityManager.createNativeQuery(
                 "select " +
-                    "   id, " +
-                    "   sensor_ids, " +
-                    "   sensor_names, " +
-                    "   sensor_values " +
-                    "from event " +
-                    "where id >= :id", Tuple.class)
+                "   id, " +
+                "   sensor_ids, " +
+                "   sensor_names, " +
+                "   sensor_values " +
+                "from event " +
+                "where id >= :id", Tuple.class)
                 .setParameter("id", 0)
                 .unwrap(org.hibernate.query.NativeQuery.class)
                 .addScalar("sensor_ids", UUID[].class)
@@ -267,20 +268,20 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         doInJPA(entityManager -> {
             List<Tuple> events = entityManager.createNativeQuery(
                 "select " +
-                    "   id, " +
-                    "   sensor_ids, " +
-                    "   sensor_names, " +
-                    "   sensor_values, " +
-                    "   sensor_states " +
-                    "from event " +
-                    "where id >= :id", Tuple.class)
-            .setParameter("id", 0)
-            .unwrap(org.hibernate.query.NativeQuery.class)
-            .addScalar("sensor_ids", UUID[].class)
-            .addScalar("sensor_names", String[].class)
-            .addScalar("sensor_values", int[].class)
-            .addScalar("sensor_states", SensorState[].class)
-            .getResultList();
+                "   id, " +
+                "   sensor_ids, " +
+                "   sensor_names, " +
+                "   sensor_values, " +
+                "   sensor_states " +
+                "from event " +
+                "where id >= :id", Tuple.class)
+                .setParameter("id", 0)
+                .unwrap(org.hibernate.query.NativeQuery.class)
+                .addScalar("sensor_ids", UUID[].class)
+                .addScalar("sensor_names", String[].class)
+                .addScalar("sensor_values", int[].class)
+                .addScalar("sensor_states", SensorState[].class)
+                .getResultList();
 
             assertEquals(2, events.size());
         });
@@ -417,6 +418,16 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         });
     }
 
+    @Test
+    public void testAttributeType() {
+        doInJPA(entityManager -> {
+            ManagedType<Event> eventManagedType = entityManager.getMetamodel().managedType(Event.class);
+            assertEquals(
+                List.class,
+                eventManagedType.getAttribute("sensorIds").getJavaType()
+            );
+        });
+    }
 
     @Entity(name = "Event")
     @Table(name = "event")

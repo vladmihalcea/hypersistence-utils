@@ -5,6 +5,7 @@ import io.hypersistence.utils.hibernate.type.array.internal.ListArrayTypeDescrip
 import io.hypersistence.utils.hibernate.type.util.Configuration;
 import org.hibernate.usertype.DynamicParameterizedType;
 
+import java.util.Collection;
 import java.util.Properties;
 
 /**
@@ -14,7 +15,7 @@ import java.util.Properties;
  *
  * @author Vlad Mihalcea
  */
-public class ListArrayType extends AbstractArrayType<Object> implements DynamicParameterizedType {
+public class ListArrayType extends AbstractArrayType<Collection> implements DynamicParameterizedType {
 
     public static final ListArrayType INSTANCE = new ListArrayType();
 
