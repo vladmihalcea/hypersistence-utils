@@ -51,10 +51,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public abstract class AbstractTest {
 
-    static {
-        Thread.currentThread().setName("Alice");
-    }
-
     protected final ExecutorService executorService = Executors.newSingleThreadExecutor(new ThreadFactory() {
         @Override
         public Thread newThread(Runnable r) {

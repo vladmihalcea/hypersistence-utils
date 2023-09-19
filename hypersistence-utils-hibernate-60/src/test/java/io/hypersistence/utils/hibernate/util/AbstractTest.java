@@ -49,16 +49,6 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractTest {
 
-    static {
-        Thread.currentThread().setName("Alice");
-    }
-
-    protected final ExecutorService executorService = Executors.newSingleThreadExecutor(r -> {
-        Thread bob = new Thread(r);
-        bob.setName("Bob");
-        return bob;
-    });
-
     protected final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
     private EntityManagerFactory emf;
