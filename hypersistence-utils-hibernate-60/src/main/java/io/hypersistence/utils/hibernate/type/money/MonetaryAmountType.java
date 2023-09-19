@@ -26,6 +26,22 @@ public class MonetaryAmountType implements CompositeUserType<MonetaryAmount>
     public static class MonetaryAmountMapper {
         BigDecimal amount;
         String currency;
+
+        public BigDecimal getAmount() {
+            return amount;
+        }
+
+        public void setAmount(BigDecimal amount) {
+            this.amount = amount;
+        }
+
+        public String getCurrency() {
+            return currency;
+        }
+
+        public void setCurrency(String currency) {
+            this.currency = currency;
+        }
     }
 
     public MonetaryAmountType() {
