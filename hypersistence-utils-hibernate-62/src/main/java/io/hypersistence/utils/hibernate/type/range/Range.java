@@ -40,6 +40,7 @@ public final class Range<T extends Comparable<? super T>> implements Serializabl
 
     public static final String INFINITY = "infinity";
 
+    // Text pattern for 'TIMESTAMP' as used by the database
     private static final DateTimeFormatter LOCAL_DATE_TIME = new DateTimeFormatterBuilder()
         .appendPattern("yyyy-MM-dd HH:mm:ss")
         .optionalStart()
@@ -48,12 +49,10 @@ public final class Range<T extends Comparable<? super T>> implements Serializabl
         .optionalEnd()
         .toFormatter();
 
-    private static final DateTimeFormatter ZONE_DATE_TIME = new DateTimeFormatterBuilder()
-        .appendPattern("yyyy-MM-dd HH:mm:ss")
-        .optionalStart()
-        .appendPattern(".")
-        .appendFraction(ChronoField.NANO_OF_SECOND, 1, 6, false)
-        .optionalEnd()
+    // Text pattern for 'TIMESTAMP WITH TIMEZONE' as used by the database when values are retrieved
+    // from the database.
+    private static final DateTimeFormatter OFFSET_DATE_TIME = new DateTimeFormatterBuilder()
+        .append(LOCAL_DATE_TIME)
         .appendOffset("+HH:mm", "Z")
         .toFormatter();
 
@@ -478,7 +477,7 @@ public final class Range<T extends Comparable<? super T>> implements Serializabl
     private static Function<String, ZonedDateTime> parseZonedDateTime() {
         return s -> {
             try {
-                return ZonedDateTime.parse(s, ZONE_DATE_TIME);
+                return ZonedDateTime.parse(s, OFFSET_DATE_TIME);
             } catch (DateTimeParseException e) {
                 return ZonedDateTime.parse(s);
             }
@@ -667,7 +666,7 @@ public final class Range<T extends Comparable<? super T>> implements Serializabl
     private Function<T, String> boundToString() {
         return t -> {
             if (clazz.equals(ZonedDateTime.class)) {
-                return ZONE_DATE_TIME.format((ZonedDateTime) t);
+                return OFFSET_DATE_TIME.format((ZonedDateTime) t);
             }
 
             return t.toString();
