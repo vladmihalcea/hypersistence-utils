@@ -9,9 +9,11 @@ import java.sql.Types;
 /**
  * Maps an {@link Character} to a nullable CHAR column type.
  * <p>
+ * For mySql, if the character is \ (backslash) it must be escaped.
+ * <p>
  * For more details about how to use it, check out <a href="https://vladmihalcea.com/how-to-implement-a-custom-basic-type-using-hibernate-usertype/">this article</a> on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
  *
- * @author Vlad Mihalcea
+ * @author Wim Wintmolders
  */
 public class MySQLNullableCharacterType extends NullableCharacterType {
 

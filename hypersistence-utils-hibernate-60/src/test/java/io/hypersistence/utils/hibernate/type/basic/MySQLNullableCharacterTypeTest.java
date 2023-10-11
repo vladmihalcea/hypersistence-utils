@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 /**
- * @author Vlad Mihalcea
+ * @author Wim Wintmolders
  */
 public class MySQLNullableCharacterTypeTest extends AbstractTest {
     private static final Map<Long, String> EXPECTED_VALUES = Map.of(1L, "a", 2L, " ", 3L, "b", 4L, "\\");
