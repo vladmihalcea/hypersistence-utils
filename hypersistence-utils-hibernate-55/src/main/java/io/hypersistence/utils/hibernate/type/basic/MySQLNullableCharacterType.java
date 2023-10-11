@@ -1,11 +1,8 @@
 package io.hypersistence.utils.hibernate.type.basic;
 
-import io.hypersistence.utils.hibernate.type.ImmutableType;
-import io.hypersistence.utils.hibernate.type.util.Configuration;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
@@ -16,29 +13,9 @@ import java.sql.Types;
  *
  * @author Vlad Mihalcea
  */
-public class MySQLNullableCharacterType extends ImmutableType<Character> {
+public class MySQLNullableCharacterType extends NullableCharacterType {
 
     public static final MySQLNullableCharacterType INSTANCE = new MySQLNullableCharacterType();
-
-    public MySQLNullableCharacterType() {
-        super(Character.class);
-    }
-
-    public MySQLNullableCharacterType(org.hibernate.type.spi.TypeBootstrapContext typeBootstrapContext) {
-        super(Character.class, new Configuration(typeBootstrapContext.getConfigurationSettings()));
-    }
-
-    @Override
-    public int[] sqlTypes() {
-        return new int[]{Types.CHAR};
-    }
-
-    @Override
-    public Character get(ResultSet rs, String[] names,
-                         SharedSessionContractImplementor session, Object owner) throws SQLException {
-        String value = rs.getString(names[0]);
-        return (value != null && value.length() > 0) ? value.charAt(0) : null;
-    }
 
     @Override
     public void set(PreparedStatement st, Character value, int index,

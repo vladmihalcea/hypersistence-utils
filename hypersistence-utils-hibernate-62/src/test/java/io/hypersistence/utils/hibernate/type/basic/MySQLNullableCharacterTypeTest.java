@@ -23,7 +23,7 @@ import static org.junit.Assert.fail;
  */
 public class MySQLNullableCharacterTypeTest extends AbstractTest {
 
-    private static final Map<Long, String> TEST_VALUES = Map.of(1L, "a", 2L, " ", 3L, "b", 4L, "\\");
+    private static final Map<Long, String> EXPECTED_VALUES = Map.of(1L, "a", 2L, " ", 3L, "b", 4L, "\\");
 
     @Override
     protected Class<?>[] entities() {
@@ -56,7 +56,7 @@ public class MySQLNullableCharacterTypeTest extends AbstractTest {
             List<Event> events = entityManager.createQuery("select e from Event e", Event.class).getResultList();
             for (Event event : events) {
                 LOGGER.info("Event type: {}", event.getType());
-                assertEquals(event.getType().toString(), TEST_VALUES.get(event.getId()));
+                assertEquals(event.getType().toString(), EXPECTED_VALUES.get(event.getId()));
             }
         });
     }

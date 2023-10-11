@@ -15,25 +15,9 @@ import java.sql.Types;
  *
  * @author Vlad Mihalcea
  */
-public class MySQLNullableCharacterType extends ImmutableType<Character> {
+public class MySQLNullableCharacterType extends NullableCharacterType {
 
     public static final MySQLNullableCharacterType INSTANCE = new MySQLNullableCharacterType();
-
-    public MySQLNullableCharacterType() {
-        super(Character.class);
-    }
-
-    @Override
-    public int[] sqlTypes() {
-        return new int[]{Types.CHAR};
-    }
-
-    @Override
-    public Character get(ResultSet rs, String[] names,
-                         SharedSessionContractImplementor session, Object owner) throws SQLException {
-        String value = rs.getString(names[0]);
-        return (value != null && value.length() > 0) ? value.charAt(0) : null;
-    }
 
     @Override
     public void set(PreparedStatement st, Character value, int index,
