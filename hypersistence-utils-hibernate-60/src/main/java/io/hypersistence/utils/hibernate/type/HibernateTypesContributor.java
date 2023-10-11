@@ -122,7 +122,11 @@ public class HibernateTypesContributor implements TypeContributor {
         }
 
         /* Basic */
-        contributeType(typeContributions, NullableCharacterType.INSTANCE, typeFilter);
+        if(dialect instanceof MySQLDialect) {
+            contributeType(typeContributions, MySQLNullableCharacterType.INSTANCE, typeFilter);
+        } else {
+            contributeType(typeContributions, NullableCharacterType.INSTANCE, typeFilter);
+        }
         /* Date/Time */
         contributeType(typeContributions, Iso8601MonthType.INSTANCE, typeFilter);
         contributeType(typeContributions, MonthDayDateType.INSTANCE, typeFilter);

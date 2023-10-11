@@ -123,7 +123,11 @@ public class HibernateTypesContributor implements TypeContributor {
         }
 
         /* Basic */
-        this.contributeType(typeContributions, NullableCharacterType.INSTANCE, typeFilter);
+        if(dialect instanceof MySQLDialect) {
+            contributeType(typeContributions, MySQLNullableCharacterType.INSTANCE, typeFilter);
+        } else {
+            contributeType(typeContributions, NullableCharacterType.INSTANCE, typeFilter);
+        }
         /* JSON */
         if (enableJson) {
             this.contributeType(typeContributions, JsonType.INSTANCE, typeFilter);

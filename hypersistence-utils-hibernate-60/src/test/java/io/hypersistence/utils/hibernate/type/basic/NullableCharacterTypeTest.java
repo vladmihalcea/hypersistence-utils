@@ -8,14 +8,17 @@ import jakarta.persistence.*;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 /**
  * @author Vlad Mihalcea
  */
 public class NullableCharacterTypeTest extends AbstractTest {
+    private static final Map<Long, String> TEST_VALUES = Map.of(1L, "a", 2L, " ", 3L, "b", 4L, "\\");
 
     @Override
     protected Class<?>[] entities() {
@@ -47,6 +50,7 @@ public class NullableCharacterTypeTest extends AbstractTest {
             List<Event> events = entityManager.createQuery("select e from Event e", Event.class).getResultList();
             for (Event event : events) {
                 LOGGER.info("Event type: {}", event.getType());
+                assertEquals(event.getType().toString(), TEST_VALUES.get(event.getId()));
             }
         });
     }

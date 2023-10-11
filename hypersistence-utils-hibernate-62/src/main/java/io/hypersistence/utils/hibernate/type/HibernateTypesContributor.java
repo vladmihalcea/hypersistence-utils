@@ -2,6 +2,7 @@ package io.hypersistence.utils.hibernate.type;
 
 import io.hypersistence.utils.hibernate.type.array.*;
 import io.hypersistence.utils.hibernate.type.basic.Iso8601MonthType;
+import io.hypersistence.utils.hibernate.type.basic.MySqlNullableCharacterType;
 import io.hypersistence.utils.hibernate.type.basic.NullableCharacterType;
 import io.hypersistence.utils.hibernate.type.basic.PostgreSQLHStoreType;
 import io.hypersistence.utils.hibernate.type.basic.PostgreSQLInetType;
@@ -125,7 +126,11 @@ public class HibernateTypesContributor implements TypeContributor {
         }
 
         /* Basic */
-        contributeType(typeContributions, NullableCharacterType.INSTANCE, typeFilter);
+        if(dialect instanceof MySQLDialect) {
+            contributeType(typeContributions, MySqlNullableCharacterType.INSTANCE, typeFilter);
+        } else {
+            contributeType(typeContributions, NullableCharacterType.INSTANCE, typeFilter);
+        }
         /* Date/Time */
         contributeType(typeContributions, Iso8601MonthType.INSTANCE, typeFilter);
     }

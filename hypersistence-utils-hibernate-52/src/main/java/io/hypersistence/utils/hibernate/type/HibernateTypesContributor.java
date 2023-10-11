@@ -137,9 +137,14 @@ public class HibernateTypesContributor implements TypeContributor {
         }
 
         /* Basic */
-        this.contributeType(typeContributions, NullableCharacterType.INSTANCE, typeFilter)
+        /* Basic */
+        if(dialect instanceof MySQLDialect) {
+            this.contributeType(typeContributions, MySQLNullableCharacterType.INSTANCE, typeFilter);
+        } else {
+            this.contributeType(typeContributions, NullableCharacterType.INSTANCE, typeFilter);
+        }
         /* Date/Time */
-            .contributeType(typeContributions, Iso8601MonthType.INSTANCE, typeFilter)
+        this.contributeType(typeContributions, Iso8601MonthType.INSTANCE, typeFilter)
             .contributeType(typeContributions, MonthDayDateType.INSTANCE, typeFilter)
             .contributeType(typeContributions, MonthDayIntegerType.INSTANCE, typeFilter)
             .contributeType(typeContributions, YearMonthDateType.INSTANCE, typeFilter)

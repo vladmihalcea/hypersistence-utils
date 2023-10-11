@@ -4,9 +4,14 @@ import io.hypersistence.utils.hibernate.util.AbstractTest;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
 
-import jakarta.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -17,9 +22,7 @@ import static org.junit.Assert.fail;
 /**
  * @author Vlad Mihalcea
  */
-public class NullableCharacterTypeTest extends AbstractTest {
-
-    private static final Map<Long, String> TEST_VALUES = Map.of(1L, "a", 2L, " ", 3L, "b", 4L, "\\");
+public class MySQLNullableCharacterTypeTest extends AbstractTest {
 
     @Override
     protected Class<?>[] entities() {
@@ -46,6 +49,12 @@ public class NullableCharacterTypeTest extends AbstractTest {
 
     @Test
     public void test() {
+        Map<Long, String> TEST_VALUES = new HashMap<>();
+        TEST_VALUES.put(1L, "a");
+        TEST_VALUES.put(2L, " ");
+        TEST_VALUES.put(3L, "b");
+        TEST_VALUES.put(4L, "\\");
+
         final AtomicReference<Event> eventHolder = new AtomicReference<>();
         doInJPA(entityManager -> {
             List<Event> events = entityManager.createQuery("select e from Event e", Event.class).getResultList();
@@ -64,7 +73,7 @@ public class NullableCharacterTypeTest extends AbstractTest {
         @GeneratedValue
         private Long id;
 
-        @Type(NullableCharacterType.class)
+        @Type(type = "io.hypersistence.utils.hibernate.type.basic.MySQLNullableCharacterType")
         @Column(name = "event_type")
         private Character type;
 

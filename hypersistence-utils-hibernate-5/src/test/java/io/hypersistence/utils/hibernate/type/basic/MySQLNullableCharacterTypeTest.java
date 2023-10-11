@@ -6,7 +6,12 @@ import io.hypersistence.utils.hibernate.util.transaction.JPATransactionFunction;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -20,7 +25,7 @@ import static org.junit.Assert.fail;
 /**
  * @author Vlad Mihalcea
  */
-public class NullableCharacterTypeTest extends AbstractTest {
+public class MySQLNullableCharacterTypeTest extends AbstractTest {
 
     @Override
     protected Class<?>[] entities() {
@@ -83,7 +88,7 @@ public class NullableCharacterTypeTest extends AbstractTest {
         @GeneratedValue
         private Long id;
 
-        @Type(type = "io.hypersistence.utils.hibernate.type.basic.NullableCharacterType")
+        @Type(type = "io.hypersistence.utils.hibernate.type.basic.MySQLNullableCharacterType")
         @Column(name = "event_type")
         private Character type;
 

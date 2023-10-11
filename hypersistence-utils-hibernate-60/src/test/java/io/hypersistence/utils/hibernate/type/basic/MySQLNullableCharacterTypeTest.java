@@ -1,10 +1,14 @@
 package io.hypersistence.utils.hibernate.type.basic;
 
 import io.hypersistence.utils.hibernate.util.AbstractTest;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
 
-import jakarta.persistence.*;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
@@ -17,8 +21,7 @@ import static org.junit.Assert.fail;
 /**
  * @author Vlad Mihalcea
  */
-public class NullableCharacterTypeTest extends AbstractTest {
-
+public class MySQLNullableCharacterTypeTest extends AbstractTest {
     private static final Map<Long, String> TEST_VALUES = Map.of(1L, "a", 2L, " ", 3L, "b", 4L, "\\");
 
     @Override
@@ -64,7 +67,7 @@ public class NullableCharacterTypeTest extends AbstractTest {
         @GeneratedValue
         private Long id;
 
-        @Type(NullableCharacterType.class)
+        @Type(MySQLNullableCharacterType.class)
         @Column(name = "event_type")
         private Character type;
 

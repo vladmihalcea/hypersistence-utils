@@ -7,9 +7,12 @@ import org.junit.Test;
 import javax.persistence.*;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 /**
@@ -42,11 +45,18 @@ public class NullableCharacterTypeTest extends AbstractTest {
 
     @Test
     public void test() {
+        Map<Long, String> TEST_VALUES = new HashMap<>();
+        TEST_VALUES.put(1L, "a");
+        TEST_VALUES.put(2L, " ");
+        TEST_VALUES.put(3L, "b");
+        TEST_VALUES.put(4L, "\\");
+
         final AtomicReference<Event> eventHolder = new AtomicReference<>();
         doInJPA(entityManager -> {
             List<Event> events = entityManager.createQuery("select e from Event e", Event.class).getResultList();
             for (Event event : events) {
                 LOGGER.info("Event type: {}", event.getType());
+                assertEquals(event.getType().toString(), TEST_VALUES.get(event.getId()));
             }
         });
     }
