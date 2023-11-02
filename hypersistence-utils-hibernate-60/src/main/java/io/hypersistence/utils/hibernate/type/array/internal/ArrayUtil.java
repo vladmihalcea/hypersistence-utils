@@ -328,6 +328,36 @@ public class ArrayUtil {
     }
 
     /**
+     * Generate the hash code of an array.
+     *
+     * @param array the array
+     * @return the array's hash code
+     */
+    public static int hashCode(Object array) {
+        Class arrayClass = array.getClass();
+
+        if (boolean[].class.equals(arrayClass)) {
+            return Arrays.hashCode((boolean[]) array);
+        } else if (byte[].class.equals(arrayClass)) {
+            return Arrays.hashCode((byte[]) array);
+        } else if (short[].class.equals(arrayClass)) {
+            return Arrays.hashCode((short[]) array);
+        } else if (int[].class.equals(arrayClass)) {
+            return Arrays.hashCode((int[]) array);
+        } else if (long[].class.equals(arrayClass)) {
+            return Arrays.hashCode((long[]) array);
+        } else if (float[].class.equals(arrayClass)) {
+            return Arrays.hashCode((float[]) array);
+        } else if (double[].class.equals(arrayClass)) {
+            return Arrays.hashCode((double[]) array);
+        } else if (char[].class.equals(arrayClass)) {
+            return Arrays.hashCode((char[]) array);
+        } else {
+            return Arrays.hashCode((Object[]) array);
+        }
+    }
+
+    /**
      * Get the array class for the provided array element class.
      *
      * @param arrayElementClass array element class
