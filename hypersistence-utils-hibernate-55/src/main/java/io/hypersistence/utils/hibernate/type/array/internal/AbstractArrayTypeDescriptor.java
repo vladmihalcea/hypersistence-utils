@@ -66,6 +66,11 @@ public abstract class AbstractArrayTypeDescriptor<T>
     }
 
     @Override
+    public int extractHashCode(T value) {
+        return ArrayUtil.hashCode(value);
+    }
+
+    @Override
     public String toString(T value) {
         return Arrays.deepToString(ArrayUtil.wrapArray(value));
     }
