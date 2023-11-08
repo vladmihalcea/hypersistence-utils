@@ -10,6 +10,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Query;
 import jakarta.persistence.Table;
 import jakarta.persistence.Tuple;
+import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;
@@ -20,7 +21,9 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.time.LocalDate;
+import java.util.List;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -39,15 +42,7 @@ public class SQLExtractorTest extends AbstractPostgreSQLIntegrationTest {
     @Test
     public void testJPQL() {
         doInJPA(entityManager -> {
-            Query jpql = entityManager
-            .createQuery(
-                "select " +
-                "   YEAR(p.createdOn) as year, " +
-                "   count(p) as postCount " +
-                "from " +
-                "   Post p " +
-                "group by " +
-                "   YEAR(p.createdOn)", Tuple.class);
+            Query jpql = createTestJPQL(entityManager);
 
             String sql = SQLExtractor.from(jpql);
 
@@ -60,11 +55,10 @@ public class SQLExtractorTest extends AbstractPostgreSQLIntegrationTest {
             );
         });
     }
-
     @Test
     public void testCriteriaAPI() {
         doInJPA(entityManager -> {
-            Query criteriaQuery = createTestQuery(entityManager);
+            Query criteriaQuery = createTestCriteriaQuery(entityManager);
 
             String sql = SQLExtractor.from(criteriaQuery);
 
@@ -81,7 +75,7 @@ public class SQLExtractorTest extends AbstractPostgreSQLIntegrationTest {
     @Test
     public void testCriteriaAPIWithProxy() {
         doInJPA(entityManager -> {
-            Query criteriaQuery = createTestQuery(entityManager);
+            Query criteriaQuery = createTestCriteriaQuery(entityManager);
             Query proxiedQuery = proxy(criteriaQuery);
 
             String sql = SQLExtractor.from(proxiedQuery);
@@ -96,11 +90,59 @@ public class SQLExtractorTest extends AbstractPostgreSQLIntegrationTest {
         });
     }
 
+    @Test
+    public void testJPQLGetSQLParameters() {
+        doInJPA(entityManager -> {
+            Query jpql = createTestJPQL(entityManager);
+
+            List<?> parameters = SQLExtractor.getSQLParameterValues(jpql);
+
+            assertFalse(parameters.isEmpty());
+
+            LOGGER.info(
+                "The Criteria API query: [\n{}\n]\nhas following SQL parameters: \n{}\n",
+                jpql.unwrap(org.hibernate.query.Query.class).getQueryString(),
+                parameters
+            );
+        });
+    }
+
+    @Test
+    public void testCriteriaGetSQLParameters() {
+        doInJPA(entityManager -> {
+            Query criteriaQuery = createTestCriteriaQuery(entityManager);
+
+            List<?> parameters = SQLExtractor.getSQLParameterValues(criteriaQuery);
+
+            assertFalse(parameters.isEmpty());
+
+            LOGGER.info(
+                "The Criteria API query: [\n{}\n]\nhas following SQL parameters: \n{}\n",
+                criteriaQuery.unwrap(org.hibernate.query.Query.class).getQueryString(),
+                parameters
+            );
+        });
+    }
+
     private static Query proxy(Query criteriaQuery) {
         return (Query) Proxy.newProxyInstance(Query.class.getClassLoader(), new Class[]{Query.class}, new HibernateLikeInvocationHandler(criteriaQuery));
     }
 
-    private static Query createTestQuery(EntityManager entityManager) {
+    private static Query createTestJPQL(EntityManager entityManager) {
+        Query jpql = entityManager
+            .createQuery(
+                "select " +
+                "   YEAR(p.createdOn) as year, " +
+                "   count(p) as postCount " +
+                "from Post p " +
+                "where p.title like :titleTemplate " +
+                "group by YEAR(p.createdOn) ",
+                Tuple.class);
+        jpql.setParameter("titleTemplate", "%Java%");
+        return jpql;
+    }
+
+    private static Query createTestCriteriaQuery(EntityManager entityManager) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 
         CriteriaQuery<PostComment> criteria = builder.createQuery(PostComment.class);
