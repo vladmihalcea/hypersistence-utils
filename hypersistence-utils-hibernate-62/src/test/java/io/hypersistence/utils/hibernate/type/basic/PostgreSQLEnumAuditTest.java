@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -103,6 +104,8 @@ public class PostgreSQLEnumAuditTest extends AbstractPostgreSQLIntegrationTest {
         @Type(PostgreSQLEnumType.class)
         private PostStatus status;
 
+        private Date createdOn;
+
         public Long getId() {
             return id;
         }
@@ -125,6 +128,14 @@ public class PostgreSQLEnumAuditTest extends AbstractPostgreSQLIntegrationTest {
 
         public void setStatus(PostStatus status) {
             this.status = status;
+        }
+
+        public Date getCreatedOn() {
+            return createdOn;
+        }
+
+        public void setCreatedOn(Date createdOn) {
+            this.createdOn = createdOn;
         }
     }
 }
