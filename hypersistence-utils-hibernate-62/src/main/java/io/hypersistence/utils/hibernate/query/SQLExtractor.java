@@ -1,6 +1,6 @@
 package io.hypersistence.utils.hibernate.query;
 
-import io.hypersistence.utils.hibernate.util.ReflectionUtils;
+import io.hypersistence.utils.common.ReflectionUtils;
 import jakarta.persistence.Query;
 import org.hibernate.query.spi.DomainQueryExecutionContext;
 import org.hibernate.query.spi.QueryImplementor;

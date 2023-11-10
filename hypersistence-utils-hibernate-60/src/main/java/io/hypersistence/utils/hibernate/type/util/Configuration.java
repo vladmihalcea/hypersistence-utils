@@ -1,6 +1,6 @@
 package io.hypersistence.utils.hibernate.type.util;
 
-import io.hypersistence.utils.hibernate.util.ClassLoaderUtils;
+import io.hypersistence.utils.common.ClassLoaderUtils;
 import org.hibernate.cfg.Environment;
 
 import java.io.File;
@@ -12,7 +12,7 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Properties;
 
-import static io.hypersistence.utils.hibernate.util.LogUtils.LOGGER;
+import static io.hypersistence.utils.common.LogUtils.LOGGER;
 
 /**
  * <code>Configuration</code> - It allows you to configure various Hibernate Types.

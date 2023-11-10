@@ -1,7 +1,7 @@
 package io.hypersistence.utils.hibernate.type.array;
 
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
-import io.hypersistence.utils.hibernate.util.ReflectionUtils;
+import io.hypersistence.utils.common.ReflectionUtils;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;

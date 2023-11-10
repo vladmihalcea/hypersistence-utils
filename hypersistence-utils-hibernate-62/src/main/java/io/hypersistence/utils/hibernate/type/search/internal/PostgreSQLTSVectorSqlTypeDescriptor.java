@@ -1,6 +1,6 @@
 package io.hypersistence.utils.hibernate.type.search.internal;
 
-import io.hypersistence.utils.hibernate.util.ReflectionUtils;
+import io.hypersistence.utils.common.ReflectionUtils;
 import org.hibernate.type.descriptor.ValueBinder;
 import org.hibernate.type.descriptor.ValueExtractor;
 import org.hibernate.type.descriptor.WrapperOptions;

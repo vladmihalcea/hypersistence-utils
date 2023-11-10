@@ -1,7 +1,12 @@
 package io.hypersistence.utils.hibernate.util.providers;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
+import io.hypersistence.utils.test.providers.AbstractContainerDataSourceProvider;
+import io.hypersistence.utils.test.providers.DataSourceProvider;
+import org.hibernate.dialect.Database;
 import org.hibernate.dialect.MySQLDialect;
+import org.testcontainers.containers.JdbcDatabaseContainer;
+import org.testcontainers.containers.MySQLContainer;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -10,6 +15,8 @@ import java.sql.SQLException;
  * @author Vlad Mihalcea
  */
 public class MySQLDataSourceProvider extends AbstractContainerDataSourceProvider {
+
+    public static final DataSourceProvider INSTANCE = new MySQLDataSourceProvider();
 
     private boolean rewriteBatchedStatements = true;
 
@@ -72,6 +79,11 @@ public class MySQLDataSourceProvider extends AbstractContainerDataSourceProvider
     }
 
     @Override
+    public Database database() {
+        return Database.MYSQL;
+    }
+
+    @Override
     public String hibernateDialect() {
         return MySQLDialect.class.getName();
     }
@@ -108,11 +120,6 @@ public class MySQLDataSourceProvider extends AbstractContainerDataSourceProvider
     }
 
     @Override
-    public Database database() {
-        return Database.MYSQL;
-    }
-
-    @Override
     public String toString() {
         return "MySQLDataSourceProvider{" +
             "rewriteBatchedStatements=" + rewriteBatchedStatements +
@@ -122,5 +129,10 @@ public class MySQLDataSourceProvider extends AbstractContainerDataSourceProvider
             ", useJDBCCompliantTimezoneShift=" + useJDBCCompliantTimezoneShift +
             ", useLegacyDatetimeCode=" + useLegacyDatetimeCode +
             '}';
+    }
+
+    @Override
+    public JdbcDatabaseContainer newJdbcDatabaseContainer() {
+        return new MySQLContainer("mysql:8.0");
     }
 }

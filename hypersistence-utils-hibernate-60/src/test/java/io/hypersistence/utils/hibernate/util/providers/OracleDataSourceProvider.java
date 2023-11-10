@@ -1,10 +1,14 @@
 package io.hypersistence.utils.hibernate.util.providers;
 
+import io.hypersistence.utils.test.providers.AbstractContainerDataSourceProvider;
+import io.hypersistence.utils.test.providers.DataSourceProvider;
 import oracle.jdbc.pool.OracleDataSource;
+import org.hibernate.dialect.Database;
 import org.hibernate.dialect.OracleDialect;
 import org.hibernate.tool.schema.extract.internal.SequenceInformationExtractorNoOpImpl;
 import org.hibernate.tool.schema.extract.spi.SequenceInformationExtractor;
 import org.testcontainers.containers.JdbcDatabaseContainer;
+import org.testcontainers.containers.OracleContainer;
 
 import javax.sql.DataSource;
 
@@ -12,6 +16,13 @@ import javax.sql.DataSource;
  * @author Vlad Mihalcea
  */
 public class OracleDataSourceProvider extends AbstractContainerDataSourceProvider {
+
+    public static final DataSourceProvider INSTANCE = new OracleDataSourceProvider();
+
+    @Override
+    public Database database() {
+        return Database.ORACLE;
+    }
 
     @Override
     public String hibernateDialect() {
@@ -27,7 +38,7 @@ public class OracleDataSourceProvider extends AbstractContainerDataSourceProvide
     public DataSource newDataSource() {
         try {
             OracleDataSource dataSource = new OracleDataSource();
-            JdbcDatabaseContainer container = database().getContainer();
+            JdbcDatabaseContainer container = getContainer();
             if(container == null) {
                 dataSource.setDatabaseName("high_performance_java_persistence");
             } else {
@@ -53,8 +64,13 @@ public class OracleDataSourceProvider extends AbstractContainerDataSourceProvide
     }
 
     @Override
-    public Database database() {
-        return Database.ORACLE;
+    public JdbcDatabaseContainer newJdbcDatabaseContainer() {
+        return new OracleContainer("gvenzl/oracle-xe:21.3.0-slim");
+    }
+
+    @Override
+    public boolean supportsDatabaseName() {
+        return false;
     }
 
     public static class FastOracleDialect extends OracleDialect {

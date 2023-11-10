@@ -2,7 +2,7 @@ package io.hypersistence.utils.hibernate.type.json;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
-import io.hypersistence.utils.hibernate.util.ExceptionUtil;
+import io.hypersistence.utils.common.ExceptionUtil;
 import io.hypersistence.utils.jdbc.validator.SQLStatementCountValidator;
 import jakarta.persistence.*;
 import net.ttddyy.dsproxy.QueryCount;

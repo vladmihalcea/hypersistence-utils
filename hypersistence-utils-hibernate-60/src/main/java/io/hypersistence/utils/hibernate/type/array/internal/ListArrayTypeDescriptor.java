@@ -1,6 +1,6 @@
 package io.hypersistence.utils.hibernate.type.array.internal;
 
-import io.hypersistence.utils.hibernate.util.ReflectionUtils;
+import io.hypersistence.utils.common.ReflectionUtils;
 import org.hibernate.SharedSessionContract;
 import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.type.descriptor.java.MutableMutabilityPlan;

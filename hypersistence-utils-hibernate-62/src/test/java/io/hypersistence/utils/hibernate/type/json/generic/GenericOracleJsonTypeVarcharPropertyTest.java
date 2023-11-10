@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.hypersistence.utils.hibernate.type.json.JsonStringType;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import io.hypersistence.utils.hibernate.util.AbstractOracleIntegrationTest;
-import io.hypersistence.utils.hibernate.util.transaction.JPATransactionFunction;
+import io.hypersistence.utils.test.transaction.EntityManagerTransactionFunction;
 import jakarta.persistence.*;
 import org.hibernate.Session;
 import org.hibernate.annotations.Check;
@@ -43,7 +43,7 @@ public class GenericOracleJsonTypeVarcharPropertyTest extends AbstractOracleInte
 
     @Test
     public void test() {
-        doInJPA(new JPATransactionFunction<Void>() {
+        doInJPA(new EntityManagerTransactionFunction<Void>() {
             @Override
             public Void apply(EntityManager entityManager) {
                 entityManager.persist(
@@ -63,7 +63,7 @@ public class GenericOracleJsonTypeVarcharPropertyTest extends AbstractOracleInte
             }
         });
 
-        doInJPA(new JPATransactionFunction<Void>() {
+        doInJPA(new EntityManagerTransactionFunction<Void>() {
             @Override
             public Void apply(EntityManager entityManager) {
                 Book book = entityManager
@@ -92,7 +92,7 @@ public class GenericOracleJsonTypeVarcharPropertyTest extends AbstractOracleInte
             }
         });
 
-        doInJPA(new JPATransactionFunction<Void>() {
+        doInJPA(new EntityManagerTransactionFunction<Void>() {
             @Override
             public Void apply(EntityManager entityManager) {
                 JsonNode properties = (JsonNode) entityManager
@@ -113,7 +113,7 @@ public class GenericOracleJsonTypeVarcharPropertyTest extends AbstractOracleInte
             }
         });
 
-        doInJPA(new JPATransactionFunction<Void>() {
+        doInJPA(new EntityManagerTransactionFunction<Void>() {
             @Override
             public Void apply(EntityManager entityManager) {
                 Book book = entityManager.unwrap(Session.class)
@@ -126,7 +126,7 @@ public class GenericOracleJsonTypeVarcharPropertyTest extends AbstractOracleInte
             }
         });
 
-        doInJPA(new JPATransactionFunction<Void>() {
+        doInJPA(new EntityManagerTransactionFunction<Void>() {
             @Override
             public Void apply(EntityManager entityManager) {
                 Book book = entityManager.unwrap(Session.class)

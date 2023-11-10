@@ -1,7 +1,12 @@
 package io.hypersistence.utils.hibernate.util.providers;
 
+import io.hypersistence.utils.test.providers.AbstractContainerDataSourceProvider;
+import io.hypersistence.utils.test.providers.DataSourceProvider;
+import org.hibernate.dialect.Database;
 import org.hibernate.dialect.PostgreSQLDialect;
 import org.postgresql.ds.PGSimpleDataSource;
+import org.testcontainers.containers.JdbcDatabaseContainer;
+import org.testcontainers.containers.PostgreSQLContainer;
 
 import javax.sql.DataSource;
 
@@ -9,6 +14,13 @@ import javax.sql.DataSource;
  * @author Vlad Mihalcea
  */
 public class PostgreSQLDataSourceProvider extends AbstractContainerDataSourceProvider {
+
+    public static final DataSourceProvider INSTANCE = new PostgreSQLDataSourceProvider();
+
+    @Override
+    public Database database() {
+        return Database.POSTGRESQL;
+    }
 
     @Override
     public String hibernateDialect() {
@@ -40,7 +52,7 @@ public class PostgreSQLDataSourceProvider extends AbstractContainerDataSourcePro
     }
 
     @Override
-    public Database database() {
-        return Database.POSTGRESQL;
+    public JdbcDatabaseContainer newJdbcDatabaseContainer() {
+        return new PostgreSQLContainer("postgres:15.3");
     }
 }

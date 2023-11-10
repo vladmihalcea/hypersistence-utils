@@ -1,7 +1,7 @@
 package io.hypersistence.utils.hibernate.type.json.internal;
 
 import io.hypersistence.utils.hibernate.type.util.ParameterTypeUtils;
-import io.hypersistence.utils.hibernate.util.StringUtils;
+import io.hypersistence.utils.common.StringUtils;
 import org.hibernate.dialect.*;
 import org.hibernate.engine.jdbc.dialect.internal.StandardDialectResolver;
 import org.hibernate.engine.jdbc.dialect.spi.DatabaseMetaDataDialectResolutionInfoAdapter;

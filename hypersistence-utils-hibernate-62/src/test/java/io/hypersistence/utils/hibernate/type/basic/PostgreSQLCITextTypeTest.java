@@ -1,7 +1,7 @@
 package io.hypersistence.utils.hibernate.type.basic;
 
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
-import io.hypersistence.utils.hibernate.util.transaction.JPATransactionFunction;
+import io.hypersistence.utils.test.transaction.EntityManagerTransactionFunction;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -80,7 +80,7 @@ public class PostgreSQLCITextTypeTest extends AbstractPostgreSQLIntegrationTest 
     }
 
     private void persist(final Country country) {
-        doInJPA(new JPATransactionFunction<Void>() {
+        doInJPA(new EntityManagerTransactionFunction<Void>() {
             @Override
             public Void apply(EntityManager entityManager) {
                 entityManager.persist(country);
@@ -91,7 +91,7 @@ public class PostgreSQLCITextTypeTest extends AbstractPostgreSQLIntegrationTest 
     }
 
     private void testFindById(final Long countryId, final String expectedName) {
-        doInJPA(new JPATransactionFunction<Void>() {
+        doInJPA(new EntityManagerTransactionFunction<Void>() {
             @Override
             public Void apply(EntityManager entityManager) {
                 Country country = entityManager.find(Country.class, countryId);
@@ -104,7 +104,7 @@ public class PostgreSQLCITextTypeTest extends AbstractPostgreSQLIntegrationTest 
     }
 
     private void testFindCountryByName(final String searchableName, final Country expectedCountry) {
-        doInJPA(new JPATransactionFunction<Void>() {
+        doInJPA(new EntityManagerTransactionFunction<Void>() {
             @Override
             public Void apply(EntityManager entityManager) {
                 CriteriaBuilder builder = entityManager.getCriteriaBuilder();

@@ -1,6 +1,6 @@
 package io.hypersistence.utils.hibernate.id;
 
-import io.hypersistence.utils.hibernate.util.providers.DataSourceProvider;
+import io.hypersistence.utils.test.providers.DataSourceProvider;
 import io.hypersistence.utils.hibernate.util.providers.SQLServerDataSourceProvider;
 
 /**

@@ -3,7 +3,7 @@ package io.hypersistence.utils.hibernate.util.contributor;
 import io.hypersistence.utils.hibernate.type.HibernateTypesContributor;
 import io.hypersistence.utils.hibernate.type.basic.Inet;
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
-import io.hypersistence.utils.hibernate.util.ExceptionUtil;
+import io.hypersistence.utils.common.ExceptionUtil;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

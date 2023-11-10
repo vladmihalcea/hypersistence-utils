@@ -1,6 +1,6 @@
 package io.hypersistence.utils.hibernate.util;
 
-import io.hypersistence.utils.hibernate.util.logging.InlineQueryLogEntryCreator;
+import io.hypersistence.utils.logging.InlineQueryLogEntryCreator;
 import net.ttddyy.dsproxy.listener.ChainListener;
 import net.ttddyy.dsproxy.listener.DataSourceQueryCountListener;
 import net.ttddyy.dsproxy.listener.logging.SLF4JQueryLoggingListener;

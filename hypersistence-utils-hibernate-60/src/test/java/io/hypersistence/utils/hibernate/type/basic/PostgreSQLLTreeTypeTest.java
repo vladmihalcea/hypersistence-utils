@@ -1,7 +1,7 @@
 package io.hypersistence.utils.hibernate.type.basic;
 
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
-import io.hypersistence.utils.hibernate.util.transaction.JPATransactionFunction;
+import io.hypersistence.utils.test.transaction.EntityManagerTransactionFunction;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -75,7 +75,7 @@ public class PostgreSQLLTreeTypeTest extends AbstractPostgreSQLIntegrationTest {
     }
 
     private void persist(final Tree tree) {
-        doInJPA(new JPATransactionFunction<Void>() {
+        doInJPA(new EntityManagerTransactionFunction<Void>() {
             @Override
             public Void apply(EntityManager entityManager) {
                 entityManager.persist(tree);
@@ -86,7 +86,7 @@ public class PostgreSQLLTreeTypeTest extends AbstractPostgreSQLIntegrationTest {
     }
 
     private void testFindById(final Long treeId, final String expectedPath) {
-        doInJPA(new JPATransactionFunction<Void>() {
+        doInJPA(new EntityManagerTransactionFunction<Void>() {
             @Override
             public Void apply(EntityManager entityManager) {
                 Tree tree = entityManager.find(Tree.class, treeId);
@@ -99,7 +99,7 @@ public class PostgreSQLLTreeTypeTest extends AbstractPostgreSQLIntegrationTest {
     }
 
     private void testFindTreeByPath(final String searchablePath, final Tree expectedTree) {
-        doInJPA(new JPATransactionFunction<Void>() {
+        doInJPA(new EntityManagerTransactionFunction<Void>() {
             @Override
             public Void apply(EntityManager entityManager) {
                 CriteriaBuilder builder = entityManager.getCriteriaBuilder();

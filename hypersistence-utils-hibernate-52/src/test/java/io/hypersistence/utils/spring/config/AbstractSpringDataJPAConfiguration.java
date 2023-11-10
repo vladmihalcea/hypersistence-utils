@@ -1,6 +1,6 @@
 package io.hypersistence.utils.spring.config;
 
-import io.hypersistence.utils.hibernate.util.logging.InlineQueryLogEntryCreator;
+import io.hypersistence.utils.logging.InlineQueryLogEntryCreator;
 import io.hypersistence.utils.hibernate.util.providers.DataSourceProvider;
 import io.hypersistence.utils.hibernate.util.providers.PostgreSQLDataSourceProvider;
 import com.zaxxer.hikari.HikariConfig;

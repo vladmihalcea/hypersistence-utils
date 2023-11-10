@@ -2,7 +2,7 @@ package io.hypersistence.utils.hibernate.type;
 
 import io.hypersistence.utils.hibernate.type.json.internal.JdbcTypeSetter;
 import io.hypersistence.utils.hibernate.type.util.Configuration;
-import io.hypersistence.utils.hibernate.util.ReflectionUtils;
+import io.hypersistence.utils.common.ReflectionUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.mapping.IndexedConsumer;

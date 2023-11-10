@@ -1,5 +1,7 @@
 package io.hypersistence.utils.hibernate.util.providers;
 
+import io.hypersistence.utils.test.providers.DataSourceProvider;
+import org.hibernate.dialect.Database;
 import org.hibernate.dialect.HSQLDialect;
 import org.hsqldb.jdbc.JDBCDataSource;
 
@@ -10,6 +12,13 @@ import javax.sql.DataSource;
  */
 public class HSQLDBDataSourceProvider implements DataSourceProvider {
 
+    public static final DataSourceProvider INSTANCE = new HSQLDBDataSourceProvider();
+
+    @Override
+    public Database database() {
+        return Database.HSQL;
+    }
+    
     @Override
     public String hibernateDialect() {
         return HSQLDialect.class.getName();
@@ -37,10 +46,5 @@ public class HSQLDBDataSourceProvider implements DataSourceProvider {
     @Override
     public String password() {
         return "";
-    }
-
-    @Override
-    public Database database() {
-        return Database.HSQLDB;
     }
 }

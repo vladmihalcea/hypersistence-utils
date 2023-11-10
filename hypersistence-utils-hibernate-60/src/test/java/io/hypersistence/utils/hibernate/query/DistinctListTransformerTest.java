@@ -269,8 +269,8 @@ public class DistinctListTransformerTest extends AbstractTest {
         }
 
         public PostDTO(Object[] tuples, Map<String, Integer> aliasToIndexMap) {
-            this.id = AbstractTest.longValue(tuples[aliasToIndexMap.get(ID_ALIAS)]);
-            this.title = AbstractTest.stringValue(tuples[aliasToIndexMap.get(TITLE_ALIAS)]);
+            this.id = longValue(tuples[aliasToIndexMap.get(ID_ALIAS)]);
+            this.title = stringValue(tuples[aliasToIndexMap.get(TITLE_ALIAS)]);
         }
 
         public Long getId() {
@@ -308,8 +308,8 @@ public class DistinctListTransformerTest extends AbstractTest {
         }
 
         public PostCommentDTO(Object[] tuples, Map<String, Integer> aliasToIndexMap) {
-            this.id = AbstractTest.longValue(tuples[aliasToIndexMap.get(ID_ALIAS)]);
-            this.review = AbstractTest.stringValue(tuples[aliasToIndexMap.get(REVIEW_ALIAS)]);
+            this.id = longValue(tuples[aliasToIndexMap.get(ID_ALIAS)]);
+            this.review = stringValue(tuples[aliasToIndexMap.get(REVIEW_ALIAS)]);
         }
 
         public Long getId() {
@@ -340,7 +340,7 @@ public class DistinctListTransformerTest extends AbstractTest {
         @Override
         public PostDTO transformTuple(Object[] tuple, String[] aliases) {
             Map<String, Integer> aliasToIndexMap = aliasToIndexMap(aliases);
-            Long postId = AbstractTest.longValue(tuple[aliasToIndexMap.get(PostDTO.ID_ALIAS)]);
+            Long postId = longValue(tuple[aliasToIndexMap.get(PostDTO.ID_ALIAS)]);
 
             PostDTO postDTO = postDTOMap.computeIfAbsent(
                 postId,

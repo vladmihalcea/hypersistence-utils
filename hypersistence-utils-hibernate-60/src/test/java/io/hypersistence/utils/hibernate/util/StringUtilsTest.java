@@ -1,5 +1,6 @@
 package io.hypersistence.utils.hibernate.util;
 
+import io.hypersistence.utils.common.StringUtils;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

@@ -1,7 +1,7 @@
 package io.hypersistence.utils.hibernate.id;
 
 import io.hypersistence.tsid.TSID;
-import io.hypersistence.utils.hibernate.util.ReflectionUtils;
+import io.hypersistence.utils.common.ReflectionUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.IdentifierGenerator;

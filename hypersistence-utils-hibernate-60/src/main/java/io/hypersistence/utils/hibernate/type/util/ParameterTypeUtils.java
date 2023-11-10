@@ -1,6 +1,6 @@
 package io.hypersistence.utils.hibernate.type.util;
 
-import io.hypersistence.utils.hibernate.util.StringUtils;
+import io.hypersistence.utils.common.StringUtils;
 import org.hibernate.usertype.DynamicParameterizedType;
 
 import jakarta.persistence.Column;

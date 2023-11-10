@@ -1,7 +1,7 @@
 package io.hypersistence.utils.hibernate.type.array;
 
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
-import io.hypersistence.utils.hibernate.util.ExceptionUtil;
+import io.hypersistence.utils.common.ExceptionUtil;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

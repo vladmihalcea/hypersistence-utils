@@ -2,7 +2,7 @@ package io.hypersistence.utils.hibernate.type.json.generic;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import io.hypersistence.utils.hibernate.util.AbstractTest;
-import io.hypersistence.utils.hibernate.util.providers.DataSourceProvider;
+import io.hypersistence.utils.test.providers.DataSourceProvider;
 import io.hypersistence.utils.hibernate.util.providers.H2DataSourceProvider;
 import jakarta.persistence.*;
 import org.hibernate.Session;

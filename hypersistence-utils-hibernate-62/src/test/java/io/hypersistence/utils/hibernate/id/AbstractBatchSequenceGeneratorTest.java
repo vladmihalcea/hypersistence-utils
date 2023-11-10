@@ -1,7 +1,7 @@
 package io.hypersistence.utils.hibernate.id;
 
 import io.hypersistence.utils.hibernate.util.AbstractTest;
-import io.hypersistence.utils.hibernate.util.providers.DataSourceProvider;
+import io.hypersistence.utils.test.providers.DataSourceProvider;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;

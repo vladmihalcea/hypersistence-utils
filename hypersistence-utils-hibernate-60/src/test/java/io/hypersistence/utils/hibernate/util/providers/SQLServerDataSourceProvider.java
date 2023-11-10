@@ -1,8 +1,12 @@
 package io.hypersistence.utils.hibernate.util.providers;
 
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
+import io.hypersistence.utils.test.providers.AbstractContainerDataSourceProvider;
+import io.hypersistence.utils.test.providers.DataSourceProvider;
+import org.hibernate.dialect.Database;
 import org.hibernate.dialect.SQLServerDialect;
 import org.testcontainers.containers.JdbcDatabaseContainer;
+import org.testcontainers.containers.MSSQLServerContainer;
 
 import javax.sql.DataSource;
 
@@ -10,6 +14,13 @@ import javax.sql.DataSource;
  * @author Vlad Mihalcea
  */
 public class SQLServerDataSourceProvider extends AbstractContainerDataSourceProvider {
+
+	public static final DataSourceProvider INSTANCE = new SQLServerDataSourceProvider();
+
+	@Override
+	public Database database() {
+		return Database.SQLSERVER;
+	}
 
 	@Override
 	public String hibernateDialect() {
@@ -25,7 +36,7 @@ public class SQLServerDataSourceProvider extends AbstractContainerDataSourceProv
 	public DataSource newDataSource() {
 		SQLServerDataSource dataSource = new SQLServerDataSource();
 		dataSource.setURL(url());
-		JdbcDatabaseContainer container = database().getContainer();
+		JdbcDatabaseContainer container = getContainer();
 		if(container == null) {
 			dataSource.setUser(username());
 			dataSource.setPassword(password());
@@ -47,7 +58,17 @@ public class SQLServerDataSourceProvider extends AbstractContainerDataSourceProv
 	}
 
 	@Override
-	public Database database() {
-		return Database.SQLSERVER;
+	public JdbcDatabaseContainer newJdbcDatabaseContainer() {
+		return new MSSQLServerContainer("mcr.microsoft.com/mssql/server:2019-latest");
+	}
+
+	@Override
+	public boolean supportsDatabaseName() {
+		return false;
+	}
+
+	@Override
+	public boolean supportsCredentials() {
+		return false;
 	}
 }
