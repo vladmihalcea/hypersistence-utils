@@ -130,25 +130,11 @@ public class SQLExtractor {
      * @return the unproxied Hibernate query, or original query if there is no proxy, or null if it's not an Hibernate query of required type
      */
     private static Optional<QuerySqmImpl<?>> getSqmQueryOptional(Query query) {
-        try {
-            if (query instanceof QuerySqmImpl) {
-                QuerySqmImpl<?> querySqm = (QuerySqmImpl<?>) query;
-                return Optional.of(querySqm);
-            }
-            if (!Proxy.isProxyClass(query.getClass())) {
-                return Optional.empty();
-            }
-            // is proxyied, get it out
-            InvocationHandler invocationHandler = Proxy.getInvocationHandler(query);
-            Class<?> innerClass = invocationHandler.getClass();
-            Field targetField = innerClass.getDeclaredField("target");
-            targetField.setAccessible(true);
-            QuerySqmImpl<?> querySqm = (QuerySqmImpl<?>) targetField.get(invocationHandler);
+        Query unwrappedQuery = query.unwrap(Query.class);
+        if (unwrappedQuery instanceof QuerySqmImpl) {
+            QuerySqmImpl<?> querySqm = (QuerySqmImpl<?>) unwrappedQuery;
             return Optional.of(querySqm);
-        } catch (NoSuchFieldException exception) {
-            return Optional.empty(); // not an Hibernate query
-        } catch (IllegalAccessException exception) {
-            throw new IllegalStateException(exception);
         }
+        return Optional.empty();
     }
 }
