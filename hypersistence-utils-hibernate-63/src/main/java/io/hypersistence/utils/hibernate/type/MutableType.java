@@ -126,6 +126,10 @@ public abstract class MutableType<T, JDBC extends JdbcType, JAVA extends JavaTyp
 
     @Override
     public T replace(T detached, T managed, Object owner) {
+		if (!isMutable() || (managed != null && equals(detached, managed))) {
+			return detached;
+		}
+
         return deepCopy(detached);
     }
 
