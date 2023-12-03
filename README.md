@@ -290,7 +290,7 @@ For more details, check out [this article](https://vladmihalcea.com/how-to-map-j
 * [The awesome BaseJpaRepository](https://vladmihalcea.com/basejparepository-hypersistence-utils/)
 * [The best Spring Data JpaRepository](https://vladmihalcea.com/best-spring-data-jparepository/)
 * [The Spring Data `findAll` Anti-Pattern](https://vladmihalcea.com/spring-data-findall-anti-pattern/)
-* [The Spring `@Retry` annotation to automaticlaly retry on failure](https://vladmihalcea.com/optimistic-locking-retry-with-jpa/)
+* [The Spring `@Retry` annotation to automatically retry on failure](https://vladmihalcea.com/optimistic-locking-retry-with-jpa/)
 
 ###### BaseJpaRepository
 
