@@ -30,7 +30,7 @@ public class OracleIntervalDayToSecondType extends ImmutableType<Duration> {
 
     private static final int SQL_COLUMN_TYPE = -104;
     private static final String INTERVAL_TOKENS = "%1$2d %2$2d:%3$2d:%4$2d.0";
-    private static final Pattern INTERVAL_PATTERN = Pattern.compile("(\\d+)\\s(\\d+):(\\d+):(\\d+)\\.\\d+");
+    private static final Pattern INTERVAL_PATTERN = Pattern.compile("-?(\\d+)\\s(\\d+):(\\d+):(\\d+)\\.\\d+");
 
     @Override
     protected Duration get(
@@ -52,10 +52,12 @@ public class OracleIntervalDayToSecondType extends ImmutableType<Duration> {
             Integer minutes = Integer.parseInt(matcher.group(3));
             Integer seconds = Integer.parseInt(matcher.group(4));
 
-            return Duration.ofDays(days)
-                    .plus(hours, ChronoUnit.HOURS)
-                    .plus(minutes, ChronoUnit.MINUTES)
-                    .plus((long) Math.floor(seconds), ChronoUnit.SECONDS);
+            Duration duration = Duration.ofDays(days)
+                .plus(hours, ChronoUnit.HOURS)
+                .plus(minutes, ChronoUnit.MINUTES)
+                .plus((long) Math.floor(seconds), ChronoUnit.SECONDS);
+
+            return intervalValue.startsWith("-") ? duration.negated() : duration;
         }
 
         throw new HibernateException(
@@ -68,12 +70,12 @@ public class OracleIntervalDayToSecondType extends ImmutableType<Duration> {
         if (value == null) {
             st.setNull(index, SQL_COLUMN_TYPE);
         } else {
-            final int days = (int) value.toDays();
-            final int hours = (int) (value.toHours() % 24);
-            final int minutes = (int) (value.toMinutes() % 60);
-            final int seconds = (int) (value.getSeconds() % 60);
+            final int days = Math.abs((int) value.toDays());
+            final int hours = Math.abs((int) (value.toHours() % 24));
+            final int minutes = Math.abs((int) (value.toMinutes() % 60));
+            final int seconds = Math.abs((int) (value.getSeconds() % 60));
 
-            st.setString(index, String.format(INTERVAL_TOKENS, days, hours, minutes, seconds));
+            st.setString(index, (value.isNegative() ? "-" : "") + String.format(INTERVAL_TOKENS, days, hours, minutes, seconds));
         }
     }
 
