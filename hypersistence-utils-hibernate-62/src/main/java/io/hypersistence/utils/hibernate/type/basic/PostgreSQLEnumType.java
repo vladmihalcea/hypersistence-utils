@@ -28,7 +28,9 @@ import java.util.Properties;
  * For more details about how to use it, check out <a href="https://vladmihalcea.com/the-best-way-to-map-an-enum-type-with-jpa-and-hibernate/">this article</a> on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
  *
  * @author Vlad Mihalcea
+ * @deprecated Hibernate 6.3 includes support for PostgreSQL enums with the PostgreSQLEnumJdbcType
  */
+@Deprecated
 public class PostgreSQLEnumType extends ImmutableDynamicParameterizedType<Enum> {
 
     public static final PostgreSQLEnumType INSTANCE = new PostgreSQLEnumType();
