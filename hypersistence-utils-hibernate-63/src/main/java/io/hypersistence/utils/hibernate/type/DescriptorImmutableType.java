@@ -3,8 +3,8 @@ package io.hypersistence.utils.hibernate.type;
 import io.hypersistence.utils.hibernate.type.util.Configuration;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.metamodel.model.domain.DomainType;
 import org.hibernate.query.BindableType;
-import org.hibernate.query.sqm.SqmExpressible;
 import org.hibernate.type.descriptor.java.JavaType;
 import org.hibernate.type.descriptor.jdbc.JdbcType;
 import org.hibernate.usertype.UserType;
@@ -18,7 +18,7 @@ import java.sql.SQLException;
  *
  * @author Vlad Mihalcea
  */
-public abstract class DescriptorImmutableType<T, JDBC extends JdbcType, JAVA extends JavaType<T>> extends ImmutableType<T> implements BindableType<T>, SqmExpressible<T> {
+public abstract class DescriptorImmutableType<T, JDBC extends JdbcType, JAVA extends JavaType<T>> extends ImmutableType<T> implements BindableType<T>, DomainType<T> {
 
     private final JDBC jdbcTypeDescriptor;
     private final JAVA javaTypeDescriptor;

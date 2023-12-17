@@ -9,8 +9,8 @@ import org.hibernate.internal.util.IndexedConsumer;
 import org.hibernate.metamodel.mapping.BasicValuedMapping;
 import org.hibernate.metamodel.mapping.JdbcMapping;
 import org.hibernate.metamodel.mapping.MappingType;
+import org.hibernate.metamodel.model.domain.DomainType;
 import org.hibernate.query.BindableType;
-import org.hibernate.query.sqm.SqmExpressible;
 import org.hibernate.type.descriptor.java.JavaType;
 import org.hibernate.type.descriptor.jdbc.JdbcType;
 import org.hibernate.type.internal.BasicTypeImpl;
@@ -26,7 +26,7 @@ import java.sql.SQLException;
  *
  * @author Vlad Mihalcea
  */
-public abstract class MutableType<T, JDBC extends JdbcType, JAVA extends JavaType<T>> implements UserType<T>, BindableType<T>, SqmExpressible<T>, BasicValuedMapping {
+public abstract class MutableType<T, JDBC extends JdbcType, JAVA extends JavaType<T>> implements UserType<T>, BindableType<T>, DomainType<T>, BasicValuedMapping {
 
     private final Class<T> clazz;
 

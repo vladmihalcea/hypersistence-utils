@@ -78,7 +78,7 @@ public class BindArrayTypeQueryParameterTest extends AbstractPostgreSQLIntegrati
                     "select e " +
                     "from Event e " +
                     "where " +
-                    "   fn_array_contains(e.values, :arrayValues) = true", Event.class)
+                    "   cast(fn_array_contains(e.values, :arrayValues) as Boolean) = true", Event.class)
                 .setParameter("arrayValues", new int[]{2, 3})
                 .getSingleResult();
             });
@@ -96,7 +96,7 @@ public class BindArrayTypeQueryParameterTest extends AbstractPostgreSQLIntegrati
                 "select e " +
                 "from Event e " +
                 "where " +
-                "   fn_array_contains(e.values, :arrayValues) = true", Event.class)
+                "   cast(fn_array_contains(e.values, :arrayValues) as Boolean) = true", Event.class)
             .unwrap(org.hibernate.query.Query.class)
             .setParameter("arrayValues", new int[]{2, 3}, IntArrayType.INSTANCE)
             .getSingleResult();
@@ -113,7 +113,7 @@ public class BindArrayTypeQueryParameterTest extends AbstractPostgreSQLIntegrati
                 "select e " +
                 "from Event e " +
                 "where " +
-                "   fn_array_contains(e.values, :arrayValues) = true", Event.class)
+                "   cast(fn_array_contains(e.values, :arrayValues) as Boolean) = true", Event.class)
             .setParameter("arrayValues", new TypedParameterValue<>(IntArrayType.INSTANCE, new int[]{2, 3}))
             .getSingleResult();
 
