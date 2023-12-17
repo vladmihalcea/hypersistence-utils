@@ -320,7 +320,7 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
         try (PreparedStatement statement = coordinator.getStatementPreparer().prepareStatement(this.select)) {
             statement.setFetchSize(this.fetchSize);
             statement.setInt(1, this.fetchSize);
-            try (ResultSet resultSet = coordinator.getResultSetReturn().extract(statement)) {
+            try (ResultSet resultSet = coordinator.getResultSetReturn().extract(statement, this.select)) {
                 while (resultSet.next()) {
                     identifiers.add(this.identifierExtractor.extractIdentifier(resultSet));
                 }
