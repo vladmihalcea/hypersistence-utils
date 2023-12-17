@@ -58,7 +58,7 @@
         </dependency>
 
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-jcache</artifactId>
             <version>${hibernate.version}</version>
             <scope>test</scope>
@@ -75,12 +75,6 @@
                     <artifactId>jaxb-runtime</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>${jaxb-api.version}</version>
         </dependency>
 
         <dependency>
@@ -162,7 +156,7 @@
         <!-- Testing -->
 
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-envers</artifactId>
             <version>${hibernate.version}</version>
             <scope>test</scope>
@@ -210,19 +204,17 @@
 
         <hibernate.version>6.3.1.Final</hibernate.version>
 
-        <mysql.version>8.0.28</mysql.version>
-        <jackson-module-jakarta-xmlbind-annotation>2.15.2</jackson-module-jakarta-xmlbind-annotation>
-        <guava.version>31.1-jre</guava.version>
+        <jackson-module-jakarta-xmlbind-annotation>2.15.3</jackson-module-jakarta-xmlbind-annotation>
+        <guava.version>32.1.3-jre</guava.version>
         <moneta.version>1.4.2</moneta.version>
 
-        <ehcache.version>3.10.0</ehcache.version>
-        <jaxb-api.version>2.3.0</jaxb-api.version>
-        <jakarta-bind.api.version>3.0.1</jakarta-bind.api.version>
+        <ehcache.version>3.10.8</ehcache.version>
+        <jakarta-bind.api.version>4.0.1</jakarta-bind.api.version>
 
-        <hikari.version>4.0.3</hikari.version>
-        <aspectj.version>1.9.19</aspectj.version>
-        <spring.version>6.0.9</spring.version>
-        <spring-data.version>3.0.6</spring-data.version>
+        <hikari.version>5.0.1</hikari.version>
+        <aspectj.version>1.9.20.1</aspectj.version>
+        <spring.version>6.1.2</spring.version>
+        <spring-data.version>3.2.0</spring-data.version>
 
     </properties>
 
