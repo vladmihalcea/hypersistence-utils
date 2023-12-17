@@ -54,6 +54,7 @@
     </repositories>
 
     <modules>
+        <module>hypersistence-utils-hibernate-63</module>
         <module>hypersistence-utils-hibernate-62</module>
         <module>hypersistence-utils-hibernate-60</module>
         <module>hypersistence-utils-hibernate-55</module>
