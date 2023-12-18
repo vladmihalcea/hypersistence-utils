@@ -212,7 +212,7 @@
 
         <mysql.version>8.0.28</mysql.version>
         <jackson-module-jakarta-xmlbind-annotation>2.15.2</jackson-module-jakarta-xmlbind-annotation>
-        <guava.version>31.1-jre</guava.version>
+        <guava.version>32.0.0-jre</guava.version>
         <moneta.version>1.4.2</moneta.version>
 
         <ehcache.version>3.10.0</ehcache.version>
