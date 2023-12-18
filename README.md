@@ -10,7 +10,7 @@ of the project is much broader now, offering Spring utilities as well.
 For this reason, when migrating from the Hibernate Types 2.x to Hypersistence Utils 3.x,
 you will need to follow these steps:
 
-1. First, you will need to change your Maven or Gradle dependency as illustrated by the [Installation Guide](#installation-guide).
+1. First, you will need to change your Maven or Gradle dependency, as illustrated by the [Installation Guide](#installation-guide).
 2. Second, you will need to change the package name from `com.vladmihalcea.hibernate` to `io.hypersistence.utils.hibernate`.
 3. Third, you will need to change the package name from `com.vladmihalcea.spring` to `io.hypersistence.utils.spring`.
 
@@ -78,9 +78,9 @@ Depending on the Hibernate version you are using, you need to add the following 
 
 The Hypersistence Utils project defines a list of optional dependencies that you will have to declare explicitly in your project in order to use them.
 
-The reason why all these dependencies are optional, like Guava, Jackson, or PostgreSQL JDBC Driver, is because not all projects may need them.
+The reason why all these dependencies are optional, like Guava, Jackson, or PostgreSQL JDBC Driver, is that not all projects may need them.
 
-More, the dependency version is extremely important because, from time to time, security issues may be discovered that get fixed in newer versions.
+Moreover, the dependency version is extremely important because, from time to time, security issues may be discovered that get fixed in newer versions.
 
 > So, relying on this library to supply you with the dependency versions is a very dangerous thing to do. 
 > 
@@ -203,7 +203,7 @@ import io.hypersistence.utils.hibernate.type.json.JsonType;
 import org.hibernate.annotations.TypeDef;
 ````
 
-And later, you can map the `Map`, `List`, POJO, `String`, or `JsonNode` entity properties to JSON columns like this:
+Later, you can map the `Map`, `List`, POJO, `String`, or `JsonNode` entity properties to JSON columns like this:
 
 ````java
 @Type(type = "json")
@@ -298,7 +298,7 @@ For more details, check out [this article](https://vladmihalcea.com/how-to-map-j
 * [The awesome BaseJpaRepository](https://vladmihalcea.com/basejparepository-hypersistence-utils/)
 * [The best Spring Data JpaRepository](https://vladmihalcea.com/best-spring-data-jparepository/)
 * [The Spring Data `findAll` Anti-Pattern](https://vladmihalcea.com/spring-data-findall-anti-pattern/)
-* [The Spring `@Retry` annotation to automaticlaly retry on failure](https://vladmihalcea.com/optimistic-locking-retry-with-jpa/)
+* [The Spring `@Retry` annotation to automatically retry on failure](https://vladmihalcea.com/optimistic-locking-retry-with-jpa/)
 
 ###### BaseJpaRepository
 
