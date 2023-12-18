@@ -3,13 +3,13 @@
     <parent>
         <groupId>io.hypersistence</groupId>
         <artifactId>hypersistence-utils-parent</artifactId>
-        <version>3.6.2-SNAPSHOT</version>
+        <version>3.7.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>hypersistence-utils-hibernate-52</artifactId>
-    <version>3.6.2-SNAPSHOT</version>
+    <version>3.7.0</version>
     <packaging>jar</packaging>
 
     <name>hypersistence-utils-hibernate-52</name>
