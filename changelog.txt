@@ -1,3 +1,12 @@
+Version 3.7.0 - December 18, 2023
+================================================================================
+
+Oracle Interval Type does not support negative intervals #682
+
+Return original object if target and original are the same when merging #677
+
+Add a hypersistence-utils-hibernate-63 module for Hibernate 6.3 #657
+
 Version 3.6.1 - November 11, 2023
 ================================================================================
 
