@@ -20,7 +20,7 @@ That's it!
 
 The Hypersistence Utils project gives you general-purpose utilities for both Spring and Hibernate. 
 
-The main advantage of this project is that it supports a broad range of Hibernate versions, spanning from **Hibernate ORM 6.3**, **6.2** to **6.1**, **6.0**, **5.6**, **5.5**, **5.4**, **5.3**, **5.2**, **5.1**, and Hibernate **5**.
+The main advantage of this project is that it supports a broad range of Hibernate versions, spanning from **Hibernate ORM 6.3**, **6.2** to **6.1**, **6.0**, **5.6**, **5.5**, **5.4**, **5.3**, and Hibernate **5.2**.
 
 ### Installation Guide
 
@@ -66,14 +66,6 @@ Depending on the Hibernate version you are using, you need to add the following 
         <version>3.7.0</version>
     </dependency>
 
-#### Hibernate 5.1 and 5.0
-
-    <dependency>
-        <groupId>io.hypersistence</groupId>
-        <artifactId>hypersistence-utils-hibernate-5</artifactId>
-        <version>3.7.0</version>
-    </dependency>
-
 #### Optional Maven Dependencies
 
 The Hypersistence Utils project defines a list of optional dependencies that you will have to declare explicitly in your project in order to use them.
@@ -115,16 +107,6 @@ If you are using JSON Types, then you might be interested in setting the followi
     <groupId>com.fasterxml.jackson.module</groupId>
     <artifactId>jackson-module-jaxb-annotations</artifactId>
     <version>${jackson-module-jaxb-annotation}</version>
-</dependency>
-````
-
-###### Hibernate 5.1, 5.0
-
-````xml
-<dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-databind</artifactId>
-    <version>${jackson.version}</version>
 </dependency>
 ````
 
