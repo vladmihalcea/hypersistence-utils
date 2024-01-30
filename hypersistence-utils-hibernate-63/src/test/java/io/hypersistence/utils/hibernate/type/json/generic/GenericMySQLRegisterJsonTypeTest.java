@@ -1,9 +1,6 @@
 package io.hypersistence.utils.hibernate.type.json.generic;
 
-import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
-import io.hypersistence.utils.hibernate.type.json.configuration.CustomObjectMapperSupplier;
-import io.hypersistence.utils.hibernate.type.json.configuration.PostgreSQLJsonBinaryTypeProgrammaticConfigurationTest;
 import io.hypersistence.utils.hibernate.type.model.BaseEntity;
 import io.hypersistence.utils.hibernate.type.model.Location;
 import io.hypersistence.utils.hibernate.type.model.Ticket;
@@ -15,13 +12,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.Type;
 import org.hibernate.jpa.boot.spi.TypeContributorList;
-import org.hibernate.query.NativeQuery;
-import org.hibernate.query.Query;
-import org.hibernate.query.TypedParameterValue;
 import org.junit.Test;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;

@@ -1,5 +1,7 @@
 package io.hypersistence.utils.hibernate.type.model;
 
+import io.hypersistence.utils.hibernate.type.json.internal.JacksonUtil;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -30,10 +32,7 @@ public class Location implements Serializable {
 
     @Override
     public String toString() {
-        return "Location{" +
-                "country='" + country + '\'' +
-                ", city='" + city + '\'' +
-                '}';
+        return JacksonUtil.toString(this);
     }
 
     @Override
