@@ -84,7 +84,7 @@ Moreover, the dependency version is extremely important because, from time to ti
 
 If you are using JSON Types, then you might be interested in setting the following dependencies based on your Hibernate version:
 
-###### Hibernate 6.3, 6.2, 6.1 and 6.0
+###### Hibernate 6
 
 ````xml
 <dependency>
@@ -94,7 +94,7 @@ If you are using JSON Types, then you might be interested in setting the followi
 </dependency>
 ````
 
-###### Hibernate 5.6, 5.5, 5.4, 5.3, and 5.2
+###### Hibernate 5
 
 ````xml
 <dependency>
