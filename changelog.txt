@@ -1,3 +1,9 @@
+Version 3.7.2 - February 08, 2024
+================================================================================
+
+Expecting BasicPluralJavaType for array class [Ljava.util.UUID;,
+but got `com.vladmihalcea.hibernate.type.array.internal.UUIDArrayTypeDescriptor error with Hibernate 6.4 #698
+
 Version 3.7.1 - January 30, 2024
 ================================================================================
 
