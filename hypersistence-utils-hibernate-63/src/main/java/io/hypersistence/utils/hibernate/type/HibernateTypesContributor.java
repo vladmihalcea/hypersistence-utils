@@ -100,8 +100,7 @@ public class HibernateTypesContributor implements TypeContributor {
             contributeType(typeContributions, LongArrayType.INSTANCE, typeFilter);
             contributeType(typeContributions, StringArrayType.INSTANCE, typeFilter);
             contributeType(typeContributions, TimestampArrayType.INSTANCE, typeFilter);
-            contributeType(typeContributions, UUIDArrayType.INSTANCE, typeFilter);
-
+            
             /* Date/Time */
             contributeType(typeContributions, PostgreSQLIntervalType.INSTANCE, typeFilter);
             contributeType(typeContributions, PostgreSQLPeriodType.INSTANCE, typeFilter);
