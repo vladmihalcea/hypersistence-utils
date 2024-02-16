@@ -1,6 +1,6 @@
 package io.hypersistence.utils.hibernate.type;
 
-import io.hypersistence.utils.hibernate.type.array.*;
+import io.hypersistence.utils.common.ReflectionUtils;
 import io.hypersistence.utils.hibernate.type.basic.Iso8601MonthType;
 import io.hypersistence.utils.hibernate.type.basic.NullableCharacterType;
 import io.hypersistence.utils.hibernate.type.basic.PostgreSQLHStoreType;
@@ -11,7 +11,6 @@ import io.hypersistence.utils.hibernate.type.interval.PostgreSQLPeriodType;
 import io.hypersistence.utils.hibernate.type.json.JsonNodeStringType;
 import io.hypersistence.utils.hibernate.type.range.PostgreSQLRangeType;
 import io.hypersistence.utils.hibernate.type.range.guava.PostgreSQLGuavaRangeType;
-import io.hypersistence.utils.common.ReflectionUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.boot.model.TypeContributions;
 import org.hibernate.boot.model.TypeContributor;
@@ -87,20 +86,6 @@ public class HibernateTypesContributor implements TypeContributor {
          */
 
         if(dialect instanceof PostgreSQLDialect) {
-            /* Arrays */
-            contributeType(typeContributions, BooleanArrayType.INSTANCE, typeFilter);
-            contributeType(typeContributions, DateArrayType.INSTANCE, typeFilter);
-            contributeType(typeContributions, DecimalArrayType.INSTANCE, typeFilter);
-            contributeType(typeContributions, DoubleArrayType.INSTANCE, typeFilter);
-            contributeType(typeContributions, FloatArrayType.INSTANCE, typeFilter);
-            contributeType(typeContributions, EnumArrayType.INSTANCE, typeFilter);
-            contributeType(typeContributions, IntArrayType.INSTANCE, typeFilter);
-            contributeType(typeContributions, LocalDateArrayType.INSTANCE, typeFilter);
-            contributeType(typeContributions, LocalDateTimeArrayType.INSTANCE, typeFilter);
-            contributeType(typeContributions, LongArrayType.INSTANCE, typeFilter);
-            contributeType(typeContributions, StringArrayType.INSTANCE, typeFilter);
-            contributeType(typeContributions, TimestampArrayType.INSTANCE, typeFilter);
-            
             /* Date/Time */
             contributeType(typeContributions, PostgreSQLIntervalType.INSTANCE, typeFilter);
             contributeType(typeContributions, PostgreSQLPeriodType.INSTANCE, typeFilter);

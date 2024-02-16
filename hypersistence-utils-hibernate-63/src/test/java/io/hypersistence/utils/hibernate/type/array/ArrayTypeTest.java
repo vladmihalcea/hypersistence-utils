@@ -7,6 +7,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.Tuple;
+import org.hibernate.Session;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
@@ -129,6 +130,12 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                     .getResultList();
 
             assertEquals(2, events.size());
+
+            List<Event> eventsByIds = entityManager.unwrap(Session.class)
+                .byMultipleIds(Event.class)
+                .multiLoad(List.of(0L, 1L));
+
+            assertEquals(2, eventsByIds.size());
         });
     }
 
