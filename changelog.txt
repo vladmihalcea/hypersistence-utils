@@ -1,3 +1,8 @@
+Version 3.7.3 - February 16, 2024
+================================================================================
+
+"java.lang.ClassCastException: class [Ljava.lang.String; cannot be cast to class [B" thrown when using multiLoad with Hibernate 6.4 #700
+
 Version 3.7.2 - February 08, 2024
 ================================================================================
 
