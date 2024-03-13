@@ -2,17 +2,29 @@ package io.hypersistence.utils.hibernate.type.json.internal;
 
 import io.hypersistence.utils.hibernate.type.model.BaseEntity;
 import org.hibernate.HibernateException;
+import org.hibernate.type.descriptor.WrapperOptions;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+@RunWith(MockitoJUnitRunner.class)
 public class JsonTypeDescriptorTest {
+    private @Mock WrapperOptions wrapperOptions;
 
     /**
      * If JSON serialization is used,
@@ -51,6 +63,21 @@ public class JsonTypeDescriptorTest {
             fail("Should fail because the propertyType is null!");
         } catch (HibernateException expected) {
         }
+    }
+
+    @Test
+    public void testCollectionPropertyTypes() {
+        JsonTypeDescriptor listDescriptor = new JsonTypeDescriptor(new TestParameterizedTypeImpl(String.class, ArrayList.class));
+        JsonTypeDescriptor setDescriptor = new JsonTypeDescriptor(new TestParameterizedTypeImpl(String.class, HashSet.class));
+        List<String> expectedArrayListValue = new ArrayList<>();
+        expectedArrayListValue.add("one");
+        expectedArrayListValue.add("two");
+        Set<String> expectedHashSetValue = new HashSet<>();
+        expectedHashSetValue.add("one");
+        expectedHashSetValue.add("two");
+
+        assertEquals(expectedArrayListValue, listDescriptor.wrap("[\"one\",\"two\"]", wrapperOptions));
+        assertEquals(expectedHashSetValue, setDescriptor.wrap("[\"one\",\"two\"]", wrapperOptions));
     }
 
     private Form createForm(Integer... numbers) {
@@ -118,6 +145,31 @@ public class JsonTypeDescriptorTest {
         @Override
         public int hashCode() {
             return Objects.hash(formFields);
+        }
+    }
+
+    private static class TestParameterizedTypeImpl implements ParameterizedType {
+        private final Class<?> actualType;
+        private final Class<?> rawType;
+
+        public TestParameterizedTypeImpl(Class<?> actualType, Class<?> rawType) {
+            this.actualType = actualType;
+            this.rawType = rawType;
+        }
+
+        @Override
+        public Type[] getActualTypeArguments() {
+            return new Type[]{actualType};
+        }
+
+        @Override
+        public Type getRawType() {
+            return rawType;
+        }
+
+        @Override
+        public Type getOwnerType() {
+            return null;
         }
     }
 }
