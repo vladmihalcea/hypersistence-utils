@@ -210,10 +210,11 @@ public class JsonJavaTypeDescriptor extends AbstractClassJavaType<Object> implem
                 ParameterizedType parameterizedType = (ParameterizedType) propertyType;
 
                 for(Class genericType : ReflectionUtils.getGenericTypes(parameterizedType)) {
-                    if(validatedTypes.contains(genericType)) {
-                        continue;
+                    synchronized (validatedTypes) {
+                        if(!validatedTypes.add(genericType)) {
+                            continue;
+                        }
                     }
-                    validatedTypes.add(genericType);
                     Method equalsMethod = ReflectionUtils.getMethodOrNull(genericType, "equals", Object.class);
                     Method hashCodeMethod = ReflectionUtils.getMethodOrNull(genericType, "hashCode");
 
@@ -237,5 +238,5 @@ public class JsonJavaTypeDescriptor extends AbstractClassJavaType<Object> implem
         this.jdbcType = jdbcType;
     }
 
-    private static List<Class> validatedTypes = new ArrayList<>();
+    private static final Set<Class> validatedTypes = new HashSet<>();
 }
