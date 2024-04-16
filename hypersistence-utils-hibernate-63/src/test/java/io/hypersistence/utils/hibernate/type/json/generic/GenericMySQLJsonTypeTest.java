@@ -147,7 +147,6 @@ public class GenericMySQLJsonTypeTest extends AbstractMySQLIntegrationTest {
             .setParameter("id", _event.getId())
             .unwrap(NativeQuery.class)
             .setParameter("location", new TypedParameterValue<>(new JsonType(Location.class), location))
-            .setParameter("location", location)
             .executeUpdate();
 
             Event event = entityManager.find(Event.class, _event.getId());
