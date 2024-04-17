@@ -42,6 +42,25 @@ public class JsonTypeDescriptorTest {
         assertTrue(descriptor.areEqual(theFirst, theSecond));
     }
 
+    /**
+     * When the JSON object contains an explicit equal method, even when defined on the abstract super class {@link AbstractForm},
+     * that equals method should be used.
+     * If JSON serialization is used,
+     * the {@link JsonJavaTypeDescriptor#areEqual(Object, Object)} depends on the values of the fields.
+     *
+     * The equals method of the {@link FormImpl} always returns true, so the two objects should be equal,
+     * even when having a different value.
+     */
+    @Test
+    public void testAbstractClassImplementationsAreEqual() {
+        JsonJavaTypeDescriptor descriptor = new JsonJavaTypeDescriptor();
+
+        FormImpl firstEntity = new FormImpl("value1");
+        FormImpl secondEntity = new FormImpl("value2");
+
+        assertTrue(descriptor.areEqual(firstEntity, secondEntity));
+    }
+
     @Test
     public void testNullPropertyType() {
         JsonJavaTypeDescriptor descriptor = new JsonJavaTypeDescriptor();
@@ -118,6 +137,30 @@ public class JsonTypeDescriptorTest {
         @Override
         public int hashCode() {
             return Objects.hash(formFields);
+        }
+    }
+
+    private static class FormImpl extends AbstractForm {
+        private FormImpl(String value) {
+            super(value);
+        }
+    }
+
+    private static abstract class AbstractForm {
+        private String value;
+
+        private AbstractForm(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(value);
         }
     }
 }
