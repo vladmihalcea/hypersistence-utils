@@ -43,7 +43,7 @@ public class JsonTypeDescriptorTest {
     }
 
     /**
-     * When the JSON object contains an explicit equal method, even when defined on the abstract super class {@link AbstractForm},
+     * When the JSON object contains an explicit equals method, even when defined on the abstract super class {@link AbstractForm},
      * that equals method should be used.
      * If JSON serialization is used,
      * the {@link JsonTypeDescriptor#areEqual(Object, Object)} depends on the values of the fields.
@@ -57,6 +57,20 @@ public class JsonTypeDescriptorTest {
 
         FormImpl firstEntity = new FormImpl("value1");
         FormImpl secondEntity = new FormImpl("value2");
+
+        assertTrue(descriptor.areEqual(firstEntity, secondEntity));
+    }
+
+    /**
+     * When the JSON object does not contain an explicit equals method, it should not use the equals method {@link Object},
+     * but should use the ObjectWrapperMapper to equal the objects as JsonNodes
+     */
+    @Test
+    public void testClassesWithoutEqualsMethodShouldEqualAsJsonNodes() {
+        JsonTypeDescriptor descriptor = new JsonTypeDescriptor();
+
+        FormWithoutEqualsMethod firstEntity = new FormWithoutEqualsMethod("value1");
+        FormWithoutEqualsMethod secondEntity = new FormWithoutEqualsMethod("value1");
 
         assertTrue(descriptor.areEqual(firstEntity, secondEntity));
     }
@@ -161,6 +175,18 @@ public class JsonTypeDescriptorTest {
         @Override
         public int hashCode() {
             return Objects.hashCode(value);
+        }
+    }
+
+    private static class FormWithoutEqualsMethod {
+        private String value;
+
+        public String getValue() {
+            return value;
+        }
+
+        private FormWithoutEqualsMethod(String value) {
+            this.value = value;
         }
     }
 }
