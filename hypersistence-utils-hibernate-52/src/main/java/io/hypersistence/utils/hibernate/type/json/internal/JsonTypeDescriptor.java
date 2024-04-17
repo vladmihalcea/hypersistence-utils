@@ -97,9 +97,11 @@ public class JsonTypeDescriptor
             (one instanceof Map && another instanceof Map)) {
             return Objects.equals(one, another);
         }
-        if (one.getClass().equals(another.getClass()) &&
-            ReflectionUtils.getDeclaredMethodOrNull(one.getClass(), "equals", Object.class) != null) {
-            return one.equals(another);
+        if (one.getClass().equals(another.getClass())) {
+            Method equalsMethod = ReflectionUtils.getMethodOrNull(one.getClass(), "equals", Object.class);
+            if (equalsMethod != null && !Object.class.equals(equalsMethod.getDeclaringClass())) {
+                return one.equals(another);
+            }
         }
         return objectMapperWrapper.toJsonNode(objectMapperWrapper.toString(one)).equals(
             objectMapperWrapper.toJsonNode(objectMapperWrapper.toString(another))
