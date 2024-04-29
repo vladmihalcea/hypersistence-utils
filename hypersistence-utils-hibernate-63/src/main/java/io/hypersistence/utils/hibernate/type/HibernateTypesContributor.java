@@ -107,9 +107,6 @@ public class HibernateTypesContributor implements TypeContributor {
             /* Date/Time */
             contributeType(typeContributions, OracleIntervalDayToSecondType.INSTANCE, typeFilter);
         }
-
-        /* Basic */
-        contributeType(typeContributions, NullableCharacterType.INSTANCE, typeFilter);
         /* Date/Time */
         contributeType(typeContributions, Iso8601MonthType.INSTANCE, typeFilter);
     }
