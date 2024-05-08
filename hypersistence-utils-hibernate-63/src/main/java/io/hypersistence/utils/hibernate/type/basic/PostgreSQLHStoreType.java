@@ -5,6 +5,8 @@ import io.hypersistence.utils.hibernate.type.json.internal.JacksonUtil;
 import io.hypersistence.utils.hibernate.type.util.Configuration;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.postgresql.util.HStoreConverter;
+import org.postgresql.util.PGobject;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -42,7 +44,14 @@ public class PostgreSQLHStoreType extends ImmutableType<Map> {
 
     @Override
     protected Map get(ResultSet rs, int position, SharedSessionContractImplementor session, Object owner) throws SQLException {
-        return (Map) rs.getObject(position);
+        final var obj = rs.getObject(position);
+        if(obj instanceof PGobject pgo){
+            return HStoreConverter.fromString(pgo.getValue());
+        }
+        if(obj instanceof Map<?,?> map){
+            return map;
+        }
+        throw new SQLException("Unable to load HStore field.");
     }
 
     @Override
