@@ -45,7 +45,7 @@ public class HibernateTypesContributor implements TypeContributor {
                 return value;
             }
             if(value instanceof String) {
-                return Boolean.getBoolean((String) value);
+                return Boolean.valueOf((String) value);
             }
             throw new HibernateException(
                 String.format("The value [%s] of the [%s] setting is not supported!", value, ENABLE_TYPES_CONTRIBUTOR)

@@ -2,7 +2,6 @@ package io.hypersistence.utils.hibernate.type;
 
 import io.hypersistence.utils.common.ReflectionUtils;
 import io.hypersistence.utils.hibernate.type.basic.Iso8601MonthType;
-import io.hypersistence.utils.hibernate.type.basic.NullableCharacterType;
 import io.hypersistence.utils.hibernate.type.basic.PostgreSQLHStoreType;
 import io.hypersistence.utils.hibernate.type.basic.PostgreSQLInetType;
 import io.hypersistence.utils.hibernate.type.interval.OracleIntervalDayToSecondType;
@@ -45,7 +44,7 @@ public class HibernateTypesContributor implements TypeContributor {
                 return value;
             }
             if(value instanceof String) {
-                return Boolean.getBoolean((String) value);
+                return Boolean.valueOf((String) value);
             }
             throw new HibernateException(
                 String.format("The value [%s] of the [%s] setting is not supported!", value, ENABLE_TYPES_CONTRIBUTOR)
