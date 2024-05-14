@@ -1,6 +1,7 @@
 package io.hypersistence.utils.hibernate.type;
 
 import io.hypersistence.utils.common.ReflectionUtils;
+import io.hypersistence.utils.common.StringUtils;
 import io.hypersistence.utils.hibernate.type.basic.Iso8601MonthType;
 import io.hypersistence.utils.hibernate.type.basic.PostgreSQLHStoreType;
 import io.hypersistence.utils.hibernate.type.basic.PostgreSQLInetType;
@@ -42,8 +43,12 @@ public class HibernateTypesContributor implements TypeContributor {
             if(value instanceof Boolean) {
                 return value;
             }
-            if(value instanceof String) {
-                return Boolean.getBoolean((String) value);
+            if (value instanceof String) {
+                if (StringUtils.TRUE.equalsIgnoreCase((String) value)) {
+                    return Boolean.TRUE;
+                } else if (StringUtils.FALSE.equalsIgnoreCase((String) value)) {
+                    return Boolean.FALSE;
+                }
             }
             throw new HibernateException(
                 String.format("The value [%s] of the [%s] setting is not supported!", value, ENABLE_TYPES_CONTRIBUTOR)

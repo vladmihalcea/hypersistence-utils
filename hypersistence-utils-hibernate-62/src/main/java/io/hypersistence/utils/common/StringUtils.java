@@ -12,6 +12,10 @@ public class StringUtils {
 
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
+    public static final String TRUE = Boolean.TRUE.toString();
+
+    public static final String FALSE = Boolean.FALSE.toString();
+
     private StringUtils() {
         throw new UnsupportedOperationException("StringUtils is not instantiable!");
     }

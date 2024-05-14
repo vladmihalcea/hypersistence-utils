@@ -12,6 +12,7 @@ import io.hypersistence.utils.hibernate.type.range.PostgreSQLRangeType;
 import io.hypersistence.utils.hibernate.type.range.guava.PostgreSQLGuavaRangeType;
 import io.hypersistence.utils.hibernate.type.search.PostgreSQLTSVectorType;
 import io.hypersistence.utils.hibernate.util.ReflectionUtils;
+import io.hypersistence.utils.hibernate.util.StringUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.boot.model.TypeContributions;
 import org.hibernate.boot.model.TypeContributor;
@@ -44,8 +45,12 @@ public class HibernateTypesContributor implements TypeContributor {
             if(value instanceof Boolean) {
                 return value;
             }
-            if(value instanceof String) {
-                return Boolean.getBoolean((String) value);
+            if (value instanceof String) {
+                if (StringUtils.TRUE.equalsIgnoreCase((String) value)) {
+                    return Boolean.TRUE;
+                } else if (StringUtils.FALSE.equalsIgnoreCase((String) value)) {
+                    return Boolean.FALSE;
+                }
             }
             throw new HibernateException(
                 String.format("The value [%s] of the [%s] setting is not supported!", value, ENABLE_TYPES_CONTRIBUTOR)
