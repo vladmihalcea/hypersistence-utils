@@ -261,6 +261,30 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
             assertEquals(2, events.size());
         });
+
+        Event _event = doInJPA(entityManager -> {
+            return entityManager.find(Event.class, 1L);
+        });
+
+        String newString = "New";
+        LocalDateTime newTimestamp = LocalDateTime.of(2024, 6, 4, 11, 22, 33);
+
+        assertEquals(2, _event.getSensorNames().size());
+        assertEquals(2, _event.getLocalDateTimeSetValues().size());
+        _event.getSensorNames().add(newString);
+        _event.getLocalDateTimeSetValues().add(newTimestamp);
+
+        doInJPA(entityManager -> {
+            entityManager.merge(_event);
+        });
+
+        doInJPA(entityManager -> {
+            Event event = entityManager.find(Event.class, 1L);
+            assertEquals(3, event.getSensorNames().size());
+            assertTrue(event.getSensorNames().contains(newString));
+            assertEquals(3, event.getLocalDateTimeSetValues().size());
+            assertTrue(event.getLocalDateTimeSetValues().contains(newTimestamp));
+        });
     }
 
     @Test

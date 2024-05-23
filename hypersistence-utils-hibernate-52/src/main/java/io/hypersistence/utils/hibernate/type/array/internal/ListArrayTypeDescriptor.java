@@ -31,7 +31,10 @@ public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Object>
         super(Object.class, new MutableMutabilityPlan<Object>() {
             @Override
             protected Object deepCopyNotNull(Object value) {
-                if (value instanceof Collection) {
+                if (value instanceof Set) {
+                    Object[] array = ((Set<Object>) value).toArray();
+                    return ArrayUtil.asSet(ArrayUtil.deepCopy(array));
+                } else if (value instanceof Collection) {
                     Object[] array = ((Collection<Object>) value).toArray();
                     return ArrayUtil.asList(ArrayUtil.deepCopy(array));
                 } else if (value.getClass().isArray()) {
