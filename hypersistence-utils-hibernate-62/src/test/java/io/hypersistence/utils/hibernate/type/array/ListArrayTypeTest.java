@@ -144,6 +144,20 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                         )
                     )
             );
+
+            entityManager.merge(
+                new Event()
+                    .setId(2L)
+                    .setLocalDateTimeSetValues(
+                        new LinkedHashSet<>(
+                            Arrays.asList(
+                                LocalDateTime.of(2024, 4, 27, 11, 22, 33),
+                                LocalDateTime.of(2024, 4, 27, 11, 22, 33),
+                                LocalDateTime.of(2023, 3, 22, 22, 33, 44)
+                            )
+                        )
+                    )
+            );
         });
     }
 
@@ -244,6 +258,20 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         });
 
         doInJPA(entityManager -> {
+            Event event = entityManager.find(Event.class, 2L);
+
+            assertEquals(
+                new HashSet<>(
+                    Arrays.asList(
+                        LocalDateTime.of(2024, 4, 27, 11, 22, 33),
+                        LocalDateTime.of(2023, 3, 22, 22, 33, 44)
+                    )
+                ),
+                event.getLocalDateTimeSetValues()
+            );
+        });
+
+        doInJPA(entityManager -> {
             List<Tuple> events = entityManager.createNativeQuery(
                 "select " +
                     "   id, " +
@@ -259,7 +287,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 .addScalar("sensor_values", int[].class)
                 .getResultList();
 
-            assertEquals(2, events.size());
+            assertEquals(3, events.size());
         });
     }
 
@@ -283,7 +311,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             .addScalar("sensor_states", SensorState[].class)
             .getResultList();
 
-            assertEquals(2, events.size());
+            assertEquals(3, events.size());
         });
     }
 

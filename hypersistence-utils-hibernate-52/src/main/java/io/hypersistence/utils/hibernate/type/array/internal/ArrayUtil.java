@@ -4,7 +4,9 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * <code>ArrayUtil</code> - Array utilities holder.
@@ -373,5 +375,18 @@ public class ArrayUtil {
             list.add(i, array[i]);
         }
         return list;
+    }
+
+    /**
+     * @param array array to transform
+     * @param <T>   array element type
+     * @return the {@link Set} representation of the array
+     */
+    public static <T> Set<T> asSet(T[] array) {
+        Set<T> set = new LinkedHashSet<T>(array.length);
+        for (int i = 0; i < array.length; i++) {
+            set.add(array[i]);
+        }
+        return set;
     }
 }
