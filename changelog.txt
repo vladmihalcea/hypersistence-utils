@@ -1,3 +1,10 @@
+Version 3.7.6 - June 04, 2024
+================================================================================
+
+Use Spring Data Range as an alternative to PostgreSQL range type #721
+
+ListArrayType on Set entity attribute fails for EntityManager.merge operation #717
+
 Version 3.7.5 - April 29, 2024
 ================================================================================
 
