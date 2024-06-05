@@ -104,9 +104,12 @@ public class MonetaryAmountType extends ImmutableCompositeType<MonetaryAmount> {
     @Override
     public int getPropertyIndex(String propertyName) {
         switch (propertyName) {
-            case "amount": return 0;
-            case "property": return 1;
-            default: throw new IllegalArgumentException("Unknown property name: " + propertyName);
+            case "amount":
+                return 0;
+            case "currency":
+                return 1;
+            default:
+                throw new IllegalArgumentException("Unknown property name: " + propertyName);
         }
     }
 }
