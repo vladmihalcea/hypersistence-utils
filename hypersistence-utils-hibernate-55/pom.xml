@@ -165,7 +165,7 @@
         <hibernate.version>5.6.15.Final</hibernate.version>
 
         <mysql.version>8.0.28</mysql.version>
-        <jackson-databind.version>2.12.6.1</jackson-databind.version>
+        <jackson-databind.version>2.12.7.1</jackson-databind.version>
         <jackson-module-jaxb-annotation>2.12.6</jackson-module-jaxb-annotation>
         <guava.version>32.0.0-jre</guava.version>
         <moneta.version>1.4.2</moneta.version>
