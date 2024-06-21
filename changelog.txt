@@ -1,3 +1,10 @@
+Version 3.7.7 - June 21, 2024
+================================================================================
+
+Remove hypersistence-utils-hibernate-52 module #726
+
+MonetaryAmountType should use currency instead of property for the second attribute #707
+
 Version 3.7.6 - June 04, 2024
 ================================================================================
 
