@@ -2,6 +2,7 @@ package io.hypersistence.utils.hibernate.id;
 
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.boot.model.relational.Database;
 import org.hibernate.boot.model.relational.QualifiedName;
@@ -17,11 +18,15 @@ import org.hibernate.id.IdentifierGenerationException;
 import org.hibernate.id.PersistentIdentifierGenerator;
 import org.hibernate.id.enhanced.Optimizer;
 import org.hibernate.id.enhanced.SequenceStructure;
+import org.hibernate.id.factory.spi.CustomIdGeneratorCreationContext;
 import org.hibernate.internal.util.config.ConfigurationHelper;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.type.Type;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.PreparedStatement;
@@ -35,15 +40,12 @@ import java.util.concurrent.locks.ReentrantLock;
  * A sequence generator that uses a recursive query to fetch multiple
  * values from a sequence in a single database access.
  *
- * <h2>Parameters</h2>
- * The following configuration parameters are supported:
- * <dl>
- * <dt>{@value #SEQUENCE_PARAM}</dt>
- * <dd><strong>mandatory</strong>, name of the sequence to use</dd>
- * <dt>{@value #FETCH_SIZE_PARAM}</dt>
- * <dd>optional, how many sequence numbers should be fetched at a time,
- * default is {@value #DEFAULT_FETCH_SIZE}</dd>
- * </dl>
+ * <h2>Configuration</h2>
+ * <pre><code>
+ * &commat;Id
+ * &commat;BatchSequence(name = "SOME_SEQUENCE_NAME", fetch_size = SOME_FETCH_SIZE_VALUE)
+ * private Long someColumnName;
+ * </code></pre>
  *
  * <h2>SQL</h2>
  * Per default the generated SELECT will look something like this
@@ -141,12 +143,18 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
 
     /**
      * Indicates the name of the sequence to use, mandatory.
+     * 
+     * @deprecated use {@link BatchSequence}
      */
+    @Deprecated
     public static final String SEQUENCE_PARAM = "sequence";
 
     /**
      * Indicates how many sequence values to fetch at once. The default value is {@link #DEFAULT_FETCH_SIZE}.
+     * 
+     * @deprecated use {@link BatchSequence}
      */
+    @Deprecated
     public static final String FETCH_SIZE_PARAM = "fetch_size";
 
     /**
@@ -170,17 +178,56 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
 
     private IdentifierPool identifierPool;
 
+    /**
+     * Called when {@link BatchSequence} is used.
+     * 
+     * @param annotation meta annotation for configuration
+     */
+    public BatchSequenceGenerator(BatchSequence annotation,
+                    Member annotatedMember,
+                    CustomIdGeneratorCreationContext context) {
+      JdbcEnvironment jdbcEnvironment = context.getServiceRegistry().getService(JdbcEnvironment.class);
+      this.sequenceName = determineSequenceName(annotation, jdbcEnvironment);
+      this.fetchSize = annotation.fetchSize();
+      
+      Class<?> type = getType(annotatedMember);
+      this.identifierExtractor = IdentifierExtractor.getIdentifierExtractor(type);
+      this.sequenceStructure = this.buildSequenceStructure(type, sequenceName, jdbcEnvironment);
+    }
+
+    /**
+     * Called when {@link GenericGenerator} is used.
+     */
+    public BatchSequenceGenerator() {
+      super();
+    }
+
     @Override
     public void configure(Type type, Properties params, ServiceRegistry serviceRegistry)
                     throws MappingException {
 
-        JdbcEnvironment jdbcEnvironment = serviceRegistry.getService(JdbcEnvironment.class);
-        
-        this.sequenceName = determineSequenceName(params, jdbcEnvironment);
-        this.fetchSize = determineFetchSize(params);
+        if (this.sequenceName == null) {
+            // not initialized in constructor
+            JdbcEnvironment jdbcEnvironment = serviceRegistry.getService(JdbcEnvironment.class);
+            
+            this.sequenceName = determineSequenceName(params, jdbcEnvironment);
+            this.fetchSize = determineFetchSize(params);
 
-        this.identifierExtractor = IdentifierExtractor.getIdentifierExtractor(type.getReturnedClass());
-        this.sequenceStructure = this.buildSequenceStructure(type, sequenceName, jdbcEnvironment);
+            Class<?> numberType = type.getReturnedClass();
+            this.identifierExtractor = IdentifierExtractor.getIdentifierExtractor(numberType);
+            this.sequenceStructure = this.buildSequenceStructure(numberType, sequenceName, jdbcEnvironment);
+
+        }
+    }
+
+    private static Class<?> getType(Member annotatedMember) {
+        if (annotatedMember instanceof Field) {
+            return ((Field) annotatedMember).getType();
+        } else if (annotatedMember instanceof Method) {
+            return ((Method) annotatedMember).getReturnType();
+        } else {
+            throw new IllegalArgumentException("unknown member type: " + annotatedMember);
+        }
     }
 
 	@Override
@@ -238,8 +285,8 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
         + "SELECT " + nextValString + " FROM t";
     }
 
-    private SequenceStructure buildSequenceStructure(Type type, QualifiedName sequenceName, JdbcEnvironment jdbcEnvironment) {
-        return new SequenceStructure(jdbcEnvironment, "orm", sequenceName, 1, 1, type.getReturnedClass());
+    private SequenceStructure buildSequenceStructure(Class<?> type, QualifiedName sequenceName, JdbcEnvironment jdbcEnvironment) {
+        return new SequenceStructure(jdbcEnvironment, "orm", sequenceName, 1, 1, type);
     }
 
 	/**
@@ -271,6 +318,27 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
             schema,
             jdbcEnv.getIdentifierHelper().toIdentifier( sequenceName )
             );
+    }
+
+    private static QualifiedName determineSequenceName(
+                    BatchSequence annotation, JdbcEnvironment jdbcEnv) {
+        String sequenceName = annotation.name();
+        if (sequenceName == null) {
+            throw new MappingException("no squence name specified");
+        }
+
+        final Identifier catalog = jdbcEnv.getIdentifierHelper().toIdentifier(annotation.catalog());
+        final Identifier schema =  jdbcEnv.getIdentifierHelper().toIdentifier(annotation.schema());
+
+        if(sequenceName.contains(".")) {
+            return QualifiedNameParser.INSTANCE.parse(sequenceName);
+        }
+
+        return new QualifiedNameParser.NameParts(
+                        catalog,
+                        schema,
+                        jdbcEnv.getIdentifierHelper().toIdentifier( sequenceName )
+                        );
     }
 
     private static int determineFetchSize(Properties params) {
