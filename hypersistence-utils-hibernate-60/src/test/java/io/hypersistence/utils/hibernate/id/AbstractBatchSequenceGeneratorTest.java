@@ -93,15 +93,10 @@ public abstract class AbstractBatchSequenceGeneratorTest extends AbstractTest {
     public static class Post {
 
         @Id
-        @GenericGenerator(
-            name = "post_sequence",
-            strategy = "io.hypersistence.utils.hibernate.id.BatchSequenceGenerator",
-            parameters = {
-                    @Parameter(name = "sequence", value = "SEQ_PARENT_ID"),
-                    @Parameter(name = "fetch_size", value = "" + BATCH_SIZE)
-            }
+        @BatchSequence(
+            name = "SEQ_PARENT_ID",
+            fetchSize = BATCH_SIZE
         )
-        @GeneratedValue(generator = "post_sequence")
         private Long id;
 
         private String title;
