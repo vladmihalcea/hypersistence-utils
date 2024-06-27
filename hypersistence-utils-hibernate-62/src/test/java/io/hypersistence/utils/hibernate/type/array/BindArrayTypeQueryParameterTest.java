@@ -35,27 +35,20 @@ public class BindArrayTypeQueryParameterTest extends AbstractPostgreSQLIntegrati
     }
 
     @Override
-    public void init() {
-        DataSource dataSource = newDataSource();
-        try (Connection connection = dataSource.getConnection();
-             Statement statement = connection.createStatement()) {
-            statement.executeUpdate(
-                "CREATE OR REPLACE FUNCTION " +
-                "    fn_array_contains(" +
-                "       left_array integer[], " +
-                "       right_array integer[]" +
-                ") RETURNS " +
-                "       boolean AS " +
-                "$$ " +
-                "BEGIN " +
-                "  return left_array @> right_array; " +
-                "END; " +
-                "$$ LANGUAGE 'plpgsql';"
-            );
-        } catch (SQLException e) {
-            fail(e.getMessage());
-        }
-        super.init();
+    protected void beforeInit() {
+        executeStatement(
+            "CREATE OR REPLACE FUNCTION " +
+            "    fn_array_contains(" +
+            "       left_array integer[], " +
+            "       right_array integer[]" +
+            ") RETURNS " +
+            "       boolean AS " +
+            "$$ " +
+            "BEGIN " +
+            "  return left_array @> right_array; " +
+            "END; " +
+            "$$ LANGUAGE 'plpgsql';"
+        );
     }
 
     @Override

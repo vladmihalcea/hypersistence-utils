@@ -30,13 +30,7 @@ public class PostgreSQLInetTypeTest extends AbstractPostgreSQLIntegrationTest {
 
     @Override
     public void afterInit() {
-        doInJDBC(connection -> {
-            try (Statement statement = connection.createStatement()) {
-                statement.executeUpdate("CREATE INDEX ON event USING gist (ip inet_ops)");
-            } catch (SQLException e) {
-                fail(e.getMessage());
-            }
-        });
+        executeStatement("CREATE INDEX ON event USING gist (ip inet_ops)");
 
         _event = doInJPA(entityManager -> {
             entityManager.persist(new Event());

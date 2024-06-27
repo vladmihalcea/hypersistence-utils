@@ -39,19 +39,8 @@ public class OracleJsonBinaryTypeTest extends AbstractOracleIntegrationTest {
 
     @Override
     protected void afterInit() {
-        doInJPA(entityManager -> {
-            entityManager.unwrap(Session.class).doWork(connection -> {
-                try(Statement statement = connection.createStatement()) {
-                    statement.executeUpdate(
-                        "ALTER TABLE event MOVE LOB (location) STORE AS (CACHE)"
-                    );
-
-                    statement.executeUpdate(
-                        "ALTER TABLE participant MOVE LOB (ticket, metadata) STORE AS (CACHE)"
-                    );
-                }
-            });
-        });
+        executeStatement("ALTER TABLE event MOVE LOB (location) STORE AS (CACHE)");
+        executeStatement("ALTER TABLE participant MOVE LOB (ticket, metadata) STORE AS (CACHE)");
 
         doInJPA(entityManager -> {
             Event nullEvent = new Event();

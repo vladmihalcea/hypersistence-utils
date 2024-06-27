@@ -30,18 +30,10 @@ public class PostgreSQLEnumArrayTypeTest extends AbstractPostgreSQLIntegrationTe
         };
     }
 
-    @Before
-    public void init() {
-        DataSource dataSource = newDataSource();
-        try (Connection connection = dataSource.getConnection()) {
-            try (Statement statement = connection.createStatement()){
-                statement.executeUpdate("DROP TYPE IF EXISTS user_role;");
-                statement.executeUpdate("CREATE TYPE user_role AS ENUM ('ROLE_ADMIN', 'ROLE_USER');");
-            }
-        } catch (SQLException e) {
-            fail(e.getMessage());
-        }
-        super.init();
+    @Override
+    protected void beforeInit() {
+        executeStatement("DROP TYPE IF EXISTS user_role;");
+        executeStatement("CREATE TYPE user_role AS ENUM ('ROLE_ADMIN', 'ROLE_USER');");
     }
 
     @Test

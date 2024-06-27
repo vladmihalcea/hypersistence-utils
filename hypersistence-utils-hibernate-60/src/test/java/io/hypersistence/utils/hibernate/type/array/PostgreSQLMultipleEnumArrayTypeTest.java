@@ -26,33 +26,12 @@ public class PostgreSQLMultipleEnumArrayTypeTest extends AbstractPostgreSQLInteg
         };
     }
 
-    @Before
-    public void init() {
-        DataSource dataSource = newDataSource();
-
-        try (Connection connection = dataSource.getConnection()) {
-            try (Statement statement = connection.createStatement()){
-                statement.executeUpdate("DROP TYPE IF EXISTS user_role;");
-                statement.executeUpdate("CREATE TYPE user_role AS ENUM ('ROLE_ADMIN', 'ROLE_USER');");
-            }
-        } catch (SQLException e) {
-            fail(e.getMessage());
-        }
-
-        try (Connection connection = dataSource.getConnection()) {
-            try (Statement statement = connection.createStatement()){
-                statement.executeUpdate("DROP TYPE IF EXISTS user_role;");
-                statement.executeUpdate("CREATE TYPE user_role AS ENUM ('ROLE_ADMIN', 'ROLE_USER');");
-            }
-
-            try (Statement statement = connection.createStatement()){
-                statement.executeUpdate("DROP TYPE IF EXISTS user_type;");
-                statement.executeUpdate("CREATE TYPE user_type AS ENUM ('SUPER_USER', 'REGULAR');");
-            }
-        } catch (SQLException e) {
-            fail(e.getMessage());
-        }
-        super.init();
+    @Override
+    protected void beforeInit() {
+        executeStatement("DROP TYPE IF EXISTS user_role;");
+        executeStatement("CREATE TYPE user_role AS ENUM ('ROLE_ADMIN', 'ROLE_USER');");
+        executeStatement("DROP TYPE IF EXISTS user_type;");
+        executeStatement("CREATE TYPE user_type AS ENUM ('SUPER_USER', 'REGULAR');");
     }
 
     @Test

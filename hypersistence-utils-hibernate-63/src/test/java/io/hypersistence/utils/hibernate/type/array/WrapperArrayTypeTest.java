@@ -31,17 +31,8 @@ public class WrapperArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
     }
 
     @Override
-    public void init() {
-        DataSource dataSource = newDataSource();
-        try (Connection connection = dataSource.getConnection();
-                Statement statement = connection.createStatement()) {
-            statement.executeUpdate(
-                "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\""
-            );
-        } catch (SQLException e) {
-            fail(e.getMessage());
-        }
-        super.init();
+    protected void beforeInit() {
+        executeStatement("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\"");
     }
 
     @Test

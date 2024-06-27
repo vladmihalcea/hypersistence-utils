@@ -51,6 +51,9 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.*;
@@ -653,6 +656,15 @@ public abstract class AbstractHibernateTest {
 
     public static LocalDateTime localDateTimeValue(Object value) {
         return (LocalDateTime) value;
+    }
+
+    protected void executeStatement(String sql) {
+        try (Connection connection = dataSource().getConnection();
+             Statement statement = connection.createStatement()) {
+            statement.executeUpdate(sql);
+        } catch (SQLException e) {
+            LOGGER.error("Statement failed", e);
+        }
     }
 
     public static class PersistenceUnitInfoImpl implements PersistenceUnitInfo {

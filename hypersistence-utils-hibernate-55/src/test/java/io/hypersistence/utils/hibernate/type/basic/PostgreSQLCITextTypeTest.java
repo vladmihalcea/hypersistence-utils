@@ -32,34 +32,8 @@ public class PostgreSQLCITextTypeTest extends AbstractPostgreSQLIntegrationTest 
     }
 
     @Override
-    public void init() {
-        DataSource dataSource = newDataSource();
-        Connection connection = null;
-        Statement statement = null;
-        try {
-            connection = dataSource.getConnection();
-            statement = connection.createStatement();
-
-            statement.executeUpdate("CREATE EXTENSION IF NOT EXISTS citext");
-        } catch (SQLException e) {
-            fail(e.getMessage());
-        } finally {
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    fail(e.getMessage());
-                }
-            }
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    fail(e.getMessage());
-                }
-            }
-        }
-        super.init();
+    protected void beforeInit() {
+        executeStatement("CREATE EXTENSION IF NOT EXISTS citext");
     }
 
     @Test

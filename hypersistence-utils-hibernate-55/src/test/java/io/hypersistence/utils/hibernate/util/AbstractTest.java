@@ -40,6 +40,9 @@ import javax.persistence.spi.PersistenceUnitInfo;
 import javax.sql.DataSource;
 import java.io.Closeable;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -50,6 +53,8 @@ public abstract class AbstractTest {
 
     protected final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
+    private DataSource dataSource;
+
     private EntityManagerFactory emf;
 
     private SessionFactory sf;
@@ -58,12 +63,17 @@ public abstract class AbstractTest {
 
     @Before
     public void init() {
-        if(nativeHibernateSessionFactoryBootstrap()) {
+        beforeInit();
+        if (nativeHibernateSessionFactoryBootstrap()) {
             sf = newSessionFactory();
         } else {
             emf = newEntityManagerFactory();
         }
         afterInit();
+    }
+
+    protected void beforeInit() {
+
     }
 
     protected void afterInit() {
@@ -282,7 +292,7 @@ public abstract class AbstractTest {
         //log settings
         properties.put("hibernate.hbm2ddl.auto", "create-drop");
         //data source settings
-        DataSource dataSource = newDataSource();
+        DataSource dataSource = dataSource();
         if (dataSource != null) {
             properties.put("hibernate.connection.datasource", dataSource);
         }
@@ -297,6 +307,13 @@ public abstract class AbstractTest {
 
     protected DataSourceProxyType dataSourceProxyType() {
         return DataSourceProxyType.DATA_SOURCE_PROXY;
+    }
+
+    protected DataSource dataSource() {
+        if (dataSource == null) {
+            dataSource = newDataSource();
+        }
+        return dataSource;
     }
 
     protected DataSource newDataSource() {
@@ -528,6 +545,15 @@ public abstract class AbstractTest {
             if (session != null) {
                 session.close();
             }
+        }
+    }
+
+    protected void executeStatement(String sql) {
+        try (Connection connection = dataSource().getConnection();
+             Statement statement = connection.createStatement()) {
+            statement.executeUpdate(sql);
+        } catch (SQLException e) {
+            LOGGER.error("Statement failed", e);
         }
     }
 }

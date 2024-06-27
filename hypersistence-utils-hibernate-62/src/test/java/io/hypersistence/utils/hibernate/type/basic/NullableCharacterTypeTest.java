@@ -25,19 +25,10 @@ public class NullableCharacterTypeTest extends AbstractTest {
     }
 
     @Override
-    public void init() {
-        super.init();
-        doInJDBC(connection -> {
-            try (
-                    Statement statement = connection.createStatement();
-            ) {
-                statement.executeUpdate("INSERT INTO EVENT (ID, EVENT_TYPE) VALUES (1, 'abc')");
-                statement.executeUpdate("INSERT INTO EVENT (ID, EVENT_TYPE) VALUES (2, '')");
-                statement.executeUpdate("INSERT INTO EVENT (ID, EVENT_TYPE) VALUES (3, 'b')");
-            } catch (SQLException e) {
-                fail(e.getMessage());
-            }
-        });
+    protected void afterInit() {
+        executeStatement("INSERT INTO EVENT (ID, EVENT_TYPE) VALUES (1, 'abc')");
+        executeStatement("INSERT INTO EVENT (ID, EVENT_TYPE) VALUES (2, '')");
+        executeStatement("INSERT INTO EVENT (ID, EVENT_TYPE) VALUES (3, 'b')");
     }
 
     @Test

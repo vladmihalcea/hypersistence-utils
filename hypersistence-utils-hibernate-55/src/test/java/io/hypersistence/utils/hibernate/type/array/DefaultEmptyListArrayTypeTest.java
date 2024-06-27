@@ -33,26 +33,10 @@ public class DefaultEmptyListArrayTypeTest extends AbstractPostgreSQLIntegration
     }
 
     @Override
-    public void init() {
-        DataSource dataSource = newDataSource();
-        try (Connection connection = dataSource.getConnection();
-             Statement statement = connection.createStatement()) {
-            try {
-                statement.executeUpdate(
-                    "DROP TYPE sensor_state CASCADE"
-                );
-            } catch (SQLException ignore) {
-            }
-            statement.executeUpdate(
-                "CREATE TYPE sensor_state AS ENUM ('ONLINE', 'OFFLINE', 'UNKNOWN')"
-            );
-            statement.executeUpdate(
-                "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\""
-            );
-        } catch (SQLException e) {
-            fail(e.getMessage());
-        }
-        super.init();
+    protected void beforeInit() {
+        executeStatement("DROP TYPE sensor_state CASCADE");
+        executeStatement("CREATE TYPE sensor_state AS ENUM ('ONLINE', 'OFFLINE', 'UNKNOWN')");
+        executeStatement("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\"");
     }
 
     @Override
