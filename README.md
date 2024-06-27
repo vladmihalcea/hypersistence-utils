@@ -1,5 +1,5 @@
 [![License](https://img.shields.io/github/license/vladmihalcea/hypersistence-utils.svg)](https://raw.githubusercontent.com/vladmihalcea/hypersistence-utils/master/LICENSE)
-[![Maven Central](https://img.shields.io/maven-central/v/io.hypersistence/hypersistence-utils-parent.svg)](https://central.sonatype.com/artifact/io.hypersistence/hypersistence-utils-hibernate-60/)
+[![Maven Central](https://img.shields.io/maven-central/v/io.hypersistence/hypersistence-utils-parent.svg)](https://central.sonatype.com/artifact/io.hypersistence/hypersistence-utils-hibernate-63/)
 [![JavaDoc](http://javadoc.io/badge/io.hypersistence/hypersistence-utils-hibernate-60.svg)](http://www.javadoc.io/doc/io.hypersistence/hypersistence-utils-hibernate-63)
 
 ### Migrating to version 3
