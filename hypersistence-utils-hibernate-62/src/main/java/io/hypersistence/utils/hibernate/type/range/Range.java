@@ -40,6 +40,7 @@ public final class Range<T extends Comparable<? super T>> implements Serializabl
 
     public static final String INFINITY = "infinity";
 
+    // Text pattern for 'TIMESTAMP' as used by the database
     private static final DateTimeFormatter LOCAL_DATE_TIME = new DateTimeFormatterBuilder()
         .appendPattern("yyyy-MM-dd HH:mm:ss")
         .optionalStart()
@@ -48,12 +49,10 @@ public final class Range<T extends Comparable<? super T>> implements Serializabl
         .optionalEnd()
         .toFormatter();
 
-    private static final DateTimeFormatter ZONE_DATE_TIME = new DateTimeFormatterBuilder()
-        .appendPattern("yyyy-MM-dd HH:mm:ss")
-        .optionalStart()
-        .appendPattern(".")
-        .appendFraction(ChronoField.NANO_OF_SECOND, 1, 6, false)
-        .optionalEnd()
+    // Text pattern for 'TIMESTAMP WITH TIMEZONE' as used by the database when values are retrieved
+    // from the database.
+    private static final DateTimeFormatter OFFSET_DATE_TIME = new DateTimeFormatterBuilder()
+        .append(LOCAL_DATE_TIME)
         .appendOffset("+HH:mm", "Z")
         .toFormatter();
 
@@ -68,7 +67,7 @@ public final class Range<T extends Comparable<? super T>> implements Serializabl
         this.mask = mask;
         this.clazz = clazz;
 
-        if (isBounded() && lower != null && upper != null && lower.compareTo(upper) > 0) {
+        if (isBounded() && lower != null && upper != null && compare(lower, upper, true) > 0) {
             throw new IllegalArgumentException("The lower bound is greater then upper!");
         }
     }
@@ -465,6 +464,66 @@ public final class Range<T extends Comparable<? super T>> implements Serializabl
         return range;
     }
 
+    /**
+     * Creates the {@code OffsetDateTime} range from provided string:
+     * <pre>{@code
+     *     Range<OffsetDateTime> closed = Range.offsetDateTimeRange("[2007-12-03T10:15:30+01:00\",\"2008-12-03T10:15:30+01:00]");
+     *     Range<OffsetDateTime> quoted = Range.offsetDateTimeRange("[\"2007-12-03T10:15:30+01:00\",\"2008-12-03T10:15:30+01:00\"]");
+     *     Range<OffsetDateTime> iso = Range.offsetDateTimeRange("[2011-12-03T10:15:30+01:00, 2012-12-03T10:15:30+01:00]");
+     * }</pre>
+     * <p>
+     * The valid formats for bounds are:
+     * <ul>
+     * <li>yyyy-MM-dd HH:mm:ss[.SSSSSS]X</li>
+     * <li>yyyy-MM-dd'T'HH:mm:ss[.SSSSSS]X</li>
+     * </ul>
+     *
+     * @param rangeStr The range string, for example {@literal "[2011-12-03T10:15:30+01:00,2012-12-03T10:15:30+01:00]"}.
+     *
+     * @return The range of {@code ZonedDateTime}s.
+     *
+     * @throws DateTimeParseException   when one of the bounds are invalid.
+     * @throws IllegalArgumentException when bounds time zones are different.
+     */
+    public static Range<OffsetDateTime> offsetDateTimeRange(String rangeStr) {
+        Range<OffsetDateTime> range = ofString(rangeStr, parseOffsetDateTime().compose(unquote()), OffsetDateTime.class);
+        if (range.hasLowerBound() && range.hasUpperBound() && !EMPTY.equals(rangeStr)) {
+            ZoneOffset lowerOffset = range.lower.getOffset();
+            ZoneOffset upperOffset = range.upper.getOffset();
+            if (!Objects.equals(lowerOffset, upperOffset)) {
+                throw new IllegalArgumentException("The upper and lower bounds must be in same time zone!");
+            }
+        }
+        return range;
+    }
+
+    /**
+     * Creates the {@code Instant} range from provided string:
+     * <pre>{@code
+     *     Range<Instant> closed1 = Range.instantRange("[2007-12-03T10:15:30Z\",\"2008-12-03T10:15:30Z]");
+     *     Range<Instant> closed2 = Range.instantRange("[2007-12-03T10:15:30+01:00\",\"2008-12-03T10:15:30+01:00]");
+     *     Range<Instant> quoted = Range.instantRange("[\"2007-12-03T10:15:30+01:00\",\"2008-12-03T10:15:30+01:00\"]");
+     *     Range<Instant> iso = Range.instantRange("[2011-12-03T10:15:30+01:00, 2012-12-03T10:15:30+01:00]");
+     * }</pre>
+     * <p>
+     * The valid formats for bounds are:
+     * <ul>
+     * <li>yyyy-MM-dd HH:mm:ss[.SSSSSS]X</li>
+     * <li>yyyy-MM-dd'T'HH:mm:ss[.SSSSSS]X</li>
+     * </ul>
+     *
+     * <p>
+     * As can be seen, for convenience, offset based string formats are supported too. This is because {@code OffsetDateTime}
+     * has a direct and unambiguous conversion to {@code Instant}.
+     *
+     * @param rangeStr The range string, for example {@literal "[2011-12-03T10:15:30+01:00,2012-12-03T10:15:30+01:00]"}.
+     * @return The range of {@code ZonedDateTime}s.
+     * @throws DateTimeParseException   when one of the bounds are invalid.
+     */
+    public static Range<Instant> instantRange(String rangeStr) {
+        return ofString(rangeStr, parseInstant().compose(unquote()), Instant.class);
+    }
+
     private static Function<String, LocalDateTime> parseLocalDateTime() {
         return s -> {
             try {
@@ -475,10 +534,30 @@ public final class Range<T extends Comparable<? super T>> implements Serializabl
         };
     }
 
+    private static Function<String, Instant> parseInstant() {
+        return s -> {
+            try {
+                return OffsetDateTime.parse(s, OFFSET_DATE_TIME).toInstant();
+            } catch (DateTimeParseException e) {
+                return OffsetDateTime.parse(s).toInstant();
+            }
+        };
+    }
+
+    private static Function<String, OffsetDateTime> parseOffsetDateTime() {
+        return s -> {
+            try {
+                return OffsetDateTime.parse(s, OFFSET_DATE_TIME);
+            } catch (DateTimeParseException e) {
+                return OffsetDateTime.parse(s);
+            }
+        };
+    }
+
     private static Function<String, ZonedDateTime> parseZonedDateTime() {
         return s -> {
             try {
-                return ZonedDateTime.parse(s, ZONE_DATE_TIME);
+                return ZonedDateTime.parse(s, OFFSET_DATE_TIME);
             } catch (DateTimeParseException e) {
                 return ZonedDateTime.parse(s);
             }
@@ -513,6 +592,36 @@ public final class Range<T extends Comparable<? super T>> implements Serializabl
     @Override
     public int hashCode() {
         return Objects.hash(lower, upper, mask, clazz);
+    }
+
+    /**
+     * Indicates if another range, {@code o}, is equal to this one.
+     * This method produces the same result as method {@link #equals(Object)} except for
+     * {@code OffsetDateTime}-ranges and {@code ZonedDateTime}-ranges where this method performs
+     * comparison based on Instant equivalents, rather than comparing {@code OffsetDateTime}/{@code ZonedDateTime}
+     * directly.
+     *
+     * <p>
+     * Consider the following two OffsetDateTime or ZonedDateTime ranges:
+     * <pre>
+     *      ['2007-12-03T09:30.00Z',)
+     *      ['2007-12-03T10:30.00+01:00',)
+     * </pre>
+     *
+     * As can be seen both timestamp values refer to the same Instant in time. This method returns
+     * {@code true} for such comparison while {@link #equals(Object)} returns {@code false}.
+     *
+     *
+     * @param o other Range
+     * @return true if equal
+     */
+    public boolean equalsInValue(Range<T> o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        return mask == o.mask &&
+                (compare(lower, o.lower, true) == 0) &&
+                (compare(upper, o.upper, true) == 0) &&
+                Objects.equals(clazz, o.clazz);
     }
 
     @Override
@@ -567,6 +676,68 @@ public final class Range<T extends Comparable<? super T>> implements Serializabl
      * <p>
      * For example:
      * <pre>{@code
+     *     assertTrue(integerRange("[1,2]").contains(1, true))
+     *     assertTrue(integerRange("[1,2]").contains(2, true))
+     *     assertTrue(integerRange("[-1,1]").contains(0, true))
+     *     assertTrue(infinity(Integer.class).contains(Integer.MAX_VALUE, true))
+     *     assertTrue(infinity(Integer.class).contains(Integer.MIN_VALUE, true))
+     *
+     *     assertFalse(integerRange("(1,2]").contains(1, true))
+     *     assertFalse(integerRange("(1,2]").contains(3, true))
+     *     assertFalse(integerRange("[-1,1]").contains(0, true))
+     * }</pre>
+     *
+     * <p>
+     * <b>For {@code OffsetDateTime}-ranges and {@code ZonedDateTime}-ranges:</b> The {@code ic} parameter determines
+     * how values are compared. Consider the following two OffsetDateTime or ZonedDateTime values:
+     * <ol>
+     *     <li>'2007-12-03T09:30.00Z'</li>
+     *     <li>'2007-12-03T10:30.00+01:00'</li>
+     * </ol>
+     * As can be seen both values refer to the same instant in time. This type of jitter it likely to happen
+     * with databases: you persist the value (1) but when you later read it back from the database, it may have morphed into
+     * (2) depending on the time zone of your JVM. With standard comparison ({@code ic == false}) one of them would
+     * be evaluated as larger than the other one. This is likely to give unexpected results from this method. By contrast,
+     * if {@code ic == false}, then the two values would be evaluated as equals: none is larger or smaller than the other.
+     *
+     * It is recommended to always use {@code ic = true} when range type is {@code OffsetDateTime} or {@code ZonedDateTime}.
+     *
+     *
+     * @param point The point to check.
+     * @param ic {@code true} if comparison based on Instant values should be performed. Ignored unless
+     *                       range type is {@code OffsetDateTime} or {@code ZonedDateTime}.
+     * @return Whether {@code point} in this range or not.
+     */
+    public boolean contains(T point, boolean ic) {
+        if (isEmpty()) {
+            return false;
+        }
+
+        boolean l = hasLowerBound();
+        boolean u = hasUpperBound();
+
+        if (l && u) {
+            boolean inLower = hasMask(LOWER_INCLUSIVE) ? compare(lower, point, ic) <= 0 : compare(lower, point, ic) < 0;
+            boolean inUpper = hasMask(UPPER_INCLUSIVE) ? compare(upper, point, ic) >= 0 : compare(upper, point, ic)> 0;
+
+            return inLower && inUpper;
+        } else if (l) {
+            return hasMask(LOWER_INCLUSIVE) ? compare(lower, point, ic)<= 0 : compare(lower, point, ic) < 0;
+        } else if (u) {
+            return hasMask(UPPER_INCLUSIVE) ? compare(upper, point, ic) >= 0 : compare(upper, point, ic) > 0;
+        }
+
+        // INFINITY
+        return true;
+    }
+
+
+    /**
+     * Determines whether this range contains this point or not. This method is equivalent
+     * to {@link #contains(Comparable, boolean) contains(point, true)}-
+     * <p>
+     * For example:
+     * <pre>{@code
      *     assertTrue(integerRange("[1,2]").contains(1))
      *     assertTrue(integerRange("[1,2]").contains(2))
      *     assertTrue(integerRange("[-1,1]").contains(0))
@@ -578,32 +749,51 @@ public final class Range<T extends Comparable<? super T>> implements Serializabl
      *     assertFalse(integerRange("[-1,1]").contains(0))
      * }</pre>
      *
-     * @param point The point to check.
+     * <p>
+     * For ranges of type {@code OffsetDateTime} or {@code ZonedDateTime} you probably
+     * want to use method {@link #contains(Comparable, boolean) contains(point, true)} instead.
      *
+     * @see #contains(Comparable, boolean)
+     * @param point The point to check.
      * @return Whether {@code point} in this range or not.
      */
     public boolean contains(T point) {
-        if (isEmpty()) {
-            return false;
-        }
-
-        boolean l = hasLowerBound();
-        boolean u = hasUpperBound();
-
-        if (l && u) {
-            boolean inLower = hasMask(LOWER_INCLUSIVE) ? lower.compareTo(point) <= 0 : lower.compareTo(point) < 0;
-            boolean inUpper = hasMask(UPPER_INCLUSIVE) ? upper.compareTo(point) >= 0 : upper.compareTo(point) > 0;
-
-            return inLower && inUpper;
-        } else if (l) {
-            return hasMask(LOWER_INCLUSIVE) ? lower.compareTo(point) <= 0 : lower.compareTo(point) < 0;
-        } else if (u) {
-            return hasMask(UPPER_INCLUSIVE) ? upper.compareTo(point) >= 0 : upper.compareTo(point) > 0;
-        }
-
-        // INFINITY
-        return true;
+        return contains(point, false);
     }
+
+    private int compare(T t1, T t2, boolean instantComparison) {
+
+        if (instantComparison) {
+            if (t1 instanceof OffsetDateTime && t2 instanceof OffsetDateTime) {
+                OffsetDateTime t1x = (OffsetDateTime) t1;
+                OffsetDateTime t2x = (OffsetDateTime) t2;
+                if (t1x.isEqual(t2x)) {
+                    return 0;
+                }
+                if (t1x.isBefore(t2x)) {
+                    return -1;
+                }
+                if (t1x.isAfter(t2x)) {
+                    return 1;
+                }
+            }
+            if (t1 instanceof ZonedDateTime && t2 instanceof ZonedDateTime) {
+                ZonedDateTime t1x = (ZonedDateTime) t1;
+                ZonedDateTime t2x = (ZonedDateTime) t2;
+                if (t1x.isEqual(t2x)) {
+                    return 0;
+                }
+                if (t1x.isBefore(t2x)) {
+                    return -1;
+                }
+                if (t1x.isAfter(t2x)) {
+                    return 1;
+                }
+            }
+        }
+        return t1.compareTo(t2);
+    }
+
 
     /**
      * Determines whether this range contains this range or not.
@@ -618,11 +808,10 @@ public final class Range<T extends Comparable<? super T>> implements Serializabl
      * }</pre>
      *
      * @param range The range to check.
-     *
      * @return Whether {@code range} in this range or not.
      */
     public boolean contains(Range<T> range) {
-        return !isEmpty() && (!range.hasLowerBound() || contains(range.lower)) && (!range.hasUpperBound() || contains(range.upper));
+        return !isEmpty() && (!range.hasLowerBound() || contains(range.lower, true)) && (!range.hasUpperBound() || contains(range.upper, true));
     }
 
     /**
@@ -641,7 +830,7 @@ public final class Range<T extends Comparable<? super T>> implements Serializabl
 
     public boolean hasEqualBounds() {
         return lower == null && upper == null
-            || lower != null && upper != null && lower.compareTo(upper) == 0;
+            || lower != null && upper != null && compare(lower, upper, true) == 0;
     }
 
     public boolean isBoundedOpen() {
@@ -667,7 +856,15 @@ public final class Range<T extends Comparable<? super T>> implements Serializabl
     private Function<T, String> boundToString() {
         return t -> {
             if (clazz.equals(ZonedDateTime.class)) {
-                return ZONE_DATE_TIME.format((ZonedDateTime) t);
+                // Let Java do the conversion from ZonedDateTime to OffsetDateTime.
+                // (For PostgreSQL: we could let database do the conversion instead, but better let Java handle it)
+                return OFFSET_DATE_TIME.format(((ZonedDateTime) t).toOffsetDateTime());
+            }
+            if (clazz.equals(OffsetDateTime.class)) {
+                return OFFSET_DATE_TIME.format((OffsetDateTime) t);
+            }
+            if (clazz.equals(Instant.class)) {
+                return OFFSET_DATE_TIME.format(((Instant) t).atOffset(ZoneOffset.UTC));
             }
 
             return t.toString();
