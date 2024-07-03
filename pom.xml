@@ -10,7 +10,7 @@
 
     <groupId>io.hypersistence</groupId>
     <artifactId>hypersistence-utils-parent</artifactId>
-    <version>3.8.1-SNAPSHOT</version>
+    <version>3.8.1</version>
     <packaging>pom</packaging>
 
     <name>Hypersistence Utils</name>
@@ -40,7 +40,7 @@
         <developerConnection>scm:git:git@github.com:vladmihalcea/hypersistence-utils.git</developerConnection>
         <url>scm:git:git@github.com:vladmihalcea/hypersistence-utils.git</url>
         <connection>scm:git:git@github.com:vladmihalcea/hypersistence-utils.git</connection>
-        <tag>HEAD</tag>
+        <tag>hypersistence-utils-parent-3.8.1</tag>
     </scm>
 
     <repositories>
