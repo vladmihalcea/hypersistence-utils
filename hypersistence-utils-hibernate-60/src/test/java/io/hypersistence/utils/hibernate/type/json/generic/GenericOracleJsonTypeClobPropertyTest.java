@@ -1,36 +1,48 @@
 package io.hypersistence.utils.hibernate.type.json.generic;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import io.hypersistence.utils.hibernate.type.json.JsonBlobType;
+import io.hypersistence.utils.hibernate.type.json.JsonClobType;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import io.hypersistence.utils.hibernate.util.AbstractOracleIntegrationTest;
-import io.hypersistence.utils.hibernate.util.transaction.JPATransactionFunction;
+import io.hypersistence.utils.test.transaction.EntityManagerTransactionFunction;
+import jakarta.persistence.*;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
+import org.hibernate.jpa.boot.spi.TypeContributorList;
 import org.hibernate.query.NativeQuery;
 import org.junit.Test;
 
-import javax.persistence.*;
+import java.util.Collections;
+import java.util.Properties;
 
 import static org.junit.Assert.*;
 
 /**
  * @author Vlad Mihalcea
  */
-public class GenericOracleJsonTypeBlobPropertyTest extends AbstractOracleIntegrationTest {
+public class GenericOracleJsonTypeClobPropertyTest extends AbstractOracleIntegrationTest {
 
     @Override
     protected Class<?>[] entities() {
         return new Class<?>[]{
-            Book.class
+                Book.class
         };
+    }
+
+    @Override
+    protected void additionalProperties(Properties properties) {
+        properties.put("hibernate.type_contributors",
+            (TypeContributorList) () -> Collections.singletonList(
+                (typeContributions, serviceRegistry) -> {
+                    typeContributions.contributeType(new JsonClobType(JsonNode.class));
+                }
+            ));
     }
 
     @Test
     public void test() {
-        doInJPA(new JPATransactionFunction<Void>() {
+        doInJPA(new EntityManagerTransactionFunction<Void>() {
             @Override
             public Void apply(EntityManager entityManager) {
                 entityManager.persist(
@@ -50,7 +62,7 @@ public class GenericOracleJsonTypeBlobPropertyTest extends AbstractOracleIntegra
             }
         });
 
-        doInJPA(new JPATransactionFunction<Void>() {
+        doInJPA(new EntityManagerTransactionFunction<Void>() {
             @Override
             public Void apply(EntityManager entityManager) {
                 Book book = entityManager
@@ -79,7 +91,7 @@ public class GenericOracleJsonTypeBlobPropertyTest extends AbstractOracleIntegra
             }
         });
 
-        doInJPA(new JPATransactionFunction<Void>() {
+        doInJPA(new EntityManagerTransactionFunction<Void>() {
             @Override
             public Void apply(EntityManager entityManager) {
                 JsonNode properties = (JsonNode) entityManager
@@ -91,7 +103,7 @@ public class GenericOracleJsonTypeBlobPropertyTest extends AbstractOracleIntegra
                         "  isbn = :isbn")
                     .setParameter("isbn", "978-9730228236")
                     .unwrap(NativeQuery.class)
-                    .addScalar("properties", new JsonBlobType(JsonNode.class))
+                    .addScalar("properties", JsonNode.class)
                     .uniqueResult();
 
                 assertEquals("High-Performance Java Persistence", properties.get("title").asText());
@@ -100,7 +112,7 @@ public class GenericOracleJsonTypeBlobPropertyTest extends AbstractOracleIntegra
             }
         });
 
-        doInJPA(new JPATransactionFunction<Void>() {
+        doInJPA(new EntityManagerTransactionFunction<Void>() {
             @Override
             public Void apply(EntityManager entityManager) {
                 Book book = (Book) entityManager.unwrap(Session.class)
@@ -113,7 +125,7 @@ public class GenericOracleJsonTypeBlobPropertyTest extends AbstractOracleIntegra
             }
         });
 
-        doInJPA(new JPATransactionFunction<Void>() {
+        doInJPA(new EntityManagerTransactionFunction<Void>() {
             @Override
             public Void apply(EntityManager entityManager) {
                 Book book = entityManager.unwrap(Session.class)
@@ -129,7 +141,6 @@ public class GenericOracleJsonTypeBlobPropertyTest extends AbstractOracleIntegra
 
     @Entity(name = "Book")
     @Table(name = "book")
-    @TypeDef(name = "json", typeClass = JsonType.class)
     public static class Book {
 
         @Id
@@ -139,8 +150,8 @@ public class GenericOracleJsonTypeBlobPropertyTest extends AbstractOracleIntegra
         @NaturalId
         private String isbn;
 
-        @Type(type = "json")
-        @Column(columnDefinition = "BLOB")
+        @Type(JsonType.class)
+        @Column(columnDefinition = "CLOB")
         private String properties;
 
         public String getIsbn() {

@@ -2,6 +2,7 @@ package io.hypersistence.utils.hibernate.type.json.generic;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.hypersistence.utils.hibernate.type.json.JsonBlobType;
+import io.hypersistence.utils.hibernate.type.json.JsonClobType;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import io.hypersistence.utils.hibernate.util.AbstractOracleIntegrationTest;
 import io.hypersistence.utils.hibernate.util.transaction.JPATransactionFunction;
@@ -19,7 +20,7 @@ import static org.junit.Assert.*;
 /**
  * @author Vlad Mihalcea
  */
-public class GenericOracleJsonTypeBlobPropertyTest extends AbstractOracleIntegrationTest {
+public class GenericOracleJsonTypeClobPropertyTest extends AbstractOracleIntegrationTest {
 
     @Override
     protected Class<?>[] entities() {
@@ -91,7 +92,7 @@ public class GenericOracleJsonTypeBlobPropertyTest extends AbstractOracleIntegra
                         "  isbn = :isbn")
                     .setParameter("isbn", "978-9730228236")
                     .unwrap(NativeQuery.class)
-                    .addScalar("properties", new JsonBlobType(JsonNode.class))
+                    .addScalar("properties", new JsonClobType(JsonNode.class))
                     .uniqueResult();
 
                 assertEquals("High-Performance Java Persistence", properties.get("title").asText());
@@ -140,7 +141,7 @@ public class GenericOracleJsonTypeBlobPropertyTest extends AbstractOracleIntegra
         private String isbn;
 
         @Type(type = "json")
-        @Column(columnDefinition = "BLOB")
+        @Column(columnDefinition = "CLOB")
         private String properties;
 
         public String getIsbn() {

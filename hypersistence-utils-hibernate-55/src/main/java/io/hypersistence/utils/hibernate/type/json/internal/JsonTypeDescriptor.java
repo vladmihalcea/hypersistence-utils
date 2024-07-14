@@ -7,12 +7,11 @@ import org.hibernate.HibernateException;
 import org.hibernate.annotations.common.reflection.XProperty;
 import org.hibernate.annotations.common.reflection.java.JavaXMember;
 import org.hibernate.engine.jdbc.BinaryStream;
+import org.hibernate.engine.jdbc.CharacterStream;
 import org.hibernate.engine.jdbc.internal.BinaryStreamImpl;
+import org.hibernate.engine.jdbc.internal.CharacterStreamImpl;
 import org.hibernate.type.descriptor.WrapperOptions;
-import org.hibernate.type.descriptor.java.AbstractTypeDescriptor;
-import org.hibernate.type.descriptor.java.BlobTypeDescriptor;
-import org.hibernate.type.descriptor.java.DataHelper;
-import org.hibernate.type.descriptor.java.MutableMutabilityPlan;
+import org.hibernate.type.descriptor.java.*;
 import org.hibernate.usertype.DynamicParameterizedType;
 
 import java.io.ByteArrayInputStream;
@@ -23,6 +22,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.sql.Blob;
+import java.sql.Clob;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -147,6 +147,15 @@ public class JsonTypeDescriptor
 
             final Blob blob = BlobTypeDescriptor.INSTANCE.fromString(stringValue);
             return (X) blob;
+        } else  if (Clob.class.isAssignableFrom(type)) {
+            String stringValue = (value instanceof String) ? (String) value : toString(value);
+
+            Clob clob = ClobTypeDescriptor.INSTANCE.wrap(stringValue, options);
+            return (X) clob;
+        } else if (CharacterStream.class.isAssignableFrom(type)) {
+            String stringValue = (value instanceof String) ? (String) value : toString(value);
+
+            return (X) new CharacterStreamImpl(stringValue);
         } else if (Object.class.isAssignableFrom(type)) {
             String stringValue = (value instanceof String) ? (String) value : toString(value);
             return (X) objectMapperWrapper.toJsonNode(stringValue);
@@ -162,9 +171,12 @@ public class JsonTypeDescriptor
         }
 
         Blob blob = null;
+        Clob clob = null;
 
         if (Blob.class.isAssignableFrom(value.getClass())) {
             blob = options.getLobCreator().wrap((Blob) value);
+        }  if (Clob.class.isAssignableFrom(value.getClass())) {
+             clob = options.getLobCreator().wrap((Clob) value);
         } else if (byte[].class.isAssignableFrom(value.getClass())) {
             blob = options.getLobCreator().createBlob((byte[]) value);
         } else if (InputStream.class.isAssignableFrom(value.getClass())) {
@@ -178,7 +190,13 @@ public class JsonTypeDescriptor
 
         String stringValue;
         try {
-            stringValue = (blob != null) ? new String(DataHelper.extractBytes(blob.getBinaryStream())) : value.toString();
+            if (blob != null) {
+                stringValue = new String(DataHelper.extractBytes(blob.getBinaryStream()));
+            } else if (clob != null) {
+                stringValue = DataHelper.extractString(clob);
+            } else {
+                stringValue = value.toString();
+            }
         } catch (SQLException e) {
             throw new HibernateException("Unable to extract binary stream from Blob", e);
         }
