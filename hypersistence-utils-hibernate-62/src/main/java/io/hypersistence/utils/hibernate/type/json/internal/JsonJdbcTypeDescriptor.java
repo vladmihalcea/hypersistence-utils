@@ -93,8 +93,9 @@ public class JsonJdbcTypeDescriptor extends AbstractJsonJdbcTypeDescriptor imple
                                 case "json":
                                     return JsonBytesJdbcTypeDescriptor.of(Database.ORACLE);
                                 case "blob":
-                                case "clob":
                                     return JsonBlobJdbcTypeDescriptor.INSTANCE;
+                                case "clob":
+                                    return JsonClobJdbcTypeDescriptor.INSTANCE;
                                 case "varchar2":
                                 case "nvarchar2":
                                     return JsonStringJdbcTypeDescriptor.INSTANCE;
