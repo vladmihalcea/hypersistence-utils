@@ -6,6 +6,7 @@ import io.hypersistence.utils.hibernate.type.util.ObjectMapperWrapper;
 import org.hibernate.HibernateException;
 import org.hibernate.annotations.common.reflection.XProperty;
 import org.hibernate.annotations.common.reflection.java.JavaXMember;
+import org.hibernate.dialect.OracleDialect;
 import org.hibernate.engine.jdbc.BinaryStream;
 import org.hibernate.engine.jdbc.CharacterStream;
 import org.hibernate.engine.jdbc.internal.BinaryStreamImpl;
@@ -23,6 +24,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.nio.charset.StandardCharsets;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.SQLException;
@@ -152,8 +154,11 @@ public class JsonJavaTypeDescriptor extends AbstractClassJavaType<Object> implem
         } else if (Blob.class.isAssignableFrom(type)) {
             String stringValue = (value instanceof String) ? (String) value : toString(value);
 
-            final Blob blob = BlobJavaType.INSTANCE.fromString(stringValue);
-            return (X) blob;
+            if(options.getDialect() instanceof OracleDialect) {
+                return (X) PrimitiveByteArrayJavaType.INSTANCE.unwrap(stringValue.getBytes(StandardCharsets.UTF_8), Blob.class, options);
+            } else {
+                return (X) BlobJavaType.INSTANCE.fromString(stringValue);
+            }
         } else  if (Clob.class.isAssignableFrom(type)) {
             String stringValue = (value instanceof String) ? (String) value : toString(value);
 
