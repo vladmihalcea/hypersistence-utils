@@ -1,6 +1,5 @@
 package io.hypersistence.utils.hibernate.util.contributor;
 
-import io.hypersistence.utils.hibernate.type.HibernateTypesContributor;
 import io.hypersistence.utils.hibernate.type.basic.Inet;
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import jakarta.persistence.Column;
@@ -8,8 +7,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import org.junit.Test;
-
-import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
 
