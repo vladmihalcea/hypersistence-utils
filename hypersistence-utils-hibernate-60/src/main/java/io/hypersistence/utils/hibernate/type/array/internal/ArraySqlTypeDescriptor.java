@@ -43,24 +43,22 @@ public class ArraySqlTypeDescriptor implements JdbcType {
     }
 
     @Override
-    public <X> ValueExtractor<X> getExtractor(final JavaType<X> JavaType) {
-        return new BasicExtractor<X>(JavaType, this) {
+    public <X> ValueExtractor<X> getExtractor(final JavaType<X> javaType) {
+        return new BasicExtractor<X>(javaType, this) {
             @Override
             protected X doExtract(ResultSet rs, int paramIndex, WrapperOptions options) throws SQLException {
-                return JavaType.wrap(rs.getArray(paramIndex), options);
+                return javaType.wrap(rs.getArray(paramIndex), options);
             }
 
             @Override
             protected X doExtract(CallableStatement statement, int index, WrapperOptions options) throws SQLException {
-                return JavaType.wrap(statement.getArray(index), options);
+                return javaType.wrap(statement.getArray(index), options);
             }
 
             @Override
             protected X doExtract(CallableStatement statement, String name, WrapperOptions options) throws SQLException {
-                return JavaType.wrap(statement.getArray(name), options);
+                return javaType.wrap(statement.getArray(name), options);
             }
-            
-            
         };
     }
 

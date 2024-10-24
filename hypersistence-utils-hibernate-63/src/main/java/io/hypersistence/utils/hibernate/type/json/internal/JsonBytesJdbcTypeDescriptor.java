@@ -47,17 +47,17 @@ public class JsonBytesJdbcTypeDescriptor extends AbstractJsonJdbcTypeDescriptor 
     }
 
     @Override
-    public <X> ValueBinder<X> getBinder(final JavaType<X> JavaType) {
-        return new BasicBinder<X>(JavaType, this) {
+    public <X> ValueBinder<X> getBinder(final JavaType<X> javaType) {
+        return new BasicBinder<X>(javaType, this) {
             @Override
             protected void doBind(PreparedStatement st, X value, int index, WrapperOptions options) throws SQLException {
-                st.setBytes(index, toJsonBytes(JavaType.unwrap(value, String.class, options)));
+                st.setBytes(index, toJsonBytes(javaType.unwrap(value, String.class, options)));
             }
 
             @Override
             protected void doBind(CallableStatement st, X value, String name, WrapperOptions options)
                 throws SQLException {
-                st.setBytes(name, toJsonBytes(JavaType.unwrap(value, String.class, options)));
+                st.setBytes(name, toJsonBytes(javaType.unwrap(value, String.class, options)));
             }
         };
     }

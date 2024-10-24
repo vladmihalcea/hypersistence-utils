@@ -32,7 +32,10 @@ public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Collect
         super(Collection.class, new MutableMutabilityPlan<>() {
             @Override
             protected Collection deepCopyNotNull(Collection value) {
-                if (value instanceof Set) {
+                if (value instanceof SortedSet) {
+                    Object[] array = ((SortedSet<Object>) value).toArray();
+                    return ArrayUtil.asSortedSet(ArrayUtil.deepCopy(array));
+                } else if (value instanceof Set) {
                     Object[] array = ((Set<Object>) value).toArray();
                     return ArrayUtil.asSet(ArrayUtil.deepCopy(array));
                 } else {
@@ -139,6 +142,8 @@ public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Collect
     private Collection newPropertyCollectionInstance() {
         if (propertyClass == null || List.class.isAssignableFrom(propertyClass)) {
             return new ArrayList();
+        } else if(SortedSet.class.isAssignableFrom(propertyClass)) {
+            return new TreeSet();
         } else if(Set.class.isAssignableFrom(propertyClass)) {
             return new LinkedHashSet();
         }

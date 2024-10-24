@@ -1,12 +1,7 @@
 package io.hypersistence.utils.hibernate.type.array.internal;
 
 import java.lang.reflect.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * <code>ArrayUtil</code> - Array utilities holder.
@@ -371,9 +366,7 @@ public class ArrayUtil {
      */
     public static <T> List<T> asList(T[] array) {
         List<T> list = new ArrayList<T>(array.length);
-        for (int i = 0; i < array.length; i++) {
-            list.add(i, array[i]);
-        }
+        Collections.addAll(list, array);
         return list;
     }
 
@@ -384,9 +377,18 @@ public class ArrayUtil {
      */
     public static <T> Set<T> asSet(T[] array) {
         Set<T> set = new LinkedHashSet<T>(array.length);
-        for (int i = 0; i < array.length; i++) {
-            set.add(array[i]);
-        }
+        Collections.addAll(set, array);
+        return set;
+    }
+
+    /**
+     * @param array array to transform
+     * @param <T>   array element type
+     * @return the {@link SortedSet} representation of the array
+     */
+    public static <T> SortedSet<T> asSortedSet(T[] array) {
+        SortedSet<T> set = new TreeSet<>();
+        Collections.addAll(set, array);
         return set;
     }
 }

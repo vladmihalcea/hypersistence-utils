@@ -9,11 +9,7 @@ import org.hibernate.annotations.TypeDef;
 import org.junit.Test;
 
 import javax.persistence.*;
-import javax.sql.DataSource;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -129,6 +125,9 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                             )
                         )
                     )
+                    .setSortedNumbers(
+                        new TreeSet<>(Arrays.asList(2, 4, 1))
+                    )
             );
         });
 
@@ -223,6 +222,14 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                     )
                 ),
                 event.getLocalDateTimeSetValues()
+            );
+            assertEquals(
+                new TreeSet<>(
+                    Arrays.asList(
+                        2, 4, 1
+                    )
+                ),
+                event.getSortedNumbers()
             );
         });
 
@@ -515,6 +522,13 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         )
         private Set<LocalDateTime> localDateTimeSetValues;
 
+        @Type(type = "list-array")
+        @Column(
+            name = "sorted_numbers",
+            columnDefinition = "integer[]"
+        )
+        private SortedSet<Integer> sortedNumbers;
+
         public Long getId() {
             return id;
         }
@@ -638,6 +652,15 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
         public Event setLocalDateTimeSetValues(Set<LocalDateTime> localDateTimeSetValues) {
             this.localDateTimeSetValues = localDateTimeSetValues;
+            return this;
+        }
+
+        public SortedSet<Integer> getSortedNumbers() {
+            return sortedNumbers;
+        }
+
+        public Event setSortedNumbers(SortedSet<Integer> sortedNumbers) {
+            this.sortedNumbers = sortedNumbers;
             return this;
         }
     }

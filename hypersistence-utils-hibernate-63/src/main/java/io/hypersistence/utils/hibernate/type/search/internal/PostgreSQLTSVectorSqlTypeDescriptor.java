@@ -21,13 +21,13 @@ public class PostgreSQLTSVectorSqlTypeDescriptor implements JdbcType {
     }
 
     @Override
-    public <X> ValueBinder<X> getBinder(final JavaType<X> JavaType) {
-        return new BasicBinder<X>(JavaType, this) {
+    public <X> ValueBinder<X> getBinder(final JavaType<X> javaType) {
+        return new BasicBinder<X>(javaType, this) {
             @Override
             protected void doBind(PreparedStatement st, X value, int index, WrapperOptions options) throws SQLException {
                 Object holder = ReflectionUtils.newInstance("org.postgresql.util.PGobject");
                 ReflectionUtils.invokeSetter(holder, "type", "tsvector");
-                ReflectionUtils.invokeSetter(holder, "value", JavaType.unwrap(value, String.class, options));
+                ReflectionUtils.invokeSetter(holder, "value", javaType.unwrap(value, String.class, options));
                 st.setObject(index, holder);
             }
 
@@ -36,7 +36,7 @@ public class PostgreSQLTSVectorSqlTypeDescriptor implements JdbcType {
                     throws SQLException {
                 Object holder = ReflectionUtils.newInstance("org.postgresql.util.PGobject");
                 ReflectionUtils.invokeSetter(holder, "type", "tsvector");
-                ReflectionUtils.invokeSetter(holder, "value", JavaType.unwrap(value, String.class, options));
+                ReflectionUtils.invokeSetter(holder, "value", javaType.unwrap(value, String.class, options));
 
                 st.setObject(name, holder);
             }
@@ -44,21 +44,21 @@ public class PostgreSQLTSVectorSqlTypeDescriptor implements JdbcType {
     }
 
     @Override
-    public <X> ValueExtractor<X> getExtractor(final JavaType<X> JavaType) {
-        return new BasicExtractor<X>(JavaType, this) {
+    public <X> ValueExtractor<X> getExtractor(final JavaType<X> javaType) {
+        return new BasicExtractor<X>(javaType, this) {
             @Override
             protected X doExtract(ResultSet rs, int paramIndex, WrapperOptions options) throws SQLException {
-                return JavaType.wrap(rs.getString(paramIndex), options);
+                return javaType.wrap(rs.getString(paramIndex), options);
             }
 
             @Override
             protected X doExtract(CallableStatement statement, int index, WrapperOptions options) throws SQLException {
-                return JavaType.wrap(statement.getString(index), options);
+                return javaType.wrap(statement.getString(index), options);
             }
 
             @Override
             protected X doExtract(CallableStatement statement, String name, WrapperOptions options) throws SQLException {
-                return JavaType.wrap(statement.getString(name), options);
+                return javaType.wrap(statement.getString(name), options);
             }
         };
     }
