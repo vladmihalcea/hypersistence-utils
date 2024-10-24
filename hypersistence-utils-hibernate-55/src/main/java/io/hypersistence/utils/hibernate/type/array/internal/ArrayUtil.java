@@ -389,4 +389,15 @@ public class ArrayUtil {
         }
         return set;
     }
+
+    /**
+     * @param array array to transform
+     * @param <T>   array element type
+     * @return the {@link Set} representation of the array
+     */
+    public static <T> Set<T> asSortedSet(T[] array) {
+        Set<T> set = new TreeSet<T>();
+        Collections.addAll(set, array);
+        return set;
+    }
 }
