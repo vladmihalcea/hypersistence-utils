@@ -1,3 +1,14 @@
+Version 3.9.0 - November 10, 2024
+================================================================================
+
+Remove PostgreSQLIntervalType from HibernateTypesContributor #750
+
+Add support for SortedSet in ListArrayType #749
+
+Allow PostgreSQLCITextType entity attributes to be used in the LIKE query clause #743
+
+Add support for GraalVM native image #740
+
 Version 3.8.3 - September 30, 2024
 ================================================================================
 
