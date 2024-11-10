@@ -370,7 +370,7 @@ Version 2.15.0 - April 06, 2022
 
 Add support for Hibernate 6 #401
 
-Support for Jakarta EE 9? requires investigation #380
+Support for Jakarta EE 9 #380
 
 Create a TypeContributor that registers all supported types #166
 
