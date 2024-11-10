@@ -2,11 +2,9 @@ package io.hypersistence.utils.hibernate.type;
 
 import io.hypersistence.utils.common.ReflectionUtils;
 import io.hypersistence.utils.hibernate.type.basic.Iso8601MonthType;
-import io.hypersistence.utils.hibernate.type.basic.NullableCharacterType;
 import io.hypersistence.utils.hibernate.type.basic.PostgreSQLHStoreType;
 import io.hypersistence.utils.hibernate.type.basic.PostgreSQLInetType;
 import io.hypersistence.utils.hibernate.type.interval.OracleIntervalDayToSecondType;
-import io.hypersistence.utils.hibernate.type.interval.PostgreSQLIntervalType;
 import io.hypersistence.utils.hibernate.type.interval.PostgreSQLPeriodType;
 import io.hypersistence.utils.hibernate.type.json.JsonNodeStringType;
 import io.hypersistence.utils.hibernate.type.range.PostgreSQLRangeType;
@@ -87,7 +85,6 @@ public class HibernateTypesContributor implements TypeContributor {
 
         if(dialect instanceof PostgreSQLDialect) {
             /* Date/Time */
-            contributeType(typeContributions, PostgreSQLIntervalType.INSTANCE, typeFilter);
             contributeType(typeContributions, PostgreSQLPeriodType.INSTANCE, typeFilter);
 
             /* Specific-types */
