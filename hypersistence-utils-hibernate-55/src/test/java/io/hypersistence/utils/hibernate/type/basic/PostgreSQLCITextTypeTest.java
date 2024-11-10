@@ -52,6 +52,10 @@ public class PostgreSQLCITextTypeTest extends AbstractPostgreSQLIntegrationTest 
         testFindCountryByName(countryWithName.getName(), countryWithName);
         testFindCountryByName(countryWithName.getName().toUpperCase(), countryWithName);
         testFindCountryByName(countryWithName.getName().toLowerCase(), countryWithName);
+
+        testFindCountryByNameLike("Te%", countryWithName);
+        testFindCountryByNameLike("TES%", countryWithName);
+        testFindCountryByNameLike("t%", countryWithName);
     }
 
     private void persist(final Country country) {
@@ -94,6 +98,29 @@ public class PostgreSQLCITextTypeTest extends AbstractPostgreSQLIntegrationTest 
 
                 List<Country> countries = entityManager
                         .createQuery(criteria).getResultList();
+
+                assertEquals(1, countries.size());
+
+                Country country = countries.iterator().next();
+
+                assertEquals(expectedCountry.getId(), country.getId());
+                assertEquals(expectedCountry.getName(), country.getName());
+
+                return null;
+            }
+        });
+    }
+
+    private void testFindCountryByNameLike(final String token, final Country expectedCountry) {
+        doInJPA(new JPATransactionFunction<Void>() {
+            @Override
+            public Void apply(EntityManager entityManager) {
+                List<Country> countries = entityManager.createQuery(
+                    "SELECT c " +
+                    "FROM Country AS c " +
+                    "WHERE c.name LIKE :token")
+                    .setParameter("token", token)
+                    .getResultList();
 
                 assertEquals(1, countries.size());
 

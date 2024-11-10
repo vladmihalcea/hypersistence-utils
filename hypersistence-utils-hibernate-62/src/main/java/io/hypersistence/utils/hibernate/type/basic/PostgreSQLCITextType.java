@@ -30,7 +30,7 @@ public class PostgreSQLCITextType extends ImmutableType<String> {
 
     @Override
     public int getSqlType() {
-        return Types.OTHER;
+        return Types.VARCHAR;
     }
 
     @Override
