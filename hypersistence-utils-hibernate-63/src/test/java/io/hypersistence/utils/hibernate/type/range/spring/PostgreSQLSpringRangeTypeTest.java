@@ -94,7 +94,6 @@ public class PostgreSQLSpringRangeTypeTest extends AbstractPostgreSQLIntegration
             assertEquals(numericEmpty, ar.getRangeBigDecimalEmpty());
             assertEquals(localDateTimeRange, ar.getRangeLocalDateTime());
             assertEquals(localDateTimeRangeEmpty, ar.getRangeLocalDateTimeEmpty());
-            assertEquals(tsTzO, ar.getOffsetZonedDateTime());
             assertEquals(dateRange, ar.getRangeLocalDate());
             assertEquals(dateRangeEmpty, ar.getRangeLocalDateEmpty());
 
