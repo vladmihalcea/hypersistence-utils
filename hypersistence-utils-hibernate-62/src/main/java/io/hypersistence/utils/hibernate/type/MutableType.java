@@ -22,7 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Very convenient base class for implementing immutable object types using Hibernate {@link UserType}.
+ * Very convenient base class for implementing mutable object types using Hibernate {@link UserType}.
  *
  * @author Vlad Mihalcea
  */
