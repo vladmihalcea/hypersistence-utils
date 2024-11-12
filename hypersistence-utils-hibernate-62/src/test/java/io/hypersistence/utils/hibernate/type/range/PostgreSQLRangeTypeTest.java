@@ -6,13 +6,9 @@ import org.hibernate.annotations.Type;
 import org.junit.Test;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 
-import static io.hypersistence.utils.hibernate.type.range.Range.infinite;
-import static io.hypersistence.utils.hibernate.type.range.Range.zonedDateTimeRange;
+import static io.hypersistence.utils.hibernate.type.range.Range.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -33,7 +29,11 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
 
     private final Range<LocalDateTime> localDateTimeRange = Range.localDateTimeRange("[2014-04-28 16:00:49,2015-04-28 16:00:49]");
 
-    private final Range<ZonedDateTime> tsTz = zonedDateTimeRange("[\"2007-12-03T10:15:30+01:00\",\"2008-12-03T10:15:30+01:00\"]");
+    private final Range<ZonedDateTime> tsTzZdt = zonedDateTimeRange("[\"2007-12-03T10:15:30+01:00\",\"2008-12-03T10:15:30+01:00\"]");
+
+    private final Range<Instant> tsTzIns = instantRange("[\"2007-12-03T10:15:30+01:00\",\"2008-12-03T10:15:30+01:00\"]");
+
+    private final Range<OffsetDateTime> tsTzOdt = offsetDateTimeRange("[\"2007-12-03T10:15:30+01:00\",\"2008-12-03T10:15:30+01:00\"]");
 
     private final Range<ZonedDateTime> tsTzEmpty = zonedDateTimeRange("empty");
 
@@ -60,7 +60,9 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
             restriction.setRangeLong(int8Range);
             restriction.setRangeBigDecimal(numeric);
             restriction.setRangeLocalDateTime(localDateTimeRange);
-            restriction.setRangeZonedDateTime(tsTz);
+            restriction.setRangeZonedDateTime(tsTzZdt);
+            restriction.setRangeInstant(tsTzIns);
+            restriction.setRangeOffsetDateTime(tsTzOdt);
             restriction.setRangeZonedDateTimeInfinity(infinityTsTz);
             restriction.setRangeZonedDateTimeEmpty(tsTzEmpty);
             restriction.setRangeLocalDate(dateRange);
@@ -82,12 +84,14 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
 
             ZoneId zone = restriction.getRangeZonedDateTime().lower().getZone();
 
-            ZonedDateTime lower = tsTz.lower().withZoneSameInstant(zone);
-            ZonedDateTime upper = tsTz.upper().withZoneSameInstant(zone);
+            ZonedDateTime lower = tsTzZdt.lower().withZoneSameInstant(zone);
+            ZonedDateTime upper = tsTzZdt.upper().withZoneSameInstant(zone);
             assertEquals(restriction.getRangeZonedDateTime(), Range.closed(lower, upper));
 
             lower = infinityTsTz.lower().withZoneSameInstant(zone);
             assertEquals(restriction.getRangeZonedDateTimeInfinity(), Range.closedInfinite(lower));
+
+
         });
     }
 
@@ -149,8 +153,16 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
         private Range<LocalDateTime> rangeLocalDateTime;
 
         @Type(PostgreSQLRangeType.class)
-        @Column(name = "r_ts_tz", columnDefinition = "tstzrange")
+        @Column(name = "r_ts_tz_zdt", columnDefinition = "tstzrange")
         private Range<ZonedDateTime> rangeZonedDateTime;
+
+        @Type(PostgreSQLRangeType.class)
+        @Column(name = "r_ts_tz_ins", columnDefinition = "tstzrange")
+        private Range<Instant> rangeInstant;
+
+        @Type(PostgreSQLRangeType.class)
+        @Column(name = "r_ts_tz_odt", columnDefinition = "tstzrange")
+        private Range<OffsetDateTime> rangeOffsetDateTime;
 
         @Type(PostgreSQLRangeType.class)
         @Column(name = "r_ts_tz_infinity", columnDefinition = "tstzrange")
@@ -222,6 +234,22 @@ public class PostgreSQLRangeTypeTest extends AbstractPostgreSQLIntegrationTest {
 
         public void setRangeZonedDateTime(Range<ZonedDateTime> rangeZonedDateTime) {
             this.rangeZonedDateTime = rangeZonedDateTime;
+        }
+
+        public Range<Instant> getRangeInstant() {
+            return rangeInstant;
+        }
+
+        public void setRangeInstant(Range<Instant> rangeInstant) {
+            this.rangeInstant = rangeInstant;
+        }
+
+        public Range<OffsetDateTime> getRangeOffsetDateTime() {
+            return rangeOffsetDateTime;
+        }
+
+        public void setRangeOffsetDateTime(Range<OffsetDateTime> rangeOffsetDateTime) {
+            this.rangeOffsetDateTime = rangeOffsetDateTime;
         }
 
         public Range<ZonedDateTime> getRangeZonedDateTimeInfinity() {
