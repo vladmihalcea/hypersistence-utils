@@ -72,7 +72,7 @@ public class RangeTest {
         assertNotNull(Range.localDateTimeRange("[2019-03-27 16:33:10.123456,)"));
         assertNotNull(Range.localDateTimeRange("[2019-03-27 16:33:10.123456,infinity)"));
     }
-    
+
     @Test
     public void zonedDateTimeTest() {
     	assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.1-06,)"));
@@ -84,7 +84,6 @@ public class RangeTest {
     	assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.123456+05:30,)"));
     	assertNotNull(Range.zonedDateTimeRange("[2019-03-27 16:33:10.123456-06,infinity)"));
     }
-
 
     @Test
     public void emptyInfinityEquality() {
