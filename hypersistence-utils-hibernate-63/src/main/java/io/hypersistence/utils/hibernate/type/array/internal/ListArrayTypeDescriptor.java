@@ -14,9 +14,22 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.UUID;
 
 /**
  * @author Vlad Mihalcea
+ * @author Baptiste Masoud
  */
 public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Collection> {
 
@@ -106,14 +119,16 @@ public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Collect
             }
             Class arrayElementClass = ReflectionUtils.getClass(genericType.getTypeName());
             setArrayObjectClass(
-                arrayElementClass.isArray() ?
-                    arrayElementClass :
-                    ArrayUtil.toArrayClass(arrayElementClass)
+                    arrayElementClass.isArray() ?
+                            arrayElementClass :
+                            ArrayUtil.toArrayClass(arrayElementClass)
             );
             sqlArrayType = parameters.getProperty(AbstractArrayType.SQL_ARRAY_TYPE);
             if (sqlArrayType == null) {
                 if (Integer.class.isAssignableFrom(arrayElementClass)) {
                     sqlArrayType = "integer";
+                } else if (Short.class.isAssignableFrom(arrayElementClass)) {
+                    sqlArrayType = "smallint";
                 } else if (Long.class.isAssignableFrom(arrayElementClass)) {
                     sqlArrayType = "bigint";
                 } else if (Double.class.isAssignableFrom(arrayElementClass)) {
@@ -137,7 +152,7 @@ public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Collect
         } else {
             throw new UnsupportedOperationException("The property " + propertyName + " in the " + entityClass + " entity is not parameterized!");
         }
-        }
+    }
 
     private Collection newPropertyCollectionInstance() {
         if (propertyClass == null || List.class.isAssignableFrom(propertyClass)) {
