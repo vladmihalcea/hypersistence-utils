@@ -208,7 +208,7 @@
         <maven.compiler.release>${jdk.version}</maven.compiler.release>
         <maven.compiler.testRelease>${jdk-test.version}</maven.compiler.testRelease>
 
-        <hibernate.version>6.2.22.Final</hibernate.version>
+        <hibernate.version>6.2.34.Final</hibernate.version>
 
         <mysql.version>8.0.28</mysql.version>
         <jackson-module-jakarta-xmlbind-annotation>2.15.2</jackson-module-jakarta-xmlbind-annotation>

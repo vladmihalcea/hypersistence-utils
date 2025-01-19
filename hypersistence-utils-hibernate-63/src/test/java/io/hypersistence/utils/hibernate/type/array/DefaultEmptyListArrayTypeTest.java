@@ -9,17 +9,12 @@ import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.fail;
 
 /**
  * @author Vlad Mihalcea
@@ -59,6 +54,7 @@ public class DefaultEmptyListArrayTypeTest extends AbstractPostgreSQLIntegration
             assertArrayEquals(new UUID[]{}, event.getSensorIds().toArray());
             assertArrayEquals(new String[]{}, event.getSensorNames().toArray());
             assertArrayEquals(new Integer[]{}, event.getSensorValues().toArray());
+            assertArrayEquals(new Short[]{}, event.getSensorShortValues().toArray());
             assertArrayEquals(new Long[]{}, event.getSensorLongValues().toArray());
             assertArrayEquals(new SensorState[]{}, event.getSensorStates().toArray());
             assertArrayEquals(new Date[]{}, event.getDateValues().toArray());
@@ -75,30 +71,34 @@ public class DefaultEmptyListArrayTypeTest extends AbstractPostgreSQLIntegration
 
         @Type(ListArrayType.class)
         @Column(name = "sensor_names", columnDefinition = "text[]")
-        private List<String> sensorNames = new ArrayList<>();;
+        private List<String> sensorNames = new ArrayList<>();
 
         @Type(ListArrayType.class)
         @Column(name = "sensor_values", columnDefinition = "integer[]")
-        private List<Integer> sensorValues = new ArrayList<>();;
+        private List<Integer> sensorValues = new ArrayList<>();
+
+        @Type(ListArrayType.class)
+        @Column(name = "sensor_short_values", columnDefinition = "smallint[]")
+        private List<Short> sensorShortValues = new ArrayList<>();
 
         @Type(ListArrayType.class)
         @Column(name = "sensor_long_values", columnDefinition = "bigint[]")
-        private List<Long> sensorLongValues = new ArrayList<>();;
+        private List<Long> sensorLongValues = new ArrayList<>();
 
         @Type(
             value = ListArrayType.class,
             parameters = @Parameter(name = ListArrayType.SQL_ARRAY_TYPE, value = "sensor_state")
         )
         @Column(name = "sensor_states", columnDefinition = "sensor_state[]")
-        private List<SensorState> sensorStates = new ArrayList<>();;
+        private List<SensorState> sensorStates = new ArrayList<>();
 
         @Type(ListArrayType.class)
         @Column(name = "date_values", columnDefinition = "date[]")
-        private List<Date> dateValues = new ArrayList<>();;
+        private List<Date> dateValues = new ArrayList<>();
 
         @Type(ListArrayType.class)
         @Column(name = "timestamp_values", columnDefinition = "timestamp[]")
-        private List<Date> timestampValues = new ArrayList<>();;
+        private List<Date> timestampValues = new ArrayList<>();
 
         public List<UUID> getSensorIds() {
             return sensorIds;
@@ -122,6 +122,14 @@ public class DefaultEmptyListArrayTypeTest extends AbstractPostgreSQLIntegration
 
         public void setSensorValues(List<Integer> sensorValues) {
             this.sensorValues = sensorValues;
+        }
+
+        public List<Short> getSensorShortValues() {
+            return sensorShortValues;
+        }
+
+        public void setSensorShortValues(List<Short> sensorShortValues) {
+            this.sensorShortValues = sensorShortValues;
         }
 
         public List<Long> getSensorLongValues() {

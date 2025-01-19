@@ -34,6 +34,7 @@ public class MappedSuperclassListArrayTypeTest extends AbstractPostgreSQLIntegra
             event.setId(1L);
             event.setSensorNames(Arrays.asList("Temperature", "Pressure"));
             event.setSensorValues(Arrays.asList(12, 756));
+            event.setSensorShortValues(Arrays.asList((short) 42, (short) 69));
 
             entityManager.persist(event);
         });
@@ -43,6 +44,7 @@ public class MappedSuperclassListArrayTypeTest extends AbstractPostgreSQLIntegra
 
             assertArrayEquals(new String[]{"Temperature", "Pressure"}, event.getSensorNames().toArray());
             assertArrayEquals(new Integer[]{12, 756}, event.getSensorValues().toArray());
+            assertArrayEquals(new Short[]{42, 69}, event.getSensorShortValues().toArray());
         });
     }
 
@@ -81,12 +83,24 @@ public class MappedSuperclassListArrayTypeTest extends AbstractPostgreSQLIntegra
         @Column(name = "sensor_values", columnDefinition = "integer[]")
         private List<Integer> sensorValues;
 
+        @Type(ListArrayType.class)
+        @Column(name = "sensor_short_values", columnDefinition = "smallint[]")
+        private List<Short> sensorShortValues;
+
         public List<Integer> getSensorValues() {
             return sensorValues;
         }
 
         public void setSensorValues(List<Integer> sensorValues) {
             this.sensorValues = sensorValues;
+        }
+
+        public List<Short> getSensorShortValues() {
+            return sensorShortValues;
+        }
+
+        public void setSensorShortValues(List<Short> sensorShortValues) {
+            this.sensorShortValues = sensorShortValues;
         }
     }
 }

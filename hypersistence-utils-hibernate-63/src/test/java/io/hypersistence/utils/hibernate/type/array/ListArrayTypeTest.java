@@ -65,6 +65,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                     .setSensorNames(Arrays.asList("Temperature", "Pressure"))
                     .setSensorValues(Arrays.asList(12, 756))
                     .setSensorLongValues(Arrays.asList(42L, 9223372036854775800L))
+                    .setSensorShortValues(Arrays.asList((short) 42, (short) 69))
                     .setSensorBooleanValues(Arrays.asList(true, false))
                     .setSensorDoubleValues(Arrays.asList(0.123D, 456.789D))
                     .setSensorStates(
@@ -149,6 +150,10 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             assertEquals(
                 Arrays.asList(12, 756),
                 event.getSensorValues()
+            );
+            assertEquals(
+                Arrays.asList((short) 42, (short) 69),
+                event.getSensorShortValues()
             );
             assertEquals(
                 Arrays.asList(42L, 9223372036854775800L),
@@ -254,7 +259,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         });
 
         Event _event = doInJPA(entityManager -> {
-             return entityManager.find(Event.class, 1L);
+            return entityManager.find(Event.class, 1L);
         });
 
         String newString = "New";
@@ -317,6 +322,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             event.setSensorIds(Arrays.asList(null, UUID.fromString("72e95717-5294-4c15-aa64-a3631cf9a800")));
             event.setSensorNames(Arrays.asList("Temperature", null));
             event.setSensorValues(Arrays.asList(null, 756));
+            event.setSensorShortValues(Arrays.asList(null, (short) 69));
             event.setSensorLongValues(Arrays.asList(null, 9223372036854775800L));
             event.setSensorBooleanValues(Arrays.asList(null, false));
             event.setSensorDoubleValues(Arrays.asList(null, 456.789D));
@@ -335,6 +341,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             assertArrayEquals(new UUID[]{null, UUID.fromString("72e95717-5294-4c15-aa64-a3631cf9a800")}, event.getSensorIds().toArray());
             assertArrayEquals(new String[]{"Temperature", null}, event.getSensorNames().toArray());
             assertArrayEquals(new Integer[]{null, 756}, event.getSensorValues().toArray());
+            assertArrayEquals(new Short[]{null, (short) 69}, event.getSensorShortValues().toArray());
             assertArrayEquals(new Long[]{null, 9223372036854775800L}, event.getSensorLongValues().toArray());
             assertArrayEquals(new Boolean[]{null, false}, event.getSensorBooleanValues().toArray());
             assertArrayEquals(new Double[]{null, 456.789D}, event.getSensorDoubleValues().toArray());
@@ -360,6 +367,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             event.setSensorIds(Arrays.asList(null, null));
             event.setSensorNames(Arrays.asList(null, null));
             event.setSensorValues(Arrays.asList(null, null));
+            event.setSensorShortValues(Arrays.asList(null, null));
             event.setSensorLongValues(Arrays.asList(null, null));
             event.setSensorBooleanValues(Arrays.asList(null, null));
             event.setSensorDoubleValues(Arrays.asList(null, null));
@@ -378,6 +386,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             assertArrayEquals(new UUID[]{null, null}, event.getSensorIds().toArray());
             assertArrayEquals(new String[]{null, null}, event.getSensorNames().toArray());
             assertArrayEquals(new Integer[]{null, null}, event.getSensorValues().toArray());
+            assertArrayEquals(new Short[]{null, null}, event.getSensorShortValues().toArray());
             assertArrayEquals(new Long[]{null, null}, event.getSensorLongValues().toArray());
             assertArrayEquals(new Boolean[]{null, null}, event.getSensorBooleanValues().toArray());
             assertArrayEquals(new Double[]{null, null}, event.getSensorDoubleValues().toArray());
@@ -403,6 +412,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             event.setSensorIds(Collections.emptyList());
             event.setSensorNames(Collections.emptyList());
             event.setSensorValues(Collections.emptyList());
+            event.setSensorShortValues(Collections.emptyList());
             event.setSensorLongValues(Collections.emptyList());
             event.setSensorBooleanValues(Collections.emptyList());
             event.setSensorDoubleValues(Collections.emptyList());
@@ -421,6 +431,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             assertArrayEquals(new UUID[]{}, event.getSensorIds().toArray());
             assertArrayEquals(new String[]{}, event.getSensorNames().toArray());
             assertArrayEquals(new Integer[]{}, event.getSensorValues().toArray());
+            assertArrayEquals(new Short[]{}, event.getSensorShortValues().toArray());
             assertArrayEquals(new Long[]{}, event.getSensorLongValues().toArray());
             assertArrayEquals(new Boolean[]{}, event.getSensorBooleanValues().toArray());
             assertArrayEquals(new Double[]{}, event.getSensorDoubleValues().toArray());
@@ -557,6 +568,13 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         )
         private SortedSet<Integer> sortedNumbers;
 
+        @Type(ListArrayType.class)
+        @Column(
+            name = "short_values",
+            columnDefinition = "smallint[]"
+        )
+        private List<Short> sensorShortValues;
+
         public Long getId() {
             return id;
         }
@@ -591,6 +609,15 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         public Event setSensorValues(List<Integer> sensorValues) {
             this.sensorValues = sensorValues;
             return this;
+        }
+
+        public Event setSensorShortValues(List<Short> shortValues) {
+            this.sensorShortValues = shortValues;
+            return this;
+        }
+
+        public List<Short> getSensorShortValues() {
+            return sensorShortValues;
         }
 
         public List<Long> getSensorLongValues() {

@@ -2,21 +2,27 @@ package io.hypersistence.utils.hibernate.type.array;
 
 import io.hypersistence.utils.hibernate.type.model.BaseEntity;
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
-import jakarta.persistence.*;
+import jakarta.persistence.Cacheable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Tuple;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
+import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Vlad Mihalcea
@@ -59,6 +65,7 @@ public class EhcacheListArrayTypeTest extends AbstractPostgreSQLIntegrationTest 
             event.setSensorIds(Arrays.asList(UUID.fromString("c65a3bcb-8b36-46d4-bddb-ae96ad016eb1"), UUID.fromString("72e95717-5294-4c15-aa64-a3631cf9a800")));
             event.setSensorNames(Arrays.asList("Temperature", "Pressure"));
             event.setSensorValues(Arrays.asList(12, 756));
+            event.setSensorShortValues(Arrays.asList((short) 42, (short) 69));
             event.setSensorLongValues(Arrays.asList(42L, 9223372036854775800L));
             event.setSensorStates(Arrays.asList(SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN));
             event.setDateValues(Arrays.asList(date1, date2));
@@ -72,6 +79,7 @@ public class EhcacheListArrayTypeTest extends AbstractPostgreSQLIntegrationTest 
             assertArrayEquals(new UUID[]{UUID.fromString("c65a3bcb-8b36-46d4-bddb-ae96ad016eb1"), UUID.fromString("72e95717-5294-4c15-aa64-a3631cf9a800")}, event.getSensorIds().toArray());
             assertArrayEquals(new String[]{"Temperature", "Pressure"}, event.getSensorNames().toArray());
             assertArrayEquals(new Integer[]{12, 756}, event.getSensorValues().toArray());
+            assertArrayEquals(new Short[]{42, 69}, event.getSensorShortValues().toArray());
             assertArrayEquals(new Long[]{42L, 9223372036854775800L}, event.getSensorLongValues().toArray());
             assertArrayEquals(new SensorState[]{SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN}, event.getSensorStates().toArray());
             assertArrayEquals(new Date[]{date1, date2}, event.getDateValues().toArray());
@@ -113,6 +121,7 @@ public class EhcacheListArrayTypeTest extends AbstractPostgreSQLIntegrationTest 
             event.setSensorIds(Arrays.asList(null, UUID.fromString("72e95717-5294-4c15-aa64-a3631cf9a800")));
             event.setSensorNames(Arrays.asList("Temperature", null));
             event.setSensorValues(Arrays.asList(null, 756));
+            event.setSensorShortValues(Arrays.asList(null, (short) 69));
             event.setSensorLongValues(Arrays.asList(null, 9223372036854775800L));
             event.setSensorStates(Arrays.asList(null, SensorState.OFFLINE, SensorState.ONLINE, null));
             event.setDateValues(Arrays.asList(null, date));
@@ -126,16 +135,17 @@ public class EhcacheListArrayTypeTest extends AbstractPostgreSQLIntegrationTest 
             assertArrayEquals(new UUID[]{null, UUID.fromString("72e95717-5294-4c15-aa64-a3631cf9a800")}, event.getSensorIds().toArray());
             assertArrayEquals(new String[]{"Temperature", null}, event.getSensorNames().toArray());
             assertArrayEquals(new Integer[]{null, 756}, event.getSensorValues().toArray());
+            assertArrayEquals(new Short[]{null, 69}, event.getSensorShortValues().toArray());
             assertArrayEquals(new Long[]{null, 9223372036854775800L}, event.getSensorLongValues().toArray());
             assertArrayEquals(new SensorState[]{null, SensorState.OFFLINE, SensorState.ONLINE, null}, event.getSensorStates().toArray());
             assertArrayEquals(new Date[]{null, date}, event.getDateValues().toArray());
             assertArrayEquals(new Date[]{null, date}, event.getTimestampValues().toArray());
         });
     }
-    
+
     @Test
     public void testNullValues() {
-        
+
         doInJPA(entityManager -> {
             Event nullEvent = new Event();
             nullEvent.setId(0L);
@@ -146,6 +156,7 @@ public class EhcacheListArrayTypeTest extends AbstractPostgreSQLIntegrationTest 
             event.setSensorIds(Arrays.asList(null, null));
             event.setSensorNames(Arrays.asList(null, null));
             event.setSensorValues(Arrays.asList(null, null));
+            event.setSensorShortValues(Arrays.asList(null, null));
             event.setSensorLongValues(Arrays.asList(null, null));
             event.setSensorStates(Arrays.asList(null, null));
             event.setDateValues(Arrays.asList(null, null));
@@ -159,6 +170,7 @@ public class EhcacheListArrayTypeTest extends AbstractPostgreSQLIntegrationTest 
             assertArrayEquals(new UUID[]{null, null}, event.getSensorIds().toArray());
             assertArrayEquals(new String[]{null, null}, event.getSensorNames().toArray());
             assertArrayEquals(new Integer[]{null, null}, event.getSensorValues().toArray());
+            assertArrayEquals(new Short[]{null, null}, event.getSensorShortValues().toArray());
             assertArrayEquals(new Long[]{null, null}, event.getSensorLongValues().toArray());
             assertArrayEquals(new SensorState[]{null, null}, event.getSensorStates().toArray());
             assertArrayEquals(new Date[]{null, null}, event.getDateValues().toArray());
@@ -179,6 +191,7 @@ public class EhcacheListArrayTypeTest extends AbstractPostgreSQLIntegrationTest 
             event.setSensorIds(Collections.emptyList());
             event.setSensorNames(Collections.emptyList());
             event.setSensorValues(Collections.emptyList());
+            event.setSensorShortValues(Collections.emptyList());
             event.setSensorLongValues(Collections.emptyList());
             event.setSensorStates(Collections.emptyList());
             event.setDateValues(Collections.emptyList());
@@ -192,6 +205,7 @@ public class EhcacheListArrayTypeTest extends AbstractPostgreSQLIntegrationTest 
             assertArrayEquals(new UUID[]{}, event.getSensorIds().toArray());
             assertArrayEquals(new String[]{}, event.getSensorNames().toArray());
             assertArrayEquals(new Integer[]{}, event.getSensorValues().toArray());
+            assertArrayEquals(new Short[]{}, event.getSensorShortValues().toArray());
             assertArrayEquals(new Long[]{}, event.getSensorLongValues().toArray());
             assertArrayEquals(new SensorState[]{}, event.getSensorStates().toArray());
             assertArrayEquals(new Date[]{}, event.getDateValues().toArray());
@@ -217,6 +231,8 @@ public class EhcacheListArrayTypeTest extends AbstractPostgreSQLIntegrationTest 
 
             assertEquals(null, event.getSensorIds());
             assertEquals(null, event.getSensorNames());
+            assertEquals(null, event.getSensorValues());
+            assertEquals(null, event.getSensorShortValues());
             assertEquals(null, event.getSensorLongValues());
             assertEquals(null, event.getSensorStates());
             assertEquals(null, event.getDateValues());
@@ -240,6 +256,10 @@ public class EhcacheListArrayTypeTest extends AbstractPostgreSQLIntegrationTest 
         @Type(ListArrayType.class)
         @Column(name = "sensor_values", columnDefinition = "integer[]")
         private List<Integer> sensorValues;
+
+        @Type(ListArrayType.class)
+        @Column(name = "sensor_short_values", columnDefinition = "smallint[]")
+        private List<Short> sensorShortValues;
 
         @Type(ListArrayType.class)
         @Column(name = "sensor_long_values", columnDefinition = "bigint[]")
@@ -282,6 +302,14 @@ public class EhcacheListArrayTypeTest extends AbstractPostgreSQLIntegrationTest 
 
         public void setSensorValues(List<Integer> sensorValues) {
             this.sensorValues = sensorValues;
+        }
+
+        public List<Short> getSensorShortValues() {
+            return sensorShortValues;
+        }
+
+        public void setSensorShortValues(List<Short> sensorShortValues) {
+            this.sensorShortValues = sensorShortValues;
         }
 
         public List<Long> getSensorLongValues() {

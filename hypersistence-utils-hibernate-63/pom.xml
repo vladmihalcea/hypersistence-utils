@@ -202,10 +202,10 @@
         <maven.compiler.release>${jdk.version}</maven.compiler.release>
         <maven.compiler.testRelease>${jdk-test.version}</maven.compiler.testRelease>
 
-        <!--<hibernate.version>6.3.1.Final</hibernate.version>-->
-        <!--<hibernate.version>6.4.8.Final</hibernate.version>-->
-        <!--<hibernate.version>6.5.2.Final</hibernate.version>-->
-        <hibernate.version>6.6.0.Final</hibernate.version>
+        <!--<hibernate.version>6.3.2.Final</hibernate.version>-->
+        <!--<hibernate.version>6.4.10.Final</hibernate.version>-->
+        <!--<hibernate.version>6.5.3.Final</hibernate.version>-->
+        <hibernate.version>6.6.9.Final</hibernate.version>
 
         <jackson-module-jakarta-xmlbind-annotation>2.15.3</jackson-module-jakarta-xmlbind-annotation>
         <guava.version>32.1.3-jre</guava.version>

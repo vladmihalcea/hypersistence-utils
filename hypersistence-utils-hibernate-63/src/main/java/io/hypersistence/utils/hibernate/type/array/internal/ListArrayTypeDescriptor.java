@@ -114,6 +114,8 @@ public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Collect
             if (sqlArrayType == null) {
                 if (Integer.class.isAssignableFrom(arrayElementClass)) {
                     sqlArrayType = "integer";
+                } else if (Short.class.isAssignableFrom(arrayElementClass)) {
+                    sqlArrayType = "smallint";
                 } else if (Long.class.isAssignableFrom(arrayElementClass)) {
                     sqlArrayType = "bigint";
                 } else if (Double.class.isAssignableFrom(arrayElementClass)) {
@@ -137,7 +139,7 @@ public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Collect
         } else {
             throw new UnsupportedOperationException("The property " + propertyName + " in the " + entityClass + " entity is not parameterized!");
         }
-        }
+    }
 
     private Collection newPropertyCollectionInstance() {
         if (propertyClass == null || List.class.isAssignableFrom(propertyClass)) {

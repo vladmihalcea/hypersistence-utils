@@ -131,6 +131,8 @@ public class ListArrayTypeDescriptor extends AbstractArrayTypeDescriptor<Object>
             if (sqlArrayType == null) {
                 if (Integer.class.isAssignableFrom(arrayElementClass)) {
                     sqlArrayType = "integer";
+                } else if (Short.class.isAssignableFrom(arrayElementClass)) {
+                    sqlArrayType = "smallint";
                 } else if (Long.class.isAssignableFrom(arrayElementClass)) {
                     sqlArrayType = "bigint";
                 } else if (Double.class.isAssignableFrom(arrayElementClass)) {
