@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Martin Panzer
  */
-public class Iso8601MonthTest extends AbstractTest {
+public class Iso8601MonthTinyIntTest extends AbstractTest {
 
     @Override
     protected Class<?>[] entities() {
@@ -64,7 +64,7 @@ public class Iso8601MonthTest extends AbstractTest {
         doInJPA(entityManager -> {
             Query query = entityManager.createNativeQuery("Select p.sales_month from publisher p where p.name = :name");
             query.setParameter("name", "vladmihalcea.com");
-            Number result = (Number) query.getSingleResult();
+            Byte result = (Byte) query.getSingleResult();
 
             Assert.assertEquals(11L, result.longValue());
         });
@@ -86,7 +86,7 @@ public class Iso8601MonthTest extends AbstractTest {
         private Year estYear;
 
         @Type(Iso8601MonthType.class)
-        @Column(name = "sales_month")
+        @Column(name = "sales_month", columnDefinition = "tinyint")
         private Month salesMonth;
 
         public Long getId() {

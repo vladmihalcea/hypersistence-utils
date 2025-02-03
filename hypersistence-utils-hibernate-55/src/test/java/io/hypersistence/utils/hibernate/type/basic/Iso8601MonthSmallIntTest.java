@@ -1,13 +1,13 @@
 package io.hypersistence.utils.hibernate.type.basic;
 
 import io.hypersistence.utils.hibernate.util.AbstractTest;
-import jakarta.persistence.*;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 import org.junit.Assert;
 import org.junit.Test;
 
+import javax.persistence.*;
 import java.time.Month;
 import java.time.Year;
 
@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Martin Panzer
  */
-public class Iso8601MonthTest extends AbstractTest {
+public class Iso8601MonthSmallIntTest extends AbstractTest {
 
     @Override
     protected Class<?>[] entities() {
@@ -64,7 +64,7 @@ public class Iso8601MonthTest extends AbstractTest {
         doInJPA(entityManager -> {
             Query query = entityManager.createNativeQuery("Select p.sales_month from publisher p where p.name = :name");
             query.setParameter("name", "vladmihalcea.com");
-            Number result = (Number) query.getSingleResult();
+            Short result = (Short)query.getSingleResult();
 
             Assert.assertEquals(11L, result.longValue());
         });
@@ -73,6 +73,7 @@ public class Iso8601MonthTest extends AbstractTest {
 
     @Entity(name = "Publisher")
     @Table(name = "publisher")
+    @TypeDef(typeClass = Iso8601MonthType.class, defaultForType = Month.class)
     public static class Publisher {
 
         @Id
@@ -85,8 +86,7 @@ public class Iso8601MonthTest extends AbstractTest {
         @Column(name = "est_year")
         private Year estYear;
 
-        @Type(Iso8601MonthType.class)
-        @Column(name = "sales_month")
+        @Column(name = "sales_month", columnDefinition = "smallint")
         private Month salesMonth;
 
         public Long getId() {

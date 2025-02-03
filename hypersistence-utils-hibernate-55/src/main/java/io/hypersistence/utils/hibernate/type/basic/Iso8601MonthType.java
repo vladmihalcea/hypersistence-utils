@@ -1,11 +1,13 @@
 package io.hypersistence.utils.hibernate.type.basic;
 
 import io.hypersistence.utils.hibernate.type.AbstractHibernateType;
-import io.hypersistence.utils.hibernate.type.basic.internal.Iso8601MonthMonthTypeDescriptor;
+import io.hypersistence.utils.hibernate.type.basic.internal.Iso8601MonthTypeDescriptor;
+import io.hypersistence.utils.hibernate.type.basic.internal.NumberSqlTypeDescriptor;
 import io.hypersistence.utils.hibernate.type.util.Configuration;
-import org.hibernate.type.descriptor.sql.IntegerTypeDescriptor;
+import org.hibernate.usertype.DynamicParameterizedType;
 
 import java.time.Month;
+import java.util.Properties;
 
 /**
  * Maps a {@link Month} object type to a {@code INT}  column type
@@ -14,21 +16,21 @@ import java.time.Month;
  *
  * @author Martin Panzer
  */
-public class Iso8601MonthType extends AbstractHibernateType<Month> {
+public class Iso8601MonthType extends AbstractHibernateType<Month> implements DynamicParameterizedType {
 
     public static final Iso8601MonthType INSTANCE = new Iso8601MonthType();
 
     public Iso8601MonthType() {
         super(
-            IntegerTypeDescriptor.INSTANCE,
-            Iso8601MonthMonthTypeDescriptor.INSTANCE
+            NumberSqlTypeDescriptor.INSTANCE,
+            Iso8601MonthTypeDescriptor.INSTANCE
         );
     }
 
     public Iso8601MonthType(Configuration configuration) {
         super(
-            IntegerTypeDescriptor.INSTANCE,
-            Iso8601MonthMonthTypeDescriptor.INSTANCE,
+            NumberSqlTypeDescriptor.INSTANCE,
+            Iso8601MonthTypeDescriptor.INSTANCE,
             configuration
         );
     }
@@ -45,5 +47,10 @@ public class Iso8601MonthType extends AbstractHibernateType<Month> {
     @Override
     protected boolean registerUnderJavaType() {
         return true;
+    }
+
+    @Override
+    public void setParameterValues(Properties parameters) {
+        ((NumberSqlTypeDescriptor) getSqlTypeDescriptor()).setParameterValues(parameters);
     }
 }

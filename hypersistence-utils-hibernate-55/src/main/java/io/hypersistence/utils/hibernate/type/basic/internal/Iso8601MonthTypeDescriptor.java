@@ -9,12 +9,11 @@ import java.util.Objects;
 /**
  * @author Martin Panzer
  */
-public class Iso8601MonthMonthTypeDescriptor
-        extends AbstractTypeDescriptor<Month> {
+public class Iso8601MonthTypeDescriptor extends AbstractTypeDescriptor<Month> {
 
-    public static final Iso8601MonthMonthTypeDescriptor INSTANCE = new Iso8601MonthMonthTypeDescriptor();
+    public static final Iso8601MonthTypeDescriptor INSTANCE = new Iso8601MonthTypeDescriptor();
 
-    public Iso8601MonthMonthTypeDescriptor() {
+    public Iso8601MonthTypeDescriptor() {
         super(Month.class);
     }
 
@@ -40,7 +39,13 @@ public class Iso8601MonthMonthTypeDescriptor
             return null;
         }
         if (Number.class.isAssignableFrom(type)) {
-            return (X) (Number) value.getValue();
+            Number intValue = value.getValue();
+            if(Byte.class.isAssignableFrom(type)) {
+                return (X) (Byte) intValue.byteValue();
+            } else if(Short.class.isAssignableFrom(type)) {
+                return (X) (Short) intValue.shortValue();
+            }
+            return (X) (Integer) intValue.intValue();
         }
         throw unknownUnwrap(type);
     }

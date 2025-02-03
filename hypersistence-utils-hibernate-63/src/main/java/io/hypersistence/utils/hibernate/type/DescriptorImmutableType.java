@@ -7,18 +7,21 @@ import org.hibernate.metamodel.model.domain.DomainType;
 import org.hibernate.query.BindableType;
 import org.hibernate.type.descriptor.java.JavaType;
 import org.hibernate.type.descriptor.jdbc.JdbcType;
+import org.hibernate.usertype.DynamicParameterizedType;
+import org.hibernate.usertype.ParameterizedType;
 import org.hibernate.usertype.UserType;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 
 /**
  * Very convenient base class for implementing immutable object types using Hibernate {@link UserType} using the {@link JdbcType} and {@link JavaType} descriptors.
  *
  * @author Vlad Mihalcea
  */
-public abstract class DescriptorImmutableType<T, JDBC extends JdbcType, JAVA extends JavaType<T>> extends ImmutableType<T> implements BindableType<T>, DomainType<T> {
+public abstract class DescriptorImmutableType<T, JDBC extends JdbcType, JAVA extends JavaType<T>> extends ImmutableType<T> implements BindableType<T>, DomainType<T>, DynamicParameterizedType {
 
     private final JDBC jdbcTypeDescriptor;
     private final JAVA javaTypeDescriptor;
@@ -69,5 +72,17 @@ public abstract class DescriptorImmutableType<T, JDBC extends JdbcType, JAVA ext
     @Override
     public JavaType<T> getExpressibleJavaType() {
         return javaTypeDescriptor;
+    }
+
+    @Override
+    public void setParameterValues(Properties parameters) {
+        if(javaTypeDescriptor instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) javaTypeDescriptor;
+            parameterizedType.setParameterValues(parameters);
+        }
+        if(jdbcTypeDescriptor instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) jdbcTypeDescriptor;
+            parameterizedType.setParameterValues(parameters);
+        }
     }
 }
