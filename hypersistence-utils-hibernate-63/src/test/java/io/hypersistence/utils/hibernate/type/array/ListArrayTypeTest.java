@@ -1,7 +1,11 @@
 package io.hypersistence.utils.hibernate.type.array;
 
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Tuple;
 import jakarta.persistence.metamodel.ManagedType;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
@@ -12,19 +16,33 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Vlad Mihalcea
+ * @author Baptiste Masoud
  */
 public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
     @Override
     protected Class<?>[] entities() {
         return new Class<?>[]{
-            Event.class,
+                Event.class,
         };
     }
 
@@ -38,94 +56,95 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
     @Override
     protected void additionalProperties(Properties properties) {
         properties.put("hibernate.type_contributors",
-            (TypeContributorList) () -> Collections.singletonList(
-                (typeContributions, serviceRegistry) -> {
-                    typeContributions.contributeType(new EnumArrayType(SensorState[].class, "sensor_state"));
-                }
-            ));
+                (TypeContributorList) () -> Collections.singletonList(
+                        (typeContributions, serviceRegistry) -> {
+                            typeContributions.contributeType(new EnumArrayType(SensorState[].class, "sensor_state"));
+                        }
+                ));
     }
 
     @Override
     protected void afterInit() {
         doInJPA(entityManager -> {
             entityManager.persist(
-                new Event()
-                    .setId(0L)
+                    new Event()
+                            .setId(0L)
             );
 
             entityManager.persist(
-                new Event()
-                    .setId(1L)
-                    .setSensorIds(
-                        Arrays.asList(
-                            UUID.fromString("c65a3bcb-8b36-46d4-bddb-ae96ad016eb1"),
-                            UUID.fromString("72e95717-5294-4c15-aa64-a3631cf9a800")
-                        )
-                    )
-                    .setSensorNames(Arrays.asList("Temperature", "Pressure"))
-                    .setSensorValues(Arrays.asList(12, 756))
-                    .setSensorLongValues(Arrays.asList(42L, 9223372036854775800L))
-                    .setSensorBooleanValues(Arrays.asList(true, false))
-                    .setSensorDoubleValues(Arrays.asList(0.123D, 456.789D))
-                    .setSensorStates(
-                        Arrays.asList(
-                            SensorState.ONLINE, SensorState.OFFLINE,
-                            SensorState.ONLINE, SensorState.UNKNOWN
-                        )
-                    )
-                    .setDateValues(
-                        Arrays.asList(
-                            java.sql.Date.valueOf(LocalDate.of(1991, 12, 31)),
-                            java.sql.Date.valueOf(LocalDate.of(1990, 1, 1))
-                        )
-                    )
-                    .setTimestampValues(
-                        Arrays.asList(
-                            Date.from(
-                                LocalDate.of(1991, 12, 31)
-                                    .atStartOfDay()
-                                    .atZone(ZoneId.systemDefault())
-                                    .toInstant()
-                            ),
-                            Date.from(
-                                LocalDate.of(1990, 1, 1)
-                                    .atStartOfDay()
-                                    .atZone(ZoneId.systemDefault())
-                                    .toInstant()
+                    new Event()
+                            .setId(1L)
+                            .setSensorIds(
+                                    Arrays.asList(
+                                            UUID.fromString("c65a3bcb-8b36-46d4-bddb-ae96ad016eb1"),
+                                            UUID.fromString("72e95717-5294-4c15-aa64-a3631cf9a800")
+                                    )
                             )
-                        )
-                    )
-                    .setDecimalValues(
-                        Arrays.asList(
-                            BigDecimal.ONE,
-                            BigDecimal.ZERO,
-                            BigDecimal.TEN
-                        )
-                    )
-                    .setLocalDateValues(
-                        Arrays.asList(
-                            LocalDate.of(2022, 3, 22),
-                            LocalDate.of(2021, 4, 21)
-                        )
-                    )
-                    .setLocalDateTimeValues(
-                        Arrays.asList(
-                            LocalDateTime.of(2022, 3, 22, 11, 22, 33),
-                            LocalDateTime.of(2021, 4, 21, 22, 33, 44)
-                        )
-                    )
-                    .setLocalDateTimeSetValues(
-                        new LinkedHashSet<>(
-                            Arrays.asList(
-                                LocalDateTime.of(2022, 3, 22, 11, 22, 33),
-                                LocalDateTime.of(2022, 3, 22, 11, 22, 33),
-                                LocalDateTime.of(2021, 4, 21, 22, 33, 44)
+                            .setSensorNames(Arrays.asList("Temperature", "Pressure"))
+                            .setSensorValues(Arrays.asList(12, 756))
+                            .setSensorShortValues(Arrays.asList((short) 42, (short) 69))
+                            .setSensorLongValues(Arrays.asList(42L, 9223372036854775800L))
+                            .setSensorBooleanValues(Arrays.asList(true, false))
+                            .setSensorDoubleValues(Arrays.asList(0.123D, 456.789D))
+                            .setSensorStates(
+                                    Arrays.asList(
+                                            SensorState.ONLINE, SensorState.OFFLINE,
+                                            SensorState.ONLINE, SensorState.UNKNOWN
+                                    )
                             )
-                        )
-                    )
-                    .setSortedNumbers(
-                        new TreeSet<>(Arrays.asList(2, 4, 1))
-                    )
+                            .setDateValues(
+                                    Arrays.asList(
+                                            java.sql.Date.valueOf(LocalDate.of(1991, 12, 31)),
+                                            java.sql.Date.valueOf(LocalDate.of(1990, 1, 1))
+                                    )
+                            )
+                            .setTimestampValues(
+                                    Arrays.asList(
+                                            Date.from(
+                                                    LocalDate.of(1991, 12, 31)
+                                                            .atStartOfDay()
+                                                            .atZone(ZoneId.systemDefault())
+                                                            .toInstant()
+                                            ),
+                                            Date.from(
+                                                    LocalDate.of(1990, 1, 1)
+                                                            .atStartOfDay()
+                                                            .atZone(ZoneId.systemDefault())
+                                                            .toInstant()
+                                            )
+                                    )
+                            )
+                            .setDecimalValues(
+                                    Arrays.asList(
+                                            BigDecimal.ONE,
+                                            BigDecimal.ZERO,
+                                            BigDecimal.TEN
+                                    )
+                            )
+                            .setLocalDateValues(
+                                    Arrays.asList(
+                                            LocalDate.of(2022, 3, 22),
+                                            LocalDate.of(2021, 4, 21)
+                                    )
+                            )
+                            .setLocalDateTimeValues(
+                                    Arrays.asList(
+                                            LocalDateTime.of(2022, 3, 22, 11, 22, 33),
+                                            LocalDateTime.of(2021, 4, 21, 22, 33, 44)
+                                    )
+                            )
+                            .setLocalDateTimeSetValues(
+                                    new LinkedHashSet<>(
+                                            Arrays.asList(
+                                                    LocalDateTime.of(2022, 3, 22, 11, 22, 33),
+                                                    LocalDateTime.of(2022, 3, 22, 11, 22, 33),
+                                                    LocalDateTime.of(2021, 4, 21, 22, 33, 44)
+                                            )
+                                    )
+                            )
+                            .setSortedNumbers(
+                                    new TreeSet<>(Arrays.asList(2, 4, 1))
+                            )
             );
         });
     }
@@ -136,125 +155,129 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             Event event = entityManager.find(Event.class, 1L);
 
             assertEquals(
-                Arrays.asList(
-                    UUID.fromString("c65a3bcb-8b36-46d4-bddb-ae96ad016eb1"),
-                    UUID.fromString("72e95717-5294-4c15-aa64-a3631cf9a800")
-                ),
-                event.getSensorIds()
-            );
-            assertEquals(
-                Arrays.asList("Temperature", "Pressure"),
-                event.getSensorNames()
-            );
-            assertEquals(
-                Arrays.asList(12, 756),
-                event.getSensorValues()
-            );
-            assertEquals(
-                Arrays.asList(42L, 9223372036854775800L),
-                event.getSensorLongValues()
-            );
-            assertEquals(
-                Arrays.asList(true, false),
-                event.getSensorBooleanValues()
-            );
-            assertEquals(
-                Arrays.asList(0.123D, 456.789D),
-                event.getSensorDoubleValues()
-            );
-            assertEquals(
-                Arrays.asList(
-                    SensorState.ONLINE, SensorState.OFFLINE,
-                    SensorState.ONLINE, SensorState.UNKNOWN
-                ),
-                event.getSensorStates()
-            );
-            assertEquals(
-                Arrays.asList(
-                    java.sql.Date.valueOf(LocalDate.of(1991, 12, 31)),
-                    java.sql.Date.valueOf(LocalDate.of(1990, 1, 1))
-                ),
-                event.getDateValues()
-            );
-            assertEquals(
-                Arrays.asList(
-                    Date.from(
-                        LocalDate.of(1991, 12, 31)
-                            .atStartOfDay()
-                            .atZone(ZoneId.systemDefault())
-                            .toInstant()
+                    Arrays.asList(
+                            UUID.fromString("c65a3bcb-8b36-46d4-bddb-ae96ad016eb1"),
+                            UUID.fromString("72e95717-5294-4c15-aa64-a3631cf9a800")
                     ),
-                    Date.from(
-                        LocalDate.of(1990, 1, 1)
-                            .atStartOfDay()
-                            .atZone(ZoneId.systemDefault())
-                            .toInstant()
-                    )
-                ),
-                event.getTimestampValues()
+                    event.getSensorIds()
             );
             assertEquals(
-                Arrays.asList(
-                    BigDecimal.ONE,
-                    BigDecimal.ZERO,
-                    BigDecimal.TEN
-                ),
-                event.getDecimalValues()
+                    Arrays.asList("Temperature", "Pressure"),
+                    event.getSensorNames()
             );
             assertEquals(
-                Arrays.asList(
-                    LocalDate.of(2022, 3, 22),
-                    LocalDate.of(2021, 4, 21)
-                ),
-                event.getLocalDateValues()
+                    Arrays.asList(12, 756),
+                    event.getSensorValues()
             );
             assertEquals(
-                Arrays.asList(
-                    LocalDateTime.of(2022, 3, 22, 11, 22, 33),
-                    LocalDateTime.of(2021, 4, 21, 22, 33, 44)
-                ),
-                event.getLocalDateTimeValues()
+                    Arrays.asList((short) 42, (short) 69),
+                    event.getSensorShortValues()
             );
             assertEquals(
-                new HashSet<>(
+                    Arrays.asList(42L, 9223372036854775800L),
+                    event.getSensorLongValues()
+            );
+            assertEquals(
+                    Arrays.asList(true, false),
+                    event.getSensorBooleanValues()
+            );
+            assertEquals(
+                    Arrays.asList(0.123D, 456.789D),
+                    event.getSensorDoubleValues()
+            );
+            assertEquals(
                     Arrays.asList(
-                        LocalDateTime.of(2022, 3, 22, 11, 22, 33),
-                        LocalDateTime.of(2021, 4, 21, 22, 33, 44)
-                    )
-                ),
-                event.getLocalDateTimeSetValues()
+                            SensorState.ONLINE, SensorState.OFFLINE,
+                            SensorState.ONLINE, SensorState.UNKNOWN
+                    ),
+                    event.getSensorStates()
             );
             assertEquals(
-                new TreeSet<>(
                     Arrays.asList(
-                        2, 4, 1
-                    )
-                ),
-                event.getSortedNumbers()
+                            java.sql.Date.valueOf(LocalDate.of(1991, 12, 31)),
+                            java.sql.Date.valueOf(LocalDate.of(1990, 1, 1))
+                    ),
+                    event.getDateValues()
+            );
+            assertEquals(
+                    Arrays.asList(
+                            Date.from(
+                                    LocalDate.of(1991, 12, 31)
+                                            .atStartOfDay()
+                                            .atZone(ZoneId.systemDefault())
+                                            .toInstant()
+                            ),
+                            Date.from(
+                                    LocalDate.of(1990, 1, 1)
+                                            .atStartOfDay()
+                                            .atZone(ZoneId.systemDefault())
+                                            .toInstant()
+                            )
+                    ),
+                    event.getTimestampValues()
+            );
+            assertEquals(
+                    Arrays.asList(
+                            BigDecimal.ONE,
+                            BigDecimal.ZERO,
+                            BigDecimal.TEN
+                    ),
+                    event.getDecimalValues()
+            );
+            assertEquals(
+                    Arrays.asList(
+                            LocalDate.of(2022, 3, 22),
+                            LocalDate.of(2021, 4, 21)
+                    ),
+                    event.getLocalDateValues()
+            );
+            assertEquals(
+                    Arrays.asList(
+                            LocalDateTime.of(2022, 3, 22, 11, 22, 33),
+                            LocalDateTime.of(2021, 4, 21, 22, 33, 44)
+                    ),
+                    event.getLocalDateTimeValues()
+            );
+            assertEquals(
+                    new HashSet<>(
+                            Arrays.asList(
+                                    LocalDateTime.of(2022, 3, 22, 11, 22, 33),
+                                    LocalDateTime.of(2021, 4, 21, 22, 33, 44)
+                            )
+                    ),
+                    event.getLocalDateTimeSetValues()
+            );
+            assertEquals(
+                    new TreeSet<>(
+                            Arrays.asList(
+                                    2, 4, 1
+                            )
+                    ),
+                    event.getSortedNumbers()
             );
         });
 
         doInJPA(entityManager -> {
             List<Tuple> events = entityManager.createNativeQuery(
-                "select " +
-                    "   id, " +
-                    "   sensor_ids, " +
-                    "   sensor_names, " +
-                    "   sensor_values " +
-                    "from event " +
-                    "where id >= :id", Tuple.class)
-                .setParameter("id", 0)
-                .unwrap(org.hibernate.query.NativeQuery.class)
-                .addScalar("sensor_ids", UUID[].class)
-                .addScalar("sensor_names", String[].class)
-                .addScalar("sensor_values", int[].class)
-                .getResultList();
+                            "select " +
+                                    "   id, " +
+                                    "   sensor_ids, " +
+                                    "   sensor_names, " +
+                                    "   sensor_values " +
+                                    "from event " +
+                                    "where id >= :id", Tuple.class)
+                    .setParameter("id", 0)
+                    .unwrap(org.hibernate.query.NativeQuery.class)
+                    .addScalar("sensor_ids", UUID[].class)
+                    .addScalar("sensor_names", String[].class)
+                    .addScalar("sensor_values", int[].class)
+                    .getResultList();
 
             assertEquals(2, events.size());
         });
 
         Event _event = doInJPA(entityManager -> {
-             return entityManager.find(Event.class, 1L);
+            return entityManager.find(Event.class, 1L);
         });
 
         String newString = "New";
@@ -282,21 +305,21 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
     public void testScalarEnumArray() {
         doInJPA(entityManager -> {
             List<Tuple> events = entityManager.createNativeQuery(
-                "select " +
-                    "   id, " +
-                    "   sensor_ids, " +
-                    "   sensor_names, " +
-                    "   sensor_values, " +
-                    "   sensor_states " +
-                    "from event " +
-                    "where id >= :id", Tuple.class)
-            .setParameter("id", 0)
-            .unwrap(org.hibernate.query.NativeQuery.class)
-            .addScalar("sensor_ids", UUID[].class)
-            .addScalar("sensor_names", String[].class)
-            .addScalar("sensor_values", int[].class)
-            .addScalar("sensor_states", SensorState[].class)
-            .getResultList();
+                            "select " +
+                                    "   id, " +
+                                    "   sensor_ids, " +
+                                    "   sensor_names, " +
+                                    "   sensor_values, " +
+                                    "   sensor_states " +
+                                    "from event " +
+                                    "where id >= :id", Tuple.class)
+                    .setParameter("id", 0)
+                    .unwrap(org.hibernate.query.NativeQuery.class)
+                    .addScalar("sensor_ids", UUID[].class)
+                    .addScalar("sensor_names", String[].class)
+                    .addScalar("sensor_values", int[].class)
+                    .addScalar("sensor_states", SensorState[].class)
+                    .getResultList();
 
             assertEquals(2, events.size());
         });
@@ -317,6 +340,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             event.setSensorIds(Arrays.asList(null, UUID.fromString("72e95717-5294-4c15-aa64-a3631cf9a800")));
             event.setSensorNames(Arrays.asList("Temperature", null));
             event.setSensorValues(Arrays.asList(null, 756));
+            event.setSensorShortValues(Arrays.asList(null, (short) 69));
             event.setSensorLongValues(Arrays.asList(null, 9223372036854775800L));
             event.setSensorBooleanValues(Arrays.asList(null, false));
             event.setSensorDoubleValues(Arrays.asList(null, 456.789D));
@@ -335,6 +359,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             assertArrayEquals(new UUID[]{null, UUID.fromString("72e95717-5294-4c15-aa64-a3631cf9a800")}, event.getSensorIds().toArray());
             assertArrayEquals(new String[]{"Temperature", null}, event.getSensorNames().toArray());
             assertArrayEquals(new Integer[]{null, 756}, event.getSensorValues().toArray());
+            assertArrayEquals(new Short[]{null, (short) 69}, event.getSensorShortValues().toArray());
             assertArrayEquals(new Long[]{null, 9223372036854775800L}, event.getSensorLongValues().toArray());
             assertArrayEquals(new Boolean[]{null, false}, event.getSensorBooleanValues().toArray());
             assertArrayEquals(new Double[]{null, 456.789D}, event.getSensorDoubleValues().toArray());
@@ -360,6 +385,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             event.setSensorIds(Arrays.asList(null, null));
             event.setSensorNames(Arrays.asList(null, null));
             event.setSensorValues(Arrays.asList(null, null));
+            event.setSensorShortValues(Arrays.asList(null, null));
             event.setSensorLongValues(Arrays.asList(null, null));
             event.setSensorBooleanValues(Arrays.asList(null, null));
             event.setSensorDoubleValues(Arrays.asList(null, null));
@@ -378,6 +404,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             assertArrayEquals(new UUID[]{null, null}, event.getSensorIds().toArray());
             assertArrayEquals(new String[]{null, null}, event.getSensorNames().toArray());
             assertArrayEquals(new Integer[]{null, null}, event.getSensorValues().toArray());
+            assertArrayEquals(new Short[]{null, null}, event.getSensorShortValues().toArray());
             assertArrayEquals(new Long[]{null, null}, event.getSensorLongValues().toArray());
             assertArrayEquals(new Boolean[]{null, null}, event.getSensorBooleanValues().toArray());
             assertArrayEquals(new Double[]{null, null}, event.getSensorDoubleValues().toArray());
@@ -403,6 +430,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             event.setSensorIds(Collections.emptyList());
             event.setSensorNames(Collections.emptyList());
             event.setSensorValues(Collections.emptyList());
+            event.setSensorShortValues(Collections.emptyList());
             event.setSensorLongValues(Collections.emptyList());
             event.setSensorBooleanValues(Collections.emptyList());
             event.setSensorDoubleValues(Collections.emptyList());
@@ -421,6 +449,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             assertArrayEquals(new UUID[]{}, event.getSensorIds().toArray());
             assertArrayEquals(new String[]{}, event.getSensorNames().toArray());
             assertArrayEquals(new Integer[]{}, event.getSensorValues().toArray());
+            assertArrayEquals(new Short[]{}, event.getSensorShortValues().toArray());
             assertArrayEquals(new Long[]{}, event.getSensorLongValues().toArray());
             assertArrayEquals(new Boolean[]{}, event.getSensorBooleanValues().toArray());
             assertArrayEquals(new Double[]{}, event.getSensorDoubleValues().toArray());
@@ -438,8 +467,8 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         doInJPA(entityManager -> {
             ManagedType<Event> eventManagedType = entityManager.getMetamodel().managedType(Event.class);
             assertEquals(
-                Collection.class,
-                eventManagedType.getAttribute("sensorIds").getJavaType()
+                    Collection.class,
+                    eventManagedType.getAttribute("sensorIds").getJavaType()
             );
         });
     }
@@ -453,109 +482,116 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
 
         @Type(ListArrayType.class)
         @Column(
-            name = "sensor_ids",
-            columnDefinition = "uuid[]"
+                name = "sensor_ids",
+                columnDefinition = "uuid[]"
         )
         private List<UUID> sensorIds;
 
         @Type(ListArrayType.class)
         @Column(
-            name = "sensor_names",
-            columnDefinition = "text[]"
+                name = "sensor_names",
+                columnDefinition = "text[]"
         )
         private List<String> sensorNames;
 
         @Type(ListArrayType.class)
         @Column(
-            name = "sensor_values",
-            columnDefinition = "integer[]"
+                name = "sensor_values",
+                columnDefinition = "integer[]"
         )
         private List<Integer> sensorValues;
 
         @Type(ListArrayType.class)
         @Column(
-            name = "sensor_long_values",
-            columnDefinition = "bigint[]"
+                name = "sensor_long_values",
+                columnDefinition = "bigint[]"
         )
         private List<Long> sensorLongValues;
 
         @Type(ListArrayType.class)
         @Column(
-            name = "sensor_boolean_values",
-            columnDefinition = "boolean[]"
+                name = "sensor_boolean_values",
+                columnDefinition = "boolean[]"
         )
         private List<Boolean> sensorBooleanValues;
 
         @Type(ListArrayType.class)
         @Column(
-            name = "sensor_double_values",
-            columnDefinition = "float8[]"
+                name = "sensor_double_values",
+                columnDefinition = "float8[]"
         )
         private List<Double> sensorDoubleValues;
 
         @Type(
-            value = ListArrayType.class,
-            parameters = {
-                @Parameter(
-                    name = ListArrayType.SQL_ARRAY_TYPE,
-                    value = "sensor_state"
-                )
-            }
+                value = ListArrayType.class,
+                parameters = {
+                        @Parameter(
+                                name = ListArrayType.SQL_ARRAY_TYPE,
+                                value = "sensor_state"
+                        )
+                }
         )
         @Column(
-            name = "sensor_states",
-            columnDefinition = "sensor_state[]"
+                name = "sensor_states",
+                columnDefinition = "sensor_state[]"
         )
         private List<SensorState> sensorStates;
 
         @Type(ListArrayType.class)
         @Column(
-            name = "date_values",
-            columnDefinition = "date[]"
+                name = "date_values",
+                columnDefinition = "date[]"
         )
         private List<Date> dateValues;
 
         @Type(ListArrayType.class)
         @Column(
-            name = "timestamp_values",
-            columnDefinition = "timestamp[]"
+                name = "timestamp_values",
+                columnDefinition = "timestamp[]"
         )
         private List<Date> timestampValues;
 
         @Type(ListArrayType.class)
         @Column(
-            name = "decimal_values",
-            columnDefinition = "decimal[]"
+                name = "decimal_values",
+                columnDefinition = "decimal[]"
         )
         private List<BigDecimal> decimalValues;
 
         @Type(ListArrayType.class)
         @Column(
-            name = "localdate_values",
-            columnDefinition = "date[]"
+                name = "localdate_values",
+                columnDefinition = "date[]"
         )
         private List<LocalDate> localDateValues;
 
         @Type(ListArrayType.class)
         @Column(
-            name = "localdatetime_values",
-            columnDefinition = "timestamp[]"
+                name = "localdatetime_values",
+                columnDefinition = "timestamp[]"
         )
         private List<LocalDateTime> localDateTimeValues;
 
         @Type(ListArrayType.class)
         @Column(
-            name = "localdatetime_set_values",
-            columnDefinition = "timestamp[]"
+                name = "localdatetime_set_values",
+                columnDefinition = "timestamp[]"
         )
         private Set<LocalDateTime> localDateTimeSetValues;
 
         @Type(ListArrayType.class)
         @Column(
-            name = "sorted_numbers",
-            columnDefinition = "integer[]"
+                name = "sorted_numbers",
+                columnDefinition = "integer[]"
         )
         private SortedSet<Integer> sortedNumbers;
+
+        @Type(ListArrayType.class)
+        @Column(
+                name = "short_values",
+                columnDefinition = "smallint[]"
+        )
+        private List<Short> sensorShortValues;
 
         public Long getId() {
             return id;
@@ -591,6 +627,15 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         public Event setSensorValues(List<Integer> sensorValues) {
             this.sensorValues = sensorValues;
             return this;
+        }
+
+        public Event setSensorShortValues(List<Short> shortValues) {
+            this.sensorShortValues = shortValues;
+            return this;
+        }
+
+        public List<Short> getSensorShortValues() {
+            return sensorShortValues;
         }
 
         public List<Long> getSensorLongValues() {
