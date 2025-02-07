@@ -16,23 +16,21 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.util.Properties;
 
 /**
  * Maps a {@link Range} object type to a PostgreSQL <a href="https://www.postgresql.org/docs/current/rangetypes.html">range</a>
  * column type.
  * <p>
- * Supported range types:
+ * Supported PostgreSQL range types:
  * <ul>
- * <li>int4range</li>
- * <li>int8range</li>
- * <li>numrange</li>
- * <li>tsrange</li>
- * <li>tstzrange</li>
- * <li>daterange</li>
+ *   <li>{@code int4range}. Use with Java type {@code Range<Integer>}.</li>
+ *   <li>{@code int8range}. Use with Java type {@code Range<Long>}.</li>
+ *   <li>{@code numrange}. Use with Java type {@code Range<BigDecimal>}.</li>
+ *   <li>{@code tsrange}. Use with Java type {@code Range<LocalDateTime>}.</li>
+ *   <li>{@code tstzrange}. Use with Java type {@code Range<Instant>}, {@code Range<OffsetDateTime>} or {@code Range<ZonedDateTime>}.</li>
+ *   <li>{@code daterange}. Use with Java type {@code Range<LocalDate>}.</li>
  * </ul>
  * <p>
  * For more details about how to use it,
@@ -69,10 +67,11 @@ public class PostgreSQLRangeType extends ImmutableType<Range> implements Dynamic
             return null;
         }
 
-        String type = ReflectionUtils.invokeGetter(pgObject, "type");
+        String colType = ReflectionUtils.invokeGetter(pgObject, "type");
         String value = ReflectionUtils.invokeGetter(pgObject, "value");
 
-        switch (type) {
+        Class<?> rangeClass = rangeClass();
+        switch (colType) {
             case "int4range":
                 return Range.integerRange(value);
             case "int8range":
@@ -81,13 +80,25 @@ public class PostgreSQLRangeType extends ImmutableType<Range> implements Dynamic
                 return Range.bigDecimalRange(value);
             case "tsrange":
                 return Range.localDateTimeRange(value);
-            case "tstzrange":
-                return Range.zonedDateTimeRange(value);
+            case "tstzrange": {
+                if (rangeClass != null && Instant.class.isAssignableFrom(rangeClass)) {
+                    return Range.instantRange(value);
+                }
+                if (rangeClass != null && OffsetDateTime.class.isAssignableFrom(rangeClass)) {
+                    return Range.offsetDateTimeRange(value);
+                }
+                if (rangeClass != null && ZonedDateTime.class.isAssignableFrom(rangeClass)) {
+                    return Range.zonedDateTimeRange(value);
+                }
+                throw new HibernateException(
+                        new IllegalStateException("The database column type [" + colType + "] must be mapped to one of Java types: Range<Instant>, Range<OffsetDateTime> or Range<ZonedDateTime>.")
+                );
+            }
             case "daterange":
                 return Range.localDateRange(value);
             default:
                 throw new HibernateException(
-                    new IllegalStateException("The range type [" + type + "] is not supported!")
+                    new IllegalStateException("The database column type [" + colType + "] is not supported!")
                 );
         }
     }
@@ -116,6 +127,10 @@ public class PostgreSQLRangeType extends ImmutableType<Range> implements Dynamic
             return "numrange";
         } else if (clazz.equals(LocalDateTime.class)) {
             return "tsrange";
+        } else if (clazz.equals(Instant.class)) {
+            return "tstzrange";
+        } else if (clazz.equals(OffsetDateTime.class)) {
+            return "tstzrange";
         } else if (clazz.equals(ZonedDateTime.class)) {
             return "tstzrange";
         } else if (clazz.equals(LocalDate.class)) {
@@ -159,6 +174,12 @@ public class PostgreSQLRangeType extends ImmutableType<Range> implements Dynamic
                 }
                 if(LocalDateTime.class.isAssignableFrom(clazz)) {
                     return Range.localDateTimeRange(stringValue);
+                }
+                if(Instant.class.isAssignableFrom(clazz)) {
+                    return Range.instantRange(stringValue);
+                }
+                if(OffsetDateTime.class.isAssignableFrom(clazz)) {
+                    return Range.offsetDateTimeRange(stringValue);
                 }
                 if(ZonedDateTime.class.isAssignableFrom(clazz)) {
                     return Range.zonedDateTimeRange(stringValue);
