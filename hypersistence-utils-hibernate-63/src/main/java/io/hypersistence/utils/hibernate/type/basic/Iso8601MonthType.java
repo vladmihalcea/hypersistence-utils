@@ -1,10 +1,10 @@
 package io.hypersistence.utils.hibernate.type.basic;
 
 import io.hypersistence.utils.hibernate.type.DescriptorImmutableType;
-import io.hypersistence.utils.hibernate.type.basic.internal.Iso8601MonthMonthTypeDescriptor;
+import io.hypersistence.utils.hibernate.type.basic.internal.Iso8601MonthTypeDescriptor;
+import io.hypersistence.utils.hibernate.type.basic.internal.NumberJdbcTypeDescriptor;
 import io.hypersistence.utils.hibernate.type.util.Configuration;
 import org.hibernate.HibernateException;
-import org.hibernate.type.descriptor.jdbc.IntegerJdbcType;
 
 import java.time.Month;
 
@@ -15,23 +15,23 @@ import java.time.Month;
  *
  * @author Martin Panzer
  */
-public class Iso8601MonthType extends DescriptorImmutableType<Month, IntegerJdbcType, Iso8601MonthMonthTypeDescriptor> {
+public class Iso8601MonthType extends DescriptorImmutableType<Month, NumberJdbcTypeDescriptor, Iso8601MonthTypeDescriptor> {
 
     public static final Iso8601MonthType INSTANCE = new Iso8601MonthType();
 
     public Iso8601MonthType() {
         super(
             Month.class,
-            IntegerJdbcType.INSTANCE,
-            Iso8601MonthMonthTypeDescriptor.INSTANCE
+            NumberJdbcTypeDescriptor.INSTANCE,
+            Iso8601MonthTypeDescriptor.INSTANCE
         );
     }
 
     public Iso8601MonthType(Configuration configuration) {
         super(
             Month.class,
-            IntegerJdbcType.INSTANCE,
-            Iso8601MonthMonthTypeDescriptor.INSTANCE,
+            NumberJdbcTypeDescriptor.INSTANCE,
+            Iso8601MonthTypeDescriptor.INSTANCE,
             configuration
         );
     }

@@ -1,3 +1,10 @@
+Version 3.9.1 - February 03, 2025
+================================================================================
+
+Allow the Iso8601MonthType to persist data into tinyint and smallint columns #762
+
+The JavaDoc of MutableType class mentions immutable object types #751
+
 Version 3.9.0 - November 10, 2024
 ================================================================================
 

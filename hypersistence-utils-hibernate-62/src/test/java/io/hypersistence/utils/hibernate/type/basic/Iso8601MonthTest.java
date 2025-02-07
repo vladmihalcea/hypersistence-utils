@@ -21,7 +21,7 @@ public class Iso8601MonthTest extends AbstractTest {
     @Override
     protected Class<?>[] entities() {
         return new Class<?>[]{
-                Publisher.class
+            Publisher.class
         };
     }
 
@@ -64,7 +64,7 @@ public class Iso8601MonthTest extends AbstractTest {
         doInJPA(entityManager -> {
             Query query = entityManager.createNativeQuery("Select p.sales_month from publisher p where p.name = :name");
             query.setParameter("name", "vladmihalcea.com");
-            Short result = (Short)query.getSingleResult();
+            Number result = (Number) query.getSingleResult();
 
             Assert.assertEquals(11L, result.longValue());
         });
@@ -86,7 +86,7 @@ public class Iso8601MonthTest extends AbstractTest {
         private Year estYear;
 
         @Type(Iso8601MonthType.class)
-        @Column(name = "sales_month", columnDefinition = "smallint")
+        @Column(name = "sales_month")
         private Month salesMonth;
 
         public Long getId() {
