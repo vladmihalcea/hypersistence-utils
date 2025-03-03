@@ -6,8 +6,15 @@ import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.junit.Test;
+import org.springframework.util.Assert;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Version;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +23,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Vlad Mihalcea
  */
-public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
+public class PostgreSQLJsonMapTest2 extends AbstractPostgreSQLIntegrationTest {
 
     @Override
     protected Class<?>[] entities() {
@@ -27,15 +34,16 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
 
     @Test
     public void test() {
+        Map<String, Book.BookInventory> bookTypeMap = new HashMap<>();
+        bookTypeMap.put("Fiction",
+                new Book.BookInventory(new Book.BookInventory.Inventory(10, 1),
+                        Collections.singletonMap(501L, new Book.BookInventory.Inventory(1,1))));
 
         doInJPA(entityManager -> {
             entityManager.persist(
                 new Book()
                     .setIsbn("978-9730228236")
-                    .addProperty("title", "High-Performance Java Persistence")
-                    .addProperty("author", "Vlad Mihalcea")
-                    .addProperty("publisher", "Amazon")
-                    .addProperty("price", "$44.95")
+                    .addProperty("Publisher 1", bookTypeMap)
             );
         });
 
@@ -44,16 +52,11 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
                 .bySimpleNaturalId(Book.class)
                 .load("978-9730228236");
 
-            Map<String, String> bookProperties = book.getProperties();
+            Map<String, Map<String, Book.BookInventory>>  bookProperties = book.getProperties();
 
             assertEquals(
-                "High-Performance Java Persistence",
-                bookProperties.get("title")
-            );
-
-            assertEquals(
-                "Vlad Mihalcea",
-                bookProperties.get("author")
+                    bookTypeMap,
+                    bookProperties.get("Publisher 1")
             );
 
             assertEquals(Long.valueOf(0), book.getVersion());
@@ -78,7 +81,7 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
 
         @Type(type = "jsonb")
         @Column(columnDefinition = "jsonb")
-        private Map<String, String> properties = new HashMap<>();
+        private Map<String, Map<String, BookInventory>> properties = new HashMap<>();
 
         public String getIsbn() {
             return isbn;
@@ -93,18 +96,28 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
             return version;
         }
 
-        public Map<String, String> getProperties() {
+        public Map<String, Map<String, BookInventory>> getProperties() {
             return properties;
         }
 
-        public Book setProperties(Map<String, String> properties) {
+        public Book setProperties(Map<String, Map<String, BookInventory>> properties) {
             this.properties = properties;
             return this;
         }
 
-        public Book addProperty(String key, String value) {
+        public Book addProperty(String key, Map<String, BookInventory> value) {
             properties.put(key, value);
             return this;
+        }
+
+        public record BookInventory(Inventory global, Map<Long, Inventory> info) {
+
+            public BookInventory {
+                Assert.notNull(info, "info must be provided");
+            }
+
+            public record Inventory(Integer maxItems, Integer remainingItems) {
+            }
         }
     }
 }
