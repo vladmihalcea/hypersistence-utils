@@ -1,3 +1,12 @@
+Version 3.9.3 - March 07, 2025
+================================================================================
+
+Add second precision support in time zone offsets for the Range type #766
+
+BatchSequenceGenerator throws "no sequence name specified" in Spring Boot #763
+
+Support for java.lang.Short in Hibernate ListArrayType #758
+
 Version 3.9.2 - February 13, 2025
 ================================================================================
 
