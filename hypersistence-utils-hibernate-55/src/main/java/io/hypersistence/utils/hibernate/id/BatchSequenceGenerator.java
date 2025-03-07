@@ -266,7 +266,7 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
         Properties params, JdbcEnvironment jdbcEnv) {
         String sequenceName = params.getProperty(SEQUENCE_PARAM);
         if (sequenceName == null) {
-            throw new MappingException("no squence name specified");
+            throw new MappingException("no sequence name specified");
         }
 
         final Identifier catalog = jdbcEnv.getIdentifierHelper().toIdentifier(params.getProperty(CATALOG));

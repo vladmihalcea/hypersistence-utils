@@ -195,13 +195,6 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
       this.sequenceStructure = this.buildSequenceStructure(type, sequenceName, jdbcEnvironment);
     }
 
-    /**
-     * Called when {@link GenericGenerator} is used.
-     */
-    public BatchSequenceGenerator() {
-      super();
-    }
-
     @Override
     public void configure(Type type, Properties params, ServiceRegistry serviceRegistry)
                     throws MappingException {
@@ -303,7 +296,7 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
 			Properties params, JdbcEnvironment jdbcEnv) {
         String sequenceName = params.getProperty(SEQUENCE_PARAM);
         if (sequenceName == null) {
-            throw new MappingException("no squence name specified");
+            throw new MappingException("no sequence name specified");
         }
 
 		final Identifier catalog = jdbcEnv.getIdentifierHelper().toIdentifier(params.getProperty(CATALOG));
@@ -324,7 +317,7 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
                     BatchSequence annotation, JdbcEnvironment jdbcEnv) {
         String sequenceName = annotation.name();
         if (sequenceName == null) {
-            throw new MappingException("no squence name specified");
+            throw new MappingException("no sequence name specified");
         }
 
         final Identifier catalog = jdbcEnv.getIdentifierHelper().toIdentifier(annotation.catalog());
