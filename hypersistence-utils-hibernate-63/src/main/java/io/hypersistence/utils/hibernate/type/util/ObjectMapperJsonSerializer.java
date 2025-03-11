@@ -28,7 +28,7 @@ public class ObjectMapperJsonSerializer implements JsonSerializer {
         } else if (object instanceof Collection) {
             Object firstElement = findFirstNonNullElement((Collection) object);
             if (firstElement != null && !(firstElement instanceof Serializable)) {
-                JavaType type = TypeFactory.defaultInstance().constructParametricType(object.getClass(), firstElement.getClass());
+                JavaType type = TypeFactory.defaultInstance().constructParametricType(object.getClass(), resolveElementCollectionClass(firstElement));
                 return objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(object), type);
             }
         } else if (object instanceof Map) {
@@ -55,6 +55,21 @@ public class ObjectMapperJsonSerializer implements JsonSerializer {
         }
 
         return jsonClone(object);
+    }
+
+    private Class<?> resolveElementCollectionClass(Object firstElement) {
+        var firstElementClass = firstElement.getClass();
+
+        Class<?> superclass = firstElementClass.getSuperclass();
+        Class<?> resolvedClass;
+
+        if (superclass != null && superclass != Object.class) {
+            resolvedClass = superclass;
+        } else {
+            resolvedClass = firstElementClass;
+        }
+
+        return resolvedClass;
     }
 
     private Object findFirstNonNullElement(Collection collection) {
