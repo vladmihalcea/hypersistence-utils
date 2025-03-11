@@ -1,3 +1,8 @@
+Version 3.9.4 - March 11, 2025
+================================================================================
+
+Polymorphic collections that use elements of different types are not fetched properly #767
+
 Version 3.9.3 - March 07, 2025
 ================================================================================
 
