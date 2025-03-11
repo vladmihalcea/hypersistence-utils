@@ -7,6 +7,7 @@ import org.hibernate.internal.util.SerializationHelper;
 import org.hibernate.type.SerializationException;
 
 import java.io.Serializable;
+import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Map;
 
@@ -26,19 +27,29 @@ public class ObjectMapperJsonSerializer implements JsonSerializer {
         if (object instanceof String) {
             return object;
         } else if (object instanceof Collection) {
-            Object firstElement = findFirstNonNullElement((Collection) object);
-            if (firstElement != null && !(firstElement instanceof Serializable)) {
-                JavaType type = TypeFactory.defaultInstance().constructParametricType(object.getClass(), firstElement.getClass());
+            Class commonElementType = findCommonElementType((Collection) object);
+            if (commonElementType != null && !(Serializable.class.isAssignableFrom(commonElementType))) {
+                JavaType type = TypeFactory.defaultInstance()
+                    .constructParametricType(
+                        object.getClass(),
+                        commonElementType
+                    );
                 return objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(object), type);
             }
         } else if (object instanceof Map) {
-            Map.Entry firstEntry = this.findFirstNonNullEntry((Map) object);
-            if (firstEntry != null) {
-                Object key = firstEntry.getKey();
-                Object value = firstEntry.getValue();
-                if (!(key instanceof Serializable) || !(value instanceof Serializable)) {
-                    JavaType type = TypeFactory.defaultInstance().constructParametricType(object.getClass(), key.getClass(), value.getClass());
-                    return (T) objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(object), type);
+            Map.Entry<Class, Class> commonElementType = findCommonElementType((Map) object);
+            if (commonElementType != null) {
+                Class commonKeyClass = commonElementType.getKey();
+                Class commonValueClass = commonElementType.getValue();
+                if (!(!commonKeyClass.getPackage().getName().startsWith("java") && Serializable.class.isAssignableFrom(commonKeyClass)) ||
+                    !(!commonValueClass.getPackage().getName().startsWith("java") && Serializable.class.isAssignableFrom(commonValueClass))) {
+                    JavaType type = TypeFactory.defaultInstance()
+                        .constructParametricType(
+                            object.getClass(),
+                            commonKeyClass,
+                            commonValueClass
+                        );
+                    return objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(object), type);
                 }
             }
         } else if (object instanceof JsonNode) {
@@ -57,25 +68,86 @@ public class ObjectMapperJsonSerializer implements JsonSerializer {
         return jsonClone(object);
     }
 
-    private Object findFirstNonNullElement(Collection collection) {
-        for (java.lang.Object element : collection) {
+    private Class findCommonElementType(Collection collection) {
+        Class commonElementType = null;
+        for (Object element : collection) {
             if (element != null) {
-                return element;
+                if(commonElementType == null) {
+                    commonElementType = element.getClass();
+                } else {
+                    commonElementType = resolveCommonElementType(commonElementType, element.getClass());
+                    if(commonElementType == null) {
+                        return null;
+                    }
+                }
             }
         }
-        return null;
+        return commonElementType;
     }
 
-    private Map.Entry findFirstNonNullEntry(Map<?, ?> map) {
-        for (Map.Entry entry : map.entrySet()) {
-            if (entry.getKey() != null && entry.getValue() != null) {
-                return entry;
+    private Class resolveCommonElementType(Class commonElementType, Class elementClass) {
+        if(commonElementType.isAssignableFrom(elementClass)) {
+            return commonElementType;
+        } else {
+            Class<?> superclass = commonElementType.getSuperclass();
+            if(!superclass.equals(Object.class)) {
+                return resolveCommonElementType(superclass, elementClass);
+            } else {
+                return null;
             }
         }
-        return null;
+    }
+
+    private Map.Entry<Class, Class> findCommonElementType(Map<?, ?> map) {
+        Map.Entry<Class, Class> commonElementType = null;
+        for (Map.Entry elementEntry : map.entrySet()) {
+            if (elementEntry.getKey() != null && elementEntry.getValue() != null) {
+                Map.Entry<Class, Class> elementClass = new AbstractMap.SimpleEntry<>(
+                    elementEntry.getKey().getClass(),
+                    elementEntry.getValue().getClass()
+                );
+                if(commonElementType == null) {
+                    commonElementType = elementClass;
+                } else {
+                    commonElementType = resolveCommonElementType(commonElementType, elementClass);
+                    if(commonElementType == null) {
+                        return null;
+                    }
+                }
+            }
+        }
+        return commonElementType;
+    }
+
+    private Map.Entry<Class, Class> resolveCommonElementType(Map.Entry<Class, Class> commonElementType, Map.Entry<Class, Class> elementClass) {
+        if(commonElementType.getKey().isAssignableFrom(elementClass.getKey()) &&
+           commonElementType.getValue().isAssignableFrom(elementClass.getValue())) {
+            return commonElementType;
+        } else {
+            Class<?> keySuperclass = commonElementType.getKey().equals(elementClass.getKey()) ?
+                commonElementType.getKey() :
+                commonElementType.getKey().getSuperclass();
+            Class<?> valueSuperclass = commonElementType.getValue().equals(elementClass.getValue()) ?
+                commonElementType.getValue() :
+                commonElementType.getValue().getSuperclass();
+            if(!keySuperclass.equals(Object.class) && !valueSuperclass.equals(Object.class)) {
+                return resolveCommonElementType(
+                    new AbstractMap.SimpleEntry<>(
+                        keySuperclass,
+                        valueSuperclass
+                    ),
+                    elementClass
+                );
+            } else {
+                return null;
+            }
+        }
     }
 
     private <T> T jsonClone(T object) {
-        return objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(object), (Class<T>) object.getClass());
+        return objectMapperWrapper.fromBytes(
+            objectMapperWrapper.toBytes(object),
+            (Class<T>) object.getClass()
+        );
     }
 }

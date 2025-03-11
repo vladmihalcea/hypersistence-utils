@@ -24,7 +24,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Vlad Mihalcea
  */
-public class PostgreSQLJsonPolymorphicListJacksonTypeTest extends AbstractPostgreSQLIntegrationTest {
+public class PostgreSQLJsonPolymorphicListTest extends AbstractPostgreSQLIntegrationTest {
 
     @Override
     protected Class<?>[] entities() {

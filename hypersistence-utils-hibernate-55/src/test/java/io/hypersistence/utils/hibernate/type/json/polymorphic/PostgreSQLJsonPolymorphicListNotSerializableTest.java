@@ -25,7 +25,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Vlad Mihalcea
  */
-public class PostgreSQLJsonPolymorphicListJacksonTypeTest extends AbstractPostgreSQLIntegrationTest {
+public class PostgreSQLJsonPolymorphicListNotSerializableTest extends AbstractPostgreSQLIntegrationTest {
 
     @Override
     protected Class<?>[] entities() {
@@ -135,7 +135,7 @@ public class PostgreSQLJsonPolymorphicListJacksonTypeTest extends AbstractPostgr
             value = PercentageDiscountCoupon.class
         ),
     })
-    public abstract static class DiscountCoupon implements Serializable {
+    public abstract static class DiscountCoupon {
 
         private String name;
 
