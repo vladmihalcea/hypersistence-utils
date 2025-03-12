@@ -42,7 +42,7 @@ Depending on the Hibernate version you are using, you need to add the following 
         <version>3.9.4</version>
     </dependency>
 
-#### Hibernate 6.1 and 6.0
+#### Hibernate 6.1 and 6.0 (Commercial support only)
 
     <dependency>
         <groupId>io.hypersistence</groupId>
