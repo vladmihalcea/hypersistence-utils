@@ -50,7 +50,7 @@ Depending on the Hibernate version you are using, you need to add the following 
         <version>3.9.4</version>
     </dependency>
 
-#### Hibernate 5.6 and 5.5
+#### Hibernate 5.6 and 5.5 (Commercial support only)
 
     <dependency>
         <groupId>io.hypersistence</groupId>
