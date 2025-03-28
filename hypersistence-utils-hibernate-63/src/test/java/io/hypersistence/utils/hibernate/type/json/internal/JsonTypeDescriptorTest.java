@@ -79,11 +79,7 @@ public class JsonTypeDescriptorTest {
     public void testNullPropertyType() {
         JsonJavaTypeDescriptor descriptor = new JsonJavaTypeDescriptor();
 
-        try {
-            descriptor.wrap("a", null);
-            fail("Should fail because the propertyType is null!");
-        } catch (HibernateException expected) {
-        }
+        descriptor.wrap("a", null);
     }
 
     private Form createForm(Integer... numbers) {

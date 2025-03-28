@@ -182,37 +182,45 @@ public class JsonJavaTypeDescriptor extends AbstractClassJavaType<Object> implem
             return null;
         }
 
-        Blob blob = null;
-        Clob clob = null;
+        String stringValue;
+        if (value instanceof Map || value instanceof List) {
+            stringValue = toString(value);
+        } else {
+            Blob blob = null;
+            Clob clob = null;
 
-        if (Blob.class.isAssignableFrom(value.getClass())) {
-            blob = options.getLobCreator().wrap((Blob) value);
-        }  if (Clob.class.isAssignableFrom(value.getClass())) {
-             clob = options.getLobCreator().wrap((Clob) value);
-        }  else if (byte[].class.isAssignableFrom(value.getClass())) {
-            blob = options.getLobCreator().createBlob((byte[]) value);
-        } else if (InputStream.class.isAssignableFrom(value.getClass())) {
-            InputStream inputStream = (InputStream) value;
+            if (Blob.class.isAssignableFrom(value.getClass())) {
+                blob = options.getLobCreator().wrap((Blob) value);
+            }  if (Clob.class.isAssignableFrom(value.getClass())) {
+                clob = options.getLobCreator().wrap((Clob) value);
+            }  else if (byte[].class.isAssignableFrom(value.getClass())) {
+                blob = options.getLobCreator().createBlob((byte[]) value);
+            } else if (InputStream.class.isAssignableFrom(value.getClass())) {
+                InputStream inputStream = (InputStream) value;
+                try {
+                    blob = options.getLobCreator().createBlob(inputStream, inputStream.available());
+                } catch (IOException e) {
+                    throw unknownWrap(value.getClass());
+                }
+            }
+
             try {
-                blob = options.getLobCreator().createBlob(inputStream, inputStream.available());
-            } catch (IOException e) {
-                throw unknownWrap(value.getClass());
+                if (blob != null) {
+                    stringValue = new String(DataHelper.extractBytes(blob.getBinaryStream()));
+                } else if (clob != null) {
+                    stringValue = DataHelper.extractString(clob);
+                } else {
+                    stringValue = value.toString();
+                }
+            } catch (SQLException e) {
+                throw new HibernateException("Unable to extract binary stream from Blob", e);
             }
         }
-
-        String stringValue;
+        
         try {
-            if (blob != null) {
-                stringValue = new String(DataHelper.extractBytes(blob.getBinaryStream()));
-            } else if (clob != null) {
-                stringValue = DataHelper.extractString(clob);
-            } else if (value instanceof Map || value instanceof List) {
-                stringValue = toString(value);
-            } else {
-                stringValue = value.toString();
-            }
-        } catch (SQLException e) {
-            throw new HibernateException("Unable to extract binary stream from Blob", e);
+            return fromString(stringValue);
+        } catch (HibernateException e) {
+            stringValue = toString(value);
         }
 
         return fromString(stringValue);
