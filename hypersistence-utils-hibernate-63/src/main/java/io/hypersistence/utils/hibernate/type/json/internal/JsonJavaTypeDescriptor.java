@@ -206,7 +206,7 @@ public class JsonJavaTypeDescriptor extends AbstractClassJavaType<Object> implem
                 stringValue = new String(DataHelper.extractBytes(blob.getBinaryStream()));
             } else if (clob != null) {
                 stringValue = DataHelper.extractString(clob);
-            } else if (value instanceof Map) {
+            } else if (value instanceof Map || value instanceof List) {
                 stringValue = toString(value);
             } else {
                 stringValue = value.toString();

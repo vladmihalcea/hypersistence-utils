@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -45,6 +46,26 @@ public class PostgreSQLJsonListPojoTest extends AbstractPostgreSQLIntegrationTes
 
             List<Property> bookProperties = book.getProperties();
             assertEquals(4, bookProperties.size());
+        });
+
+        doInJPA(entityManager -> {
+            Book book = entityManager.unwrap(Session.class)
+                .createSelectionQuery("SELECT b from Book b WHERE properties = :b", Book.class)
+                .setParameter(
+                    "b",
+                    List.of(
+                        new Property("title", "High-Performance Java Persistence"),
+                        new Property("author", "Vlad Mihalcea"),
+                        new Property("publisher", "Amazon"),
+                        new Property("price", "$44.95")
+                    )
+                )
+                .getSingleResult();
+
+            assertEquals(
+                "978-9730228236",
+                book.getIsbn()
+            );
         });
     }
 
