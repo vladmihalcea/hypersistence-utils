@@ -31,7 +31,7 @@ Depending on the Hibernate version you are using, you need to add the following 
     <dependency>
         <groupId>io.hypersistence</groupId>
         <artifactId>hypersistence-utils-hibernate-63</artifactId>
-        <version>3.9.5</version>
+        <version>3.9.6</version>
     </dependency>
 
 #### Hibernate 6.2 (Commercial support only)
