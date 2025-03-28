@@ -1,3 +1,10 @@
+Version 3.9.8 - March 28, 2025
+================================================================================
+
+JsonType parameter binding doesn't work for POJO parameter #777
+
+JsonType parameter binding doesn't work for List parameter #775
+
 Version 3.9.7 - March 28, 2025
 ================================================================================
 

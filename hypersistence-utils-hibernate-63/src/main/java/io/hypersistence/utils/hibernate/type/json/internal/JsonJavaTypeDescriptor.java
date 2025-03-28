@@ -216,7 +216,7 @@ public class JsonJavaTypeDescriptor extends AbstractClassJavaType<Object> implem
                 throw new HibernateException("Unable to extract binary stream from Blob", e);
             }
         }
-        
+
         try {
             return fromString(stringValue);
         } catch (HibernateException e) {
