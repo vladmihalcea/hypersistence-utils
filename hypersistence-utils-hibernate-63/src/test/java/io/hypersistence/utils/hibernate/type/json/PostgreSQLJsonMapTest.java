@@ -1,10 +1,12 @@
 package io.hypersistence.utils.hibernate.type.json;
 
+import io.hypersistence.utils.hibernate.type.model.Location;
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import jakarta.persistence.*;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
+import org.hibernate.query.NativeQuery;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -53,6 +55,27 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
             assertEquals(
                 "Vlad Mihalcea",
                 bookProperties.get("author")
+            );
+        });
+
+        doInJPA(entityManager -> {
+            Book book = entityManager.unwrap(Session.class)
+                .createSelectionQuery("SELECT b from Book b WHERE properties = :b", Book.class)
+                .setParameter(
+                    "b",
+                    Map.of(
+                        "title", "High-Performance Java Persistence",
+                        "author", "Vlad Mihalcea",
+                        "publisher", "Amazon",
+                        "price", "$44.95"
+                    ),
+                    new JsonType(Map.class)
+                )
+                .getSingleResult();
+
+            assertEquals(
+                "978-9730228236",
+                book.getIsbn()
             );
         });
     }
