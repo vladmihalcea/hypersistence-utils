@@ -1,3 +1,8 @@
+Version 3.9.7 - March 28, 2025
+================================================================================
+
+Allow the JsonType to infer the binding parameter type from the propertyClass in JsonJavaTypeDescriptor #774
+
 Version 3.9.6 - March 28, 2025
 ================================================================================
 
