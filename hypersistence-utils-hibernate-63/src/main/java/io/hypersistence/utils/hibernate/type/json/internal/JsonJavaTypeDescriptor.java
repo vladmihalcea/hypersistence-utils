@@ -259,6 +259,11 @@ public class JsonJavaTypeDescriptor extends AbstractClassJavaType<Object> implem
         return jdbcType;
     }
 
+    @Override
+    public Class getJavaTypeClass() {
+        return propertyClass;
+    }
+
     public void setJdbcType(JdbcType jdbcType) {
         this.jdbcType = jdbcType;
     }

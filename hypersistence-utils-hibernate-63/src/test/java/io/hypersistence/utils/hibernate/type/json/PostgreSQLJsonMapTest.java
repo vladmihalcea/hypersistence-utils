@@ -58,6 +58,7 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
             );
         });
 
+        //With explicit type binding
         doInJPA(entityManager -> {
             Book book = entityManager.unwrap(Session.class)
                 .createSelectionQuery("SELECT b from Book b WHERE properties = :b", Book.class)
@@ -70,6 +71,27 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
                         "price", "$44.95"
                     ),
                     new JsonType(Map.class)
+                )
+                .getSingleResult();
+
+            assertEquals(
+                "978-9730228236",
+                book.getIsbn()
+            );
+        });
+
+        //Without explicit type binding
+        doInJPA(entityManager -> {
+            Book book = entityManager.unwrap(Session.class)
+                .createSelectionQuery("SELECT b from Book b WHERE properties = :b", Book.class)
+                .setParameter(
+                    "b",
+                    Map.of(
+                        "title", "High-Performance Java Persistence",
+                        "author", "Vlad Mihalcea",
+                        "publisher", "Amazon",
+                        "price", "$44.95"
+                    )
                 )
                 .getSingleResult();
 
