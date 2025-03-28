@@ -10,7 +10,7 @@
 
     <groupId>io.hypersistence</groupId>
     <artifactId>hypersistence-utils-parent</artifactId>
-    <version>3.9.5-SNAPSHOT</version>
+    <version>3.9.6-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Hypersistence Utils</name>
