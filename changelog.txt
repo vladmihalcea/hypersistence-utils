@@ -1,3 +1,8 @@
+Version 3.9.9 - March 31, 2025
+================================================================================
+
+The ObjectMapperWrapper.fromBytes cannot instantiate an AbstractCollection #773
+
 Version 3.9.8 - March 28, 2025
 ================================================================================
 
