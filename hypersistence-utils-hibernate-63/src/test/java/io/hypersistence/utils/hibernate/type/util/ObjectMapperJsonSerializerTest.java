@@ -157,6 +157,17 @@ public class ObjectMapperJsonSerializerTest {
         assertNotSame(original, cloned);
     }
 
+    @Test
+    public void should_clone_mixed_lists() {
+        Map<String, List<String>> map = new LinkedHashMap<>();
+        List<String> arrayList = new ArrayList<>();
+        arrayList.add("arrayList");
+        List<String> listOf = List.of("listOf");
+        map.put("arrayList", arrayList);
+        map.put("listOf", listOf);
+        serializer.clone(map);
+    }
+
     private static class SerializableObject implements Serializable {
         private final String value;
 

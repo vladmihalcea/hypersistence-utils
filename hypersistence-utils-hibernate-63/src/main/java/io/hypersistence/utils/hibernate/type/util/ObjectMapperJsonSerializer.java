@@ -7,6 +7,7 @@ import org.hibernate.internal.util.SerializationHelper;
 import org.hibernate.type.SerializationException;
 
 import java.io.Serializable;
+import java.lang.reflect.Modifier;
 import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Map;
@@ -86,7 +87,8 @@ public class ObjectMapperJsonSerializer implements JsonSerializer {
     }
 
     private Class resolveCommonElementType(Class commonElementType, Class elementClass) {
-        if(commonElementType.isAssignableFrom(elementClass)) {
+        if(commonElementType.isAssignableFrom(elementClass) &&
+           !Modifier.isAbstract(commonElementType.getModifiers())) {
             return commonElementType;
         } else {
             Class<?> superclass = commonElementType.getSuperclass();
@@ -121,7 +123,9 @@ public class ObjectMapperJsonSerializer implements JsonSerializer {
 
     private Map.Entry<Class, Class> resolveCommonElementType(Map.Entry<Class, Class> commonElementType, Map.Entry<Class, Class> elementClass) {
         if(commonElementType.getKey().isAssignableFrom(elementClass.getKey()) &&
-           commonElementType.getValue().isAssignableFrom(elementClass.getValue())) {
+            !Modifier.isAbstract(commonElementType.getKey().getModifiers()) &&
+            commonElementType.getValue().isAssignableFrom(elementClass.getValue()) &&
+            !Modifier.isAbstract(commonElementType.getValue().getModifiers())) {
             return commonElementType;
         } else {
             Class<?> keySuperclass = commonElementType.getKey().equals(elementClass.getKey()) ?
