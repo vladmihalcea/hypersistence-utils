@@ -122,19 +122,22 @@ public class ObjectMapperJsonSerializer implements JsonSerializer {
     }
 
     private Map.Entry<Class, Class> resolveCommonElementType(Map.Entry<Class, Class> commonElementType, Map.Entry<Class, Class> elementClass) {
-        if(commonElementType.getKey().isAssignableFrom(elementClass.getKey()) &&
-            !Modifier.isAbstract(commonElementType.getKey().getModifiers()) &&
-            commonElementType.getValue().isAssignableFrom(elementClass.getValue()) &&
-            !Modifier.isAbstract(commonElementType.getValue().getModifiers())) {
+        Class commonKeyClass = commonElementType.getKey();
+        Class commonValueClass = commonElementType.getValue();
+        if(commonKeyClass.isAssignableFrom(elementClass.getKey()) &&
+            !isAbstractType(commonKeyClass) &&
+            commonValueClass.isAssignableFrom(elementClass.getValue()) &&
+            !isAbstractType(commonValueClass)) {
             return commonElementType;
         } else {
-            Class<?> keySuperclass = commonElementType.getKey().equals(elementClass.getKey()) ?
-                commonElementType.getKey() :
-                commonElementType.getKey().getSuperclass();
-            Class<?> valueSuperclass = commonElementType.getValue().equals(elementClass.getValue()) ?
-                commonElementType.getValue() :
-                commonElementType.getValue().getSuperclass();
-            if(!keySuperclass.equals(Object.class) && !valueSuperclass.equals(Object.class)) {
+            Class<?> keySuperclass = commonKeyClass.equals(elementClass.getKey()) ?
+                commonKeyClass :
+                commonKeyClass.getSuperclass();
+            Class<?> valueSuperclass = commonValueClass.equals(elementClass.getValue()) ?
+                commonValueClass :
+                commonValueClass.getSuperclass();
+            if(!keySuperclass.equals(Object.class) && !keySuperclass.equals(commonKeyClass) &&
+               !valueSuperclass.equals(Object.class) && !valueSuperclass.equals(commonValueClass)) {
                 return resolveCommonElementType(
                     new AbstractMap.SimpleEntry<>(
                         keySuperclass,
@@ -146,6 +149,10 @@ public class ObjectMapperJsonSerializer implements JsonSerializer {
                 return null;
             }
         }
+    }
+
+    private boolean isAbstractType(Class type) {
+        return Modifier.isAbstract(type.getModifiers()) && !type.isArray();
     }
 
     private <T> T jsonClone(T object) {
