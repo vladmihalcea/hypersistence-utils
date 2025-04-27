@@ -1,3 +1,8 @@
+Version 3.9.10 - April 27, 2025
+================================================================================
+
+ObjectMapperJsonSerializer throws StackOverflowError when using Map<String,String[]> #780
+
 Version 3.9.9 - March 31, 2025
 ================================================================================
 
