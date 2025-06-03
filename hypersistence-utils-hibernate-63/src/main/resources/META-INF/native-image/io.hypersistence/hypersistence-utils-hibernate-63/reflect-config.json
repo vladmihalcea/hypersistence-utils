@@ -8,15 +8,19 @@
       },
       {
         "name": "setType",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
+        "parameterTypes": ["java.lang.String"]
       },
       {
         "name": "setValue",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
+        "parameterTypes": ["java.lang.String"]
+      },
+      {
+        "name": "getType",
+        "parameterTypes": []
+      },
+      {
+        "name": "getValue",
+        "parameterTypes": []
       }
     ]
   }
