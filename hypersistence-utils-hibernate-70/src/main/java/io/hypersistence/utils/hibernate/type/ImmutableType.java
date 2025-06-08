@@ -1,14 +1,15 @@
 package io.hypersistence.utils.hibernate.type;
 
 import io.hypersistence.utils.hibernate.type.util.Configuration;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
-import org.hibernate.engine.spi.Mapping;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.internal.util.collections.ArrayHelper;
 import org.hibernate.metamodel.model.domain.BasicDomainType;
 import org.hibernate.type.ForeignKeyDirection;
+import org.hibernate.type.MappingContext;
 import org.hibernate.type.Type;
 import org.hibernate.type.descriptor.java.IncomparableComparator;
 import org.hibernate.usertype.EnhancedUserType;
@@ -121,8 +122,8 @@ public abstract class ImmutableType<T> implements UserType<T>, Type, EnhancedUse
     }
 
     @Override
-    public T deepCopy(Object value) {
-        return (T) value;
+    public T deepCopy(T value) {
+        return value;
     }
 
     @Override
@@ -173,7 +174,7 @@ public abstract class ImmutableType<T> implements UserType<T>, Type, EnhancedUse
     }
 
     @Override
-    public int getColumnSpan(Mapping mapping) throws MappingException {
+    public int getColumnSpan(MappingContext mappingContext) throws MappingException {
         return 1;
     }
 
@@ -253,7 +254,7 @@ public abstract class ImmutableType<T> implements UserType<T>, Type, EnhancedUse
 
     @Override
     public Object deepCopy(Object value, SessionFactoryImplementor factory) throws HibernateException {
-        return deepCopy(value);
+        return deepCopy((T) value);
     }
 
     @Override
@@ -282,12 +283,12 @@ public abstract class ImmutableType<T> implements UserType<T>, Type, EnhancedUse
     }
 
     @Override
-    public boolean[] toColumnNullness(Object value, Mapping mapping) {
+    public boolean[] toColumnNullness(@Nullable Object value, MappingContext mappingContext) {
         return value == null ? ArrayHelper.FALSE : ArrayHelper.TRUE;
     }
 
     @Override
-    public int[] getSqlTypeCodes(Mapping mapping) throws MappingException {
+    public int[] getSqlTypeCodes(MappingContext mappingContext) throws MappingException {
         return new int[]{getSqlType()};
     }
 

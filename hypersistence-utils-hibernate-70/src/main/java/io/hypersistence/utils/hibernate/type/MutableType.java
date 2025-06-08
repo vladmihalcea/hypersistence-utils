@@ -10,7 +10,9 @@ import org.hibernate.metamodel.mapping.BasicValuedMapping;
 import org.hibernate.metamodel.mapping.JdbcMapping;
 import org.hibernate.metamodel.mapping.MappingType;
 import org.hibernate.metamodel.model.domain.DomainType;
-import org.hibernate.query.BindableType;
+import org.hibernate.query.sqm.SqmBindableType;
+import org.hibernate.type.BindableType;
+import org.hibernate.type.BindingContext;
 import org.hibernate.type.descriptor.java.JavaType;
 import org.hibernate.type.descriptor.jdbc.JdbcType;
 import org.hibernate.type.internal.BasicTypeImpl;
@@ -140,12 +142,27 @@ public abstract class MutableType<T, JDBC extends JdbcType, JAVA extends JavaTyp
 
     @Override
     public Class<T> returnedClass() {
-        return clazz;
+        return getJavaType();
+    }
+
+//    @Override
+//    public Class<T> getBindableJavaType() {
+//        return clazz;
+//    }
+
+    @Override
+    public Class<T> getJavaType() {
+        return javaTypeDescriptor.getJavaTypeClass();
     }
 
     @Override
-    public Class<T> getBindableJavaType() {
-        return clazz;
+    public String getTypeName() {
+        return javaTypeDescriptor.getTypeName();
+    }
+
+    @Override
+    public SqmBindableType<T> resolveExpressible(BindingContext bindingContext) {
+        return bindingContext.getTypeConfiguration().getBasicTypeRegistry().resolve(javaTypeDescriptor, jdbcTypeDescriptor);
     }
 
     @Override

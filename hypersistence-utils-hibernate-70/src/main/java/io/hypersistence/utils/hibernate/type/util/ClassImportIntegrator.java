@@ -1,6 +1,7 @@
 package io.hypersistence.utils.hibernate.type.util;
 
 import org.hibernate.boot.Metadata;
+import org.hibernate.boot.spi.BootstrapContext;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.integrator.spi.Integrator;
 import org.hibernate.service.spi.SessionFactoryServiceRegistry;
@@ -56,14 +57,14 @@ public class ClassImportIntegrator implements Integrator {
 	 * Register the provided classes by their simple name or relative package and class name.
 	 *
 	 * @param metadata metadata
+	 * @param bootstrapContext bootstrap context
 	 * @param sessionFactory Hibernate session factory
-	 * @param serviceRegistry Hibernate service registry
 	 */
 	@Override
 	public void integrate(
 			Metadata metadata,
-			SessionFactoryImplementor sessionFactory,
-			SessionFactoryServiceRegistry serviceRegistry) {
+			BootstrapContext bootstrapContext,
+			SessionFactoryImplementor sessionFactory) {
 		for(Class classImport : classImportList) {
 			String key;
 			if(excludedPath != null) {

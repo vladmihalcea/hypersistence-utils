@@ -1,7 +1,5 @@
 package io.hypersistence.utils.hibernate.type.search.internal;
 
-import org.hibernate.annotations.common.reflection.XProperty;
-import org.hibernate.annotations.common.reflection.java.JavaXMember;
 import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.type.descriptor.java.AbstractClassJavaType;
 import org.hibernate.usertype.DynamicParameterizedType;
@@ -21,12 +19,7 @@ public class PostgreSQLTSVectorTypeDescriptor extends AbstractClassJavaType<Obje
 
     @Override
     public void setParameterValues(Properties parameters) {
-        final XProperty xProperty = (XProperty) parameters.get(DynamicParameterizedType.XPROPERTY);
-        if (xProperty instanceof JavaXMember) {
-            type = ((JavaXMember) xProperty).getJavaType();
-        } else {
-            type = ((ParameterType) parameters.get(PARAMETER_TYPE)).getReturnedClass();
-        }
+        type = ((ParameterType) parameters.get(PARAMETER_TYPE)).getReturnedJavaType();
     }
 
     @Override

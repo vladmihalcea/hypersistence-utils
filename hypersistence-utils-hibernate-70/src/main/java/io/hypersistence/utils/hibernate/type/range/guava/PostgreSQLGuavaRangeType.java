@@ -5,9 +5,8 @@ import com.google.common.collect.Range;
 import io.hypersistence.utils.hibernate.type.ImmutableType;
 import io.hypersistence.utils.common.ReflectionUtils;
 import org.hibernate.HibernateException;
-import org.hibernate.annotations.common.reflection.XProperty;
-import org.hibernate.annotations.common.reflection.java.JavaXMember;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.models.internal.jdk.JdkFieldDetails;
 import org.hibernate.usertype.DynamicParameterizedType;
 
 import java.lang.reflect.ParameterizedType;
@@ -506,15 +505,13 @@ public class PostgreSQLGuavaRangeType extends ImmutableType<Range> implements Dy
 
     @Override
     public void setParameterValues(Properties parameters) {
-        final XProperty xProperty = (XProperty) parameters.get(DynamicParameterizedType.XPROPERTY);
-        if (xProperty instanceof JavaXMember) {
-            type = ((JavaXMember) xProperty).getJavaType();
-        } else {
-            type = ((ParameterType) parameters.get(PARAMETER_TYPE)).getReturnedClass();
-        }
+        final ParameterType parameterType = (ParameterType) parameters.get(PARAMETER_TYPE);
 
-        if (type instanceof ParameterizedType) {
-            elementType = (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[0];
+        type = parameterType.getReturnedClass();
+
+        final Type returnedJavaType = parameterType.getReturnedJavaType();
+        if (returnedJavaType instanceof ParameterizedType) {
+            elementType = (Class<?>) ((ParameterizedType) returnedJavaType).getActualTypeArguments()[0];
         }
     }
 

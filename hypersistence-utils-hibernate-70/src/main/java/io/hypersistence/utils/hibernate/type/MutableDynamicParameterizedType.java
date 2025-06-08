@@ -8,6 +8,8 @@ import org.hibernate.usertype.ParameterizedType;
 
 import java.util.Properties;
 
+import static jakarta.persistence.metamodel.Type.PersistenceType.BASIC;
+
 /**
  * @author Vlad Mihalcea
  */
@@ -36,5 +38,10 @@ public class MutableDynamicParameterizedType<T, JDBC extends JdbcType, JAVA exte
             ParameterizedType parameterizedType = (ParameterizedType) jdbcTypeDescriptor;
             parameterizedType.setParameterValues(parameters);
         }
+    }
+
+    @Override
+    public PersistenceType getPersistenceType() {
+        return BASIC;
     }
 }

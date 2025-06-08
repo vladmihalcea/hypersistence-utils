@@ -5,7 +5,7 @@ import io.hypersistence.utils.common.ReflectionUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.IdentifierGenerator;
-import org.hibernate.id.factory.spi.CustomIdGeneratorCreationContext;
+import org.hibernate.generator.GeneratorCreationContext;
 
 import java.lang.reflect.Member;
 import java.util.function.Supplier;
@@ -22,7 +22,7 @@ public class TsidGenerator implements IdentifierGenerator {
     public TsidGenerator(
         Tsid config,
         Member idMember,
-        CustomIdGeneratorCreationContext creationContext) {
+        GeneratorCreationContext creationContext) {
         idType = AttributeType.valueOf(ReflectionUtils.getMemberType(idMember));
         Class<? extends Supplier<TSID.Factory>> tsidSupplierClass = config.value();
         if(tsidSupplierClass.equals(Tsid.FactorySupplier.class)) {

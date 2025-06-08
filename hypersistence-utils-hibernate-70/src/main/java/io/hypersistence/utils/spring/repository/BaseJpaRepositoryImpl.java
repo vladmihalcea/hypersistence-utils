@@ -98,7 +98,7 @@ public class BaseJpaRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID>
 
     @Transactional
     public <S extends T> S update(S entity) {
-        session().update(entity);
+        session().merge(entity);
         return entity;
     }
 

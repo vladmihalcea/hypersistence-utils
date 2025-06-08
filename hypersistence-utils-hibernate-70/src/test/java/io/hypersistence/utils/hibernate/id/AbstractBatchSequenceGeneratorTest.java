@@ -37,7 +37,6 @@ public abstract class AbstractBatchSequenceGeneratorTest extends AbstractTest {
 
     @Override
     protected void additionalProperties(Properties properties) {
-        properties.put(AvailableSettings.BATCH_VERSIONED_DATA, true);
         properties.put(AvailableSettings.STATEMENT_BATCH_SIZE, BATCH_SIZE);
         properties.put(AvailableSettings.ORDER_UPDATES, true);
         properties.put(AvailableSettings.ORDER_INSERTS, true);

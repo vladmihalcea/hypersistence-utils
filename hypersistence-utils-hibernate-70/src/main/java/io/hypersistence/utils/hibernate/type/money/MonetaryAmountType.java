@@ -44,7 +44,7 @@ public class MonetaryAmountType implements CompositeUserType<MonetaryAmount>
     }
 
     @Override
-    public MonetaryAmount instantiate(ValueAccess values, SessionFactoryImplementor sessionFactory) {
+    public MonetaryAmount instantiate(ValueAccess values) {
         // alphabetical (amount, currency)
         BigDecimal amount = values.getValue(0, BigDecimal.class);
         String currency = values.getValue(1, String.class);

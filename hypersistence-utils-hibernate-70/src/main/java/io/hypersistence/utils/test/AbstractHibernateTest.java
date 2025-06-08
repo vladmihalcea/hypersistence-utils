@@ -784,5 +784,15 @@ public abstract class AbstractHibernateTest {
         public ClassLoader getNewTempClassLoader() {
             return null;
         }
+
+        @Override
+        public String getScopeAnnotationName() {
+            return null;
+        }
+
+        @Override
+        public List<String> getQualifierAnnotationNames() {
+            return List.of();
+        }
     }
 }

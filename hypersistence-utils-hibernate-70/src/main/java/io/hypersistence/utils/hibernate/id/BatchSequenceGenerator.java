@@ -18,7 +18,7 @@ import org.hibernate.id.IdentifierGenerationException;
 import org.hibernate.id.PersistentIdentifierGenerator;
 import org.hibernate.id.enhanced.Optimizer;
 import org.hibernate.id.enhanced.SequenceStructure;
-import org.hibernate.id.factory.spi.CustomIdGeneratorCreationContext;
+import org.hibernate.generator.GeneratorCreationContext;
 import org.hibernate.internal.util.config.ConfigurationHelper;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.type.Type;
@@ -185,14 +185,21 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
      */
     public BatchSequenceGenerator(BatchSequence annotation,
                     Member annotatedMember,
-                    CustomIdGeneratorCreationContext context) {
+                    GeneratorCreationContext context) {
       JdbcEnvironment jdbcEnvironment = context.getServiceRegistry().getService(JdbcEnvironment.class);
       this.sequenceName = determineSequenceName(annotation, jdbcEnvironment);
       this.fetchSize = annotation.fetchSize();
       
       Class<?> type = getType(annotatedMember);
       this.identifierExtractor = IdentifierExtractor.getIdentifierExtractor(type);
-      this.sequenceStructure = this.buildSequenceStructure(type, sequenceName, jdbcEnvironment);
+      this.sequenceStructure = this.buildSequenceStructure(type, sequenceName);
+    }
+
+    /**
+     * Called when {@link GenericGenerator} is used.
+     */
+    public BatchSequenceGenerator() {
+      super();
     }
 
     @Override
@@ -208,7 +215,7 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
 
             Class<?> numberType = type.getReturnedClass();
             this.identifierExtractor = IdentifierExtractor.getIdentifierExtractor(numberType);
-            this.sequenceStructure = this.buildSequenceStructure(numberType, sequenceName, jdbcEnvironment);
+            this.sequenceStructure = this.buildSequenceStructure(numberType, sequenceName);
 
         }
     }
@@ -278,8 +285,8 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
         + "SELECT " + nextValString + " FROM t";
     }
 
-    private SequenceStructure buildSequenceStructure(Class<?> type, QualifiedName sequenceName, JdbcEnvironment jdbcEnvironment) {
-        return new SequenceStructure(jdbcEnvironment, "orm", sequenceName, 1, 1, type);
+    private SequenceStructure buildSequenceStructure(Class<?> type, QualifiedName sequenceName) {
+        return new SequenceStructure("orm", sequenceName, 1, 1, type);
     }
 
 	/**
@@ -296,7 +303,7 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
 			Properties params, JdbcEnvironment jdbcEnv) {
         String sequenceName = params.getProperty(SEQUENCE_PARAM);
         if (sequenceName == null) {
-            throw new MappingException("no sequence name specified");
+            throw new MappingException("no squence name specified");
         }
 
 		final Identifier catalog = jdbcEnv.getIdentifierHelper().toIdentifier(params.getProperty(CATALOG));
@@ -317,7 +324,7 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
                     BatchSequence annotation, JdbcEnvironment jdbcEnv) {
         String sequenceName = annotation.name();
         if (sequenceName == null) {
-            throw new MappingException("no sequence name specified");
+            throw new MappingException("no squence name specified");
         }
 
         final Identifier catalog = jdbcEnv.getIdentifierHelper().toIdentifier(annotation.catalog());

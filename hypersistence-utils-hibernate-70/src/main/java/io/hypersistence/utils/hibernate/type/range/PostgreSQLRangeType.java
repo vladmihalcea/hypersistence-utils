@@ -4,8 +4,6 @@ import io.hypersistence.utils.hibernate.type.ImmutableType;
 import io.hypersistence.utils.hibernate.type.util.Configuration;
 import io.hypersistence.utils.common.ReflectionUtils;
 import org.hibernate.HibernateException;
-import org.hibernate.annotations.common.reflection.XProperty;
-import org.hibernate.annotations.common.reflection.java.JavaXMember;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.DynamicParameterizedType;
 
@@ -129,12 +127,7 @@ public class PostgreSQLRangeType extends ImmutableType<Range> implements Dynamic
 
     @Override
     public void setParameterValues(Properties parameters) {
-        final XProperty xProperty = (XProperty) parameters.get(DynamicParameterizedType.XPROPERTY);
-        if (xProperty instanceof JavaXMember) {
-            type = ((JavaXMember) xProperty).getJavaType();
-        } else {
-            type = ((ParameterType) parameters.get(PARAMETER_TYPE)).getReturnedClass();
-        }
+        type = ((ParameterType) parameters.get(PARAMETER_TYPE)).getReturnedJavaType();
     }
 
     public Class<?> getElementType() {

@@ -6,6 +6,8 @@ import io.hypersistence.utils.hibernate.type.json.internal.JsonJavaTypeDescripto
 import io.hypersistence.utils.hibernate.type.json.internal.JsonStringJdbcTypeDescriptor;
 import io.hypersistence.utils.hibernate.type.util.JsonConfiguration;
 import io.hypersistence.utils.hibernate.type.util.ObjectMapperWrapper;
+import org.hibernate.type.descriptor.jdbc.JdbcType;
+import org.hibernate.type.spi.TypeConfiguration;
 
 import java.lang.reflect.Type;
 
@@ -98,5 +100,10 @@ public class JsonStringType extends MutableDynamicParameterizedType<Object, Json
 
     public String getName() {
         return "json";
+    }
+
+    @Override
+    public JdbcType getJdbcType(TypeConfiguration typeConfiguration) {
+        return getJdbcTypeDescriptor();
     }
 }

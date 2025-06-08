@@ -4,7 +4,9 @@ import io.hypersistence.utils.hibernate.type.util.Configuration;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.metamodel.model.domain.DomainType;
-import org.hibernate.query.BindableType;
+import org.hibernate.query.sqm.SqmBindableType;
+import org.hibernate.type.BindableType;
+import org.hibernate.type.BindingContext;
 import org.hibernate.type.descriptor.java.JavaType;
 import org.hibernate.type.descriptor.jdbc.JdbcType;
 import org.hibernate.usertype.DynamicParameterizedType;
@@ -15,6 +17,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
+
+import static jakarta.persistence.metamodel.Type.PersistenceType.BASIC;
 
 /**
  * Very convenient base class for implementing immutable object types using Hibernate {@link UserType} using the {@link JdbcType} and {@link JavaType} descriptors.
@@ -56,7 +60,7 @@ public abstract class DescriptorImmutableType<T, JDBC extends JdbcType, JAVA ext
 
     @Override
     protected void set(PreparedStatement st, T value, int index, SharedSessionContractImplementor session) throws SQLException {
-        nullSafeSet(st, value, index, session);
+        nullSafeSet(st, (Object) value, index, session);
     }
 
     @Override
@@ -65,13 +69,23 @@ public abstract class DescriptorImmutableType<T, JDBC extends JdbcType, JAVA ext
     }
 
     @Override
-    public Class<T> getBindableJavaType() {
-        return returnedClass();
+    public JavaType<T> getExpressibleJavaType() {
+        return javaTypeDescriptor;
     }
 
     @Override
-    public JavaType<T> getExpressibleJavaType() {
-        return javaTypeDescriptor;
+    public SqmBindableType<T> resolveExpressible(BindingContext bindingContext) {
+        return bindingContext.getTypeConfiguration().getBasicTypeRegistry().resolve(javaTypeDescriptor, jdbcTypeDescriptor);
+    }
+
+    @Override
+    public Class<T> getJavaType() {
+        return javaTypeDescriptor.getJavaTypeClass();
+    }
+
+    @Override
+    public String getTypeName() {
+        return javaTypeDescriptor.getTypeName();
     }
 
     @Override
@@ -84,5 +98,10 @@ public abstract class DescriptorImmutableType<T, JDBC extends JdbcType, JAVA ext
             ParameterizedType parameterizedType = (ParameterizedType) jdbcTypeDescriptor;
             parameterizedType.setParameterValues(parameters);
         }
+    }
+
+    @Override
+    public PersistenceType getPersistenceType() {
+        return BASIC;
     }
 }

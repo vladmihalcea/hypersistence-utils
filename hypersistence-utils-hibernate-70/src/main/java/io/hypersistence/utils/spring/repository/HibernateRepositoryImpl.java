@@ -109,7 +109,7 @@ public class HibernateRepositoryImpl<T> implements HibernateRepository<T> {
     }
 
     public <S extends T> S update(S entity) {
-        session().update(entity);
+        session().merge(entity);
         return entity;
     }
 

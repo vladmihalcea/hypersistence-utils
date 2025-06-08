@@ -3,8 +3,6 @@ package io.hypersistence.utils.hibernate.type.range.spring;
 import io.hypersistence.utils.common.ReflectionUtils;
 import io.hypersistence.utils.hibernate.type.ImmutableType;
 import org.hibernate.HibernateException;
-import org.hibernate.annotations.common.reflection.XProperty;
-import org.hibernate.annotations.common.reflection.java.JavaXMember;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.DynamicParameterizedType;
 import org.springframework.data.domain.Range;
@@ -149,15 +147,13 @@ public class PostgreSQLSpringRangeType extends ImmutableType<Range> implements D
 
     @Override
     public void setParameterValues(Properties properties) {
-        final XProperty xProperty = (XProperty) properties.get(DynamicParameterizedType.XPROPERTY);
-        if (xProperty instanceof JavaXMember) {
-            type = ((JavaXMember) xProperty).getJavaType();
-        } else {
-            type = ((ParameterType) properties.get(PARAMETER_TYPE)).getReturnedClass();
-        }
+        final ParameterType parameterType = (ParameterType) properties.get(PARAMETER_TYPE);
 
-        if (type instanceof ParameterizedType) {
-            elementType = (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[0];
+        type = parameterType.getReturnedClass();
+
+        final Type returnedJavaType = parameterType.getReturnedJavaType();
+        if (returnedJavaType instanceof ParameterizedType) {
+            elementType = (Class<?>) ((ParameterizedType) returnedJavaType).getActualTypeArguments()[0];
         }
     }
 

@@ -52,7 +52,7 @@ public abstract class AbstractArrayTypeDescriptor<T>
     @Override
     public void setParameterValues(Properties parameters) {
         if (parameters.containsKey(PARAMETER_TYPE)) {
-            arrayObjectClass = (Class<T>) ((ParameterType) parameters.get(PARAMETER_TYPE)).getReturnedClass();
+            arrayObjectClass = (Class<T>) ((ParameterType) parameters.get(PARAMETER_TYPE)).getReturnedJavaType();
         }
         sqlArrayType = parameters.getProperty(SQL_ARRAY_TYPE);
     }
