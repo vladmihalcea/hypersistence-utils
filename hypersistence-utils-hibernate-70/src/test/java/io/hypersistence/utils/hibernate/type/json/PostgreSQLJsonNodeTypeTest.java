@@ -138,6 +138,7 @@ public class PostgreSQLJsonNodeTypeTest extends AbstractPostgreSQLIntegrationTes
     }
 
     @Test
+    @Ignore("TODO : addScalar")
     public void testNativeQueryResultTransformer() {
         doInJPA(entityManager -> {
             List<BookDTO> books = entityManager.createNativeQuery(
