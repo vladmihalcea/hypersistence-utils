@@ -195,25 +195,18 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
       this.sequenceStructure = this.buildSequenceStructure(type, sequenceName);
     }
 
-    /**
-     * Called when {@link GenericGenerator} is used.
-     */
-    public BatchSequenceGenerator() {
-      super();
-    }
-
     @Override
-    public void configure(Type type, Properties params, ServiceRegistry serviceRegistry)
+    public void configure(GeneratorCreationContext creationContext, Properties params)
                     throws MappingException {
 
         if (this.sequenceName == null) {
             // not initialized in constructor
-            JdbcEnvironment jdbcEnvironment = serviceRegistry.getService(JdbcEnvironment.class);
+            JdbcEnvironment jdbcEnvironment = creationContext.getServiceRegistry().getService(JdbcEnvironment.class);
             
             this.sequenceName = determineSequenceName(params, jdbcEnvironment);
             this.fetchSize = determineFetchSize(params);
 
-            Class<?> numberType = type.getReturnedClass();
+            Class<?> numberType = creationContext.getType().getReturnedClass();
             this.identifierExtractor = IdentifierExtractor.getIdentifierExtractor(numberType);
             this.sequenceStructure = this.buildSequenceStructure(numberType, sequenceName);
 
