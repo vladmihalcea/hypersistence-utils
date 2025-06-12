@@ -1,6 +1,8 @@
 Version 3.10.1 - June 14, 2025
 ================================================================================
 
+Update description in pom.xml to mention support of Hibernate 6.6 #790
+
 Remove the central-publishing-maven-plugin dependency #789
 
 Version 3.10.0 - June 09, 2025
