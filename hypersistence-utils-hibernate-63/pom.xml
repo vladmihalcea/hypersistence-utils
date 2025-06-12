@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <name>hypersistence-utils-hibernate-63</name>
-    <description>Utilities for Spring and Hibernate ORM 6.3, 6.4, and 6.5</description>
+    <description>Utilities for Spring and Hibernate ORM 6.3, 6.4, 6.5 and 6.6</description>
 
     <dependencies>
 
