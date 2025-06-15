@@ -1,16 +1,15 @@
 package io.hypersistence.utils.hibernate.type.json;
 
-import io.hypersistence.utils.hibernate.type.model.Location;
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import jakarta.persistence.*;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
-import org.hibernate.query.NativeQuery;
 import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 
@@ -37,6 +36,9 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
                     .addProperty("author", "Vlad Mihalcea")
                     .addProperty("publisher", "Amazon")
                     .addProperty("price", "$44.95")
+                    .setAdditionalProperties(
+                        Map.of(PropertyType.FORMAT, Set.of(FormatType.PAPERBACK))
+                    )
             );
         });
 
@@ -55,6 +57,11 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
             assertEquals(
                 "Vlad Mihalcea",
                 bookProperties.get("author")
+            );
+
+            assertEquals(
+                Set.of(FormatType.PAPERBACK),
+                book.getAdditionalProperties().get(PropertyType.FORMAT)
             );
         });
 
@@ -118,6 +125,10 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
         @Column(columnDefinition = "jsonb")
         private Map<String, String> properties = new HashMap<>();
 
+        @Type(JsonType.class)
+        @Column(name = "additional_properties", columnDefinition = "jsonb")
+        private Map<PropertyType, Set<FormatType>> additionalProperties;
+
         public String getIsbn() {
             return isbn;
         }
@@ -140,5 +151,23 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
             properties.put(key, value);
             return this;
         }
+
+        public Map<PropertyType, Set<FormatType>> getAdditionalProperties() {
+            return additionalProperties;
+        }
+
+        public Book setAdditionalProperties(Map<PropertyType, Set<FormatType>> additionalProperties) {
+            this.additionalProperties = additionalProperties;
+            return this;
+        }
+    }
+
+    public enum PropertyType {
+        FORMAT
+    }
+
+    public enum FormatType {
+        EBOOK,
+        PAPERBACK
     }
 }
