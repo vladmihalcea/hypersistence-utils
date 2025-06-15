@@ -8,6 +8,7 @@ import org.hibernate.annotations.Type;
 import org.junit.Test;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -60,8 +61,8 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
             );
 
             assertEquals(
-                Set.of(FormatType.PAPERBACK),
-                book.getAdditionalProperties().get(PropertyType.FORMAT)
+                FormatType.PAPERBACK,
+                book.getAdditionalProperties().get(PropertyType.FORMAT).iterator().next()
             );
         });
 

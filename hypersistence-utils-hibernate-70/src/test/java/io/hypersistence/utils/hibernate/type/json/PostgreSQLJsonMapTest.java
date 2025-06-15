@@ -7,9 +7,7 @@ import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 
@@ -37,7 +35,7 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
                     .addProperty("publisher", "Amazon")
                     .addProperty("price", "$44.95")
                     .setAdditionalProperties(
-                        Map.of(PropertyType.FORMAT, Set.of(FormatType.PAPERBACK))
+                        Map.of(PropertyType.FORMAT, new BookEnumSet(Set.of(FormatType.PAPERBACK)))
                     )
             );
         });
@@ -60,8 +58,8 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
             );
 
             assertEquals(
-                Set.of(FormatType.PAPERBACK),
-                book.getAdditionalProperties().get(PropertyType.FORMAT)
+                FormatType.PAPERBACK,
+                book.getAdditionalProperties().get(PropertyType.FORMAT).iterator().next()
             );
         });
 
@@ -127,7 +125,7 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
 
         @Type(JsonType.class)
         @Column(name = "additional_properties", columnDefinition = "jsonb")
-        private Map<PropertyType, Set<FormatType>> additionalProperties;
+        private Map<PropertyType, BookEnumSet> additionalProperties;
 
         public String getIsbn() {
             return isbn;
@@ -152,11 +150,11 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
             return this;
         }
 
-        public Map<PropertyType, Set<FormatType>> getAdditionalProperties() {
+        public Map<PropertyType, BookEnumSet> getAdditionalProperties() {
             return additionalProperties;
         }
 
-        public Book setAdditionalProperties(Map<PropertyType, Set<FormatType>> additionalProperties) {
+        public Book setAdditionalProperties(Map<PropertyType, BookEnumSet> additionalProperties) {
             this.additionalProperties = additionalProperties;
             return this;
         }
@@ -169,5 +167,14 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
     public enum FormatType {
         EBOOK,
         PAPERBACK
+    }
+
+    public static class BookEnumSet extends HashSet<FormatType> {
+        public BookEnumSet() {
+        }
+
+        public BookEnumSet(Collection<? extends FormatType> c) {
+            super(c);
+        }
     }
 }
