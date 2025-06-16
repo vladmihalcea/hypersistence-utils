@@ -1,6 +1,8 @@
 package io.hypersistence.utils.hibernate.type.basic;
 
+import io.hypersistence.utils.hibernate.id.AbstractBatchSequenceGeneratorTest.Post;
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
+import io.hypersistence.utils.test.transaction.EntityManagerTransactionConsumer;
 import jakarta.persistence.*;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
@@ -94,27 +96,31 @@ public class PostgreSQLYearMonthIntegerTest extends AbstractPostgreSQLIntegratio
     @Test
     @Ignore
     public void testIndexing() {
-        doInJPA(entityManager -> {
+    	
+    	
+  		EntityManagerTransactionConsumer work = entityManager -> {
+  		   YearMonth yearMonth = YearMonth.of(1970, 1);
+         
+         for (int i = 0; i < 5000; i++) {
+             yearMonth = yearMonth.plusMonths(1);
 
-            YearMonth yearMonth = YearMonth.of(1970, 1);
-                    
-            for (int i = 0; i < 5000; i++) {
-                yearMonth = yearMonth.plusMonths(1);
+             Book book = new Book();
+             book.setTitle(
+                 String.format(
+                     "IT industry newsletter - %s edition", yearMonth
+                 )
+             );
+             book.setPublishedOn(yearMonth);
 
-                Book book = new Book();
-                book.setTitle(
-                    String.format(
-                        "IT industry newsletter - %s edition", yearMonth
-                    )
-                );
-                book.setPublishedOn(yearMonth);
-
-                entityManager.persist(book);
-            }
-        });
+             entityManager.persist(book);
+         }
+  		};
+      
+    	
+        doInJPA(work);
 
         List<String> executionPlanLines = doInJPA(entityManager -> {
-            return entityManager.createNativeQuery(
+            return ((NativeQuery)entityManager.createNativeQuery(
                 "EXPLAIN ANALYZE " +
                     "SELECT " +
                     "    b.published_on " +
@@ -124,7 +130,7 @@ public class PostgreSQLYearMonthIntegerTest extends AbstractPostgreSQLIntegratio
                     "   b.published_on BETWEEN :startYearMonth AND :endYearMonth ")
                     .unwrap(NativeQuery.class)
                     .setParameter("startYearMonth", YearMonth.of(2010, 12), YearMonthIntegerType.INSTANCE)
-                    .setParameter("endYearMonth", YearMonth.of(2018, 1), YearMonthIntegerType.INSTANCE)
+                    .setParameter("endYearMonth", YearMonth.of(2018, 1), YearMonthIntegerType.INSTANCE))
                 .getResultList();
         });
 

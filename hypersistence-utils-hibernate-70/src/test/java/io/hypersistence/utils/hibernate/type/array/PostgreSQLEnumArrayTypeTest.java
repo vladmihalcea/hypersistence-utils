@@ -73,13 +73,13 @@ public class PostgreSQLEnumArrayTypeTest extends AbstractPostgreSQLIntegrationTe
         });
 
         doInJPA(entityManager -> {
-            entityManager
+            ((Query)entityManager
             .createQuery(
                 "select ua " +
                 "from UserAccountEntity ua " +
                 "where ua.roles = :roles", UserAccount.class)
             .unwrap(Query.class)
-            .setParameter("roles", requiredRoles, new EnumArrayType(UserRole[].class, "user_role"))
+            .setParameter("roles", requiredRoles, new EnumArrayType(UserRole[].class, "user_role")))
             .getResultList();
         });
     }

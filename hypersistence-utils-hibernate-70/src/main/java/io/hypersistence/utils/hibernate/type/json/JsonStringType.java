@@ -1,15 +1,17 @@
 package io.hypersistence.utils.hibernate.type.json;
 
+import java.lang.reflect.Type;
+
+import org.hibernate.type.descriptor.jdbc.JdbcType;
+import org.hibernate.type.spi.TypeConfiguration;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.hypersistence.utils.hibernate.type.MutableDynamicParameterizedType;
+
+import io.hypersistence.utils.hibernate.type.json.internal.AbstractJsonType;
 import io.hypersistence.utils.hibernate.type.json.internal.JsonJavaTypeDescriptor;
 import io.hypersistence.utils.hibernate.type.json.internal.JsonStringJdbcTypeDescriptor;
 import io.hypersistence.utils.hibernate.type.util.JsonConfiguration;
 import io.hypersistence.utils.hibernate.type.util.ObjectMapperWrapper;
-import org.hibernate.type.descriptor.jdbc.JdbcType;
-import org.hibernate.type.spi.TypeConfiguration;
-
-import java.lang.reflect.Type;
 
 /**
  * <p>
@@ -34,7 +36,7 @@ import java.lang.reflect.Type;
  *
  * @author Vlad Mihalcea
  */
-public class JsonStringType extends MutableDynamicParameterizedType<Object, JsonStringJdbcTypeDescriptor, JsonJavaTypeDescriptor> {
+public class JsonStringType extends AbstractJsonType<Object> {
 
     public static final JsonStringType INSTANCE = new JsonStringType();
 

@@ -1,6 +1,8 @@
 package io.hypersistence.utils.hibernate.type.json;
 
 import com.fasterxml.jackson.databind.JsonNode;
+
+import io.hypersistence.utils.hibernate.type.json.PostgreSQLJsonNodeTypeTest.BookDTO;
 import io.hypersistence.utils.hibernate.type.json.internal.JacksonUtil;
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import io.hypersistence.utils.jdbc.validator.SQLStatementCountValidator;
@@ -137,11 +139,12 @@ public class PostgreSQLJsonNodeTypeTest extends AbstractPostgreSQLIntegrationTes
         assertEquals(book.getIsbn(), _book.getIsbn());
     }
 
+    @Ignore("TODO PROBLEM WITH setResultTransformer")
     @Test
-    @Ignore("TODO : addScalar")
     public void testNativeQueryResultTransformer() {
         doInJPA(entityManager -> {
-            List<BookDTO> books = entityManager.createNativeQuery(
+            @SuppressWarnings({ "unchecked", "deprecation" })
+						List<BookDTO> books = entityManager.createNativeQuery(
                 "SELECT " +
                 "       b.id as id, " +
                 "       b.properties as properties " +
@@ -150,7 +153,7 @@ public class PostgreSQLJsonNodeTypeTest extends AbstractPostgreSQLIntegrationTes
             .setParameter("id", 0)
             .unwrap(NativeQuery.class)
             .addScalar("properties", JsonNode.class)
-            .setResultTransformer(new AliasToBeanResultTransformer(BookDTO.class))
+            .setResultTransformer(new AliasToBeanResultTransformer<BookDTO>(BookDTO.class))
             .getResultList();
 
             assertEquals(1, books.size());

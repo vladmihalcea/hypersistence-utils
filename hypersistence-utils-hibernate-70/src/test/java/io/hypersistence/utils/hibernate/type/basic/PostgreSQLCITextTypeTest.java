@@ -114,11 +114,12 @@ public class PostgreSQLCITextTypeTest extends AbstractPostgreSQLIntegrationTest 
         doInJPA(new EntityManagerTransactionFunction<Void>() {
             @Override
             public Void apply(EntityManager entityManager) {
-                List<Country> countries = entityManager.createQuery("""
-                    SELECT c
-                    FROM Country AS c
-                    WHERE c.name LIKE :token
-                    """)
+            	
+            	 String query=" SELECT c "
+            	 		+ " FROM Country AS c "
+            	 		+ " WHERE c.name LIKE :token";
+            	
+                List<Country> countries = entityManager.createQuery(query, Country.class)
                     .setParameter("token", token)
                 .getResultList();
 

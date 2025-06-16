@@ -89,18 +89,20 @@ public class NumberJdbcTypeDescriptor implements JdbcType, ParameterizedType {
     }
 
     private JdbcType resolveJdbcTypeDescriptor() {
+    	  if(properties!=null && !properties.isEmpty()) {
         DynamicParameterizedType.ParameterType parameterType = ParameterTypeUtils.resolve(properties);
-        if (parameterType != null) {
-            String columnType = ParameterTypeUtils.getColumnType(parameterType);
-            if (!StringUtils.isBlank(columnType)) {
-                switch (columnType) {
-                    case "tinyint":
-                        return TinyIntJdbcType.INSTANCE;
-                    case "smallint":
-                        return SmallIntJdbcType.INSTANCE;
-                }
-            }
-        }
+	        if (parameterType != null) {
+	            String columnType = ParameterTypeUtils.getColumnType(parameterType);
+	            if (!StringUtils.isBlank(columnType)) {
+	                switch (columnType) {
+	                    case "tinyint":
+	                        return TinyIntJdbcType.INSTANCE;
+	                    case "smallint":
+	                        return SmallIntJdbcType.INSTANCE;
+	                }
+	            }
+	        }
+    	  }
         return IntegerJdbcType.INSTANCE;
     }
 

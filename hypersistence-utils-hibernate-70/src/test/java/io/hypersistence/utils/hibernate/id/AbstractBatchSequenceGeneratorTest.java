@@ -1,7 +1,9 @@
 package io.hypersistence.utils.hibernate.id;
 
+import io.hypersistence.utils.hibernate.id.AbstractBatchSequenceGeneratorTest.Post;
 import io.hypersistence.utils.hibernate.util.AbstractTest;
 import io.hypersistence.utils.test.providers.DataSourceProvider;
+import io.hypersistence.utils.test.transaction.EntityManagerTransactionConsumer;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -46,14 +48,18 @@ public abstract class AbstractBatchSequenceGeneratorTest extends AbstractTest {
     public void test() {
 
         QueryCountHolder.clear();
-        doInJPA(entityManager -> {
-            for (int i = 0; i < BATCH_SIZE; i++) {
-                Post post = new Post();
-
-                post.setTitle("Post " + i + 1);
-                entityManager.persist(post);
-            }
-        });
+        
+     		EntityManagerTransactionConsumer work = entityManager -> {
+    			for (int i = 0; i < BATCH_SIZE; i++) {
+            Post post = new Post();
+	
+	            post.setTitle("Post " + i + 1);
+	            entityManager.persist(post);
+	        }
+    		};
+        
+        
+        doInJPA(work);
 
         QueryCount queryCount = QueryCountHolder.getGrandTotal();
         assertEquals(1L, queryCount.getInsert());

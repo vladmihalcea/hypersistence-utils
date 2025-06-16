@@ -84,14 +84,14 @@ public class BindArrayTypeQueryParameterTest extends AbstractPostgreSQLIntegrati
     @Test
     public void testJPQLWithExplicitParameterTypeBinding() {
         doInJPA(entityManager -> {
-            Event event = (Event) entityManager
+            Event event = (Event) ((Query)entityManager
             .createQuery(
                 "select e " +
                 "from Event e " +
                 "where " +
                 "   cast(fn_array_contains(e.values, :arrayValues) as Boolean) = true", Event.class)
             .unwrap(org.hibernate.query.Query.class)
-            .setParameter("arrayValues", new int[]{2, 3}, IntArrayType.INSTANCE)
+            .setParameter("arrayValues", new int[]{2, 3}, IntArrayType.INSTANCE))
             .getSingleResult();
 
             assertArrayEquals(new int[]{1, 2, 3}, event.getValues());
@@ -134,9 +134,9 @@ public class BindArrayTypeQueryParameterTest extends AbstractPostgreSQLIntegrati
                 )
             );
 
-            Event event = (Event) entityManager.createQuery(cq)
+            Event event = (Event)((Query) entityManager.createQuery(cq)
             .unwrap(Query.class)
-            .setParameter("arrayValues", new int[]{2, 3}, IntArrayType.INSTANCE)
+            .setParameter("arrayValues", new int[]{2, 3}, IntArrayType.INSTANCE))
             .getSingleResult();
 
             assertArrayEquals(new int[]{1, 2, 3}, event.getValues());
