@@ -2,6 +2,7 @@ package io.hypersistence.utils.hibernate.type.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.hypersistence.utils.hibernate.type.MutableDynamicParameterizedType;
+import io.hypersistence.utils.hibernate.type.json.internal.AbstractJsonType;
 import io.hypersistence.utils.hibernate.type.json.internal.JsonClobJdbcTypeDescriptor;
 import io.hypersistence.utils.hibernate.type.json.internal.JsonJavaTypeDescriptor;
 import io.hypersistence.utils.hibernate.type.util.JsonConfiguration;
@@ -9,6 +10,8 @@ import io.hypersistence.utils.hibernate.type.util.ObjectMapperWrapper;
 
 import java.lang.reflect.Type;
 import java.sql.Clob;
+
+import org.hibernate.boot.models.annotations.internal.ExtendsXmlAnnotation;
 
 /**
  * <p>
@@ -27,7 +30,7 @@ import java.sql.Clob;
  * @author Vlad Mihalcea
  * @author Andreas Gebhardt
  */
-public class JsonClobType extends MutableDynamicParameterizedType<Object, JsonClobJdbcTypeDescriptor, JsonJavaTypeDescriptor> {
+public class JsonClobType extends AbstractJsonType<Object> {
 
     public static final JsonClobType INSTANCE = new JsonClobType();
 

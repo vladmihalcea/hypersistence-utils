@@ -119,7 +119,7 @@ public class PostgreSQLCITextTypeTest extends AbstractPostgreSQLIntegrationTest 
                     FROM Country AS c
                     WHERE c.name LIKE :token
                     """)
-                    .setParameter("token", token)
+                .setParameter("token", token)
                 .getResultList();
 
                 assertEquals(1, countries.size());

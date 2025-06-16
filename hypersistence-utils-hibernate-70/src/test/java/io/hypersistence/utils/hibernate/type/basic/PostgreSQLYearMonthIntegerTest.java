@@ -97,7 +97,7 @@ public class PostgreSQLYearMonthIntegerTest extends AbstractPostgreSQLIntegratio
         doInJPA(entityManager -> {
 
             YearMonth yearMonth = YearMonth.of(1970, 1);
-                    
+
             for (int i = 0; i < 5000; i++) {
                 yearMonth = yearMonth.plusMonths(1);
 

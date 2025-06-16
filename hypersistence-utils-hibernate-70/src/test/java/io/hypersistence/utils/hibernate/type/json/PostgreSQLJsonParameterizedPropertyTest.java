@@ -11,7 +11,6 @@ import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.jpa.boot.spi.TypeContributorList;
 import org.hibernate.query.NativeQuery;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -60,7 +59,6 @@ public class PostgreSQLJsonParameterizedPropertyTest extends AbstractPostgreSQLI
     }
 
     @Test
-    @Ignore("TODO : addScalar")
     public void test() {
         doInJPA(entityManager -> {
             Book book = entityManager.unwrap(Session.class)

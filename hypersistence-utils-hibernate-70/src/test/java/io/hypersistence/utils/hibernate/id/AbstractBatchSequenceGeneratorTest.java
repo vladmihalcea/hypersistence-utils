@@ -3,13 +3,10 @@ package io.hypersistence.utils.hibernate.id;
 import io.hypersistence.utils.hibernate.util.AbstractTest;
 import io.hypersistence.utils.test.providers.DataSourceProvider;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import net.ttddyy.dsproxy.QueryCount;
 import net.ttddyy.dsproxy.QueryCountHolder;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 import org.hibernate.cfg.AvailableSettings;
 import org.junit.Test;
 
