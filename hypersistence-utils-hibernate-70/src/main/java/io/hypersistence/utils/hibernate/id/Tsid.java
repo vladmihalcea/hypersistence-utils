@@ -2,6 +2,7 @@ package io.hypersistence.utils.hibernate.id;
 
 import io.hypersistence.tsid.TSID;
 import org.hibernate.annotations.IdGeneratorType;
+import org.hibernate.annotations.ValueGenerationType;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -12,16 +13,19 @@ import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 
 /**
- * The {@code @Tsid} annotation can be added next to the entity identifier,
- * therefore indicating that the identifier will be assigned a time-sorted
- * identifier that's automatically generated.
+ * The {@code @Tsid} annotation can be added to entity identifiers or other fields,
+ * indicating that the value will be assigned a time-sorted TSID automatically.
+ *
+ * <p>On identifier fields, {@link TsidGenerator} is used for value generation.
+ * On non-identifier fields, {@link TsidValueGenerator} is used.</p>
  *
  * You can use the {@code @Tsid} annotation to annotate {@link Long}, {@link String},
- * or {@link TSID} entity identifiers.
+ * or {@link TSID} fields, including entity identifiers and general columns.
  *
  * @author Vlad Mihalcea
  */
 @IdGeneratorType(TsidGenerator.class)
+@ValueGenerationType(generatedBy = TsidValueGenerator.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target({FIELD, METHOD})
 public @interface Tsid {
