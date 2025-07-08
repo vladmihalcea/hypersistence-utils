@@ -37,22 +37,6 @@ public class ObjectMapperJsonSerializer implements JsonSerializer {
                     );
                 return objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(object), type);
             }
-        } else if (object instanceof Map) {
-            Map.Entry<Class, Class> commonElementType = findCommonElementType((Map) object);
-            if (commonElementType != null) {
-                Class commonKeyClass = commonElementType.getKey();
-                Class commonValueClass = commonElementType.getValue();
-                if (!(!commonKeyClass.getPackage().getName().startsWith("java") && Serializable.class.isAssignableFrom(commonKeyClass)) ||
-                    !(!commonValueClass.getPackage().getName().startsWith("java") && Serializable.class.isAssignableFrom(commonValueClass))) {
-                    JavaType type = TypeFactory.defaultInstance()
-                        .constructParametricType(
-                            object.getClass(),
-                            commonKeyClass,
-                            commonValueClass
-                        );
-                    return objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(object), type);
-                }
-            }
         } else if (object instanceof JsonNode) {
             return (T) ((JsonNode) object).deepCopy();
         }
