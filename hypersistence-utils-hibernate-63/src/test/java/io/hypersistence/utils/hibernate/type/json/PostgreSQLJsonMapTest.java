@@ -108,6 +108,23 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
                 book.getIsbn()
             );
         });
+
+        doInJPA(entityManager -> {
+            entityManager.persist(
+                new Book()
+                    .setIsbn("123-ABC")
+                    .addProperty("publishedOn", "2025-13-01T00:00:00")
+            );
+
+            Book book = entityManager.unwrap(Session.class)
+                .bySimpleNaturalId(Book.class)
+                .load("123-ABC");
+
+            assertEquals(
+                "2025-13-01T00:00:00",
+                book.getProperties().get("publishedOn")
+            );
+        });
     }
 
     @Entity(name = "Book")
