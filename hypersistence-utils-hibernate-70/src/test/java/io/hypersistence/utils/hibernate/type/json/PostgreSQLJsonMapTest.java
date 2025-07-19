@@ -7,6 +7,7 @@ import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
 
+import java.io.Serializable;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
@@ -37,6 +38,12 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
                     .setAdditionalProperties(
                         Map.of(PropertyType.FORMAT, new BookEnumSet(Set.of(FormatType.PAPERBACK)))
                     )
+                    .setDocument(
+                        new Document(Map.of(
+                            "title", "High-Performance Java Persistence",
+                            "author", "Vlad Mihalcea"
+                        ))
+                    )
             );
         });
 
@@ -60,6 +67,11 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
             assertEquals(
                 FormatType.PAPERBACK,
                 book.getAdditionalProperties().get(PropertyType.FORMAT).iterator().next()
+            );
+
+            assertEquals(
+                "High-Performance Java Persistence",
+                book.getDocument().get("title")
             );
         });
 
@@ -124,6 +136,10 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
         private Map<String, String> properties = new HashMap<>();
 
         @Type(JsonType.class)
+        @Column(columnDefinition = "jsonb")
+        private Document document = new Document();
+
+        @Type(JsonType.class)
         @Column(name = "additional_properties", columnDefinition = "jsonb")
         private Map<PropertyType, BookEnumSet> additionalProperties;
 
@@ -158,6 +174,15 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
             this.additionalProperties = additionalProperties;
             return this;
         }
+
+        public Document getDocument() {
+            return document;
+        }
+
+        public Book setDocument(Document document) {
+            this.document = document;
+            return this;
+        }
     }
 
     public enum PropertyType {
@@ -177,4 +202,76 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
             super(c);
         }
     }
+    public static class Document implements Map<String, Object>, Serializable {
+        private final LinkedHashMap<String, Object> documentAsMap;
+
+        public Document() {
+            documentAsMap = new LinkedHashMap<>();
+        }
+
+        public Document(final Map<String, ?> map) {
+            documentAsMap = new LinkedHashMap<>(map);
+        }
+
+        @Override
+        public int size() {
+            return documentAsMap.size();
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return documentAsMap.isEmpty();
+        }
+
+        @Override
+        public boolean containsKey(Object key) {
+            return documentAsMap.containsKey(key);
+        }
+
+        @Override
+        public boolean containsValue(Object value) {
+            return documentAsMap.containsValue(value);
+        }
+
+        @Override
+        public Object get(Object key) {
+            return documentAsMap.get(key);
+        }
+
+        @Override
+        public Object put(String key, Object value) {
+            return documentAsMap.put(key, value);
+        }
+
+        @Override
+        public Object remove(Object key) {
+            return documentAsMap.remove(key);
+        }
+
+        @Override
+        public void putAll(Map<? extends String, ?> m) {
+            documentAsMap.putAll(m);
+        }
+
+        @Override
+        public void clear() {
+            documentAsMap.clear();
+        }
+
+        @Override
+        public Set<String> keySet() {
+            return documentAsMap.keySet();
+        }
+
+        @Override
+        public Collection<Object> values() {
+            return documentAsMap.values();
+        }
+
+        @Override
+        public Set<Entry<String, Object>> entrySet() {
+            return documentAsMap.entrySet();
+        }
+    }
+
 }
