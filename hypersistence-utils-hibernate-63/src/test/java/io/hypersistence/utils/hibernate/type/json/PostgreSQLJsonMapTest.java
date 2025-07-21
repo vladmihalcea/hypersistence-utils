@@ -1,14 +1,20 @@
 package io.hypersistence.utils.hibernate.type.json;
 
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
 
+import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,6 +45,12 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
                     .addProperty("price", "$44.95")
                     .setAdditionalProperties(
                         Map.of(PropertyType.FORMAT, Set.of(FormatType.PAPERBACK))
+                    )
+                    .setDocument(
+                        new Document(Map.of(
+                            "title", "High-Performance Java Persistence",
+                            "author", "Vlad Mihalcea"
+                        ))
                     )
             );
         });
@@ -127,6 +139,10 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
         private Map<String, String> properties = new HashMap<>();
 
         @Type(JsonType.class)
+        @Column(columnDefinition = "jsonb")
+        private Document document = new Document();
+
+        @Type(JsonType.class)
         @Column(name = "additional_properties", columnDefinition = "jsonb")
         private Map<PropertyType, Set<FormatType>> additionalProperties;
 
@@ -161,6 +177,11 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
             this.additionalProperties = additionalProperties;
             return this;
         }
+
+        public Book setDocument(Document document) {
+            this.document = document;
+            return this;
+        }
     }
 
     public enum PropertyType {
@@ -170,5 +191,77 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
     public enum FormatType {
         EBOOK,
         PAPERBACK
+    }
+
+    public static class Document implements Map<String, Object>, Serializable {
+        private final LinkedHashMap<String, Object> documentAsMap;
+
+        public Document() {
+            documentAsMap = new LinkedHashMap<>();
+        }
+
+        public Document(final Map<String, ?> map) {
+            documentAsMap = new LinkedHashMap<>(map);
+        }
+
+        @Override
+        public int size() {
+            return documentAsMap.size();
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return documentAsMap.isEmpty();
+        }
+
+        @Override
+        public boolean containsKey(Object key) {
+            return documentAsMap.containsKey(key);
+        }
+
+        @Override
+        public boolean containsValue(Object value) {
+            return documentAsMap.containsValue(value);
+        }
+
+        @Override
+        public Object get(Object key) {
+            return documentAsMap.get(key);
+        }
+
+        @Override
+        public Object put(String key, Object value) {
+            return documentAsMap.put(key, value);
+        }
+
+        @Override
+        public Object remove(Object key) {
+            return documentAsMap.remove(key);
+        }
+
+        @Override
+        public void putAll(Map<? extends String, ?> m) {
+            documentAsMap.putAll(m);
+        }
+
+        @Override
+        public void clear() {
+            documentAsMap.clear();
+        }
+
+        @Override
+        public Set<String> keySet() {
+            return documentAsMap.keySet();
+        }
+
+        @Override
+        public Collection<Object> values() {
+            return documentAsMap.values();
+        }
+
+        @Override
+        public Set<Entry<String, Object>> entrySet() {
+            return documentAsMap.entrySet();
+        }
     }
 }
