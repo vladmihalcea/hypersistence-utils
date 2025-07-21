@@ -76,6 +76,11 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
                 FormatType.PAPERBACK,
                 book.getAdditionalProperties().get(PropertyType.FORMAT).iterator().next()
             );
+
+            assertEquals(
+                "High-Performance Java Persistence",
+                book.getDocument().get("title")
+            );
         });
 
         //With explicit type binding
@@ -176,6 +181,10 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
         public Book setAdditionalProperties(Map<PropertyType, Set<FormatType>> additionalProperties) {
             this.additionalProperties = additionalProperties;
             return this;
+        }
+
+        public Document getDocument() {
+            return document;
         }
 
         public Book setDocument(Document document) {
