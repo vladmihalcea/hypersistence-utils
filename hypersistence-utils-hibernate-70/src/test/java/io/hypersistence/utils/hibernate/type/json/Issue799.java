@@ -28,18 +28,18 @@ public class Issue799 extends AbstractPostgreSQLIntegrationTest {
     doInJPA(entityManager -> {
       entityManager.persist(
           new Container()
-              .setName("name-1")
-              .setSettings(new Settings(true, List.of(new Label("HIBERNATE"), new Label("TYPE"))))
+              .setName("issue#799")
+              .setSettings(new Settings(true, List.of(new Label("issue"), new Label("799"))))
       );
     });
     doInJPA(entityManager -> {
       List<Container> containers = entityManager.createQuery("select c from Container c", Container.class)
           .getResultList();
       Container matched = containers.stream()
-          .filter(container -> container.getName().equals("name-1"))
+          .filter(container -> container.getName().equals("issue#799"))
           .findFirst()
           .orElseThrow();
-      assertEquals("name-1", matched.getName());
+      assertEquals("issue#799", matched.getName());
     });
   }
 
