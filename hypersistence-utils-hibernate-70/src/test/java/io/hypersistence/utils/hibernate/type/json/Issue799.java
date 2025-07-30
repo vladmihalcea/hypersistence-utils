@@ -29,12 +29,7 @@ public class Issue799 extends AbstractPostgreSQLIntegrationTest {
       entityManager.persist(
           new Container()
               .setName("name-1")
-              .setSettings(
-                  new Settings(
-                      true,
-                      List.of("node1", "node2"),
-                      List.of(new Label("HIBERNATE"), new Label("TYPE")))
-              )
+              .setSettings(new Settings(true, List.of(new Label("HIBERNATE"), new Label("TYPE"))))
       );
     });
     doInJPA(entityManager -> {
@@ -82,15 +77,13 @@ public class Issue799 extends AbstractPostgreSQLIntegrationTest {
   public static class Settings implements Serializable {
 
     private boolean enabled;
-    private List<String> trustedNodes;
     private List<Label> availableAccounts;
 
     public Settings() {
     }
 
-    public Settings(boolean enabled, List<String> trustedNodes, List<Label> availableAccounts) {
+    public Settings(boolean enabled, List<Label> availableAccounts) {
       this.enabled = enabled;
-      this.trustedNodes = trustedNodes;
       this.availableAccounts = availableAccounts;
     }
 
@@ -100,14 +93,6 @@ public class Issue799 extends AbstractPostgreSQLIntegrationTest {
 
     public void setEnabled(boolean enabled) {
       this.enabled = enabled;
-    }
-
-    public List<String> getTrustedNodes() {
-      return trustedNodes;
-    }
-
-    public void setTrustedNodes(List<String> trustedNodes) {
-      this.trustedNodes = trustedNodes;
     }
 
     public List<Label> getAvailableAccounts() {
