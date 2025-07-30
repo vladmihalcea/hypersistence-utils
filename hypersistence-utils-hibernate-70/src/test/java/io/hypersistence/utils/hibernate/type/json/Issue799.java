@@ -77,14 +77,14 @@ public class Issue799 extends AbstractPostgreSQLIntegrationTest {
   public static class Settings implements Serializable {
 
     private boolean enabled;
-    private List<Label> availableAccounts;
+    private List<Label> labels;
 
     public Settings() {
     }
 
-    public Settings(boolean enabled, List<Label> availableAccounts) {
+    public Settings(boolean enabled, List<Label> labels) {
       this.enabled = enabled;
-      this.availableAccounts = availableAccounts;
+      this.labels = labels;
     }
 
     public boolean isEnabled() {
@@ -95,12 +95,12 @@ public class Issue799 extends AbstractPostgreSQLIntegrationTest {
       this.enabled = enabled;
     }
 
-    public List<Label> getAvailableAccounts() {
-      return availableAccounts;
+    public List<Label> getLabels() {
+      return labels;
     }
 
-    public void setAvailableAccounts(List<Label> availableAccounts) {
-      this.availableAccounts = availableAccounts;
+    public void setLabels(List<Label> labels) {
+      this.labels = labels;
     }
   }
 
