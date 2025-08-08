@@ -209,7 +209,7 @@
         <maven.compiler.release>${jdk.version}</maven.compiler.release>
         <maven.compiler.testRelease>${jdk-test.version}</maven.compiler.testRelease>
 
-        <hibernate.version>7.0.2.Final</hibernate.version>
+        <hibernate.version>7.0.10.Final</hibernate.version>
 
         <jackson-module-jakarta-xmlbind-annotation>2.15.3</jackson-module-jakarta-xmlbind-annotation>
         <guava.version>32.1.3-jre</guava.version>

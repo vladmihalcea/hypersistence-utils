@@ -20,11 +20,19 @@ That's it!
 
 The Hypersistence Utils project gives you general-purpose utilities for both Spring and Hibernate. 
 
-The main advantage of this project is that it supports a broad range of Hibernate versions, spanning from Hibernate ORM **7.0**, to **6.6**, **6.5**, **6.4**, **6.3**, **6.2**, **6.1**, **6.0**, **5.6**, **5.5**, **5.4**, **5.3**, **5.2**, **5.1**, and **5.0**.
+The main advantage of this project is that it supports a broad range of Hibernate versions, spanning from Hibernate ORM **7.1**, **7.0**, to **6.6**, **6.5**, **6.4**, **6.3**, **6.2**, **6.1**, **6.0**, **5.6**, **5.5**, **5.4**, **5.3**, **5.2**, **5.1**, and **5.0**.
 
 ### Installation Guide
 
 Depending on the Hibernate version you are using, you need to add the following dependency:
+
+#### Hibernate 7.1
+
+    <dependency>
+        <groupId>io.hypersistence</groupId>
+        <artifactId>hypersistence-utils-hibernate-71</artifactId>
+        <version>3.10.1</version>
+    </dependency>
 
 #### Hibernate 7.0
 
@@ -100,7 +108,7 @@ Moreover, the dependency version is extremely important because, from time to ti
 
 If you are using JSON Types, then you might be interested in setting the following dependencies based on your Hibernate version:
 
-###### Hibernate 6
+###### Hibernate 7 and 6
 
 ````xml
 <dependency>
@@ -172,9 +180,9 @@ If you are mapping a PostgreSQL-specific column type (e.g., `inet`, `hstore`, `a
 The `JsonType` allows you to map JSON column types, no matter if you're using Oracle,
 SQL Server, PostgreSQL or MySQL.
 
-###### Hibernate 6
+###### Hibernate 7 and 6
 
-If you're using Hibernate 6, you can map any JSON column to `Map`, `List`, POJO, `String`, or `JsonNode` entity property:
+If you're using Hibernate 7 or 6, you can map any JSON column to `Map`, `List`, POJO, `String`, or `JsonNode` entity property:
 
 ````java
 @Type(JsonType.class)
