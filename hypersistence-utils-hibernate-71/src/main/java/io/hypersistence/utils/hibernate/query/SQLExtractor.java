@@ -2,17 +2,18 @@ package io.hypersistence.utils.hibernate.query;
 
 import io.hypersistence.utils.common.ReflectionUtils;
 import jakarta.persistence.Query;
+import org.hibernate.internal.util.MutableObject;
 import org.hibernate.query.spi.DomainQueryExecutionContext;
 import org.hibernate.query.spi.QueryImplementor;
 import org.hibernate.query.spi.QueryInterpretationCache;
 import org.hibernate.query.spi.SelectQueryPlan;
 import org.hibernate.query.sqm.internal.ConcreteSqmSelectQueryPlan;
 import org.hibernate.query.sqm.internal.DomainParameterXref;
-import org.hibernate.query.sqm.internal.QuerySqmImpl;
 import org.hibernate.query.sqm.internal.SqmInterpretationsKey;
 import org.hibernate.query.sqm.spi.InterpretationsKeySource;
 import org.hibernate.query.sqm.tree.select.SqmSelectStatement;
 import org.hibernate.sql.exec.spi.JdbcOperationQuerySelect;
+import org.hibernate.sql.exec.spi.JdbcParameterBindings;
 
 import java.util.function.Supplier;
 
@@ -38,11 +39,9 @@ public class SQLExtractor {
      */
     public static String from(Query query) {
         if(query instanceof InterpretationsKeySource &&
-           query instanceof QueryImplementor &&
-           query instanceof QuerySqmImpl) {
+           query instanceof QueryImplementor) {
             QueryInterpretationCache.Key cacheKey = SqmInterpretationsKey.createInterpretationsKey((InterpretationsKeySource) query);
-            QuerySqmImpl querySqm = (QuerySqmImpl) query;
-            Supplier buildSelectQueryPlan = () -> ReflectionUtils.invokeMethod(querySqm, "buildSelectQueryPlan");
+            Supplier buildSelectQueryPlan = () -> ReflectionUtils.invokeMethod(query, "buildSelectQueryPlan");
             SelectQueryPlan plan = cacheKey != null ? ((QueryImplementor) query).getSession().getFactory().getQueryEngine()
                 .getInterpretationCache()
                 .resolveSelectQueryPlan(cacheKey, buildSelectQueryPlan) :
@@ -51,22 +50,25 @@ public class SQLExtractor {
                 ConcreteSqmSelectQueryPlan selectQueryPlan = (ConcreteSqmSelectQueryPlan) plan;
                 Object cacheableSqmInterpretation = ReflectionUtils.getFieldValueOrNull(selectQueryPlan, "cacheableSqmInterpretation");
                 if(cacheableSqmInterpretation == null) {
-                    DomainQueryExecutionContext domainQueryExecutionContext = DomainQueryExecutionContext.class.cast(querySqm);
+                    DomainQueryExecutionContext domainQueryExecutionContext = DomainQueryExecutionContext.class.cast(query);
+                    final MutableObject<Object> mutableObject = new MutableObject<>();
                     cacheableSqmInterpretation = ReflectionUtils.invokeStaticMethod(
                         ReflectionUtils.getMethod(
                             ConcreteSqmSelectQueryPlan.class,
-                            "buildCacheableSqmInterpretation",
+                            "buildInterpretation",
                             SqmSelectStatement.class,
                             DomainParameterXref.class,
-                            DomainQueryExecutionContext.class
+                            DomainQueryExecutionContext.class,
+                            MutableObject.class
                         ),
                         ReflectionUtils.getFieldValueOrNull(selectQueryPlan, "sqm"),
                         ReflectionUtils.getFieldValueOrNull(selectQueryPlan, "domainParameterXref"),
-                        domainQueryExecutionContext
+                        domainQueryExecutionContext,
+                        mutableObject
                     );
                 }
                 if (cacheableSqmInterpretation != null) {
-                    JdbcOperationQuerySelect jdbcSelect = ReflectionUtils.getFieldValueOrNull(cacheableSqmInterpretation, "jdbcSelect");
+                    JdbcOperationQuerySelect jdbcSelect = ReflectionUtils.getFieldValueOrNull(cacheableSqmInterpretation, "jdbcOperation");
                     if (jdbcSelect != null) {
                         return jdbcSelect.getSqlString();
                     }
