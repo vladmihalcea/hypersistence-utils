@@ -1,16 +1,16 @@
 package io.hypersistence.utils.hibernate.type.json;
 
-import io.hypersistence.utils.hibernate.type.model.Location;
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import jakarta.persistence.*;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
-import org.hibernate.query.NativeQuery;
 import org.junit.Test;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 
@@ -37,6 +37,9 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
                     .addProperty("author", "Vlad Mihalcea")
                     .addProperty("publisher", "Amazon")
                     .addProperty("price", "$44.95")
+                    .setAdditionalProperties(
+                        Map.of(PropertyType.FORMAT, Set.of(FormatType.PAPERBACK))
+                    )
             );
         });
 
@@ -55,6 +58,11 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
             assertEquals(
                 "Vlad Mihalcea",
                 bookProperties.get("author")
+            );
+
+            assertEquals(
+                FormatType.PAPERBACK,
+                book.getAdditionalProperties().get(PropertyType.FORMAT).iterator().next()
             );
         });
 
@@ -100,6 +108,23 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
                 book.getIsbn()
             );
         });
+
+        doInJPA(entityManager -> {
+            entityManager.persist(
+                new Book()
+                    .setIsbn("123-ABC")
+                    .addProperty("publishedOn", "2025-13-01T00:00:00")
+            );
+
+            Book book = entityManager.unwrap(Session.class)
+                .bySimpleNaturalId(Book.class)
+                .load("123-ABC");
+
+            assertEquals(
+                "2025-13-01T00:00:00",
+                book.getProperties().get("publishedOn")
+            );
+        });
     }
 
     @Entity(name = "Book")
@@ -117,6 +142,10 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
         @Type(JsonType.class)
         @Column(columnDefinition = "jsonb")
         private Map<String, String> properties = new HashMap<>();
+
+        @Type(JsonType.class)
+        @Column(name = "additional_properties", columnDefinition = "jsonb")
+        private Map<PropertyType, Set<FormatType>> additionalProperties;
 
         public String getIsbn() {
             return isbn;
@@ -140,5 +169,23 @@ public class PostgreSQLJsonMapTest extends AbstractPostgreSQLIntegrationTest {
             properties.put(key, value);
             return this;
         }
+
+        public Map<PropertyType, Set<FormatType>> getAdditionalProperties() {
+            return additionalProperties;
+        }
+
+        public Book setAdditionalProperties(Map<PropertyType, Set<FormatType>> additionalProperties) {
+            this.additionalProperties = additionalProperties;
+            return this;
+        }
+    }
+
+    public enum PropertyType {
+        FORMAT
+    }
+
+    public enum FormatType {
+        EBOOK,
+        PAPERBACK
     }
 }

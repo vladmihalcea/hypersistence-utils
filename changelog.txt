@@ -1,3 +1,47 @@
+Version 3.10.3 - July 11, 2025
+================================================================================
+
+Add support for @Tsid generation on non-id entity attributes #794
+
+Version 3.10.2 - July 05, 2025
+================================================================================
+
+Add support for addScalar in the Hibernate 7 module #792
+
+Version 3.10.1 - June 14, 2025
+================================================================================
+
+Update description in pom.xml to mention support of Hibernate 6.6 #790
+
+Remove the central-publishing-maven-plugin dependency #789
+
+Version 3.10.0 - June 09, 2025
+================================================================================
+
+Add support for Hibernate 7 #784
+
+Version 3.9.11 - June 07, 2025
+================================================================================
+
+Allow the PostgreSQLRangeType to work in AOT mode #787
+
+Version 3.9.10 - April 27, 2025
+================================================================================
+
+ObjectMapperJsonSerializer throws StackOverflowError when using Map<String,String[]> #780
+
+Version 3.9.9 - March 31, 2025
+================================================================================
+
+The ObjectMapperWrapper.fromBytes cannot instantiate an AbstractCollection #773
+
+Version 3.9.8 - March 28, 2025
+================================================================================
+
+JsonType parameter binding doesn't work for POJO parameter #777
+
+JsonType parameter binding doesn't work for List parameter #775
+
 Version 3.9.7 - March 28, 2025
 ================================================================================
 

@@ -10,7 +10,7 @@
 
     <groupId>io.hypersistence</groupId>
     <artifactId>hypersistence-utils-parent</artifactId>
-    <version>3.9.8-SNAPSHOT</version>
+    <version>3.10.4-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Hypersistence Utils</name>
@@ -54,6 +54,7 @@
     </repositories>
 
     <modules>
+        <module>hypersistence-utils-hibernate-70</module>
         <module>hypersistence-utils-hibernate-63</module>
     </modules>
 
@@ -335,12 +336,14 @@
                         </configuration>
                     </plugin>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                        <version>${maven-deploy-plugin.version}</version>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.7.0</version>
+                        <extensions>true</extensions>
                         <configuration>
-                            <retryFailedDeploymentCount>5</retryFailedDeploymentCount>
-                            <deployAtEnd>true</deployAtEnd>
+                            <publishingServerId>central</publishingServerId>
+                            <autoPublish>true</autoPublish>
+                            <waitUntil>published</waitUntil>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -373,17 +376,6 @@
             </build>
         </profile>
     </profiles>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
 
     <properties>
         <jdk.version>8</jdk.version>
