@@ -42,14 +42,19 @@ public class ObjectMapperJsonSerializer implements JsonSerializer {
             if (commonElementType != null) {
                 Class commonKeyClass = commonElementType.getKey();
                 Class commonValueClass = commonElementType.getValue();
-                if (!(!commonKeyClass.getPackage().getName().startsWith("java") && Serializable.class.isAssignableFrom(commonKeyClass)) ||
-                    !(!commonValueClass.getPackage().getName().startsWith("java") && Serializable.class.isAssignableFrom(commonValueClass))) {
+
+                boolean isCommonKeyClassCoreOrNotSerializable = isCoreJavaType(commonKeyClass) || !Serializable.class.isAssignableFrom(commonKeyClass);
+                boolean isCommonValueClassCoreOrNotSerializable = isCoreJavaType(commonValueClass) || !Serializable.class.isAssignableFrom(commonValueClass);
+                if (
+                        (isCommonKeyClassCoreOrNotSerializable || isCommonValueClassCoreOrNotSerializable)
+                                && (object.getClass().getTypeParameters().length == 2)
+                ) {
                     JavaType type = TypeFactory.defaultInstance()
-                        .constructParametricType(
-                            object.getClass(),
-                            commonKeyClass,
-                            commonValueClass
-                        );
+                            .constructParametricType(
+                                    object.getClass(),
+                                    commonKeyClass,
+                                    commonValueClass
+                            );
                     return objectMapperWrapper.fromBytes(objectMapperWrapper.toBytes(object), type);
                 }
             }
@@ -67,6 +72,11 @@ public class ObjectMapperJsonSerializer implements JsonSerializer {
         }
 
         return jsonClone(object);
+    }
+
+    private boolean isCoreJavaType(Class<?> type) {
+        Package typePackage = type.getPackage();
+        return typePackage != null && typePackage.getName().startsWith("java");
     }
 
     private Class findCommonElementType(Collection collection) {
