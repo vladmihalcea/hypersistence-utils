@@ -32,9 +32,10 @@ public class MultiDimensionalIntegerArrayTypeTest extends AbstractPostgreSQLInte
                 (typeContributions, serviceRegistry) -> {
                     typeContributions.contributeType(
                         new EnumArrayType(
-                            ReflectionUtils.getField(MultiDimensionalArrayTypeTest.Plane.class, "seatGrid").getClass(),
+                            ReflectionUtils.getField(MultiDimensionalArrayTypeTest.Plane.class, "seatGrid").getType(),
                             "seat_status"
-                        )
+                        ),
+                        java.lang.reflect.Field.class.getName()
                     );
                 }
             ));
@@ -95,7 +96,7 @@ public class MultiDimensionalIntegerArrayTypeTest extends AbstractPostgreSQLInte
                 .addScalar("name")
                 .addScalar(
                     "seat_grid",
-                    ReflectionUtils.getField(MultiDimensionalArrayTypeTest.Plane.class, "seatGrid").getClass()
+                    ReflectionUtils.getField(MultiDimensionalArrayTypeTest.Plane.class, "seatGrid").getType()
                 )
                 .getResultList();
 

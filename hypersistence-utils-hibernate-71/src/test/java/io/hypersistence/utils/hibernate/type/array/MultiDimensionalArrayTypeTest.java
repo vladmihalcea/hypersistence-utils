@@ -6,19 +6,13 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.jpa.boot.spi.TypeContributorList;
-import org.junit.Before;
 import org.junit.Test;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 /**
  * @author Vlad Mihalcea
@@ -46,7 +40,7 @@ public class MultiDimensionalArrayTypeTest extends AbstractPostgreSQLIntegration
                 (typeContributions, serviceRegistry) -> {
                     typeContributions.contributeType(
                         new EnumArrayType(
-                            ReflectionUtils.getField(Plane.class, "seatGrid").getClass(),
+                            ReflectionUtils.getField(Plane.class, "seatGrid").getType(),
                             "seat_status"
                         )
                     );
@@ -109,7 +103,7 @@ public class MultiDimensionalArrayTypeTest extends AbstractPostgreSQLIntegration
                 .addScalar("name")
                 .addScalar(
                     "seat_grid",
-                    ReflectionUtils.getField(Plane.class, "seatGrid").getClass()
+                    ReflectionUtils.getField(Plane.class, "seatGrid").getType()
                 )
                 .getResultList();
 
