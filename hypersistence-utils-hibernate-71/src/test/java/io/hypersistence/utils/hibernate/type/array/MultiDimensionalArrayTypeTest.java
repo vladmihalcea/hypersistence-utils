@@ -109,6 +109,15 @@ public class MultiDimensionalArrayTypeTest extends AbstractPostgreSQLIntegration
 
             Tuple plane = tuples.get(0);
             assertEquals("ATR-42", plane.get("name"));
+            final SeatStatus[][] seatStatuses = plane.get(2, SeatStatus[][].class);
+            assertEquals(SeatStatus.BLOCKED, seatStatuses[0][0]);
+            assertEquals(SeatStatus.BLOCKED, seatStatuses[0][1]);
+            assertEquals(SeatStatus.BLOCKED, seatStatuses[0][2]);
+            assertEquals(SeatStatus.BLOCKED, seatStatuses[0][3]);
+            assertEquals(SeatStatus.UNRESERVED, seatStatuses[1][0]);
+            assertEquals(SeatStatus.UNRESERVED, seatStatuses[1][1]);
+            assertEquals(SeatStatus.RESERVED, seatStatuses[1][2]);
+            assertEquals(SeatStatus.UNRESERVED, seatStatuses[1][3]);
         });
     }
 

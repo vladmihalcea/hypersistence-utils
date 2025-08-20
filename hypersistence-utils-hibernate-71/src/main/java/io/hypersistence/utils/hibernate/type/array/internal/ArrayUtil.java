@@ -184,7 +184,9 @@ public class ArrayUtil {
             T array = arrayClass.cast(Array.newInstance(arrayClass.getComponentType(), originalArray.length));
             for (int i = 0; i < originalArray.length; i++) {
                 Object objectValue = originalArray[i];
-                if (objectValue != null) {
+                if (objectValue instanceof Number) {
+                    objectValue = arrayClass.getComponentType().getEnumConstants()[((Number) objectValue).intValue()];
+                } else if (objectValue != null) {
                     String stringValue = (objectValue instanceof String) ? (String) objectValue : String.valueOf(objectValue);
                     objectValue = Enum.valueOf((Class) arrayClass.getComponentType(), stringValue);
                 }

@@ -1,5 +1,6 @@
 package io.hypersistence.utils.hibernate.type.array;
 
+import io.hypersistence.utils.hibernate.type.array.MultiDimensionalArrayTypeTest.SeatStatus;
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import io.hypersistence.utils.common.ReflectionUtils;
 import jakarta.persistence.*;
@@ -34,8 +35,7 @@ public class MultiDimensionalIntegerArrayTypeTest extends AbstractPostgreSQLInte
                         new EnumArrayType(
                             ReflectionUtils.getField(MultiDimensionalArrayTypeTest.Plane.class, "seatGrid").getType(),
                             "seat_status"
-                        ),
-                        java.lang.reflect.Field.class.getName()
+                        )
                     );
                 }
             ));
@@ -102,6 +102,15 @@ public class MultiDimensionalIntegerArrayTypeTest extends AbstractPostgreSQLInte
 
             Tuple plane = tuples.get(0);
             assertEquals("ATR-42", plane.get("name"));
+            final SeatStatus[][] seatStatuses = plane.get(2, SeatStatus[][].class);
+            assertEquals(SeatStatus.RESERVED, seatStatuses[0][0]);
+            assertEquals(SeatStatus.RESERVED, seatStatuses[0][1]);
+            assertEquals(SeatStatus.RESERVED, seatStatuses[0][2]);
+            assertEquals(SeatStatus.RESERVED, seatStatuses[0][3]);
+            assertEquals(SeatStatus.UNRESERVED, seatStatuses[1][0]);
+            assertEquals(SeatStatus.UNRESERVED, seatStatuses[1][1]);
+            assertEquals(SeatStatus.BLOCKED, seatStatuses[1][2]);
+            assertEquals(SeatStatus.UNRESERVED, seatStatuses[1][3]);
         });
     }
 
