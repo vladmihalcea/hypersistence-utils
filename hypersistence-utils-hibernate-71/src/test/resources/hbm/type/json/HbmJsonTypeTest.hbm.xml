@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping default-lazy="false">
+
+	<typedef class="io.hypersistence.utils.hibernate.type.json.JsonType" name="location-jsonb">
+		<param name="org.hibernate.type.ParameterType">io.hypersistence.utils.hibernate.type.model.Location</param>
+	</typedef>
+
+	<class name="io.hypersistence.utils.hibernate.type.json.HbmJsonTypeTest$Event" table="event" lazy="true">
+		<id name="id" column="id" type="long">
+			<generator class="assigned"/>
+		</id>
+
+		<property name="location" type="location-jsonb">
+			<column name="location" sql-type="jsonb"/>
+		</property>
+	</class>
+
+</hibernate-mapping>
