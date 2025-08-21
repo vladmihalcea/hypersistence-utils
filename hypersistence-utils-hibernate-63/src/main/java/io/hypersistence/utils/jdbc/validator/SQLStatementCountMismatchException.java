@@ -7,7 +7,7 @@ package io.hypersistence.utils.jdbc.validator;
  * @author Vlad Mihalcea
  * @since 3.0.2
  */
-public class SQLStatementCountMismatchException extends RuntimeException {
+public class SQLStatementCountMismatchException extends AssertionError {
 
     private final long expected;
     private final long recorded;
