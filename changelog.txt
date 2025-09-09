@@ -1,3 +1,10 @@
+Version 3.11.0 - September 09, 2025
+================================================================================
+
+Add support for Hibernate 7.1 #802
+
+ObjectMapperWrapper not working with Map<String, String> #793
+
 Version 3.10.3 - July 11, 2025
 ================================================================================
 
