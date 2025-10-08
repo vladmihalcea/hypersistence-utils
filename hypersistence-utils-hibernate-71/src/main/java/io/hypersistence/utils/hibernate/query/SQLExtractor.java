@@ -12,8 +12,7 @@ import org.hibernate.query.sqm.internal.DomainParameterXref;
 import org.hibernate.query.sqm.internal.SqmInterpretationsKey;
 import org.hibernate.query.sqm.spi.InterpretationsKeySource;
 import org.hibernate.query.sqm.tree.select.SqmSelectStatement;
-import org.hibernate.sql.exec.spi.JdbcOperationQuerySelect;
-import org.hibernate.sql.exec.spi.JdbcParameterBindings;
+import org.hibernate.sql.exec.spi.JdbcOperation;
 
 import java.util.function.Supplier;
 
@@ -68,7 +67,7 @@ public class SQLExtractor {
                     );
                 }
                 if (cacheableSqmInterpretation != null) {
-                    JdbcOperationQuerySelect jdbcSelect = ReflectionUtils.getFieldValueOrNull(cacheableSqmInterpretation, "jdbcOperation");
+                    JdbcOperation jdbcSelect = ReflectionUtils.getFieldValueOrNull(cacheableSqmInterpretation, "jdbcOperation");
                     if (jdbcSelect != null) {
                         return jdbcSelect.getSqlString();
                     }
