@@ -1,3 +1,10 @@
+Version 3.12.0 - November 09, 2025
+================================================================================
+
+Add support for Short identifiers in BatchSequenceGenerator #813
+
+Replace JdbcOperationQuerySelect with JdbcOperation for Hibernate 7.2.0.CR1 #812
+
 Version 3.11.0 - September 09, 2025
 ================================================================================
 
