@@ -31,7 +31,7 @@ Depending on the Hibernate version you are using, you need to add the following 
     <dependency>
         <groupId>io.hypersistence</groupId>
         <artifactId>hypersistence-utils-hibernate-71</artifactId>
-        <version>3.11.0</version>
+        <version>3.12.0</version>
     </dependency>
 
 #### Hibernate 7.0
@@ -39,7 +39,7 @@ Depending on the Hibernate version you are using, you need to add the following 
     <dependency>
         <groupId>io.hypersistence</groupId>
         <artifactId>hypersistence-utils-hibernate-70</artifactId>
-        <version>3.11.0</version>
+        <version>3.12.0</version>
     </dependency>
 
 #### Hibernate 6.6, 6.5, 6.4, and 6.3
@@ -47,7 +47,7 @@ Depending on the Hibernate version you are using, you need to add the following 
     <dependency>
         <groupId>io.hypersistence</groupId>
         <artifactId>hypersistence-utils-hibernate-63</artifactId>
-        <version>3.11.0</version>
+        <version>3.12.0</version>
     </dependency>
 
 #### Hibernate 6.2 (Commercial support only)
