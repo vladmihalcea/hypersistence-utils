@@ -2,7 +2,6 @@ package io.hypersistence.utils.hibernate.id;
 
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.boot.model.relational.Database;
 import org.hibernate.boot.model.relational.QualifiedName;
@@ -12,16 +11,14 @@ import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.jdbc.env.spi.JdbcEnvironment;
 import org.hibernate.engine.jdbc.spi.JdbcCoordinator;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.generator.GeneratorCreationContext;
 import org.hibernate.id.BulkInsertionCapableIdentifierGenerator;
 import org.hibernate.id.Configurable;
 import org.hibernate.id.IdentifierGenerationException;
 import org.hibernate.id.PersistentIdentifierGenerator;
 import org.hibernate.id.enhanced.Optimizer;
 import org.hibernate.id.enhanced.SequenceStructure;
-import org.hibernate.generator.GeneratorCreationContext;
 import org.hibernate.internal.util.config.ConfigurationHelper;
-import org.hibernate.service.ServiceRegistry;
-import org.hibernate.type.Type;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -296,7 +293,7 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
 			Properties params, JdbcEnvironment jdbcEnv) {
         String sequenceName = params.getProperty(SEQUENCE_PARAM);
         if (sequenceName == null) {
-            throw new MappingException("no squence name specified");
+            throw new MappingException("no sequence name specified");
         }
 
 		final Identifier catalog = jdbcEnv.getIdentifierHelper().toIdentifier(params.getProperty(CATALOG));
@@ -317,7 +314,7 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
                     BatchSequence annotation, JdbcEnvironment jdbcEnv) {
         String sequenceName = annotation.name();
         if (sequenceName == null) {
-            throw new MappingException("no squence name specified");
+            throw new MappingException("no sequence name specified");
         }
 
         final Identifier catalog = jdbcEnv.getIdentifierHelper().toIdentifier(annotation.catalog());
@@ -437,7 +434,16 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
      * @see org.hibernate.id.IntegralDataTypeHolder
      */
     enum IdentifierExtractor {
-
+        SHORT_IDENTIFIER_EXTRACTOR {
+            @Override
+            Serializable extractIdentifier(ResultSet resultSet) throws SQLException {
+                short shortValue = resultSet.getShort(1);
+                if (resultSet.wasNull()) {
+                    throw new IdentifierGenerationException("sequence returned null");
+                }
+                return shortValue;
+            }
+        },
         INTEGER_IDENTIFIER_EXTRACTOR {
             @Override
             Serializable extractIdentifier(ResultSet resultSet) throws SQLException {
@@ -448,7 +454,6 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
                 return intValue;
             }
         },
-
         LONG_IDENTIFIER_EXTRACTOR {
             @Override
             Serializable extractIdentifier(ResultSet resultSet) throws SQLException {
@@ -459,7 +464,6 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
                 return longValue;
             }
         },
-
         BIG_INTEGER_IDENTIFIER_EXTRACTOR {
             @Override
             Serializable extractIdentifier(ResultSet resultSet) throws SQLException {
@@ -470,7 +474,6 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
                 return bigDecimal.setScale(0, BigDecimal.ROUND_UNNECESSARY).toBigInteger();
             }
         },
-
         BIG_DECIMAL_IDENTIFIER_EXTRACTOR {
             @Override
             Serializable extractIdentifier(ResultSet resultSet) throws SQLException {
@@ -494,6 +497,9 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
             if (integralType == BigInteger.class) {
                 return BIG_INTEGER_IDENTIFIER_EXTRACTOR;
             }
+            if ((integralType == Short.class) || (integralType == short.class)) {
+                return SHORT_IDENTIFIER_EXTRACTOR;
+            }
             if (integralType == BigDecimal.class) {
                 return BIG_DECIMAL_IDENTIFIER_EXTRACTOR;
             }
@@ -507,5 +513,4 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
         // for debugging only
         return this.getClass().getSimpleName() + '(' + this.getSequenceName() + ')';
     }
-
 }

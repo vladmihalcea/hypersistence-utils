@@ -437,7 +437,16 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
      * @see org.hibernate.id.IntegralDataTypeHolder
      */
     enum IdentifierExtractor {
-
+        SHORT_IDENTIFIER_EXTRACTOR {
+            @Override
+            Serializable extractIdentifier(ResultSet resultSet) throws SQLException {
+                short shortValue = resultSet.getShort(1);
+                if (resultSet.wasNull()) {
+                    throw new IdentifierGenerationException("sequence returned null");
+                }
+                return shortValue;
+            }
+        },
         INTEGER_IDENTIFIER_EXTRACTOR {
             @Override
             Serializable extractIdentifier(ResultSet resultSet) throws SQLException {
@@ -448,7 +457,6 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
                 return intValue;
             }
         },
-
         LONG_IDENTIFIER_EXTRACTOR {
             @Override
             Serializable extractIdentifier(ResultSet resultSet) throws SQLException {
@@ -459,7 +467,6 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
                 return longValue;
             }
         },
-
         BIG_INTEGER_IDENTIFIER_EXTRACTOR {
             @Override
             Serializable extractIdentifier(ResultSet resultSet) throws SQLException {
@@ -470,7 +477,6 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
                 return bigDecimal.setScale(0, BigDecimal.ROUND_UNNECESSARY).toBigInteger();
             }
         },
-
         BIG_DECIMAL_IDENTIFIER_EXTRACTOR {
             @Override
             Serializable extractIdentifier(ResultSet resultSet) throws SQLException {
@@ -494,6 +500,9 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
             if (integralType == BigInteger.class) {
                 return BIG_INTEGER_IDENTIFIER_EXTRACTOR;
             }
+            if ((integralType == Short.class) || (integralType == short.class)) {
+                return SHORT_IDENTIFIER_EXTRACTOR;
+            }
             if (integralType == BigDecimal.class) {
                 return BIG_DECIMAL_IDENTIFIER_EXTRACTOR;
             }
@@ -507,5 +516,4 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
         // for debugging only
         return this.getClass().getSimpleName() + '(' + this.getSequenceName() + ')';
     }
-
 }
