@@ -75,17 +75,17 @@ public class JsonJavaTypeDescriptor extends AbstractClassJavaType<Object> implem
     public void setParameterValues(Properties parameters) {
         Type type = null;
         final Object parameterType = parameters.get(PARAMETER_TYPE);
-            if(parameterType instanceof ParameterType) {
+        if (parameterType instanceof ParameterType) {
             final MemberDetails xProperty = (MemberDetails) parameters.get(XPROPERTY);
-            if (xProperty.getType().getTypeKind() == TypeDetails.Kind.TYPE_VARIABLE) {
+            if (xProperty != null && xProperty.getType().getTypeKind() == TypeDetails.Kind.TYPE_VARIABLE) {
                 type = ((ParameterType) parameterType).getReturnedClass();
             } else {
                 type = ((ParameterType) parameterType).getReturnedJavaType();
             }
-            } else if(parameterType instanceof String) {
-                type = ReflectionUtils.getClass((String) parameterType);
-            }
-        if(type == null) {
+        } else if (parameterType instanceof String) {
+            type = ReflectionUtils.getClass((String) parameterType);
+        }
+        if (type == null) {
             throw new HibernateException("Could not resolve property type!");
         }
         setPropertyClass(type);
