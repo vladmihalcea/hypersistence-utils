@@ -6,7 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.engine.jdbc.spi.JdbcServices;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
-import org.hibernate.internal.AbstractSharedSessionContract;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -142,7 +142,7 @@ public class BaseJpaRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID>
         if(!jdbcServices.getExtractedMetaDataSupport().supportsBatchUpdates()) {
             return Integer.MIN_VALUE;
         }
-        return session.unwrap(AbstractSharedSessionContract.class).getConfiguredJdbcBatchSize();
+        return session.unwrap(SharedSessionContractImplementor.class).getConfiguredJdbcBatchSize();
     }
 
     protected <R> R executeBatch(Supplier<R> callback) {

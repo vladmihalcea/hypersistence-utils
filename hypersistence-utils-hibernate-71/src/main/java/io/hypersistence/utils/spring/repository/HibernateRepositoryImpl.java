@@ -5,10 +5,8 @@ import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.engine.jdbc.spi.JdbcServices;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
-import org.hibernate.internal.AbstractSharedSessionContract;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -150,7 +148,7 @@ public class HibernateRepositoryImpl<T> implements HibernateRepository<T> {
         if(!jdbcServices.getExtractedMetaDataSupport().supportsBatchUpdates()) {
             return Integer.MIN_VALUE;
         }
-        return session.unwrap(AbstractSharedSessionContract.class).getConfiguredJdbcBatchSize();
+        return session.unwrap(SharedSessionContractImplementor.class).getConfiguredJdbcBatchSize();
     }
 
     protected <R> R executeBatch(Supplier<R> callback) {
