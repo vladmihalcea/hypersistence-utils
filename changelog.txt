@@ -1,3 +1,10 @@
+Version 3.13.0 - December 01, 2025
+================================================================================
+
+Add SequenceOptimizer as an alternative to the deprecated GenericGenerator #817
+
+Add support for registering the Jackson KotlinModule when using Kotlin #816
+
 Version 3.12.0 - November 09, 2025
 ================================================================================
 
