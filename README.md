@@ -20,18 +20,18 @@ That's it!
 
 The Hypersistence Utils project gives you general-purpose utilities for both Spring and Hibernate. 
 
-The main advantage of this project is that it supports a broad range of Hibernate versions, spanning from Hibernate ORM **7.1**, **7.0**, to **6.6**, **6.5**, **6.4**, **6.3**, **6.2**, **6.1**, **6.0**, **5.6**, **5.5**, **5.4**, **5.3**, **5.2**, **5.1**, and **5.0**.
+The main advantage of this project is that it supports a broad range of Hibernate versions, spanning from Hibernate ORM **7.2**, **7.1**, **7.0**, to **6.6**, **6.5**, **6.4**, **6.3**, **6.2**, **6.1**, **6.0**, **5.6**, **5.5**, **5.4**, **5.3**, **5.2**, **5.1**, and **5.0**.
 
 ### Installation Guide
 
 Depending on the Hibernate version you are using, you need to add the following dependency:
 
-#### Hibernate 7.1
+#### Hibernate 7.2 and 7.1
 
     <dependency>
         <groupId>io.hypersistence</groupId>
         <artifactId>hypersistence-utils-hibernate-71</artifactId>
-        <version>3.12.0</version>
+        <version>3.13.1</version>
     </dependency>
 
 #### Hibernate 7.0
@@ -39,7 +39,7 @@ Depending on the Hibernate version you are using, you need to add the following 
     <dependency>
         <groupId>io.hypersistence</groupId>
         <artifactId>hypersistence-utils-hibernate-70</artifactId>
-        <version>3.12.0</version>
+        <version>3.13.1</version>
     </dependency>
 
 #### Hibernate 6.6, 6.5, 6.4, and 6.3
@@ -47,7 +47,7 @@ Depending on the Hibernate version you are using, you need to add the following 
     <dependency>
         <groupId>io.hypersistence</groupId>
         <artifactId>hypersistence-utils-hibernate-63</artifactId>
-        <version>3.12.0</version>
+        <version>3.13.1</version>
     </dependency>
 
 #### Hibernate 6.2 (Commercial support only)
