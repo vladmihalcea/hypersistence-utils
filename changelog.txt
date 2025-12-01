@@ -1,3 +1,10 @@
+Version 3.13.1 - December 01, 2025
+================================================================================
+
+Change the signature of the SequenceOptimizerGenerator.configure method for Hibernate 7.1 #818
+
+Add a null check for the XProperty JsonType parameter #814
+
 Version 3.13.0 - December 01, 2025
 ================================================================================
 
