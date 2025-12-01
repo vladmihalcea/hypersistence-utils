@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import io.hypersistence.utils.common.ReflectionUtils;
 import org.hibernate.HibernateException;
 
 import java.io.IOException;
@@ -25,13 +26,25 @@ import static java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME;
  */
 public class ObjectMapperWrapper implements Serializable {
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
-        .findAndRegisterModules()
-        .registerModule(
-            new SimpleModule()
-                .addSerializer(OffsetDateTime.class, OffsetDateTimeSerializer.INSTANCE)
-                .addDeserializer(OffsetDateTime.class, OffsetDateTimeDeserializer.INSTANCE)
-        );
+    private static final ObjectMapper OBJECT_MAPPER = newObjectMapper();
+
+    private static ObjectMapper newObjectMapper() {
+        ObjectMapper objectMapper = (ReflectionUtils.getClassOrNull("com.fasterxml.jackson.module.kotlin.KotlinModule") != null) ?
+            ReflectionUtils.invokeStaticMethod(
+                ReflectionUtils.getMethod(
+                    ReflectionUtils.getClass("io.hypersistence.utils.hibernate.type.util.KotlinObjectMapperBuilder"),
+                    "build"
+                )
+            ) :
+            new ObjectMapper();
+        return objectMapper
+            .findAndRegisterModules()
+            .registerModule(
+                new SimpleModule()
+                    .addSerializer(OffsetDateTime.class, OffsetDateTimeSerializer.INSTANCE)
+                    .addDeserializer(OffsetDateTime.class, OffsetDateTimeDeserializer.INSTANCE)
+            );
+    }
 
     public static final ObjectMapperWrapper INSTANCE = new ObjectMapperWrapper();
 
