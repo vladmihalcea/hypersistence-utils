@@ -77,7 +77,7 @@ public class JsonJavaTypeDescriptor extends AbstractClassJavaType<Object> implem
         final Object parameterType = parameters.get(PARAMETER_TYPE);
         if (parameterType instanceof ParameterType) {
             final MemberDetails xProperty = (MemberDetails) parameters.get(XPROPERTY);
-            if (xProperty != null && xProperty.getType().getTypeKind() == TypeDetails.Kind.TYPE_VARIABLE) {
+            if (xProperty == null || xProperty.getType().getTypeKind() == TypeDetails.Kind.TYPE_VARIABLE) {
                 type = ((ParameterType) parameterType).getReturnedClass();
             } else {
                 type = ((ParameterType) parameterType).getReturnedJavaType();
