@@ -1,3 +1,8 @@
+Version 3.13.2 - December 03, 2025
+================================================================================
+
+Change SQLStatementCountMismatchException to extend AssertionError #820
+
 Version 3.13.1 - December 01, 2025
 ================================================================================
 
