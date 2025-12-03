@@ -70,7 +70,7 @@ public class TsidGenerator implements IdentifierGenerator {
             } else {
                 throw new HibernateException(
                     String.format(
-                        "The @Tsid annotation on [%s] can only be placed on a Long or String entity attribute!",
+                        "The @Tsid annotation on [%s] can only be placed on a Long, String, or TSID entity attribute!",
                         clazz
                     )
                 );
