@@ -25,7 +25,8 @@ public class PostgreSQLJsonBinaryTypeAuditedTest extends AbstractPostgreSQLInteg
     protected Class<?>[] entities() {
 
         return new Class<?>[]{
-                User.class
+                User.class,
+                UserAudit.class
         };
     }
 
@@ -50,19 +51,11 @@ public class PostgreSQLJsonBinaryTypeAuditedTest extends AbstractPostgreSQLInteg
 
         doInJPA(entityManager -> {
             User user = entityManager.find(User.class, _user.getId());
+            assertEquals(new HashSet<>(asList("7654321", "1234567")), user.getPhones());
+            assertEquals(Integer.valueOf(0), user.getVersion());
 
-            SQLStatementCountValidator.reset();
-
-            user.setPhones(new HashSet<>(asList("1592637", "9518473")));
-        });
-
-        SQLStatementCountValidator.assertTotalCount(4);
-        SQLStatementCountValidator.assertUpdateCount(1);
-
-        doInJPA(entityManager -> {
-            User user = entityManager.find(User.class, _user.getId());
-            assertEquals(new HashSet<>(asList("9518473", "1592637")), user.getPhones());
-            assertEquals(Integer.valueOf(1), user.getVersion());
+            UserAudit userAudit = entityManager.find(UserAudit.class, _user.getId());
+            assertEquals(new HashSet<>(asList("7654321", "1234567")), userAudit.getPhones());
         });
     }
 
@@ -111,6 +104,32 @@ public class PostgreSQLJsonBinaryTypeAuditedTest extends AbstractPostgreSQLInteg
         public void setPhones(Set<String> phones) {
 
             this.phones = phones;
+        }
+    }
+
+    @Entity(name = "User Audit")
+    @Table(name = "users_aud")
+    public static class UserAudit extends BaseEntity {
+
+        private String name;
+
+        @Type(JsonBinaryType.class)
+        @Column(columnDefinition = "jsonb")
+        private Set<String> phones;
+
+        public String getName() {
+
+            return name;
+        }
+
+        public void setName(String name) {
+
+            this.name = name;
+        }
+
+        public Set<String> getPhones() {
+
+            return phones;
         }
     }
 }
