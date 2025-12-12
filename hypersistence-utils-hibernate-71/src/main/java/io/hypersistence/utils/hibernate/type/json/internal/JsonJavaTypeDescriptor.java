@@ -271,7 +271,7 @@ public class JsonJavaTypeDescriptor extends AbstractClassJavaType<Object> implem
     }
 
     @Override
-    public Class getJavaTypeClass() {
+    public Class getJavaType() {
         return propertyClass;
     }
 
