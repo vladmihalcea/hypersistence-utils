@@ -19,7 +19,7 @@ public class ArraySqlTypeDescriptor implements JdbcType {
 
     @Override
     public int getJdbcTypeCode() {
-        return Types.OTHER;
+        return Types.ARRAY;
     }
 
     @Override
