@@ -1,3 +1,8 @@
+Version 3.13.3 - December 12, 2025
+================================================================================
+
+ArrayType causes org.hibernate.tool.schema.spi.SchemaManagementException: Schema-validation: wrong column type encountered in column found (Types#ARRAY), but expecting (Types#OTHER) #697
+
 Version 3.13.2 - December 03, 2025
 ================================================================================
 
