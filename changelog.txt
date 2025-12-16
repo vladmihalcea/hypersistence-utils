@@ -1,3 +1,10 @@
+Version 3.13.4 - December 16, 2025
+================================================================================
+
+The Hibernate SessionFactory cannot be built due to a ClassCastException after upgrading to 3.13.3 #821
+
+Add support for Hibernate 7.2.0.CR4
+
 Version 3.13.3 - December 12, 2025
 ================================================================================
 
