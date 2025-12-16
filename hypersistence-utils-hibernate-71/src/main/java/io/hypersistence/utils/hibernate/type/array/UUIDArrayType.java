@@ -15,7 +15,9 @@ import java.util.UUID;
  * For more details about how to use it, check out <a href="https://vladmihalcea.com/how-to-map-java-and-sql-arrays-with-jpa-and-hibernate/">this article</a> on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
  *
  * @author Rafael Acevedo
+ * @deprecated Since version 6 Hibernate ORM supports ARRAY entity attributes
  */
+@Deprecated
 public class UUIDArrayType extends AbstractArrayType<UUID[]> {
 
     public static final UUIDArrayType INSTANCE = new UUIDArrayType();

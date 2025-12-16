@@ -24,7 +24,7 @@ public class MultiDimensionalStringArrayTypeTest extends AbstractPostgreSQLInteg
 
     @Override
     protected Class<?>[] entities() {
-        return new Class<?>[] {
+        return new Class<?>[]{
             Plane.class,
         };
     }
@@ -52,7 +52,7 @@ public class MultiDimensionalStringArrayTypeTest extends AbstractPostgreSQLInteg
                     .setId(1L)
                     .setName("ATR-42")
                     .setSeatGrid(
-                        new String[][] {
+                        new String[][]{
                             {"BLOCKED", "BLOCKED", "BLOCKED", "BLOCKED"},
                             {"UNRESERVED", "UNRESERVED", "RESERVED", "UNRESERVED"},
                             {"RESERVED", "RESERVED", "RESERVED", "RESERVED"},
@@ -85,14 +85,14 @@ public class MultiDimensionalStringArrayTypeTest extends AbstractPostgreSQLInteg
         });
 
         doInJPA(entityManager -> {
-            List<Tuple> tuples = entityManager
-                .createNativeQuery(
-                    "SELECT " +
-                        "   id, " +
-                        "   name, " +
-                        "   seat_grid " +
-                        "FROM plane " +
-                        "WHERE id >= :id", Tuple.class)
+            List<Tuple> tuples = entityManager.createNativeQuery("""
+                    SELECT
+                       id,
+                       name,
+                       seat_grid
+                    FROM plane
+                    WHERE id >= :id
+                    """, Tuple.class)
                 .setParameter("id", 0)
                 .unwrap(org.hibernate.query.NativeQuery.class)
                 .addScalar("id")
@@ -116,8 +116,8 @@ public class MultiDimensionalStringArrayTypeTest extends AbstractPostgreSQLInteg
         private Long id;
 
         private String name;
-        
-        @Type(StringArrayType.class)
+
+        @Type(MultiDimensionalArrayType.class)
         @Column(name = "seat_grid", columnDefinition = "text[][]")
         private String[][] seatGrid;
 
@@ -152,5 +152,4 @@ public class MultiDimensionalStringArrayTypeTest extends AbstractPostgreSQLInteg
             return seatGrid[row - 1][letter - 65];
         }
     }
-
 }

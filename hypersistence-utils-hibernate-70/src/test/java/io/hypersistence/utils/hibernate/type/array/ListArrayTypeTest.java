@@ -163,10 +163,8 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
                 Arrays.asList(true, false),
                 event.getSensorBooleanValues()
             );
-            assertEquals(
-                Arrays.asList(0.123D, 456.789D),
-                event.getSensorDoubleValues()
-            );
+            assertEquals(0.123, event.getSensorDoubleValues().get(0), 0.001);
+            assertEquals(456.789, event.getSensorDoubleValues().get(1), 0.001);
             assertEquals(
                 Arrays.asList(
                     SensorState.ONLINE, SensorState.OFFLINE,
@@ -240,19 +238,16 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         });
 
         doInJPA(entityManager -> {
-            List<Tuple> events = entityManager.createNativeQuery(
-                "select " +
-                    "   id, " +
-                    "   sensor_ids, " +
-                    "   sensor_names, " +
-                    "   sensor_values " +
-                    "from event " +
-                    "where id >= :id", Tuple.class)
+            List<Tuple> events = entityManager.createNativeQuery("""
+                select
+                   id,
+                   sensor_ids,
+                   sensor_names,
+                   sensor_values
+                from event
+                where id >= :id
+                """, Tuple.class)
                 .setParameter("id", 0)
-                .unwrap(org.hibernate.query.NativeQuery.class)
-                .addScalar("sensor_ids", UUID[].class)
-                .addScalar("sensor_names", String[].class)
-                .addScalar("sensor_values", int[].class)
                 .getResultList();
 
             assertEquals(2, events.size());
@@ -286,22 +281,23 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
     @Test
     public void testScalarEnumArray() {
         doInJPA(entityManager -> {
-            List<Tuple> events = entityManager.createNativeQuery(
-                "select " +
-                    "   id, " +
-                    "   sensor_ids, " +
-                    "   sensor_names, " +
-                    "   sensor_values, " +
-                    "   sensor_states " +
-                    "from event " +
-                    "where id >= :id", Tuple.class)
-            .setParameter("id", 0)
-            .unwrap(org.hibernate.query.NativeQuery.class)
-            .addScalar("sensor_ids", UUID[].class)
-            .addScalar("sensor_names", String[].class)
-            .addScalar("sensor_values", int[].class)
-            .addScalar("sensor_states", SensorState[].class)
-            .getResultList();
+            List<Tuple> events = entityManager.createNativeQuery("""
+                select
+                   id,
+                   sensor_ids,
+                   sensor_names,
+                   sensor_values,
+                   sensor_states
+                from event
+                where id >= :id
+                """, Tuple.class)
+                .setParameter("id", 0)
+                .unwrap(org.hibernate.query.NativeQuery.class)
+                .addScalar("sensor_ids", UUID[].class)
+                .addScalar("sensor_names", String[].class)
+                .addScalar("sensor_values", int[].class)
+                .addScalar("sensor_states", SensorState[].class)
+                .getResultList();
 
             assertEquals(2, events.size());
         });
@@ -344,7 +340,8 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             assertArrayEquals(new Short[]{null, (short) 69}, event.getSensorShortValues().toArray());
             assertArrayEquals(new Long[]{null, 9223372036854775800L}, event.getSensorLongValues().toArray());
             assertArrayEquals(new Boolean[]{null, false}, event.getSensorBooleanValues().toArray());
-            assertArrayEquals(new Double[]{null, 456.789D}, event.getSensorDoubleValues().toArray());
+            assertNull(event.getSensorDoubleValues().get(0));
+            assertEquals(456.789, event.getSensorDoubleValues().get(1), 0.001);
             assertArrayEquals(new SensorState[]{null, SensorState.OFFLINE, SensorState.ONLINE, null}, event.getSensorStates().toArray());
             assertArrayEquals(new Date[]{null, date}, event.getDateValues().toArray());
             assertArrayEquals(new Date[]{null, date}, event.getTimestampValues().toArray());
@@ -449,7 +446,7 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         doInJPA(entityManager -> {
             ManagedType<Event> eventManagedType = entityManager.getMetamodel().managedType(Event.class);
             assertEquals(
-                Collection.class,
+                List.class,
                 eventManagedType.getAttribute("sensorIds").getJavaType()
             );
         });
@@ -462,42 +459,36 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         @Id
         private Long id;
 
-        @Type(ListArrayType.class)
         @Column(
             name = "sensor_ids",
             columnDefinition = "uuid[]"
         )
         private List<UUID> sensorIds;
 
-        @Type(ListArrayType.class)
         @Column(
             name = "sensor_names",
             columnDefinition = "text[]"
         )
         private List<String> sensorNames;
 
-        @Type(ListArrayType.class)
         @Column(
             name = "sensor_values",
             columnDefinition = "integer[]"
         )
         private List<Integer> sensorValues;
 
-        @Type(ListArrayType.class)
         @Column(
             name = "sensor_long_values",
             columnDefinition = "bigint[]"
         )
         private List<Long> sensorLongValues;
 
-        @Type(ListArrayType.class)
         @Column(
             name = "sensor_boolean_values",
             columnDefinition = "boolean[]"
         )
         private List<Boolean> sensorBooleanValues;
 
-        @Type(ListArrayType.class)
         @Column(
             name = "sensor_double_values",
             columnDefinition = "float8[]"
@@ -519,56 +510,48 @@ public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         )
         private List<SensorState> sensorStates;
 
-        @Type(ListArrayType.class)
         @Column(
             name = "date_values",
             columnDefinition = "date[]"
         )
         private List<Date> dateValues;
 
-        @Type(ListArrayType.class)
         @Column(
             name = "timestamp_values",
             columnDefinition = "timestamp[]"
         )
         private List<Date> timestampValues;
 
-        @Type(ListArrayType.class)
         @Column(
             name = "decimal_values",
             columnDefinition = "decimal[]"
         )
         private List<BigDecimal> decimalValues;
 
-        @Type(ListArrayType.class)
         @Column(
             name = "localdate_values",
             columnDefinition = "date[]"
         )
         private List<LocalDate> localDateValues;
 
-        @Type(ListArrayType.class)
         @Column(
             name = "localdatetime_values",
             columnDefinition = "timestamp[]"
         )
         private List<LocalDateTime> localDateTimeValues;
 
-        @Type(ListArrayType.class)
         @Column(
             name = "localdatetime_set_values",
             columnDefinition = "timestamp[]"
         )
         private Set<LocalDateTime> localDateTimeSetValues;
 
-        @Type(ListArrayType.class)
         @Column(
             name = "sorted_numbers",
             columnDefinition = "integer[]"
         )
         private SortedSet<Integer> sortedNumbers;
 
-        @Type(ListArrayType.class)
         @Column(
             name = "short_values",
             columnDefinition = "smallint[]"

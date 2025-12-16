@@ -85,22 +85,23 @@ public class MultiDimensionalIntegerArrayTypeTest extends AbstractPostgreSQLInte
         });
 
         doInJPA(entityManager -> {
-            List<Tuple> tuples = entityManager.createNativeQuery(
-                    "SELECT " +
-                    "   id, " +
-                    "   name, " +
-                    "   seat_grid " +
-                    "FROM plane " +
-                    "WHERE id >= :id", Tuple.class)
-                .setParameter("id", 0)
-                .unwrap(org.hibernate.query.NativeQuery.class)
-                .addScalar("id")
-                .addScalar("name")
-                .addScalar(
-                    "seat_grid",
-                    (BasicDomainType) Arrays.stream(entityManager.getEntityManagerFactory().unwrap(SessionFactoryImplementor.class).getMappingMetamodel().getEntityDescriptor(Plane.class).getPropertyTypes()).filter(t -> t instanceof CustomType<?>).findFirst().orElse(null)
-                )
-                .getResultList();
+            List<Tuple> tuples = entityManager.createNativeQuery("""
+                SELECT
+                   id,
+                   name,
+                   seat_grid
+                FROM plane
+                WHERE id >= :id
+                """, Tuple.class)
+            .setParameter("id", 0)
+            .unwrap(org.hibernate.query.NativeQuery.class)
+            .addScalar("id")
+            .addScalar("name")
+            .addScalar(
+                "seat_grid",
+                (BasicDomainType) Arrays.stream(entityManager.getEntityManagerFactory().unwrap(SessionFactoryImplementor.class).getMappingMetamodel().getEntityDescriptor(Plane.class).getPropertyTypes()).filter(t -> t instanceof CustomType<?>).findFirst().orElse(null)
+            )
+            .getResultList();
 
             Tuple plane = tuples.get(0);
             assertEquals("ATR-42", plane.get("name"));
@@ -116,7 +117,7 @@ public class MultiDimensionalIntegerArrayTypeTest extends AbstractPostgreSQLInte
 
         private String name;
 
-        @Type(IntArrayType.class)
+        @Type(MultiDimensionalArrayType.class)
         @Column(name = "seat_grid", columnDefinition = "int[][]")
         private Integer[][] seatGrid;
 

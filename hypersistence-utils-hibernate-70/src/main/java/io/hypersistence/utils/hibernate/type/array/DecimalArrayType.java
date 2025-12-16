@@ -15,7 +15,9 @@ import java.util.Properties;
  * "https://vladmihalcea.com/how-to-map-java-and-sql-arrays-with-jpa-and-hibernate/">this article</a>.
  *
  * @author Moritz Kobel
+ * @deprecated Since version 6 Hibernate ORM supports ARRAY entity attributes
  */
+@Deprecated
 public class DecimalArrayType extends AbstractArrayType<BigDecimal[]> {
 
     public static final DecimalArrayType INSTANCE = new DecimalArrayType();

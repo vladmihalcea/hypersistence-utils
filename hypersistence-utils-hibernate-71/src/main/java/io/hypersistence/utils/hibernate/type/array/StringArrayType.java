@@ -14,7 +14,9 @@ import java.util.Properties;
  * For more details about how to use it, check out <a href="https://vladmihalcea.com/how-to-map-java-and-sql-arrays-with-jpa-and-hibernate/">this article</a> on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
  *
  * @author Vlad Mihalcea
+ * @deprecated Since version 6 Hibernate ORM supports ARRAY entity attributes
  */
+@Deprecated
 public class StringArrayType extends AbstractArrayType<String[]> {
 
     public static final StringArrayType INSTANCE = new StringArrayType();

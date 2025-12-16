@@ -15,7 +15,9 @@ import java.util.Properties;
  *
  * @author jeet.choudhary7@gmail.com
  * @version 2.9.13
+ * @deprecated Since version 6 Hibernate ORM supports ARRAY entity attributes
  */
+@Deprecated
 public class BooleanArrayType extends AbstractArrayType<boolean[]> {
 
     public static final BooleanArrayType INSTANCE = new BooleanArrayType();

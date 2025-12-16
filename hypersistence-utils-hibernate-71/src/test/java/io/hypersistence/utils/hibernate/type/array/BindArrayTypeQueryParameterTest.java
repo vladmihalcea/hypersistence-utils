@@ -1,7 +1,7 @@
 package io.hypersistence.utils.hibernate.type.array;
 
-import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import io.hypersistence.utils.common.ExceptionUtil;
+import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -10,17 +10,11 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.ParameterExpression;
 import jakarta.persistence.criteria.Root;
-import org.hibernate.annotations.Type;
-import org.hibernate.query.Query;
 import org.hibernate.query.TypedParameterValue;
 import org.junit.Test;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Stanislav Gubanov
@@ -30,24 +24,23 @@ public class BindArrayTypeQueryParameterTest extends AbstractPostgreSQLIntegrati
     @Override
     protected Class<?>[] entities() {
         return new Class<?>[]{
-                Event.class,
+            Event.class,
         };
     }
 
     @Override
     protected void beforeInit() {
-        executeStatement(
-            "CREATE OR REPLACE FUNCTION " +
-            "    fn_array_contains(" +
-            "       left_array integer[], " +
-            "       right_array integer[]" +
-            ") RETURNS " +
-            "       boolean AS " +
-            "$$ " +
-            "BEGIN " +
-            "  return left_array @> right_array; " +
-            "END; " +
-            "$$ LANGUAGE 'plpgsql';"
+        executeStatement("""
+            CREATE OR REPLACE FUNCTION
+                fn_array_contains(       left_array integer[],
+                   right_array integer[]) RETURNS
+                   boolean AS
+            $$
+            BEGIN
+              return left_array @> right_array;
+            END;
+            $$ LANGUAGE 'plpgsql';
+            """
         );
     }
 
@@ -66,12 +59,12 @@ public class BindArrayTypeQueryParameterTest extends AbstractPostgreSQLIntegrati
     public void testJPQLWithDefaultParameterBiding() {
         try {
             doInJPA(entityManager -> {
-                Event event = entityManager
-                .createQuery(
-                    "select e " +
-                    "from Event e " +
-                    "where " +
-                    "   cast(fn_array_contains(e.values, :arrayValues) as Boolean) = true", Event.class)
+                Event event = entityManager.createQuery("""
+                    select e
+                    from Event e
+                    where
+                       cast(fn_array_contains(e.values, :arrayValues) as Boolean) = true
+                    """, Event.class)
                 .setParameter("arrayValues", new int[]{2, 3})
                 .getSingleResult();
             });
@@ -84,12 +77,12 @@ public class BindArrayTypeQueryParameterTest extends AbstractPostgreSQLIntegrati
     @Test
     public void testJPQLWithExplicitParameterTypeBinding() {
         doInJPA(entityManager -> {
-            Event event = (Event) entityManager
-            .createQuery(
-                "select e " +
-                "from Event e " +
-                "where " +
-                "   cast(fn_array_contains(e.values, :arrayValues) as Boolean) = true", Event.class)
+            Event event = (Event) entityManager.createQuery("""
+                select e
+                from Event e
+                where
+                   cast(fn_array_contains(e.values, :arrayValues) as Boolean) = true
+                """, Event.class)
             .unwrap(org.hibernate.query.Query.class)
             .setParameter("arrayValues", new int[]{2, 3}, IntArrayType.INSTANCE)
             .getSingleResult();
@@ -101,12 +94,12 @@ public class BindArrayTypeQueryParameterTest extends AbstractPostgreSQLIntegrati
     @Test
     public void testJPQLWithTypedParameterValue() {
         doInJPA(entityManager -> {
-            Event event = entityManager
-            .createQuery(
-                "select e " +
-                "from Event e " +
-                "where " +
-                "   cast(fn_array_contains(e.values, :arrayValues) as Boolean) = true", Event.class)
+            Event event = entityManager.createQuery("""
+                select e
+                from Event e
+                where
+                   cast(fn_array_contains(e.values, :arrayValues) as Boolean) = true
+                """, Event.class)
             .setParameter("arrayValues", new TypedParameterValue<>(IntArrayType.INSTANCE, new int[]{2, 3}))
             .getSingleResult();
 
@@ -134,9 +127,8 @@ public class BindArrayTypeQueryParameterTest extends AbstractPostgreSQLIntegrati
                 )
             );
 
-            Event event = (Event) entityManager.createQuery(cq)
-            .unwrap(Query.class)
-            .setParameter("arrayValues", new int[]{2, 3}, IntArrayType.INSTANCE)
+            Event event = entityManager.createQuery(cq)
+                .setParameter("arrayValues", new int[]{2, 3})
             .getSingleResult();
 
             assertArrayEquals(new int[]{1, 2, 3}, event.getValues());
@@ -152,7 +144,6 @@ public class BindArrayTypeQueryParameterTest extends AbstractPostgreSQLIntegrati
 
         private String name;
 
-        @Type(IntArrayType.class)
         @Column(
             name = "event_values",
             columnDefinition = "integer[]"

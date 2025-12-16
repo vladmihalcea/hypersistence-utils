@@ -3,7 +3,6 @@ package io.hypersistence.utils.hibernate.type.array;
 import io.hypersistence.utils.hibernate.type.model.BaseEntity;
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import jakarta.persistence.*;
-import org.hibernate.annotations.Type;
 import org.junit.Test;
 
 import java.util.List;
@@ -50,12 +49,14 @@ public class ArrayTypeNativeQueryTest extends AbstractPostgreSQLIntegrationTest 
     @Table(name = "event")
     @NamedNativeQuery(
         name = "EventIdSensorValues",
-        query = "select " +
-                "   id, " +
-                "   sensor_names, " +
-                "   sensor_values " +
-                "from event " +
-                "where id >= :id",
+        query = """
+            select
+               id,
+               sensor_names,
+               sensor_values
+            from event
+            where id >= :id
+            """,
         resultSetMapping = "EventIdSensorValues"
     )
     @SqlResultSetMapping(
@@ -80,11 +81,9 @@ public class ArrayTypeNativeQueryTest extends AbstractPostgreSQLIntegrationTest 
     )
     public static class Event extends BaseEntity {
 
-        @Type(StringArrayType.class)
         @Column(name = "sensor_names", columnDefinition = "text[]")
         private String[] sensorNames;
 
-        @Type(IntArrayType.class)
         @Column(name = "sensor_values", columnDefinition = "integer[]")
         private int[] sensorValues;
 

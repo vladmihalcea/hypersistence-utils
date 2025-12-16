@@ -10,13 +10,7 @@ import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.fail;
 
 /**
  * @author Vlad Mihalcea
@@ -68,14 +62,12 @@ public class SimpleArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         @Id
         private Long id;
 
-        @Type(StringArrayType.class)
         @Column(
             name = "sensor_names",
             columnDefinition = "text[]"
         )
         private String[] sensorNames;
 
-        @Type(IntArrayType.class)
         @Column(
             name = "sensor_values",
             columnDefinition = "integer[]"

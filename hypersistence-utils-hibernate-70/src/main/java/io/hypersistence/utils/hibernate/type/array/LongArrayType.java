@@ -15,7 +15,9 @@ import java.util.Properties;
  * article</a> on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
  *
  * @author Vlad Mihalcea
+ * @deprecated Since version 6 Hibernate ORM supports ARRAY entity attributes
  */
+@Deprecated
 public class LongArrayType extends AbstractArrayType<long[]> {
 
     public static final LongArrayType INSTANCE = new LongArrayType();

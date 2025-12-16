@@ -59,25 +59,27 @@ public class WrapperArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             assertArrayEquals(new UUID[]{UUID.fromString("c65a3bcb-8b36-46d4-bddb-ae96ad016eb1"), UUID.fromString("72e95717-5294-4c15-aa64-a3631cf9a800")}, event.getSensorIds());
             assertArrayEquals(new Integer[]{12, 756}, event.getSensorValues());
             assertArrayEquals(new Long[]{42L, 9223372036854775800L}, event.getSensorLongValues());
-            assertArrayEquals(new Double[]{0.123, 456.789}, event.getSensorDoubleValues());
+            assertEquals(0.123, event.getSensorDoubleValues()[0], 0.001);
+            assertEquals(456.789, event.getSensorDoubleValues()[1], 0.001);
             assertArrayEquals(new Float[]{1.23f, 45.89f}, event.getSensorFloatValues());
         });
 
         doInJPA(entityManager -> {
-            List<Event> events = entityManager.createNativeQuery(
-                "select " +
-                "   id, " +
-                "   sensor_ids, " +
-                "   sensor_values, " +
-                "   sensor_double_values,   " +
-                "   sensor_float_values   " +
-                "from event ", Tuple.class)
-            .unwrap(org.hibernate.query.NativeQuery.class)
-            .addScalar("sensor_ids", UUID[].class)
-            .addScalar("sensor_values", int[].class)
-            .addScalar("sensor_double_values", double[].class)
-            .addScalar("sensor_float_values", float[].class)
-            .getResultList();
+            List<Event> events = entityManager.createNativeQuery("""
+                select
+                   id,
+                   sensor_ids,
+                   sensor_values,
+                   sensor_double_values,
+                   sensor_float_values
+                from event
+                """, Tuple.class)
+                .unwrap(org.hibernate.query.NativeQuery.class)
+                .addScalar("sensor_ids", UUID[].class)
+                .addScalar("sensor_values", int[].class)
+                .addScalar("sensor_double_values", double[].class)
+                .addScalar("sensor_float_values", float[].class)
+                .getResultList();
 
             assertEquals(2, events.size());
         });
@@ -86,23 +88,19 @@ public class WrapperArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
     @Entity(name = "Event")
     @Table(name = "event")
     public static class Event extends BaseEntity {
-        @Type(UUIDArrayType.class)
+
         @Column(name = "sensor_ids", columnDefinition = "uuid[]")
         private UUID[] sensorIds;
 
-        @Type(IntArrayType.class)
         @Column(name = "sensor_values", columnDefinition = "integer[]")
         private Integer[] sensorValues;
 
-        @Type(LongArrayType.class)
         @Column(name = "sensor_long_values", columnDefinition = "bigint[]")
         private Long[] sensorLongValues;
 
-        @Type(DoubleArrayType.class)
         @Column(name = "sensor_double_values", columnDefinition = "float8[]")
         private Double[] sensorDoubleValues;
 
-        @Type(FloatArrayType.class)
         @Column(name = "sensor_float_values", columnDefinition = "float4[]")
         private Float[] sensorFloatValues;
 

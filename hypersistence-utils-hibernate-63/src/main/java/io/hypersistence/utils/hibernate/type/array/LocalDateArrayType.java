@@ -18,8 +18,9 @@ import java.util.Properties;
  * article</a> on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
  *
  * @author Andrew Lazarus, based on DateArrayType by Guillaume Briand
+ * @deprecated Since version 6 Hibernate ORM supports ARRAY entity attributes
  */
-
+@Deprecated
 public class LocalDateArrayType extends AbstractArrayType<java.time.LocalDate[]> {
 
     public static final io.hypersistence.utils.hibernate.type.array.LocalDateArrayType INSTANCE =

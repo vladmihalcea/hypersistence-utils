@@ -1,7 +1,7 @@
 package io.hypersistence.utils.hibernate.type.array;
 
 import io.hypersistence.utils.hibernate.type.array.internal.AbstractArrayType;
-import io.hypersistence.utils.hibernate.type.array.internal.BooleanArrayTypeDescriptor;
+import io.hypersistence.utils.hibernate.type.array.internal.GenericArrayTypeDescriptor;
 import io.hypersistence.utils.hibernate.type.util.Configuration;
 import io.hypersistence.utils.hibernate.type.util.ParameterizedParameterType;
 import org.hibernate.usertype.DynamicParameterizedType;
@@ -14,39 +14,37 @@ import java.util.Properties;
  * "https://vladmihalcea.com/how-to-map-java-and-sql-arrays-with-jpa-and-hibernate/">this article</a>.
  *
  * @author jeet.choudhary7@gmail.com
- * @version 2.9.13
- * @deprecated Since version 6 Hibernate ORM supports ARRAY entity attributes
+ * @version 3.14.1
  */
-@Deprecated
-public class BooleanArrayType extends AbstractArrayType<boolean[]> {
+public class MultiDimensionalArrayType extends AbstractArrayType<Object> {
 
-    public static final BooleanArrayType INSTANCE = new BooleanArrayType();
+    public static final MultiDimensionalArrayType INSTANCE = new MultiDimensionalArrayType();
 
-    public BooleanArrayType() {
+    public MultiDimensionalArrayType() {
         super(
-            new BooleanArrayTypeDescriptor()
+            new GenericArrayTypeDescriptor()
         );
     }
 
-    public BooleanArrayType(Configuration configuration) {
+    public MultiDimensionalArrayType(Configuration configuration) {
         super(
-            new BooleanArrayTypeDescriptor(),
+            new GenericArrayTypeDescriptor(),
             configuration
         );
     }
 
-    public BooleanArrayType(Class arrayClass) {
+    public MultiDimensionalArrayType(Class arrayClass) {
         this();
         Properties parameters = new Properties();
         parameters.put(DynamicParameterizedType.PARAMETER_TYPE, new ParameterizedParameterType(arrayClass));
         setParameterValues(parameters);
     }
 
-    public BooleanArrayType(org.hibernate.type.spi.TypeBootstrapContext typeBootstrapContext) {
+    public MultiDimensionalArrayType(org.hibernate.type.spi.TypeBootstrapContext typeBootstrapContext) {
         this(new Configuration(typeBootstrapContext.getConfigurationSettings()));
     }
 
     public String getName() {
-        return "boolean-array";
+        return "multi-dimensional-array";
     }
 }

@@ -65,23 +65,23 @@ public class DefaultEmptyListArrayTypeTest extends AbstractPostgreSQLIntegration
     @Entity(name = "Event")
     @Table(name = "event")
     public static class Event extends BaseEntity {
-        @Type(ListArrayType.class)
+
         @Column(name = "sensor_ids", columnDefinition = "uuid[]")
         private List<UUID> sensorIds = new ArrayList<>();
 
-        @Type(ListArrayType.class)
+
         @Column(name = "sensor_names", columnDefinition = "text[]")
         private List<String> sensorNames = new ArrayList<>();
 
-        @Type(ListArrayType.class)
+
         @Column(name = "sensor_values", columnDefinition = "integer[]")
         private List<Integer> sensorValues = new ArrayList<>();
 
-        @Type(ListArrayType.class)
+
         @Column(name = "sensor_short_values", columnDefinition = "smallint[]")
         private List<Short> sensorShortValues = new ArrayList<>();
 
-        @Type(ListArrayType.class)
+
         @Column(name = "sensor_long_values", columnDefinition = "bigint[]")
         private List<Long> sensorLongValues = new ArrayList<>();
 
@@ -92,11 +92,11 @@ public class DefaultEmptyListArrayTypeTest extends AbstractPostgreSQLIntegration
         @Column(name = "sensor_states", columnDefinition = "sensor_state[]")
         private List<SensorState> sensorStates = new ArrayList<>();
 
-        @Type(ListArrayType.class)
+
         @Column(name = "date_values", columnDefinition = "date[]")
         private List<Date> dateValues = new ArrayList<>();
 
-        @Type(ListArrayType.class)
+
         @Column(name = "timestamp_values", columnDefinition = "timestamp[]")
         private List<Date> timestampValues = new ArrayList<>();
 

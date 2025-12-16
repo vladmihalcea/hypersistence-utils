@@ -12,11 +12,8 @@ import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
 
-import javax.sql.DataSource;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -25,7 +22,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Vlad Mihalcea
@@ -36,7 +34,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
     @Override
     protected Class<?>[] entities() {
         return new Class<?>[]{
-                Event.class,
+            Event.class,
         };
     }
 
@@ -50,8 +48,8 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
     @Test
     public void test() {
 
-        Date date1 = Date.from(LocalDate.of(1991, 12, 31).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-        Date date2 = Date.from(LocalDate.of(1990, 1, 1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+        Timestamp date1 = Timestamp.from(LocalDate.of(1991, 12, 31).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+        Timestamp date2 = Timestamp.from(LocalDate.of(1990, 1, 1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
 
         doInJPA(entityManager -> {
             Event nullEvent = new Event();
@@ -67,8 +65,8 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             event.setSensorDoubleValues(new double[]{0.123, 456.789});
             event.setSensorFloatValues(new float[]{1.2f, 4.35f});
             event.setSensorStates(new SensorState[]{SensorState.ONLINE, SensorState.OFFLINE, SensorState.ONLINE, SensorState.UNKNOWN});
-            event.setDateValues(new Date[]{date1, date2});
-            event.setTimestampValues(new Date[]{date1, date2});
+            event.setDateValues(new Timestamp[]{date1, date2});
+            event.setTimestampValues(new Timestamp[]{date1, date2});
             event.setDecimalValues(new BigDecimal[]{BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.TEN});
             event.setLocalDateValues(new LocalDate[]{LocalDate.of(2022, 3, 22), LocalDate.of(2021, 4, 21)});
             event.setLocalDateTimeValues(new LocalDateTime[]{LocalDateTime.of(2022, 3, 22, 11, 22, 33), LocalDateTime.of(2021, 4, 21, 22, 33, 44)});
@@ -96,22 +94,23 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
         });
 
         doInJPA(entityManager -> {
-            List<Event> events = entityManager.createNativeQuery(
-                            "select " +
-                                    "   id, " +
-                                    "   sensor_ids, " +
-                                    "   sensor_names, " +
-                                    "   sensor_values, " +
-                                    "   date_values   " +
-                                    "from event " +
-                                    "where id >= :id", Tuple.class)
-                    .setParameter("id", 0)
-                    .unwrap(org.hibernate.query.NativeQuery.class)
-                    .addScalar("sensor_ids", UUID[].class)
-                    .addScalar("sensor_names", String[].class)
-                    .addScalar("sensor_values", int[].class)
-                    .addScalar("date_values", Date[].class)
-                    .getResultList();
+            List<Event> events = entityManager.createNativeQuery("""
+                select
+                   id,
+                   sensor_ids,
+                   sensor_names,
+                   sensor_values,
+                   date_values \s
+                from event
+                where id >= :id
+                """, Tuple.class)
+                .setParameter("id", 0)
+                .unwrap(org.hibernate.query.NativeQuery.class)
+                .addScalar("sensor_ids", UUID[].class)
+                .addScalar("sensor_names", String[].class)
+                .addScalar("sensor_values", int[].class)
+                .addScalar("date_values", Date[].class)
+                .getResultList();
 
             assertEquals(2, events.size());
 
@@ -150,57 +149,45 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
     @Entity(name = "Event")
     @Table(name = "event")
     public static class Event extends BaseEntity {
-        @Type(UUIDArrayType.class)
         @Column(name = "sensor_ids", columnDefinition = "uuid[]")
         private UUID[] sensorIds;
 
-        @Type(StringArrayType.class)
         @Column(name = "sensor_names", columnDefinition = "text[]")
         private String[] sensorNames;
 
-        @Type(IntArrayType.class)
         @Column(name = "sensor_values", columnDefinition = "integer[]")
         private int[] sensorValues;
 
-        @Type(LongArrayType.class)
         @Column(name = "sensor_long_values", columnDefinition = "bigint[]")
         private long[] sensorLongValues;
 
-        @Type(BooleanArrayType.class)
         @Column(name = "sensor_boolean_values", columnDefinition = "boolean[]")
         private Boolean[] sensorBooleanValues;
 
-        @Type(DoubleArrayType.class)
         @Column(name = "sensor_double_values", columnDefinition = "float8[]")
         private double[] sensorDoubleValues;
 
-        @Type(FloatArrayType.class)
         @Column(name = "sensor_float_values", columnDefinition = "float4[]")
         private float[] sensorFloatValues;
 
-        @Type(DateArrayType.class)
         @Column(name = "date_values", columnDefinition = "date[]")
-        private Date[] dateValues;
+        private Timestamp[] dateValues;
 
-        @Type(TimestampArrayType.class)
         @Column(name = "timestamp_values", columnDefinition = "timestamp[]")
-        private Date[] timestampValues;
+        private Timestamp[] timestampValues;
 
-        @Type(DecimalArrayType.class)
         @Column(name = "decimal_values", columnDefinition = "decimal[]")
         private BigDecimal[] decimalValues;
 
-        @Type(LocalDateArrayType.class)
         @Column(name = "localdate_values", columnDefinition = "date[]")
         private LocalDate[] localDateValues;
 
-        @Type(LocalDateTimeArrayType.class)
         @Column(name = "localdatetime_values", columnDefinition = "timestamp[]")
         private LocalDateTime[] localDateTimeValues;
 
         @Type(
-                value = EnumArrayType.class,
-                parameters = @Parameter(name = AbstractArrayType.SQL_ARRAY_TYPE, value = "sensor_state")
+            value = EnumArrayType.class,
+            parameters = @Parameter(name = AbstractArrayType.SQL_ARRAY_TYPE, value = "sensor_state")
         )
         @Column(name = "sensor_states", columnDefinition = "sensor_state[]")
         private SensorState[] sensorStates;
@@ -273,7 +260,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             return dateValues;
         }
 
-        public void setDateValues(Date[] dateValues) {
+        public void setDateValues(Timestamp[] dateValues) {
             this.dateValues = dateValues;
         }
 
@@ -281,7 +268,7 @@ public class ArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
             return timestampValues;
         }
 
-        public void setTimestampValues(Date[] timestampValues) {
+        public void setTimestampValues(Timestamp[] timestampValues) {
             this.timestampValues = timestampValues;
         }
 

@@ -17,7 +17,9 @@ import java.util.Properties;
  *
  * @author Vlad Mihalcea
  * @author Andreas Eberle
+ * @deprecated Since version 6 Hibernate ORM supports ARRAY entity attributes
  */
+@Deprecated
 public class FloatArrayType extends AbstractArrayType<float[]> {
 
     public static final FloatArrayType INSTANCE = new FloatArrayType();

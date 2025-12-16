@@ -2,11 +2,7 @@ package io.hypersistence.utils.hibernate.type.array;
 
 import io.hypersistence.utils.hibernate.type.model.BaseEntity;
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
-import jakarta.persistence.Cacheable;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Tuple;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
@@ -14,12 +10,7 @@ import org.junit.Test;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -87,20 +78,21 @@ public class EhcacheListArrayTypeTest extends AbstractPostgreSQLIntegrationTest 
         });
 
         doInJPA(entityManager -> {
-            List<Tuple> events = entityManager.createNativeQuery(
-                "select " +
-                "   id, " +
-                "   sensor_ids, " +
-                "   sensor_names, " +
-                "   sensor_values " +
-                "from event " +
-                "where id >= :id", Tuple.class)
-            .setParameter("id", 0)
-            .unwrap(org.hibernate.query.NativeQuery.class)
-            .addScalar("sensor_ids", UUID[].class)
-            .addScalar("sensor_names", String[].class)
-            .addScalar("sensor_values", int[].class)
-            .getResultList();
+            List<Tuple> events = entityManager.createNativeQuery("""
+                select
+                   id,
+                   sensor_ids,
+                   sensor_names,
+                   sensor_values
+                from event
+                where id >= :id
+                """, Tuple.class)
+                .setParameter("id", 0)
+                .unwrap(org.hibernate.query.NativeQuery.class)
+                .addScalar("sensor_ids", UUID[].class)
+                .addScalar("sensor_names", String[].class)
+                .addScalar("sensor_values", int[].class)
+                .getResultList();
 
             assertEquals(2, events.size());
         });
@@ -245,23 +237,19 @@ public class EhcacheListArrayTypeTest extends AbstractPostgreSQLIntegrationTest 
     @Cacheable
     @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     public static class Event extends BaseEntity {
-        @Type(ListArrayType.class)
+
         @Column(name = "sensor_ids", columnDefinition = "uuid[]")
         private List<UUID> sensorIds;
 
-        @Type(ListArrayType.class)
         @Column(name = "sensor_names", columnDefinition = "text[]")
         private List<String> sensorNames;
 
-        @Type(ListArrayType.class)
         @Column(name = "sensor_values", columnDefinition = "integer[]")
         private List<Integer> sensorValues;
 
-        @Type(ListArrayType.class)
         @Column(name = "sensor_short_values", columnDefinition = "smallint[]")
         private List<Short> sensorShortValues;
 
-        @Type(ListArrayType.class)
         @Column(name = "sensor_long_values", columnDefinition = "bigint[]")
         private List<Long> sensorLongValues;
 
@@ -272,11 +260,9 @@ public class EhcacheListArrayTypeTest extends AbstractPostgreSQLIntegrationTest 
         @Column(name = "sensor_states", columnDefinition = "sensor_state[]")
         private List<SensorState> sensorStates;
 
-        @Type(ListArrayType.class)
         @Column(name = "date_values", columnDefinition = "date[]")
         private List<Date> dateValues;
 
-        @Type(ListArrayType.class)
         @Column(name = "timestamp_values", columnDefinition = "timestamp[]")
         private List<Date> timestampValues;
 

@@ -14,7 +14,9 @@ import java.util.Properties;
  * For more details about how to use it, check out <a href="https://vladmihalcea.com/postgresql-array-java-list/">this article</a> on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
  *
  * @author Vlad Mihalcea
+ * @deprecated Since version 6 Hibernate ORM supports ARRAY entity attributes
  */
+@Deprecated
 public class ListArrayType extends AbstractArrayType<Collection> implements DynamicParameterizedType {
 
     public static final ListArrayType INSTANCE = new ListArrayType();

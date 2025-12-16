@@ -112,4 +112,8 @@ public abstract class AbstractArrayTypeDescriptor<T>
     protected String getSqlArrayType() {
         return sqlArrayType;
     }
+
+    protected void setSqlArrayType(String sqlArrayType) {
+        this.sqlArrayType = sqlArrayType;
+    }
 }

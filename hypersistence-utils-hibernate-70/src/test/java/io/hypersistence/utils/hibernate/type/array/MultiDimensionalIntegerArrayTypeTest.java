@@ -1,12 +1,16 @@
 package io.hypersistence.utils.hibernate.type.array;
 
-import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import io.hypersistence.utils.common.ReflectionUtils;
+import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Type;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.jpa.boot.spi.TypeContributorList;
+import org.hibernate.metamodel.model.domain.BasicDomainType;
+import org.hibernate.type.CustomType;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
@@ -32,7 +36,7 @@ public class MultiDimensionalIntegerArrayTypeTest extends AbstractPostgreSQLInte
                 (typeContributions, serviceRegistry) -> {
                     typeContributions.contributeType(
                         new EnumArrayType(
-                            ReflectionUtils.getField(MultiDimensionalArrayTypeTest.Plane.class, "seatGrid").getClass(),
+                            ReflectionUtils.getField(MultiDimensionalArrayTypeTest.Plane.class, "seatGrid").getType(),
                             "seat_status"
                         )
                     );
@@ -81,21 +85,21 @@ public class MultiDimensionalIntegerArrayTypeTest extends AbstractPostgreSQLInte
         });
 
         doInJPA(entityManager -> {
-            List<Tuple> tuples = entityManager
-                .createNativeQuery(
-                    "SELECT " +
-                    "   id, " +
-                    "   name, " +
-                    "   seat_grid " +
-                    "FROM plane " +
-                    "WHERE id >= :id", Tuple.class)
+            List<Tuple> tuples = entityManager.createNativeQuery("""
+                SELECT
+                   id,
+                   name,
+                   seat_grid
+                FROM plane
+                WHERE id >= :id
+                """, Tuple.class)
                 .setParameter("id", 0)
                 .unwrap(org.hibernate.query.NativeQuery.class)
                 .addScalar("id")
                 .addScalar("name")
                 .addScalar(
                     "seat_grid",
-                    ReflectionUtils.getField(MultiDimensionalArrayTypeTest.Plane.class, "seatGrid").getClass()
+                    (BasicDomainType) Arrays.stream(entityManager.getEntityManagerFactory().unwrap(SessionFactoryImplementor.class).getMappingMetamodel().getEntityDescriptor(Plane.class).getPropertyTypes()).filter(t -> t instanceof CustomType<?>).findFirst().orElse(null)
                 )
                 .getResultList();
 
@@ -113,7 +117,7 @@ public class MultiDimensionalIntegerArrayTypeTest extends AbstractPostgreSQLInte
 
         private String name;
 
-        @Type(IntArrayType.class)
+        @Type(MultiDimensionalArrayType.class)
         @Column(name = "seat_grid", columnDefinition = "int[][]")
         private Integer[][] seatGrid;
 
