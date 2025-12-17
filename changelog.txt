@@ -1,4 +1,9 @@
-Version 3.13.4 - December 16, 2025
+Version 3.14.1 - December 17, 2025
+================================================================================
+
+Deprecate all ArrayTypes, with the exception of the EnumArrayType #823
+
+Version 3.14.0 - December 16, 2025
 ================================================================================
 
 The Hibernate SessionFactory cannot be built due to a ClassCastException after upgrading to 3.13.3 #821
