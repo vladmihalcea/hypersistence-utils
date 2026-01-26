@@ -24,5 +24,10 @@ jobs:
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file
 
+    - name: Enable Testcontainers reuse
+      run: |
+        mkdir -p /home/runner
+        echo "testcontainers.reuse.enable=true" > /home/runner/.testcontainers.properties
+
     - name: Build with Maven
       run: mvn -B package --file pom.xml
