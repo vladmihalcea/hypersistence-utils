@@ -3,8 +3,7 @@
 
 name: Maven Package
 
-on:
-  workflow_run: 
+on: workflow_run
 
 jobs:
   build:
