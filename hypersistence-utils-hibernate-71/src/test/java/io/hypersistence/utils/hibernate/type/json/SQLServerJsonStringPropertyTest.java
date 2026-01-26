@@ -5,16 +5,12 @@ import io.hypersistence.utils.hibernate.util.AbstractSQLServerIntegrationTest;
 import io.hypersistence.utils.hibernate.util.JsonNodeUtil;
 import io.hypersistence.utils.jdbc.validator.SQLStatementCountValidator;
 import jakarta.persistence.*;
-import net.ttddyy.dsproxy.QueryCount;
-import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.Session;
 import org.hibernate.annotations.Check;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.jpa.boot.spi.TypeContributorList;
 import org.hibernate.query.NativeQuery;
-import org.hibernate.type.JavaObjectType;
-import org.hibernate.type.descriptor.java.JavaType;
 import org.junit.Test;
 
 import java.util.Collections;
