@@ -13,6 +13,7 @@ import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 
 public class ObjectMapperJsonSerializerTest {
 
@@ -168,6 +169,78 @@ public class ObjectMapperJsonSerializerTest {
         serializer.clone(map);
     }
 
+    @Test
+    public void should_clone_matrix_with_non_serializable_nested_object() {
+        Object original = List.of(
+                List.of(new NonSerializableObject("name1")),
+                List.of(new NonSerializableObject("name2"))
+        );
+
+        Object cloned = serializer.clone(original);
+
+        assertEquals(original, cloned);
+        assertNotSame(original, cloned);
+    }
+
+    @Test
+    public void should_clone_matrix_with_non_serializable_complex_nested_object() {
+        NonSerializableComplexObject object1 = new NonSerializableComplexObject("name1", 123);
+        object1.setAttributes(Collections.singletonList("attr1"));
+        object1.setNested(new NestedObject("nested1"));
+
+        NonSerializableComplexObject object2 = new NonSerializableComplexObject("name2", 321);
+        object2.setAttributes(List.of("attr2", "attr3", "attr4"));
+        object2.setNested(new NestedObject("nested2"));
+
+        List<List<NonSerializableComplexObject>> matrix = new ArrayList<>();
+        matrix.add(Collections.singletonList(object1));
+        matrix.add(Collections.singletonList(object2));
+
+        Object cloned = serializer.clone(matrix);
+
+        assertTrue(cloned instanceof List);
+        List<?> outerList = (List<?>) cloned;
+        assertEquals(2, outerList.size());
+
+        Object inner1 = outerList.get(0);
+        assertTrue("Inner element 1 should be a List", inner1 instanceof List);
+        List<?> innerList1 = (List<?>) inner1;
+        assertEquals(1, innerList1.size());
+
+        Object element1 = innerList1.get(0);
+        assertTrue(
+            "Element 1 should be instance of NonSerializableComplexObject but was " + element1.getClass().getName(),
+            element1 instanceof NonSerializableComplexObject
+        );
+
+        NonSerializableComplexObject clonedObject1 = (NonSerializableComplexObject) element1;
+        assertEquals("name1", clonedObject1.getName());
+        assertEquals(123, clonedObject1.getValue());
+        assertEquals(1, clonedObject1.getAttributes().size());
+        assertEquals("attr1", clonedObject1.getAttributes().get(0));
+        assertEquals("nested1", clonedObject1.getNested().getDescription());
+
+        Object inner2 = outerList.get(1);
+        assertTrue("Inner element 2 should be a List", inner2 instanceof List);
+        List<?> innerList2 = (List<?>) inner2;
+        assertEquals(1, innerList2.size());
+
+        Object element2 = innerList2.get(0);
+        assertTrue(
+            "Element 2 should be instance of NonSerializableComplexObject but was " + element2.getClass().getName(),
+            element2 instanceof NonSerializableComplexObject
+        );
+
+        NonSerializableComplexObject clonedObject2 = (NonSerializableComplexObject) element2;
+        assertEquals("name2", clonedObject2.getName());
+        assertEquals(321, clonedObject2.getValue());
+        assertEquals(3, clonedObject2.getAttributes().size());
+        assertEquals("attr2", clonedObject2.getAttributes().get(0));
+        assertEquals("attr3", clonedObject2.getAttributes().get(1));
+        assertEquals("attr4", clonedObject2.getAttributes().get(2));
+        assertEquals("nested2", clonedObject2.getNested().getDescription());
+    }
+
     private static class SerializableObject implements Serializable {
         private final String value;
 
@@ -307,6 +380,99 @@ public class ObjectMapperJsonSerializerTest {
         @Override
         public String toString() {
             return value.toString();
+        }
+    }
+
+    private static class NonSerializableComplexObject {
+        private String name;
+        private int value;
+        private List<String> attributes;
+        private NestedObject nested;
+
+        public NonSerializableComplexObject() {
+        }
+
+        public NonSerializableComplexObject(String name, int value) {
+            this.name = name;
+            this.value = value;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
+
+        public List<String> getAttributes() {
+            return attributes;
+        }
+
+        public void setAttributes(List<String> attributes) {
+            this.attributes = attributes;
+        }
+
+        public NestedObject getNested() {
+            return nested;
+        }
+
+        public void setNested(NestedObject nested) {
+            this.nested = nested;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            NonSerializableComplexObject that = (NonSerializableComplexObject) o;
+            return value == that.value &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(attributes, that.attributes) &&
+                Objects.equals(nested, that.nested);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(name, value, attributes, nested);
+        }
+    }
+
+    private static class NestedObject {
+        private String description;
+
+        public NestedObject() {
+        }
+
+        public NestedObject(String description) {
+            this.description = description;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            NestedObject that = (NestedObject) o;
+            return Objects.equals(description, that.description);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(description);
+        }
+
+        public String getDescription() {
+            return description;
         }
     }
 }
