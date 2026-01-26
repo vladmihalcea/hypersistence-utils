@@ -5,8 +5,6 @@ import io.hypersistence.utils.hibernate.type.json.internal.JacksonUtil;
 import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
 import io.hypersistence.utils.jdbc.validator.SQLStatementCountValidator;
 import jakarta.persistence.*;
-import net.ttddyy.dsproxy.QueryCount;
-import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
