@@ -33,7 +33,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
+            <groupId>tools.jackson.module</groupId>
             <artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
             <version>${jackson-module.version}</version>
             <scope>provided</scope>
@@ -43,35 +43,10 @@
         <dependency>
             <groupId>tools.jackson.module</groupId>
             <artifactId>jackson-module-kotlin</artifactId>
-            <version>${jackson3-module.version}</version>
+            <version>${jackson-module.version}</version>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
-
-        <dependency>
-            <groupId>tools.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>${jackson3-module.version}</version>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>tools.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson3-module.version}</version>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>2.20</version>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-
 
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -243,10 +218,8 @@
         <maven.compiler.testRelease>${jdk-test.version}</maven.compiler.testRelease>
 
         <hibernate.version>7.3.0.CR1</hibernate.version>
-        <!--<hibernate.version>7.1.11.Final</hibernate.version>-->
 
-        <jackson-module.version>2.20.1</jackson-module.version>
-        <jackson3-module.version>3.0.0</jackson3-module.version>
+        <jackson-module.version>3.0.0</jackson-module.version>
         <guava.version>32.1.3-jre</guava.version>
         <moneta.version>1.4.2</moneta.version>
 
