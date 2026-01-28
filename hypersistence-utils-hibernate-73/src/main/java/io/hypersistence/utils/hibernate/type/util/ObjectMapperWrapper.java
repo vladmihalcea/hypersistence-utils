@@ -1,16 +1,14 @@
 package io.hypersistence.utils.hibernate.type.util;
 
+import io.hypersistence.utils.common.ReflectionUtils;
+import org.hibernate.HibernateException;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.core.JsonParser;
 import tools.jackson.databind.*;
 import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.databind.module.SimpleModule;
 import tools.jackson.databind.type.TypeFactory;
-import io.hypersistence.utils.common.ReflectionUtils;
-import org.hibernate.HibernateException;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.time.OffsetDateTime;
@@ -31,22 +29,17 @@ public class ObjectMapperWrapper implements Serializable {
     private static final ObjectMapper OBJECT_MAPPER = newObjectMapper();
 
     private static ObjectMapper newObjectMapper() {
-        JsonMapper.Builder objectMapper = (ReflectionUtils.getClassOrNull("com.fasterxml.jackson.module.kotlin.KotlinModule") != null) ?
-            ReflectionUtils.invokeStaticMethod(
+        if(ReflectionUtils.getClassOrNull("tools.jackson.module.kotlin.KotlinModule") != null) {
+            return ReflectionUtils.invokeStaticMethod(
                 ReflectionUtils.getMethod(
                     ReflectionUtils.getClass("io.hypersistence.utils.hibernate.type.util.KotlinObjectMapperBuilder"),
                     "build"
                 )
-            ) :
-            JsonMapper.builder();
-        return objectMapper
-                .findAndAddModules()
-                .addModule(
-                    new SimpleModule()
-                        .addSerializer(OffsetDateTime.class, OffsetDateTimeSerializer.INSTANCE)
-                        .addDeserializer(OffsetDateTime.class, OffsetDateTimeDeserializer.INSTANCE)
-                )
-                .build();
+            );
+        }
+        return JsonMapper.builder()
+            .findAndAddModules()
+            .build();
     }
 
     public static final ObjectMapperWrapper INSTANCE = new ObjectMapperWrapper();
