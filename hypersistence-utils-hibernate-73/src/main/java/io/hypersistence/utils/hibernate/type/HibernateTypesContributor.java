@@ -81,7 +81,7 @@ public class HibernateTypesContributor implements TypeContributor {
         JdbcServices jdbcServices = serviceRegistry.getService(JdbcServices.class);
         Dialect dialect = jdbcServices.getDialect();
 
-        boolean enableJson = ReflectionUtils.getClassOrNull("com.fasterxml.jackson.databind.ObjectMapper") != null;
+        boolean enableJson = ReflectionUtils.getClassOrNull("tools.jackson.databind.ObjectMapper") != null;
 
         /*
          * The JSON Types that map java.lang.Object as they can cause
