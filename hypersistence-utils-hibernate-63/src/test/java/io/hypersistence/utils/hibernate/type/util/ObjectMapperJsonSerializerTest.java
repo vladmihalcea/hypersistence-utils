@@ -11,14 +11,13 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.*;
 
 public class ObjectMapperJsonSerializerTest {
 
     private ObjectMapperWrapper mapper = new ObjectMapperWrapper();
 
-    private ObjectMapperJsonSerializer serializer = new ObjectMapperJsonSerializer(mapper);
+    private ObjectMapperJsonSerializer serializer = new ObjectMapperJsonSerializer();
 
     @Test
     public void should_clone_serializable_object() {
@@ -31,9 +30,10 @@ public class ObjectMapperJsonSerializerTest {
     @Test
     public void should_clone_non_serializable_object() {
         Object original = new NonSerializableObject("value");
-        Object cloned = serializer.clone(original);
-        assertEquals(original, cloned);
-        assertNotSame(original, cloned);
+        try {
+            serializer.clone(original);
+            fail("Should throw exception");
+        } catch (Exception expected) {}
     }
 
     @Test
@@ -49,9 +49,10 @@ public class ObjectMapperJsonSerializerTest {
     public void should_clone_collection_of_non_serializable_object() {
         List<NonSerializableObject> original = new ArrayList<>();
         original.add(new NonSerializableObject("value"));
-        List<NonSerializableObject> cloned = serializer.clone(original);
-        assertEquals(original, cloned);
-        assertNotSame(original, cloned);
+        try {
+            serializer.clone(original);
+            fail("Should throw exception");
+        } catch (Exception expected) {}
     }
 
     @Test
@@ -66,18 +67,20 @@ public class ObjectMapperJsonSerializerTest {
     public void should_clone_map_of_non_serializable_key() {
         Map<NonSerializableObject, String> original = new HashMap<>();
         original.put(new NonSerializableObject("key"), "value");
-        Object cloned = serializer.clone(original);
-        assertEquals(original, cloned);
-        assertNotSame(original, cloned);
+        try {
+            serializer.clone(original);
+            fail("Should throw exception");
+        } catch (Exception expected) {}
     }
 
     @Test
     public void should_clone_map_of_non_serializable_value() {
         Map<String, NonSerializableObject> original = new HashMap<>();
         original.put("key", new NonSerializableObject("value"));
-        Object cloned = serializer.clone(original);
-        assertEquals(original, cloned);
-        assertNotSame(original, cloned);
+        try {
+            serializer.clone(original);
+            fail("Should throw exception");
+        } catch (Exception expected) {}
     }
 
     @Test
@@ -103,9 +106,10 @@ public class ObjectMapperJsonSerializerTest {
         Map<String, NonSerializableObject> original = new LinkedHashMap<>();
         original.put("null", null);
         original.put("key", new NonSerializableObject("value"));
-        Object cloned = serializer.clone(original);
-        assertEquals(original, cloned);
-        assertNotSame(original, cloned);
+        try {
+            serializer.clone(original);
+            fail("Should throw exception");
+        } catch (Exception expected) {}
     }
 
     @Test
@@ -141,9 +145,10 @@ public class ObjectMapperJsonSerializerTest {
             new NonSerializableObject("name3")
         ));
         Object original = new SerializableComplexObjectWithNonSerializableNestedObject(map);
-        Object cloned = serializer.clone(original);
-        assertEquals(original, cloned);
-        assertNotSame(original, cloned);
+        try {
+            serializer.clone(original);
+            fail("Should throw exception");
+        } catch (Exception expected) {}
     }
 
     @Test

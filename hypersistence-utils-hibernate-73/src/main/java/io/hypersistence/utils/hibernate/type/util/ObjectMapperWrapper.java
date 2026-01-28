@@ -55,7 +55,7 @@ public class ObjectMapperWrapper implements Serializable {
 
     private ObjectMapperSupplier objectMapperSupplier;
 
-    private JsonSerializer jsonSerializer = new ObjectMapperJsonSerializer(this);
+    private JsonSerializer jsonSerializer = new ObjectMapperJsonSerializer();
 
     public ObjectMapperWrapper() {
         this(OBJECT_MAPPER);

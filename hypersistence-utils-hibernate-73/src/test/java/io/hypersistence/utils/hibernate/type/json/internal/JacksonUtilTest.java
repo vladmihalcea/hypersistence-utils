@@ -45,7 +45,7 @@ public class JacksonUtilTest {
         return otherPojo;
     }
 
-    public static class MyEntity {
+    public static class MyEntity implements Serializable {
         private String value;
         private List<MyPojo> pojos;
 

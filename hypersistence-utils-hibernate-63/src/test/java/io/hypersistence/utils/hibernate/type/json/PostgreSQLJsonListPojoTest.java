@@ -7,6 +7,7 @@ import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -109,7 +110,7 @@ public class PostgreSQLJsonListPojoTest extends AbstractPostgreSQLIntegrationTes
         }
     }
 
-    public static class Property {
+    public static class Property implements Serializable {
 
         private String key;
         private String value;

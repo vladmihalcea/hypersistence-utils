@@ -8,6 +8,7 @@ import net.ttddyy.dsproxy.QueryCountHolder;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,7 +99,7 @@ public class PostgreSQLJsonBinaryTypeNestedCollectionNoEqualsTest extends Abstra
         }
     }
 
-    public static class PostAttributes {
+    public static class PostAttributes implements Serializable {
 
         private List<String> attributes;
 
