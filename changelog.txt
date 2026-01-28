@@ -1,3 +1,10 @@
+Version 3.15.1 - January 28, 2026
+================================================================================
+
+Add support for KotlinModule in the hypersistence-utils-hibernate-73 module #832
+
+JsonType should not support non-Serializable attribute mappings #831
+
 Version 3.15.0 - January 27, 2026
 ================================================================================
 
