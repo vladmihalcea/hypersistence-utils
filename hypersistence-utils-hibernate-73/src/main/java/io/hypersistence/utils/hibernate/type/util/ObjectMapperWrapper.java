@@ -35,7 +35,7 @@ public class ObjectMapperWrapper implements Serializable {
             ReflectionUtils.invokeStaticMethod(
                 ReflectionUtils.getMethod(
                     ReflectionUtils.getClass("io.hypersistence.utils.hibernate.type.util.KotlinObjectMapperBuilder"),
-                    "build"
+                    "builder"
                 )
             ) :
             JsonMapper.builder();
