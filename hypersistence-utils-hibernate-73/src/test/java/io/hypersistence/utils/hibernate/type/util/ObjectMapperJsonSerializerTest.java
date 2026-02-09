@@ -3,10 +3,10 @@ package io.hypersistence.utils.hibernate.type.util;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Lists;
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
+import jakarta.persistence.Column;
 import org.hibernate.annotations.Type;
 import org.junit.Test;
 
-import jakarta.persistence.Column;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
@@ -33,7 +33,9 @@ public class ObjectMapperJsonSerializerTest {
         try {
             serializer.clone(original);
             fail("Should throw exception");
-        } catch (Exception expected) {}
+        } catch (Exception expected) {
+            assertEquals(NonSerializableObjectException.class, expected.getClass());
+        }
     }
 
     @Test

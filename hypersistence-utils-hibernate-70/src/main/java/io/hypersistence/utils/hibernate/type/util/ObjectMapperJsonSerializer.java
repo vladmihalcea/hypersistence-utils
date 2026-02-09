@@ -20,9 +20,13 @@ public class ObjectMapperJsonSerializer implements JsonSerializer {
             return (T) ((JsonNode) object).deepCopy();
         }
         try {
-            return (T) SerializationHelper.clone((Serializable) object);
-        } catch (SerializationException e) {
-            throw new IllegalArgumentException("The JPA specification requires that the entity attributes are Serializable. The default JsonSerializer does not support JSON object cloning (other than the JsonNode attribute type) because this is a very inefficient operation. If you want to use JSON object cloning, then you can provide your own custom JsonSerializer.", e);
+            if (object instanceof Serializable) {
+                return (T) SerializationHelper.clone((Serializable) object);
+            } else {
+                throw new NonSerializableObjectException(object);
+            }
+        } catch (Exception e) {
+            throw new NonSerializableObjectException(object);
         }
     }
 }
