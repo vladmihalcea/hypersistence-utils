@@ -1,3 +1,10 @@
+Version 3.15.2 - February 09, 2026
+================================================================================
+
+ObjectMapperJsonSerializer.clone thows ClassCastException because the MutableType.deepCopy expects a Serializable argument #836
+
+Improve the non-serializable error message in the ObjectMapperJsonSerializer to indicate the culprit Java class #833
+
 Version 3.15.1 - January 28, 2026
 ================================================================================
 
