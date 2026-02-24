@@ -1,0 +1,641 @@
+package io.hypersistence.utils.hibernate.type.array;
+
+import io.hypersistence.utils.hibernate.util.AbstractPostgreSQLIntegrationTest;
+import jakarta.persistence.*;
+import jakarta.persistence.metamodel.ManagedType;
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
+import org.hibernate.jpa.boot.spi.TypeContributorList;
+import org.junit.Test;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
+
+import static org.junit.Assert.*;
+
+/**
+ * @author Vlad Mihalcea
+ */
+public class ListArrayTypeTest extends AbstractPostgreSQLIntegrationTest {
+
+    @Override
+    protected Class<?>[] entities() {
+        return new Class<?>[]{
+            Event.class,
+        };
+    }
+
+    @Override
+    protected void beforeInit() {
+        executeStatement("DROP TYPE sensor_state CASCADE");
+        executeStatement("CREATE TYPE sensor_state AS ENUM ('ONLINE', 'OFFLINE', 'UNKNOWN')");
+        executeStatement("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\"");
+    }
+
+    @Override
+    protected void additionalProperties(Properties properties) {
+        properties.put("hibernate.type_contributors",
+            (TypeContributorList) () -> Collections.singletonList(
+                (typeContributions, serviceRegistry) -> {
+                    typeContributions.contributeType(new EnumArrayType(SensorState[].class, "sensor_state"));
+                }
+            ));
+    }
+
+    @Override
+    protected void afterInit() {
+        doInJPA(entityManager -> {
+            entityManager.persist(
+                new Event()
+                    .setId(0L)
+            );
+
+            entityManager.persist(
+                new Event()
+                    .setId(1L)
+                    .setSensorIds(
+                        Arrays.asList(
+                            UUID.fromString("c65a3bcb-8b36-46d4-bddb-ae96ad016eb1"),
+                            UUID.fromString("72e95717-5294-4c15-aa64-a3631cf9a800")
+                        )
+                    )
+                    .setSensorNames(Arrays.asList("Temperature", "Pressure"))
+                    .setSensorValues(Arrays.asList(12, 756))
+                    .setSensorLongValues(Arrays.asList(42L, 9223372036854775800L))
+                    .setSensorShortValues(Arrays.asList((short) 42, (short) 69))
+                    .setSensorBooleanValues(Arrays.asList(true, false))
+                    .setSensorDoubleValues(Arrays.asList(0.123D, 456.789D))
+                    .setSensorStates(
+                        Arrays.asList(
+                            SensorState.ONLINE, SensorState.OFFLINE,
+                            SensorState.ONLINE, SensorState.UNKNOWN
+                        )
+                    )
+                    .setDateValues(
+                        Arrays.asList(
+                            java.sql.Date.valueOf(LocalDate.of(1991, 12, 31)),
+                            java.sql.Date.valueOf(LocalDate.of(1990, 1, 1))
+                        )
+                    )
+                    .setTimestampValues(
+                        Arrays.asList(
+                            Date.from(
+                                LocalDate.of(1991, 12, 31)
+                                    .atStartOfDay()
+                                    .atZone(ZoneId.systemDefault())
+                                    .toInstant()
+                            ),
+                            Date.from(
+                                LocalDate.of(1990, 1, 1)
+                                    .atStartOfDay()
+                                    .atZone(ZoneId.systemDefault())
+                                    .toInstant()
+                            )
+                        )
+                    )
+                    .setDecimalValues(
+                        Arrays.asList(
+                            BigDecimal.ONE,
+                            BigDecimal.ZERO,
+                            BigDecimal.TEN
+                        )
+                    )
+                    .setLocalDateValues(
+                        Arrays.asList(
+                            LocalDate.of(2022, 3, 22),
+                            LocalDate.of(2021, 4, 21)
+                        )
+                    )
+                    .setLocalDateTimeValues(
+                        Arrays.asList(
+                            LocalDateTime.of(2022, 3, 22, 11, 22, 33),
+                            LocalDateTime.of(2021, 4, 21, 22, 33, 44)
+                        )
+                    )
+                    .setLocalDateTimeSetValues(
+                        new LinkedHashSet<>(
+                            Arrays.asList(
+                                LocalDateTime.of(2022, 3, 22, 11, 22, 33),
+                                LocalDateTime.of(2022, 3, 22, 11, 22, 33),
+                                LocalDateTime.of(2021, 4, 21, 22, 33, 44)
+                            )
+                        )
+                    )
+                    .setSortedNumbers(
+                        new TreeSet<>(Arrays.asList(2, 4, 1))
+                    )
+            );
+        });
+    }
+
+    @Test
+    public void test() {
+        doInJPA(entityManager -> {
+            Event event = entityManager.find(Event.class, 1L);
+
+            assertEquals(
+                Arrays.asList(
+                    UUID.fromString("c65a3bcb-8b36-46d4-bddb-ae96ad016eb1"),
+                    UUID.fromString("72e95717-5294-4c15-aa64-a3631cf9a800")
+                ),
+                event.getSensorIds()
+            );
+            assertEquals(
+                Arrays.asList("Temperature", "Pressure"),
+                event.getSensorNames()
+            );
+            assertEquals(
+                Arrays.asList(12, 756),
+                event.getSensorValues()
+            );
+            assertEquals(
+                Arrays.asList((short) 42, (short) 69),
+                event.getSensorShortValues()
+            );
+            assertEquals(
+                Arrays.asList(42L, 9223372036854775800L),
+                event.getSensorLongValues()
+            );
+            assertEquals(
+                Arrays.asList(true, false),
+                event.getSensorBooleanValues()
+            );
+            assertEquals(0.123, event.getSensorDoubleValues().get(0), 0.001);
+            assertEquals(456.789, event.getSensorDoubleValues().get(1), 0.001);
+            assertEquals(
+                Arrays.asList(
+                    SensorState.ONLINE, SensorState.OFFLINE,
+                    SensorState.ONLINE, SensorState.UNKNOWN
+                ),
+                event.getSensorStates()
+            );
+            assertEquals(
+                Arrays.asList(
+                    java.sql.Date.valueOf(LocalDate.of(1991, 12, 31)),
+                    java.sql.Date.valueOf(LocalDate.of(1990, 1, 1))
+                ),
+                event.getDateValues()
+            );
+            assertEquals(
+                Arrays.asList(
+                    Date.from(
+                        LocalDate.of(1991, 12, 31)
+                            .atStartOfDay()
+                            .atZone(ZoneId.systemDefault())
+                            .toInstant()
+                    ),
+                    Date.from(
+                        LocalDate.of(1990, 1, 1)
+                            .atStartOfDay()
+                            .atZone(ZoneId.systemDefault())
+                            .toInstant()
+                    )
+                ),
+                event.getTimestampValues()
+            );
+            assertEquals(
+                Arrays.asList(
+                    BigDecimal.ONE,
+                    BigDecimal.ZERO,
+                    BigDecimal.TEN
+                ),
+                event.getDecimalValues()
+            );
+            assertEquals(
+                Arrays.asList(
+                    LocalDate.of(2022, 3, 22),
+                    LocalDate.of(2021, 4, 21)
+                ),
+                event.getLocalDateValues()
+            );
+            assertEquals(
+                Arrays.asList(
+                    LocalDateTime.of(2022, 3, 22, 11, 22, 33),
+                    LocalDateTime.of(2021, 4, 21, 22, 33, 44)
+                ),
+                event.getLocalDateTimeValues()
+            );
+            assertEquals(
+                new HashSet<>(
+                    Arrays.asList(
+                        LocalDateTime.of(2022, 3, 22, 11, 22, 33),
+                        LocalDateTime.of(2021, 4, 21, 22, 33, 44)
+                    )
+                ),
+                event.getLocalDateTimeSetValues()
+            );
+            assertEquals(
+                new TreeSet<>(
+                    Arrays.asList(
+                        2, 4, 1
+                    )
+                ),
+                event.getSortedNumbers()
+            );
+        });
+
+        doInJPA(entityManager -> {
+            List<Tuple> events = entityManager.createNativeQuery("""
+                select
+                   id,
+                   sensor_ids,
+                   sensor_names,
+                   sensor_values
+                from event
+                where id >= :id
+                """, Tuple.class)
+            .setParameter("id", 0)
+            .getResultList();
+
+            assertEquals(2, events.size());
+        });
+
+        Event _event = doInJPA(entityManager -> {
+            return entityManager.find(Event.class, 1L);
+        });
+
+        String newString = "New";
+        LocalDateTime newTimestamp = LocalDateTime.of(2024, 6, 4, 11, 22, 33);
+
+        assertEquals(2, _event.getSensorNames().size());
+        assertEquals(2, _event.getLocalDateTimeSetValues().size());
+        _event.getSensorNames().add(newString);
+        _event.getLocalDateTimeSetValues().add(newTimestamp);
+
+        doInJPA(entityManager -> {
+            entityManager.merge(_event);
+        });
+
+        doInJPA(entityManager -> {
+            Event event = entityManager.find(Event.class, 1L);
+            assertEquals(3, event.getSensorNames().size());
+            assertTrue(event.getSensorNames().contains(newString));
+            assertEquals(3, event.getLocalDateTimeSetValues().size());
+            assertTrue(event.getLocalDateTimeSetValues().contains(newTimestamp));
+        });
+    }
+
+    @Test
+    public void testScalarEnumArray() {
+        doInJPA(entityManager -> {
+            List<Tuple> events = entityManager.createNativeQuery("""
+                select
+                   id,
+                   sensor_ids,
+                   sensor_names,
+                   sensor_values,
+                   sensor_states
+                from event
+                where id >= :id
+                """, Tuple.class)
+            .setParameter("id", 0)
+            .unwrap(org.hibernate.query.NativeQuery.class)
+            .addScalar("sensor_ids", UUID[].class)
+            .addScalar("sensor_names", String[].class)
+            .addScalar("sensor_values", int[].class)
+            .addScalar("sensor_states", SensorState[].class)
+            .getResultList();
+
+            assertEquals(2, events.size());
+        });
+    }
+
+    @Test
+    public void testEmptyArrays() {
+
+        doInJPA(entityManager -> {
+            Event nullEvent = new Event();
+            nullEvent.setId(100L);
+            entityManager.persist(nullEvent);
+
+            Event event = new Event();
+            event.setId(101L);
+            event.setSensorIds(Collections.emptyList());
+            event.setSensorNames(Collections.emptyList());
+            event.setSensorValues(Collections.emptyList());
+            event.setSensorShortValues(Collections.emptyList());
+            event.setSensorLongValues(Collections.emptyList());
+            event.setSensorBooleanValues(Collections.emptyList());
+            event.setSensorDoubleValues(Collections.emptyList());
+            event.setSensorStates(Collections.emptyList());
+            event.setDateValues(Collections.emptyList());
+            event.setTimestampValues(Collections.emptyList());
+            event.setDecimalValues(Collections.emptyList());
+            event.setLocalDateValues(Collections.emptyList());
+            event.setLocalDateTimeValues(Collections.emptyList());
+            entityManager.persist(event);
+        });
+
+        doInJPA(entityManager -> {
+            Event event = entityManager.find(Event.class, 101L);
+
+            assertArrayEquals(new UUID[]{}, event.getSensorIds().toArray());
+            assertArrayEquals(new String[]{}, event.getSensorNames().toArray());
+            assertArrayEquals(new Integer[]{}, event.getSensorValues().toArray());
+            assertArrayEquals(new Short[]{}, event.getSensorShortValues().toArray());
+            assertArrayEquals(new Long[]{}, event.getSensorLongValues().toArray());
+            assertArrayEquals(new Boolean[]{}, event.getSensorBooleanValues().toArray());
+            assertArrayEquals(new Double[]{}, event.getSensorDoubleValues().toArray());
+            assertArrayEquals(new SensorState[]{}, event.getSensorStates().toArray());
+            assertArrayEquals(new Date[]{}, event.getDateValues().toArray());
+            assertArrayEquals(new Date[]{}, event.getTimestampValues().toArray());
+            assertArrayEquals(new BigDecimal[]{}, event.getDecimalValues().toArray());
+            assertArrayEquals(new LocalDate[]{}, event.getLocalDateValues().toArray());
+            assertArrayEquals(new LocalDateTime[]{}, event.getLocalDateTimeValues().toArray());
+        });
+    }
+
+    @Test
+    public void testAttributeType() {
+        doInJPA(entityManager -> {
+            ManagedType<Event> eventManagedType = entityManager.getMetamodel().managedType(Event.class);
+            assertEquals(
+                List.class,
+                eventManagedType.getAttribute("sensorIds").getJavaType()
+            );
+        });
+    }
+
+    @Entity(name = "Event")
+    @Table(name = "event")
+    public static class Event {
+
+        @Id
+        private Long id;
+
+        @Column(
+            name = "sensor_ids",
+            columnDefinition = "uuid[]"
+        )
+        private List<UUID> sensorIds;
+
+        @Column(
+            name = "sensor_names",
+            columnDefinition = "text[]"
+        )
+        private List<String> sensorNames;
+
+        @Column(
+            name = "sensor_values",
+            columnDefinition = "integer[]"
+        )
+        private List<Integer> sensorValues;
+
+        @Column(
+            name = "sensor_long_values",
+            columnDefinition = "bigint[]"
+        )
+        private List<Long> sensorLongValues;
+
+        @Column(
+            name = "sensor_boolean_values",
+            columnDefinition = "boolean[]"
+        )
+        private List<Boolean> sensorBooleanValues;
+
+        @Column(
+            name = "sensor_double_values",
+            columnDefinition = "float8[]"
+        )
+        private List<Double> sensorDoubleValues;
+
+        @Type(
+            value = ListArrayType.class,
+            parameters = {
+                @Parameter(
+                    name = ListArrayType.SQL_ARRAY_TYPE,
+                    value = "sensor_state"
+                )
+            }
+        )
+        @Column(
+            name = "sensor_states",
+            columnDefinition = "sensor_state[]"
+        )
+        private List<SensorState> sensorStates;
+
+        @Column(
+            name = "date_values",
+            columnDefinition = "date[]"
+        )
+        private List<Date> dateValues;
+
+        @Column(
+            name = "timestamp_values",
+            columnDefinition = "timestamp[]"
+        )
+        private List<Date> timestampValues;
+
+        @Column(
+            name = "decimal_values",
+            columnDefinition = "decimal[]"
+        )
+        private List<BigDecimal> decimalValues;
+
+        @Column(
+            name = "localdate_values",
+            columnDefinition = "date[]"
+        )
+        private List<LocalDate> localDateValues;
+
+        @Column(
+            name = "localdatetime_values",
+            columnDefinition = "timestamp[]"
+        )
+        private List<LocalDateTime> localDateTimeValues;
+
+        @Column(
+            name = "localdatetime_set_values",
+            columnDefinition = "timestamp[]"
+        )
+        private Set<LocalDateTime> localDateTimeSetValues;
+
+        @Column(
+            name = "sorted_numbers",
+            columnDefinition = "integer[]"
+        )
+        private SortedSet<Integer> sortedNumbers;
+
+        @Column(
+            name = "short_values",
+            columnDefinition = "smallint[]"
+        )
+        private List<Short> sensorShortValues;
+
+        public Long getId() {
+            return id;
+        }
+
+        public Event setId(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public List<UUID> getSensorIds() {
+            return sensorIds;
+        }
+
+        public Event setSensorIds(List<UUID> sensorIds) {
+            this.sensorIds = sensorIds;
+            return this;
+        }
+
+        public List<String> getSensorNames() {
+            return sensorNames;
+        }
+
+        public Event setSensorNames(List<String> sensorNames) {
+            this.sensorNames = sensorNames;
+            return this;
+        }
+
+        public List<Integer> getSensorValues() {
+            return sensorValues;
+        }
+
+        public Event setSensorValues(List<Integer> sensorValues) {
+            this.sensorValues = sensorValues;
+            return this;
+        }
+
+        public Event setSensorShortValues(List<Short> shortValues) {
+            this.sensorShortValues = shortValues;
+            return this;
+        }
+
+        public List<Short> getSensorShortValues() {
+            return sensorShortValues;
+        }
+
+        public List<Long> getSensorLongValues() {
+            return sensorLongValues;
+        }
+
+        public Event setSensorLongValues(List<Long> sensorLongValues) {
+            this.sensorLongValues = sensorLongValues;
+            return this;
+        }
+
+        public List<Boolean> getSensorBooleanValues() {
+            return sensorBooleanValues;
+        }
+
+        public Event setSensorBooleanValues(List<Boolean> sensorBooleanValues) {
+            this.sensorBooleanValues = sensorBooleanValues;
+            return this;
+        }
+
+        public List<Double> getSensorDoubleValues() {
+            return sensorDoubleValues;
+        }
+
+        public Event setSensorDoubleValues(List<Double> sensorDoubleValues) {
+            this.sensorDoubleValues = sensorDoubleValues;
+            return this;
+        }
+
+        public List<SensorState> getSensorStates() {
+            return sensorStates;
+        }
+
+        public Event setSensorStates(List<SensorState> sensorStates) {
+            this.sensorStates = sensorStates;
+            return this;
+        }
+
+        public List<Date> getDateValues() {
+            return dateValues;
+        }
+
+        public Event setDateValues(List<Date> dateValues) {
+            this.dateValues = dateValues;
+            return this;
+        }
+
+        public List<Date> getTimestampValues() {
+            return timestampValues;
+        }
+
+        public Event setTimestampValues(List<Date> timestampValues) {
+            this.timestampValues = timestampValues;
+            return this;
+        }
+
+        public List<BigDecimal> getDecimalValues() {
+            return decimalValues;
+        }
+
+        public Event setDecimalValues(List<BigDecimal> decimalValues) {
+            this.decimalValues = decimalValues;
+            return this;
+        }
+
+        public List<LocalDate> getLocalDateValues() {
+            return localDateValues;
+        }
+
+        public Event setLocalDateValues(List<LocalDate> localDateValues) {
+            this.localDateValues = localDateValues;
+            return this;
+        }
+
+        public List<LocalDateTime> getLocalDateTimeValues() {
+            return localDateTimeValues;
+        }
+
+        public Event setLocalDateTimeValues(List<LocalDateTime> localDateTimeValues) {
+            this.localDateTimeValues = localDateTimeValues;
+            return this;
+        }
+
+        public Set<LocalDateTime> getLocalDateTimeSetValues() {
+            return localDateTimeSetValues;
+        }
+
+        public Event setLocalDateTimeSetValues(Set<LocalDateTime> localDateTimeSetValues) {
+            this.localDateTimeSetValues = localDateTimeSetValues;
+            return this;
+        }
+
+        public SortedSet<Integer> getSortedNumbers() {
+            return sortedNumbers;
+        }
+
+        public Event setSortedNumbers(SortedSet<Integer> sortedNumbers) {
+            this.sortedNumbers = sortedNumbers;
+            return this;
+        }
+    }
+
+    @Test
+    public void testNullArrays() {
+
+        doInJPA(entityManager -> {
+            Event nullEvent = new Event();
+            nullEvent.setId(100L);
+            entityManager.persist(nullEvent);
+
+            Event event = new Event();
+            event.setId(101L);
+            entityManager.persist(event);
+        });
+
+        doInJPA(entityManager -> {
+            Event event = entityManager.find(Event.class, 101L);
+
+            assertEquals(null, event.getSensorIds());
+            assertEquals(null, event.getSensorNames());
+            assertEquals(null, event.getSensorLongValues());
+            assertEquals(null, event.getSensorStates());
+            assertEquals(null, event.getDateValues());
+            assertEquals(null, event.getTimestampValues());
+        });
+    }
+
+    public enum SensorState {
+        ONLINE, OFFLINE, UNKNOWN;
+    }
+}

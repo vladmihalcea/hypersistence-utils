@@ -1,0 +1,27 @@
+[
+  {
+    "name": "org.postgresql.util.PGobject",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      },
+      {
+        "name": "setType",
+        "parameterTypes": ["java.lang.String"]
+      },
+      {
+        "name": "setValue",
+        "parameterTypes": ["java.lang.String"]
+      },
+      {
+        "name": "getType",
+        "parameterTypes": []
+      },
+      {
+        "name": "getValue",
+        "parameterTypes": []
+      }
+    ]
+  }
+]
