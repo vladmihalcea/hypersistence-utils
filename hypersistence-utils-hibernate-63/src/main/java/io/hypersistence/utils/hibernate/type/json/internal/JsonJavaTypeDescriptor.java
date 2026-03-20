@@ -67,7 +67,8 @@ public class JsonJavaTypeDescriptor extends AbstractClassJavaType<Object> implem
     }
 
     public JsonJavaTypeDescriptor(final ObjectMapperWrapper objectMapperWrapper, Type type) {
-        this((Class) type, objectMapperWrapper);
+        this(type instanceof ParameterizedType ? (Class) ((ParameterizedType) type).getRawType() : (Class) type,
+               objectMapperWrapper);
         setPropertyClass(type);
     }
 
@@ -88,7 +89,42 @@ public class JsonJavaTypeDescriptor extends AbstractClassJavaType<Object> implem
         if(type == null) {
             throw new HibernateException("Could not resolve property type!");
         }
+
+        // Don't overwrite a ParameterizedType (e.g. from constructor)
+        // with a less specific raw Class from Envers.
+        if (propertyType instanceof ParameterizedType && type instanceof Class<?>) {
+            return;
+        }
+
+        // When Envers provides the xproperty for an audit entity,
+        // JavaXMember.getJavaType() may return only the raw type
+        // (e.g. List.class) without generic type arguments.
+        // Recover the full generic signature from the entity's field.
+        if (type instanceof Class<?>
+                && (Collection.class.isAssignableFrom((Class<?>) type)
+                || Map.class.isAssignableFrom((Class<?>) type))) {
+
+            Type resolved = resolveGenericFieldType(
+                    parameters.getProperty(DynamicParameterizedType.ENTITY),
+                    parameters.getProperty(DynamicParameterizedType.PROPERTY)
+            );
+            if (resolved instanceof ParameterizedType) {
+                type = resolved;
+            }
+        }
+
         setPropertyClass(type);
+    }
+
+    private Type resolveGenericFieldType(String className, String fieldName) {
+        if (className == null || fieldName == null) return null;
+        try {
+            return ReflectionUtils.getClass(className)
+                    .getDeclaredField(fieldName)
+                    .getGenericType();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
