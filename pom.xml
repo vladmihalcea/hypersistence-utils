@@ -416,7 +416,7 @@
         <datasource-proxy.version>1.6</datasource-proxy.version>
 
         <testcontainers.version>1.17.3</testcontainers.version>
-        <hsqldb.version>2.2.8</hsqldb.version>
+        <hsqldb.version>2.7.4</hsqldb.version>
         <h2.version>1.4.200</h2.version>
         <postgresql.version>42.4.1</postgresql.version>
         <mysql.version>8.0.30</mysql.version>
