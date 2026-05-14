@@ -165,6 +165,30 @@ public class ObjectMapperJsonSerializerTest {
     }
 
     @Test
+    public void should_clone_optional_of_serializable_object() {
+        Optional<SerializableObject> original = Optional.of(new SerializableObject("value"));
+        Optional<SerializableObject> cloned = serializer.clone(original);
+        assertEquals(original, cloned);
+        assertNotSame(original, cloned);
+    }
+
+    @Test
+    public void should_clone_empty_optional() {
+        Optional<?> original = Optional.empty();
+        Optional<?> cloned = serializer.clone(original);
+        assertEquals(original, cloned);
+    }
+
+    @Test
+    public void should_clone_optional_of_non_serializable_object() {
+        Optional<NonSerializableObject> original = Optional.of(new NonSerializableObject("value"));
+        try {
+            serializer.clone(original);
+            fail("Should throw exception");
+        } catch (Exception expected) {}
+    }
+
+    @Test
     public void should_clone_mixed_lists() {
         Map<String, List<String>> map = new LinkedHashMap<>();
         List<String> arrayList = new ArrayList<>();
