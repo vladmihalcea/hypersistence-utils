@@ -6,8 +6,10 @@ import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.boot.model.relational.Database;
 import org.hibernate.boot.model.relational.QualifiedName;
 import org.hibernate.boot.model.relational.QualifiedNameParser;
+import org.hibernate.boot.model.relational.QualifiedSequenceName;
 import org.hibernate.boot.model.relational.SqlStringGenerationContext;
 import org.hibernate.dialect.Dialect;
+import org.hibernate.engine.jdbc.env.spi.IdentifierHelper;
 import org.hibernate.engine.jdbc.env.spi.JdbcEnvironment;
 import org.hibernate.engine.jdbc.spi.JdbcCoordinator;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
@@ -19,11 +21,10 @@ import org.hibernate.id.PersistentIdentifierGenerator;
 import org.hibernate.id.enhanced.Optimizer;
 import org.hibernate.id.enhanced.SequenceStructure;
 import org.hibernate.internal.util.config.ConfigurationHelper;
+import org.hibernate.models.spi.TypeDetails;
+import org.hibernate.models.spi.TypeDetails.Kind;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.PreparedStatement;
@@ -181,13 +182,12 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
      * @param annotation meta annotation for configuration
      */
     public BatchSequenceGenerator(BatchSequence annotation,
-                    Member annotatedMember,
                     GeneratorCreationContext context) {
       JdbcEnvironment jdbcEnvironment = context.getServiceRegistry().getService(JdbcEnvironment.class);
       this.sequenceName = determineSequenceName(annotation, jdbcEnvironment);
       this.fetchSize = annotation.fetchSize();
       
-      Class<?> type = getType(annotatedMember);
+      Class<?> type = getType(context);
       this.identifierExtractor = IdentifierExtractor.getIdentifierExtractor(type);
       this.sequenceStructure = this.buildSequenceStructure(type, sequenceName);
     }
@@ -210,14 +210,14 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
         }
     }
 
-    private static Class<?> getType(Member annotatedMember) {
-        if (annotatedMember instanceof Field) {
-            return ((Field) annotatedMember).getType();
-        } else if (annotatedMember instanceof Method) {
-            return ((Method) annotatedMember).getReturnType();
-        } else {
-            throw new IllegalArgumentException("unknown member type: " + annotatedMember);
-        }
+    private static Class<?> getType(GeneratorCreationContext context) {
+        TypeDetails associatedType = context.getMemberDetails().getAssociatedType();
+        Kind typeKind = associatedType.getTypeKind();
+        return switch (typeKind) {
+            case PRIMITIVE -> associatedType.asPrimitiveType().getClassDetails().toJavaClass();
+            case CLASS -> associatedType.asClassType().getClassDetails().toJavaClass();
+            default -> throw new IllegalArgumentException("@BatchSequence not supported on members of kind: " + typeKind);
+        };
     }
 
 	@Override
@@ -296,17 +296,18 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
             throw new MappingException("no sequence name specified");
         }
 
-		final Identifier catalog = jdbcEnv.getIdentifierHelper().toIdentifier(params.getProperty(CATALOG));
-		final Identifier schema =  jdbcEnv.getIdentifierHelper().toIdentifier(params.getProperty(SCHEMA));
-
         if(sequenceName.contains(".")) {
             return QualifiedNameParser.INSTANCE.parse(sequenceName);
         }
 
-        return new QualifiedNameParser.NameParts(
+        final IdentifierHelper identifierHelper = jdbcEnv.getIdentifierHelper();
+        final Identifier catalog = identifierHelper.toIdentifier(params.getProperty(CATALOG));
+        final Identifier schema =  identifierHelper.toIdentifier(params.getProperty(SCHEMA));
+
+        return new QualifiedSequenceName(
             catalog,
             schema,
-            jdbcEnv.getIdentifierHelper().toIdentifier( sequenceName )
+            identifierHelper.toIdentifier( sequenceName )
             );
     }
 
@@ -317,17 +318,18 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
             throw new MappingException("no sequence name specified");
         }
 
-        final Identifier catalog = jdbcEnv.getIdentifierHelper().toIdentifier(annotation.catalog());
-        final Identifier schema =  jdbcEnv.getIdentifierHelper().toIdentifier(annotation.schema());
-
         if(sequenceName.contains(".")) {
             return QualifiedNameParser.INSTANCE.parse(sequenceName);
         }
 
-        return new QualifiedNameParser.NameParts(
+        final IdentifierHelper identifierHelper = jdbcEnv.getIdentifierHelper();
+        final Identifier catalog = identifierHelper.toIdentifier(annotation.catalog());
+        final Identifier schema =  identifierHelper.toIdentifier(annotation.schema());
+
+        return new QualifiedSequenceName(
                         catalog,
                         schema,
-                        jdbcEnv.getIdentifierHelper().toIdentifier( sequenceName )
+                        identifierHelper.toIdentifier( sequenceName )
                         );
     }
 
