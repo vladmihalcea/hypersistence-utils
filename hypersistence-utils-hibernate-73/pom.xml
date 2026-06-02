@@ -15,20 +15,6 @@
     <name>hypersistence-utils-hibernate-73</name>
     <description>Utilities for Spring and Hibernate ORM 7.3</description>
     
-    <profiles>
-	    <profile>
-	        <id>hibernate-73</id>
-	        <activation>
-	            <property>
-	                <name>hibernate73</name>
-	            </property>
-	        </activation>
-	        <properties>
-	            <hibernate.version>7.3.7.Final</hibernate.version>
-	        </properties>
-	    </profile>
-	</profiles>
-
     <dependencies>
 
         <dependency>
