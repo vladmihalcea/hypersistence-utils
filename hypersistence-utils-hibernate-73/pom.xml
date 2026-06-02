@@ -14,6 +14,20 @@
 
     <name>hypersistence-utils-hibernate-73</name>
     <description>Utilities for Spring and Hibernate ORM 7.3</description>
+    
+    <profiles>
+	    <profile>
+	        <id>hibernate-73</id>
+	        <activation>
+	            <property>
+	                <name>hibernate73</name>
+	            </property>
+	        </activation>
+	        <properties>
+	            <hibernate.version>7.3.7.Final</hibernate.version>
+	        </properties>
+	    </profile>
+	</profiles>
 
     <dependencies>
 
@@ -217,7 +231,7 @@
         <maven.compiler.release>${jdk.version}</maven.compiler.release>
         <maven.compiler.testRelease>${jdk-test.version}</maven.compiler.testRelease>
 
-        <hibernate.version>7.3.0.CR1</hibernate.version>
+        <hibernate.version>7.4.0.Final</hibernate.version>
 
         <jackson-module.version>3.0.0</jackson-module.version>
         <guava.version>32.1.3-jre</guava.version>

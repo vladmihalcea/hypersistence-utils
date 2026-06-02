@@ -1,23 +1,30 @@
 package io.hypersistence.utils.hibernate.type;
 
-import io.hypersistence.utils.hibernate.type.util.Configuration;
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.metamodel.model.domain.BasicDomainType;
-import org.hibernate.type.descriptor.java.JavaType;
-import org.hibernate.type.descriptor.jdbc.JdbcType;
-import org.hibernate.usertype.DynamicParameterizedType;
-import org.hibernate.usertype.ParameterizedType;
+import static jakarta.persistence.metamodel.Type.PersistenceType.BASIC;
 
 import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import static jakarta.persistence.metamodel.Type.PersistenceType.BASIC;
+import org.checkerframework.checker.initialization.qual.Initialized;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.nullness.qual.UnknownKeyFor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.metamodel.model.domain.BasicDomainType;
+import org.hibernate.query.sqm.SqmBindableType;
+import org.hibernate.query.sqm.tree.domain.SqmDomainType;
+import org.hibernate.type.descriptor.java.JavaType;
+import org.hibernate.type.descriptor.jdbc.JdbcType;
+import org.hibernate.usertype.DynamicParameterizedType;
+import org.hibernate.usertype.ParameterizedType;
+
+import io.hypersistence.utils.hibernate.type.util.Configuration;
 
 /**
  * @author Vlad Mihalcea
  */
-public class MutableDynamicParameterizedType<T, JDBC extends JdbcType, JAVA extends JavaType<T>> extends MutableType<T, JDBC, JAVA> implements DynamicParameterizedType, BasicDomainType<T>{
+public class MutableDynamicParameterizedType<T, JDBC extends JdbcType, JAVA extends JavaType<T>> extends MutableType<T, JDBC, JAVA> implements DynamicParameterizedType, BasicDomainType<T>, SqmDomainType<T>,SqmBindableType<T> {
 
     /**
      * {@inheritDoc}
@@ -68,4 +75,9 @@ public class MutableDynamicParameterizedType<T, JDBC extends JdbcType, JAVA exte
     public T extract(CallableStatement statement, String paramName, SharedSessionContractImplementor session) throws SQLException {
         return getJdbcTypeDescriptor().getExtractor(getJavaTypeDescriptor()).extract(statement, paramName, session);
     }
+
+	@Override
+	public @Nullable SqmDomainType<@UnknownKeyFor @NonNull @Initialized T> getSqmType() {
+		return this;
+	}
 }
