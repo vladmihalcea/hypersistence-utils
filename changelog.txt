@@ -1,3 +1,24 @@
+Version 3.15.3 - June 02, 2026
+================================================================================
+
+Add support for Hibernate 7.4 #852
+
+Small improvements to BatchSequenceGenerator 850
+
+Add support for Optional attributes using @Type(JsonType.class) #849
+
+Update the hsqldb version to 2.7.4 #848
+
+Fix merge method JavaDocs #846
+
+Add support for Update and Delete statements in SQLExtractor #845
+
+Upgrade Testcontainers to the 2.0.4 version #844
+
+Fix broken Javadoc {@code} tags in JsonType #842
+
+Add Envers generic‑type handling for JSON collections #838
+
 Version 3.15.2 - February 09, 2026
 ================================================================================
 
