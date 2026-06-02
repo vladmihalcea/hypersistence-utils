@@ -6,13 +6,8 @@ import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import org.checkerframework.checker.initialization.qual.Initialized;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.checkerframework.checker.nullness.qual.UnknownKeyFor;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.metamodel.model.domain.BasicDomainType;
-import org.hibernate.query.sqm.SqmBindableType;
 import org.hibernate.query.sqm.tree.domain.SqmDomainType;
 import org.hibernate.type.descriptor.java.JavaType;
 import org.hibernate.type.descriptor.jdbc.JdbcType;
@@ -24,7 +19,7 @@ import io.hypersistence.utils.hibernate.type.util.Configuration;
 /**
  * @author Vlad Mihalcea
  */
-public class MutableDynamicParameterizedType<T, JDBC extends JdbcType, JAVA extends JavaType<T>> extends MutableType<T, JDBC, JAVA> implements DynamicParameterizedType, BasicDomainType<T>, SqmDomainType<T>,SqmBindableType<T> {
+public class MutableDynamicParameterizedType<T, JDBC extends JdbcType, JAVA extends JavaType<T>> extends MutableType<T, JDBC, JAVA> implements DynamicParameterizedType, BasicDomainType<T>, SqmDomainType<T> {
 
     /**
      * {@inheritDoc}
@@ -77,7 +72,7 @@ public class MutableDynamicParameterizedType<T, JDBC extends JdbcType, JAVA exte
     }
 
 	@Override
-	public @Nullable SqmDomainType<@UnknownKeyFor @NonNull @Initialized T> getSqmType() {
+	public SqmDomainType<T> getSqmType() {
 		return this;
 	}
 }
