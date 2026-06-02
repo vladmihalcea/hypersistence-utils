@@ -224,7 +224,7 @@
 
         <hikari.version>5.0.1</hikari.version>
         <aspectj.version>1.9.20.1</aspectj.version>
-        <spring.version>6.1.2</spring.version>
+        <spring.version>6.1.20</spring.version>
         <spring-data.version>3.2.0</spring-data.version>
 
     </properties>
