@@ -82,7 +82,7 @@ public interface BaseJpaRepository<T, ID> extends Repository<T, ID>, QueryByExam
     <S extends T> List<S> persistAllAndFlush(Iterable<S> entities);
 
     /**
-     * The persist method allows you to pass the provided entity to the {@code merge} method of the
+     * The merge method allows you to pass the provided entity to the {@code merge} method of the
      * underlying JPA {@code EntityManager}.
      *
      * @param entity entity to merge
@@ -115,7 +115,7 @@ public interface BaseJpaRepository<T, ID> extends Repository<T, ID>, QueryByExam
      * The mergeAllAndFlush method allows you to pass the provided entities to the {@code merge} method of the
      * underlying JPA {@code EntityManager} and call {@code flush} afterwards.
      *
-     * @param entities entities to persist
+     * @param entities entities to merge
      * @param <S>    entity type
      * @return entities
      */
