@@ -2,15 +2,23 @@ package io.hypersistence.utils.hibernate.id;
 
 import io.hypersistence.utils.hibernate.util.AbstractTest;
 import io.hypersistence.utils.test.providers.DataSourceProvider;
+import io.hypersistence.utils.test.transaction.EntityManagerTransactionConsumer;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import net.ttddyy.dsproxy.QueryCount;
 import net.ttddyy.dsproxy.QueryCountHolder;
+
+import org.hibernate.boot.model.naming.Identifier;
+import org.hibernate.boot.model.relational.QualifiedName;
+import org.hibernate.boot.model.relational.QualifiedSequenceName;
 import org.hibernate.cfg.AvailableSettings;
+import org.hibernate.id.enhanced.ImplicitDatabaseObjectNamingStrategy;
+import org.hibernate.service.ServiceRegistry;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
@@ -37,13 +45,14 @@ public abstract class AbstractBatchSequenceGeneratorTest extends AbstractTest {
         properties.put(AvailableSettings.STATEMENT_BATCH_SIZE, BATCH_SIZE);
         properties.put(AvailableSettings.ORDER_UPDATES, true);
         properties.put(AvailableSettings.ORDER_INSERTS, true);
+        properties.put(AvailableSettings.ID_DB_STRUCTURE_NAMING_STRATEGY, HardCodedSequenceName.class.getName());
     }
 
     @Test
     public void test() {
 
         QueryCountHolder.clear();
-        doInJPA(entityManager -> {
+        doInJPA((EntityManagerTransactionConsumer) entityManager -> {
             for (int i = 0; i < BATCH_SIZE; i++) {
                 Post post = new Post();
 
@@ -90,7 +99,6 @@ public abstract class AbstractBatchSequenceGeneratorTest extends AbstractTest {
 
         @Id
         @BatchSequence(
-            name = "SEQ_PARENT_ID",
             fetchSize = BATCH_SIZE
         )
         private Long id;
@@ -114,6 +122,24 @@ public abstract class AbstractBatchSequenceGeneratorTest extends AbstractTest {
             this.title = title;
             return this;
         }
+    }
+
+    public static class HardCodedSequenceName implements ImplicitDatabaseObjectNamingStrategy {
+
+        @Override
+        public QualifiedName determineSequenceName(Identifier catalogName,
+                        Identifier schemaName, Map<?, ?> configValues,
+                        ServiceRegistry serviceRegistry) {
+            return new QualifiedSequenceName(catalogName, schemaName, Identifier.toIdentifier("SEQ_PARENT_ID"));
+        }
+
+        @Override
+        public QualifiedName determineTableName(Identifier catalogName,
+                        Identifier schemaName, Map<?, ?> configValues,
+                        ServiceRegistry serviceRegistry) {
+            throw new IllegalArgumentException("BatchSequenceGeneratorTest is not table based");
+        }
+
     }
 
 }
