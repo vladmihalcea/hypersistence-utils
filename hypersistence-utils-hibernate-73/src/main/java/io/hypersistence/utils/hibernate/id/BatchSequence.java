@@ -8,6 +8,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import org.hibernate.annotations.IdGeneratorType;
+import org.hibernate.cfg.AvailableSettings;
+import org.hibernate.id.enhanced.ImplicitDatabaseObjectNamingStrategy;
 
 /**
  * Meta annotation to use {@link BatchSequenceGenerator} as an identifier generator.
@@ -22,10 +24,14 @@ public @interface BatchSequence {
 
     /**
      * Returns the name of the sequence to use.
+     * <p>
+     * If omitted (empty or {@code null} then {@link ImplicitDatabaseObjectNamingStrategy}
+     * is used to derive the name.
      * 
      * @return the name of the sequence to use
+     * @see AvailableSettings#ID_DB_STRUCTURE_NAMING_STRATEGY
      */
-    String name();
+    String name() default "";
 
     /**
      *  Returns how many sequence values to fetch at once.
