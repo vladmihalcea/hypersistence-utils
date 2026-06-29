@@ -1,3 +1,12 @@
+Version 3.15.3 - June 29, 2026
+================================================================================
+
+Improve BatchSequenceGenerator sequence name strategy and align it with SequenceStyleGenerator #857
+
+Remove hypersistence-utils-hibernate-70 module #856
+
+On Oracle 23/26, BatchSequenceGenerator fails with 'ORA-30009: Not enough memory for CONNECT BY operation' #854
+
 Version 3.15.3 - June 02, 2026
 ================================================================================
 
