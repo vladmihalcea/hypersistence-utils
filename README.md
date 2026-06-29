@@ -1,6 +1,6 @@
 [![License](https://img.shields.io/github/license/vladmihalcea/hypersistence-utils.svg)](https://raw.githubusercontent.com/vladmihalcea/hypersistence-utils/master/LICENSE)
-[![Maven Central](https://img.shields.io/maven-central/v/io.hypersistence/hypersistence-utils-parent.svg)](https://central.sonatype.com/artifact/io.hypersistence/hypersistence-utils-hibernate-63/)
-[![JavaDoc](http://javadoc.io/badge/io.hypersistence/hypersistence-utils-hibernate-63.svg)](http://www.javadoc.io/doc/io.hypersistence/hypersistence-utils-hibernate-63)
+[![Maven Central](https://img.shields.io/maven-central/v/io.hypersistence/hypersistence-utils-parent.svg)](https://central.sonatype.com/artifact/io.hypersistence/hypersistence-utils-hibernate-73/)
+[![JavaDoc](http://javadoc.io/badge/io.hypersistence/hypersistence-utils-hibernate-73.svg)](http://www.javadoc.io/doc/io.hypersistence/hypersistence-utils-hibernate-73)
 
 ### Migrating to version 3
 
@@ -31,7 +31,7 @@ Depending on the Hibernate version you are using, you need to add the following 
     <dependency>
         <groupId>io.hypersistence</groupId>
         <artifactId>hypersistence-utils-hibernate-73</artifactId>
-        <version>3.15.3</version>
+        <version>3.15.4</version>
     </dependency>
 
 #### Hibernate 7.2 and 7.1
@@ -39,7 +39,7 @@ Depending on the Hibernate version you are using, you need to add the following 
     <dependency>
         <groupId>io.hypersistence</groupId>
         <artifactId>hypersistence-utils-hibernate-71</artifactId>
-        <version>3.15.3</version>
+        <version>3.15.4</version>
     </dependency>
 
 #### Hibernate 7.0 (Commercial support only)
@@ -47,7 +47,7 @@ Depending on the Hibernate version you are using, you need to add the following 
     <dependency>
         <groupId>io.hypersistence</groupId>
         <artifactId>hypersistence-utils-hibernate-70</artifactId>
-        <version>3.15.3</version>
+        <version>3.15.4</version>
     </dependency>
 
 #### Hibernate 6.6, 6.5, 6.4, and 6.3
@@ -55,7 +55,7 @@ Depending on the Hibernate version you are using, you need to add the following 
     <dependency>
         <groupId>io.hypersistence</groupId>
         <artifactId>hypersistence-utils-hibernate-63</artifactId>
-        <version>3.15.3</version>
+        <version>3.15.4</version>
     </dependency>
 
 #### Hibernate 6.2 (Commercial support only)
