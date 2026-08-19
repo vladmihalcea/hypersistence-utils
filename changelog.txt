@@ -1,4 +1,13 @@
-Version 3.15.3 - June 29, 2026
+Version 3.15.5 - June 29, 2026
+================================================================================
+
+Add support for batching the updateAll methods #862
+
+Undeprecate ListArrayType #861
+
+Add support for the PostgreSQL macaddr type #858
+
+Version 3.15.4 - June 29, 2026
 ================================================================================
 
 Improve BatchSequenceGenerator sequence name strategy and align it with SequenceStyleGenerator #857
