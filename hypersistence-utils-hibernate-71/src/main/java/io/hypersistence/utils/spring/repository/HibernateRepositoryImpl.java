@@ -10,6 +10,7 @@ import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.StreamSupport;
 
 /**
  * @author Vlad Mihalcea
@@ -123,20 +124,15 @@ public class HibernateRepositoryImpl<T> implements HibernateRepository<T> {
 
     @Override
     public <S extends T> List<S> updateAll(Iterable<S> entities) {
-        List<S> result = new ArrayList<>();
-        for(S entity : entities) {
-            result.add(update(entity));
-        }
+        List<S> result = StreamSupport.stream(entities.spliterator(), false).toList();
+        statelessSession().updateMultiple(result);
         return result;
     }
 
     @Override
     public <S extends T> List<S> updateAllAndFlush(Iterable<S> entities) {
         return executeBatch(() -> {
-            List<S> result = new ArrayList<>();
-            for(S entity : entities) {
-                result.add(update(entity));
-            }
+            List<S> result = updateAll(entities);
             entityManager.flush();
             return result;
         });

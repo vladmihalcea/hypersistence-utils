@@ -6,6 +6,8 @@ import io.hypersistence.utils.hibernate.util.providers.PostgreSQLDataSourceProvi
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
+import net.ttddyy.dsproxy.listener.ChainListener;
+import net.ttddyy.dsproxy.listener.DataSourceQueryCountListener;
 import net.ttddyy.dsproxy.listener.logging.SLF4JQueryLoggingListener;
 import net.ttddyy.dsproxy.support.ProxyDataSourceBuilder;
 import org.hibernate.jpa.HibernatePersistenceProvider;
@@ -54,14 +56,16 @@ public abstract class AbstractSpringDataJPAConfiguration {
     @Bean
     @Primary
     public DataSource dataSource() {
+        ChainListener listener = new ChainListener();
         SLF4JQueryLoggingListener loggingListener = new SLF4JQueryLoggingListener();
         loggingListener.setQueryLogEntryCreator(new InlineQueryLogEntryCreator());
-        DataSource dataSource = ProxyDataSourceBuilder
-                .create(actualDataSource())
-                .name("DATA_SOURCE_PROXY")
-                .listener(loggingListener)
-                .build();
-        return dataSource;
+        listener.addListener(loggingListener);
+        listener.addListener(new DataSourceQueryCountListener());
+        return ProxyDataSourceBuilder
+            .create(actualDataSource())
+            .name("DATA_SOURCE_PROXY")
+            .listener(listener)
+            .build();
     }
 
     @Bean

@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.StreamSupport;
 
 /**
  * @author Vlad Mihalcea
@@ -112,20 +113,15 @@ public class BaseJpaRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID>
 
     @Transactional
     public <S extends T> List<S> updateAll(Iterable<S> entities) {
-        List<S> result = new ArrayList<>();
-        for(S entity : entities) {
-            result.add(update(entity));
-        }
+        List<S> result = StreamSupport.stream(entities.spliterator(), false).toList();
+        statelessSession().updateMultiple(result);
         return result;
     }
 
     @Transactional
     public <S extends T> List<S> updateAllAndFlush(Iterable<S> entities) {
         return executeBatch(() -> {
-            List<S> result = new ArrayList<>();
-            for(S entity : entities) {
-                result.add(update(entity));
-            }
+            List<S> result = updateAll(entities);
             entityManager.flush();
             return result;
         });

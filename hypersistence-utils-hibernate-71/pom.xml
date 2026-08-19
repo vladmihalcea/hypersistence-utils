@@ -217,7 +217,7 @@
         <maven.compiler.release>${jdk.version}</maven.compiler.release>
         <maven.compiler.testRelease>${jdk-test.version}</maven.compiler.testRelease>
 
-        <hibernate.version>7.2.17.Final</hibernate.version>
+        <hibernate.version>7.2.24.Final</hibernate.version>
         <!--<hibernate.version>7.1.11.Final</hibernate.version>-->
 
         <jackson-module.version>2.20.1</jackson-module.version>
@@ -229,8 +229,8 @@
 
         <hikari.version>5.0.1</hikari.version>
         <aspectj.version>1.9.20.1</aspectj.version>
-        <spring.version>7.0.0-M5</spring.version>
-        <spring-data.version>4.0.0-M3</spring-data.version>
+        <spring.version>7.0.2</spring.version>
+        <spring-data.version>4.0.0</spring-data.version>
         <jspecify.version>1.0.0</jspecify.version>
 
     </properties>
