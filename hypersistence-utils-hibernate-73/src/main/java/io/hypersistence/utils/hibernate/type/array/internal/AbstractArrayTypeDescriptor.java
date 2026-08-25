@@ -52,7 +52,14 @@ public abstract class AbstractArrayTypeDescriptor<T>
     @Override
     public void setParameterValues(Properties parameters) {
         if (parameters.containsKey(PARAMETER_TYPE)) {
-            arrayObjectClass = (Class<T>) ((ParameterType) parameters.get(PARAMETER_TYPE)).getReturnedJavaType();
+            ParameterType parameterType = (ParameterType) parameters.get(PARAMETER_TYPE);
+            if (parameterType.getReturnedJavaType() != null) {
+                arrayObjectClass = (Class<T>) parameterType.getReturnedJavaType();
+            } else if (parameterType.getReturnedClass() != null) {
+                // Envers audit entities provide getReturnedClass() (e.g. UserRole[].class)
+                // but leave getReturnedJavaType() null — see #863
+                arrayObjectClass = (Class<T>) parameterType.getReturnedClass();
+            }
         }
         sqlArrayType = parameters.getProperty(SQL_ARRAY_TYPE);
     }
