@@ -7,6 +7,7 @@ import org.hibernate.dialect.PostgreSQLDialect;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.utility.DockerImageName;
 
 import javax.sql.DataSource;
 
@@ -53,6 +54,8 @@ public class PostgreSQLDataSourceProvider extends AbstractContainerDataSourcePro
 
     @Override
     public JdbcDatabaseContainer newJdbcDatabaseContainer() {
-        return new PostgreSQLContainer("postgres:15.3");
+        return new PostgreSQLContainer(
+            DockerImageName.parse("pgvector/pgvector:pg15").asCompatibleSubstituteFor("postgres")
+        );
     }
 }

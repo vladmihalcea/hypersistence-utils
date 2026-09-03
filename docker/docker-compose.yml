@@ -9,7 +9,7 @@ volumes:
 services:
 
   postgres:
-    image: postgres:12.5
+    image: pgvector/pgvector:pg12
     environment:
       POSTGRES_DB: high_performance_java_persistence
       POSTGRES_USER: postgres
