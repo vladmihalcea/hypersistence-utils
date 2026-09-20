@@ -50,6 +50,11 @@ public abstract class AbstractArrayTypeDescriptor<T>
     }
 
     @Override
+    public Class<T> getJavaType() {
+        return arrayObjectClass;
+    }
+
+    @Override
     public void setParameterValues(Properties parameters) {
         if (parameters.containsKey(PARAMETER_TYPE)) {
             ParameterType parameterType = (ParameterType) parameters.get(PARAMETER_TYPE);

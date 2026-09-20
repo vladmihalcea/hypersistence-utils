@@ -108,6 +108,31 @@ public class MultiDimensionalStringArrayTypeTest extends AbstractPostgreSQLInteg
         });
     }
 
+
+
+    @Test
+    public void testTwoDimensionalArrayQueryParameter() {
+        doInJPA(entityManager -> {
+            String[][] param = {
+                {"foo"},
+                {"bar"}
+            };
+            Object result = entityManager
+                .createNativeQuery("""
+                    SELECT 1
+                    WHERE :param = ARRAY[ARRAY['foo'], ARRAY['bar']]
+                    """)
+                .unwrap(org.hibernate.query.Query.class)
+                .setParameter(
+                    "param",
+                    (Object) param,
+                    new MultiDimensionalArrayType(String[][].class)
+                )
+                .getSingleResult();
+            assertEquals(1, ((Number) result).intValue());
+        });
+    }
+
     @Entity(name = "Plane")
     @Table(name = "plane")
     public static class Plane {
