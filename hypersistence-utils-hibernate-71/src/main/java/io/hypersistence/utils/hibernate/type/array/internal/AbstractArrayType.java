@@ -29,4 +29,9 @@ public abstract class AbstractArrayType<T>
             configuration
         );
     }
+
+    @Override
+    public Class<T> getJavaType() {
+        return getJavaTypeDescriptor().getArrayObjectClass();
+    }
 }
