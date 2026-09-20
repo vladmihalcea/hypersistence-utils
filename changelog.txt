@@ -1,3 +1,18 @@
+Version 3.16.0 - September 20, 2026
+================================================================================
+
+NullPointerException is thrown when JsonType is used to persist an @Embeddable #866
+
+EnumArrayType throws NullPointerException when the entity is audited with Hibernate Envers #863
+
+Inet cannot be cast to java.lang.Comparable #843
+
+JsonBinaryType causes deserialization errors after upgrading to Spring Boot 4 #839
+
+Add support for pgvector #647
+
+StringArrayType.INSTANCE is not working with a two-dimensional String array parameter on PostgreSQL #436
+
 Version 3.15.5 - June 29, 2026
 ================================================================================
 
