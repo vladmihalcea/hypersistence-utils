@@ -239,6 +239,9 @@ public class JsonJavaTypeDescriptor extends AbstractClassJavaType<Object> implem
         try {
             return fromString(stringValue);
         } catch (HibernateException e) {
+            if (propertyClass == null || !propertyClass.isInstance(value)) {
+                throw e;
+            }
             stringValue = toString(value);
         }
 
