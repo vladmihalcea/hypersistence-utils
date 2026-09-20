@@ -3,7 +3,9 @@ package io.hypersistence.utils.hibernate.type.json.internal;
 import io.hypersistence.utils.common.LogUtils;
 import io.hypersistence.utils.common.ReflectionUtils;
 import io.hypersistence.utils.hibernate.type.util.ObjectMapperWrapper;
+import jakarta.persistence.Embeddable;
 import org.hibernate.HibernateException;
+import org.hibernate.MappingException;
 import org.hibernate.annotations.common.reflection.XProperty;
 import org.hibernate.annotations.common.reflection.java.JavaXMember;
 import org.hibernate.dialect.OracleDialect;
@@ -75,6 +77,15 @@ public class JsonJavaTypeDescriptor extends AbstractClassJavaType<Object> implem
     @Override
     public void setParameterValues(Properties parameters) {
         final XProperty xProperty = (XProperty) parameters.get(DynamicParameterizedType.XPROPERTY);
+        if (xProperty != null && (xProperty.isCollection() || xProperty.isArray()) &&
+            xProperty.getElementClass() != null &&
+            xProperty.getElementClass().isAnnotationPresent(Embeddable.class)) {
+            throw new MappingException(
+                "The JSON property '" + xProperty.getDeclaringClass().getName() + "." + xProperty.getName() +
+                "' uses the @Embeddable type '" + xProperty.getElementClass().getName() + "' as a collection element, array element, or map value. " +
+                "Use a POJO without @Embeddable for this JSON mapping, or use @ElementCollection instead of a JSON type."
+            );
+        }
         Type type = null;
         if(xProperty instanceof JavaXMember) {
             type = ((JavaXMember) xProperty).getJavaType();

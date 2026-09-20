@@ -232,6 +232,10 @@ For more details, check out [this article](https://vladmihalcea.com/how-to-map-j
 > 
 > Otherwise, the Hibernate dirty checking mechanism may trigger unexpected UPDATE statements. Check out the [#134 issue for more details](https://github.com/vladmihalcea/hypersistence-utils/issues/138).
 
+When mapping a JSON collection, array, or map, use element or map value classes without `@Embeddable`.
+Combining these JSON mappings with `@Embeddable` causes Hibernate to treat the same value as both a JSON value and an embedded component.
+Use a separate POJO for the JSON representation, or use `@ElementCollection` instead of a JSON type if you want a relational collection mapping.
+
 ##### Database-specific JSON types
 
 ###### Oracle

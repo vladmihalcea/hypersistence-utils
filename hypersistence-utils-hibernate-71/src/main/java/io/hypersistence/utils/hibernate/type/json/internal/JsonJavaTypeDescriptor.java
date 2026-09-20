@@ -3,12 +3,15 @@ package io.hypersistence.utils.hibernate.type.json.internal;
 import io.hypersistence.utils.common.LogUtils;
 import io.hypersistence.utils.common.ReflectionUtils;
 import io.hypersistence.utils.hibernate.type.util.ObjectMapperWrapper;
+import jakarta.persistence.Embeddable;
 import org.hibernate.HibernateException;
+import org.hibernate.MappingException;
 import org.hibernate.dialect.OracleDialect;
 import org.hibernate.engine.jdbc.BinaryStream;
 import org.hibernate.engine.jdbc.CharacterStream;
 import org.hibernate.engine.jdbc.internal.ArrayBackedBinaryStream;
 import org.hibernate.engine.jdbc.internal.CharacterStreamImpl;
+import org.hibernate.models.spi.ClassDetails;
 import org.hibernate.models.spi.MemberDetails;
 import org.hibernate.models.spi.TypeDetails;
 import org.hibernate.type.descriptor.WrapperOptions;
@@ -77,6 +80,19 @@ public class JsonJavaTypeDescriptor extends AbstractClassJavaType<Object> implem
         final Object parameterTypeObject = parameters.get(PARAMETER_TYPE);
         if (parameterTypeObject instanceof ParameterType) {
             final MemberDetails xProperty = (MemberDetails) parameters.get(XPROPERTY);
+            if (xProperty != null && (xProperty.isPlural() || xProperty.isArray())) {
+                TypeDetails elementType = xProperty.getElementType();
+                if (elementType != null) {
+                    ClassDetails elementClass = elementType.determineRawClass();
+                    if (elementClass.hasDirectAnnotationUsage(Embeddable.class)) {
+                        throw new MappingException(
+                            "The JSON property '" + xProperty.getDeclaringType().getName() + "." + xProperty.resolveAttributeName() +
+                            "' uses the @Embeddable type '" + elementClass.getName() + "' as a collection element, array element, or map value. " +
+                            "Use a POJO without @Embeddable for this JSON mapping, or use @ElementCollection instead of a JSON type."
+                        );
+                    }
+                }
+            }
             ParameterType parameterType = ((ParameterType) parameterTypeObject);
             if (xProperty != null && xProperty.getType().getTypeKind() == TypeDetails.Kind.TYPE_VARIABLE) {
                 type = parameterType.getReturnedClass();
