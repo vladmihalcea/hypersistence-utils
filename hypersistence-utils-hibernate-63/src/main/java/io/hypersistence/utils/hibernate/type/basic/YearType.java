@@ -10,7 +10,11 @@ import java.time.Year;
 import java.time.YearMonth;
 
 /**
- * Maps a Java {@link Year} object to an {@code INT} column type.
+ * Maps a Java {@link Year} object to a {@code SMALLINT} column type.
+ * <p>
+ * Hibernate's native {@link org.hibernate.type.descriptor.java.YearJavaType} uses
+ * {@code INTEGER} and cannot bind a {@link Year} as a {@link Short} for an explicit
+ * {@code SMALLINT} JDBC mapping, so it is not a drop-in replacement for this type.
  * <p>
  * For more details about how to use it, check out <a href="https://vladmihalcea.com/java-time-year-month-jpa-hibernate/">this article</a> on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
  *

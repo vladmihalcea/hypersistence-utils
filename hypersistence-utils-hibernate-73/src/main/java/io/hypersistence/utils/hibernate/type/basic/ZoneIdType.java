@@ -6,14 +6,19 @@ import io.hypersistence.utils.hibernate.type.util.Configuration;
 import org.hibernate.HibernateException;
 import org.hibernate.type.descriptor.jdbc.VarcharJdbcType;
 
-import java.time.Year;
 import java.time.ZoneId;
 
 /**
  * Maps a Java {@link ZoneId} object to an {@code VARCHAR} column type.
  *
+ * @deprecated Hibernate maps {@link ZoneId} to {@code VARCHAR} natively using
+ * {@link org.hibernate.type.descriptor.java.ZoneIdJavaType}. Remove
+ * {@code @Type(ZoneIdType.class)} from the attribute and retain any
+ * {@code @Column} settings, such as the column name and length.
+ *
  * @author stonio
  */
+@Deprecated
 public class ZoneIdType extends DescriptorImmutableType<ZoneId, VarcharJdbcType, ZoneIdTypeDescriptor> {
 
     public static final ZoneIdType INSTANCE = new ZoneIdType();
