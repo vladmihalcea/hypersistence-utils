@@ -4,12 +4,12 @@ import io.hypersistence.utils.hibernate.util.AbstractMySQLIntegrationTest;
 import jakarta.persistence.*;
 import org.hibernate.Session;
 import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.Type;
 import org.junit.Test;
 
 import java.time.ZoneId;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * Tests for {@see ZoneId} Hibernate mapping.
@@ -56,6 +56,46 @@ public class ZoneIdTest extends AbstractMySQLIntegrationTest {
         });
     }
 
+    @Test
+    public void testNullAndUpdates() {
+        doInJPA(entityManager -> {
+            UserPreferences preferences = new UserPreferences();
+            preferences.setName("nullable");
+            entityManager.persist(preferences);
+        });
+
+        doInJPA(entityManager -> {
+            UserPreferences preferences = entityManager.unwrap(Session.class)
+                .bySimpleNaturalId(UserPreferences.class).load("nullable");
+            assertNull(preferences.getZoneId());
+            preferences.setZoneId(ZoneId.of("+05:30"));
+        });
+
+        doInJPA(entityManager -> {
+            UserPreferences preferences = entityManager.createQuery(
+                    "select p from UserPreferences p where p.zoneId = :zoneId", UserPreferences.class)
+                .setParameter("zoneId", ZoneId.of("+05:30"))
+                .getSingleResult();
+            assertEquals(ZoneId.of("+05:30"), preferences.getZoneId());
+            assertEquals("+05:30", entityManager.createNativeQuery(
+                "select zone_id from user_preferences where name = 'nullable'").getSingleResult());
+            preferences.setZoneId(ZoneId.of("UTC"));
+        });
+
+        doInJPA(entityManager -> {
+            UserPreferences preferences = entityManager.unwrap(Session.class)
+                .bySimpleNaturalId(UserPreferences.class).load("nullable");
+            assertEquals(ZoneId.of("UTC"), preferences.getZoneId());
+            preferences.setZoneId(null);
+        });
+
+        doInJPA(entityManager -> {
+            UserPreferences preferences = entityManager.unwrap(Session.class)
+                .bySimpleNaturalId(UserPreferences.class).load("nullable");
+            assertNull(preferences.getZoneId());
+        });
+    }
+
     @Entity(name = "UserPreferences")
     @Table(name = "user_preferences")
     public static class UserPreferences {
@@ -67,7 +107,6 @@ public class ZoneIdTest extends AbstractMySQLIntegrationTest {
         @NaturalId
         private String name;
 
-        @Type(ZoneIdType.class)
         @Column(name = "zone_id", length= 40)
         private ZoneId zoneId;
 
