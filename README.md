@@ -468,3 +468,39 @@ with the required Oracle, SQL Server, PostgreSQL, or MySQL instance on demand.
 
 If you want to fix an issue or add support for a new feature, please provide the associated integration test case that proves the improvement is working as expected.
 
+#### Building with Jenesis (experimental)
+
+Besides Maven, the project can be built with [Jenesis](https://jenesis.build/), which reads the existing `pom.xml` files and needs nothing but JDK 25 or newer.
+The engine is vendored as plain Java sources in `build/jenesis`, so there is no wrapper or build tool to download.
+
+The few Maven plugin settings that Jenesis does not read from the `pom.xml` files are configured in `jenesis.properties` and the `build.jenesis` folder.
+
+To build and test all modules:
+
+```shell
+java build/jenesis/Make.java
+```
+
+To test a single module, like `mvn -Ptest test -pl hypersistence-utils-hibernate-73`:
+
+```shell
+java -Djenesis.make.profiles=test -Djenesis.print.tests=true build/jenesis/Make.java \
+     build/maven/compose/module/build-testmodule-hypersistence-utils-hibernate-73
+```
+
+To build without tests and install the jars into `~/.m2`, like `build-without-tests.bat`:
+
+```shell
+java -Djenesis.test.skip=true build/jenesis/Make.java export
+```
+
+To run only the tests that a change can reach:
+
+```shell
+java -Djenesis.test.incremental -Djenesis.make.profiles=test build/jenesis/Make.java
+```
+
+The incremental selection can't see reflection, resources, or the classes an annotation names, like `@Type(JsonType.class)`, so it can skip a test that uses the changed Type. CI runs every test.
+
+Since Maven and Jenesis both write to `target/`, run the Maven build in a separate checkout (e.g., `git worktree add`) if you want to compare them.
+

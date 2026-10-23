@@ -68,6 +68,12 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!-- Jenesis breaks nearest-wins ties the other way, so these keep it on the versions Maven resolves -->
+            <dependency>
+                <groupId>org.checkerframework</groupId>
+                <artifactId>checker-qual</artifactId>
+                <version>3.37.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -231,11 +237,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
-                <configuration>
-                    <excludes>
-                        <exclude>**/*JvmForkTest.java</exclude>
-                    </excludes>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -355,26 +356,6 @@
             <properties>
                 <console.log.level>ERROR</console.log.level>
             </properties>
-        </profile>
-        <profile>
-            <id>fork-jvm-test</id>
-            <properties>
-                <console.log.level>DEBUG</console.log.level>
-            </properties>
-
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>${maven-surefire-plugin.version}</version>
-                        <configuration>
-                            <reuseForks>false</reuseForks>
-                            <useSystemClassLoader>false</useSystemClassLoader>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
         </profile>
     </profiles>
 
