@@ -1,0 +1,40 @@
+name: Jenesis build
+
+on:
+  push:
+    # jenesis: the experimental branch, which a workflow_dispatch cannot reach
+    # until this file is on the default branch
+    branches: [ master, jenesis ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: hibernate-${{ matrix.hibernate }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      # One job per module: each module's tests start their own database
+      # containers, so running all three at once on one runner would triple them.
+      matrix:
+        hibernate: [ '73', '71', '63' ]
+    steps:
+      - uses: actions/checkout@v5
+
+      # Jenesis runs on JDK 25 or newer, and compiles each module for the release
+      # its pom.xml declares (11 or 17). The tests run on this JDK.
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      # The engine is vendored in build/jenesis, so nothing else is installed.
+      # Docker is available on the runner, so Testcontainers starts the databases.
+      - name: Build and test hypersistence-utils-hibernate-${{ matrix.hibernate }}
+        run: >
+          java
+          -Djenesis.make.profiles=test
+          -Djenesis.print.tests=true
+          -Djenesis.executor.aggregate=true
+          build/jenesis/Make.java
+          build/maven/compose/module/build-testmodule-hypersistence-utils-hibernate-${{ matrix.hibernate }}
