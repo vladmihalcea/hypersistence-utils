@@ -15,4 +15,15 @@ public class ObjectMapperWrapperTest {
             objectMapper.getRegisteredModuleIds().contains("com.fasterxml.jackson.module.kotlin.KotlinModule")
         );
     }
+
+    @Test
+    public void testFromStringFailureDoesNotLeakPayload() {
+        try {
+            ObjectMapperWrapper.INSTANCE.fromString("{invalid-json-payload-with-secret}", Object.class);
+            org.junit.Assert.fail("Expected HibernateException");
+        } catch (org.hibernate.HibernateException e) {
+            org.junit.Assert.assertFalse(e.getMessage().contains("invalid-json-payload-with-secret"));
+            org.junit.Assert.assertTrue(e.getMessage().contains("cannot be transformed to Json object"));
+        }
+    }
 }

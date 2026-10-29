@@ -89,7 +89,7 @@ public class ObjectMapperWrapper implements Serializable {
             return getObjectMapper().readValue(string, clazz);
         } catch (IOException e) {
             throw new HibernateException(
-                new IllegalArgumentException("The given string value: " + string + " cannot be transformed to Json object", e)
+                new IllegalArgumentException("The given string value cannot be transformed to Json object", e)
             );
         }
     }
@@ -99,7 +99,7 @@ public class ObjectMapperWrapper implements Serializable {
             return getObjectMapper().readValue(string, getObjectMapper().getTypeFactory().constructType(type));
         } catch (IOException e) {
             throw new HibernateException(
-                new IllegalArgumentException("The given string value: " + string + " cannot be transformed to Json object", e)
+                new IllegalArgumentException("The given string value cannot be transformed to Json object", e)
             );
         }
     }
@@ -129,7 +129,7 @@ public class ObjectMapperWrapper implements Serializable {
             return getObjectMapper().writeValueAsString(value);
         } catch (JsonProcessingException e) {
             throw new HibernateException(
-                new IllegalArgumentException("The given Json object value: " + value + " cannot be transformed to a String", e)
+                new IllegalArgumentException("The given Json object value cannot be transformed to a String", e)
             );
         }
     }
@@ -139,7 +139,7 @@ public class ObjectMapperWrapper implements Serializable {
             return getObjectMapper().writeValueAsBytes(value);
         } catch (JsonProcessingException e) {
             throw new HibernateException(
-                new IllegalArgumentException("The given Json object value: " + value + " cannot be transformed to a byte array", e)
+                new IllegalArgumentException("The given Json object value cannot be transformed to a byte array", e)
             );
         }
     }
