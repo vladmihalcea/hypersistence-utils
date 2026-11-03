@@ -237,7 +237,7 @@
         <!--<hibernate.version>7.1.11.Final</hibernate.version>-->
 
         <jackson-module.version>2.20.1</jackson-module.version>
-        <guava.version>32.1.3-jre</guava.version>
+        <guava.version>33.7.1-jre</guava.version>
         <moneta.version>1.4.2</moneta.version>
 
         <ehcache.version>3.10.8</ehcache.version>
