@@ -314,6 +314,17 @@ For more details, check out [this article](https://vladmihalcea.com/how-to-map-j
 * [`Character` to nullable CHAR column](https://vladmihalcea.com/how-to-implement-a-custom-basic-type-using-hibernate-usertype/)
 * [`ImmutableType` utility to simplify `UserType` implementations](https://vladmihalcea.com/how-to-implement-a-custom-basic-type-using-hibernate-usertype/)
 
+##### Native Java time mappings
+
+In the Hibernate 6.3+, 7.1+, and 7.3+ modules, `ZoneIdType` is deprecated in favor of Hibernate's native `ZoneId` mapping. Remove `@Type(ZoneIdType.class)` and keep the existing column settings:
+
+```java
+@Column(name = "zone_id", length = 40)
+private ZoneId zoneId;
+```
+
+`YearType` is not deprecated. It binds a `Year` as `SMALLINT`, while Hibernate's native mapping uses `INTEGER`. Using `@JdbcTypeCode(SqlTypes.SMALLINT)` with the native mapping fails when binding a non-null year because `YearJavaType` cannot unwrap it as `Short`. Keeping only `columnDefinition = "smallint"` changes the DDL, but still uses the native `INTEGER` JDBC binding.
+
 #### Utilities
 
 ##### Spring
