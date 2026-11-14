@@ -1,5 +1,22 @@
 package io.hypersistence.utils.hibernate.id;
 
+import static org.hibernate.ScrollMode.FORWARD_ONLY;
+import static org.hibernate.id.IdentifierGeneratorHelper.getNamingStrategy;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
 import org.hibernate.boot.model.naming.Identifier;
@@ -26,18 +43,6 @@ import org.hibernate.models.spi.TypeDetails;
 import org.hibernate.models.spi.TypeDetails.Kind;
 import org.hibernate.resource.jdbc.ResourceRegistry;
 import org.hibernate.service.ServiceRegistry;
-
-import static org.hibernate.id.IdentifierGeneratorHelper.getNamingStrategy;
-
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * A sequence generator that uses a recursive query to fetch multiple
@@ -396,7 +401,7 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
                     throws HibernateException {
         JdbcCoordinator coordinator = session.getJdbcCoordinator();
         List<Serializable> identifiers = new ArrayList<>(this.fetchSize);
-        PreparedStatement statement = coordinator.getStatementPreparer().prepareStatement(this.select);
+        PreparedStatement statement = coordinator.getStatementPreparer().prepareQueryStatement(this.select, false, FORWARD_ONLY);
         ResourceRegistry registry = coordinator.getLogicalConnection().getResourceRegistry();
         try {
             statement.setFetchSize(this.fetchSize);
