@@ -20,6 +20,8 @@ import org.hibernate.id.enhanced.Optimizer;
 import org.hibernate.id.enhanced.SequenceStructure;
 import org.hibernate.internal.util.config.ConfigurationHelper;
 
+import static org.hibernate.ScrollMode.FORWARD_ONLY;
+
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
@@ -375,7 +377,7 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
                     throws HibernateException {
         JdbcCoordinator coordinator = session.getJdbcCoordinator();
         List<Serializable> identifiers = new ArrayList<>(this.fetchSize);
-        try (PreparedStatement statement = coordinator.getStatementPreparer().prepareStatement(this.select)) {
+        try (PreparedStatement statement = coordinator.getStatementPreparer().prepareQueryStatement(this.select, false, FORWARD_ONLY)) {
             statement.setFetchSize(this.fetchSize);
             statement.setInt(1, this.fetchSize);
             try (ResultSet resultSet = coordinator.getResultSetReturn().extract(statement, this.select)) {
