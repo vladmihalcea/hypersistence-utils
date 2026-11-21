@@ -10,7 +10,7 @@
 
     <groupId>io.hypersistence</groupId>
     <artifactId>hypersistence-utils-parent</artifactId>
-    <version>3.15.3-SNAPSHOT</version>
+    <version>3.16.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Hypersistence Utils</name>
@@ -56,7 +56,6 @@
     <modules>
         <module>hypersistence-utils-hibernate-73</module>
         <module>hypersistence-utils-hibernate-71</module>
-        <module>hypersistence-utils-hibernate-70</module>
         <module>hypersistence-utils-hibernate-63</module>
     </modules>
 
@@ -68,6 +67,12 @@
                 <version>${testcontainers.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <!-- Jenesis breaks nearest-wins ties the other way, so these keep it on the versions Maven resolves -->
+            <dependency>
+                <groupId>org.checkerframework</groupId>
+                <artifactId>checker-qual</artifactId>
+                <version>3.37.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -109,28 +114,28 @@
 
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>mysql</artifactId>
+            <artifactId>testcontainers-mysql</artifactId>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>postgresql</artifactId>
+            <artifactId>testcontainers-postgresql</artifactId>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>oracle-xe</artifactId>
+            <artifactId>testcontainers-oracle-xe</artifactId>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>mssqlserver</artifactId>
+            <artifactId>testcontainers-mssqlserver</artifactId>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
@@ -232,11 +237,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
-                <configuration>
-                    <excludes>
-                        <exclude>**/*JvmForkTest.java</exclude>
-                    </excludes>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -357,26 +357,6 @@
                 <console.log.level>ERROR</console.log.level>
             </properties>
         </profile>
-        <profile>
-            <id>fork-jvm-test</id>
-            <properties>
-                <console.log.level>DEBUG</console.log.level>
-            </properties>
-
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>${maven-surefire-plugin.version}</version>
-                        <configuration>
-                            <reuseForks>false</reuseForks>
-                            <useSystemClassLoader>false</useSystemClassLoader>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
     </profiles>
 
     <properties>
@@ -412,11 +392,11 @@
         <logback.version>1.2.3</logback.version>
 
         <junit.version>4.13.1</junit.version>
-        <mockito.version>1.8.5</mockito.version>
+        <mockito.version>5.20.0</mockito.version>
         <datasource-proxy.version>1.6</datasource-proxy.version>
 
-        <testcontainers.version>1.17.3</testcontainers.version>
-        <hsqldb.version>2.2.8</hsqldb.version>
+        <testcontainers.version>2.0.4</testcontainers.version>
+        <hsqldb.version>2.7.4</hsqldb.version>
         <h2.version>1.4.200</h2.version>
         <postgresql.version>42.4.1</postgresql.version>
         <mysql.version>8.0.30</mysql.version>

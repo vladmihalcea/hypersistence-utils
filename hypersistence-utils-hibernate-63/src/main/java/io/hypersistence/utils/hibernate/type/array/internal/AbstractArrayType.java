@@ -29,4 +29,14 @@ public abstract class AbstractArrayType<T>
             configuration
         );
     }
+
+    @Override
+    public Class<T> returnedClass() {
+        return getJavaTypeDescriptor().getArrayObjectClass();
+    }
+
+    @Override
+    public Class<T> getBindableJavaType() {
+        return getJavaTypeDescriptor().getArrayObjectClass();
+    }
 }

@@ -3,7 +3,9 @@ package io.hypersistence.utils.hibernate.type.json.internal;
 import io.hypersistence.utils.common.LogUtils;
 import io.hypersistence.utils.common.ReflectionUtils;
 import io.hypersistence.utils.hibernate.type.util.ObjectMapperWrapper;
+import jakarta.persistence.Embeddable;
 import org.hibernate.HibernateException;
+import org.hibernate.MappingException;
 import org.hibernate.annotations.common.reflection.XProperty;
 import org.hibernate.annotations.common.reflection.java.JavaXMember;
 import org.hibernate.dialect.OracleDialect;
@@ -67,13 +69,23 @@ public class JsonJavaTypeDescriptor extends AbstractClassJavaType<Object> implem
     }
 
     public JsonJavaTypeDescriptor(final ObjectMapperWrapper objectMapperWrapper, Type type) {
-        this((Class) type, objectMapperWrapper);
+        this(type instanceof ParameterizedType ? (Class) ((ParameterizedType) type).getRawType() : (Class) type,
+               objectMapperWrapper);
         setPropertyClass(type);
     }
 
     @Override
     public void setParameterValues(Properties parameters) {
         final XProperty xProperty = (XProperty) parameters.get(DynamicParameterizedType.XPROPERTY);
+        if (xProperty != null && (xProperty.isCollection() || xProperty.isArray()) &&
+            xProperty.getElementClass() != null &&
+            xProperty.getElementClass().isAnnotationPresent(Embeddable.class)) {
+            throw new MappingException(
+                "The JSON property '" + xProperty.getDeclaringClass().getName() + "." + xProperty.getName() +
+                "' uses the @Embeddable type '" + xProperty.getElementClass().getName() + "' as a collection element, array element, or map value. " +
+                "Use a POJO without @Embeddable for this JSON mapping, or use @ElementCollection instead of a JSON type."
+            );
+        }
         Type type = null;
         if(xProperty instanceof JavaXMember) {
             type = ((JavaXMember) xProperty).getJavaType();
@@ -88,7 +100,42 @@ public class JsonJavaTypeDescriptor extends AbstractClassJavaType<Object> implem
         if(type == null) {
             throw new HibernateException("Could not resolve property type!");
         }
+
+        // Don't overwrite a ParameterizedType (e.g. from constructor)
+        // with a less specific raw Class from Envers.
+        if (propertyType instanceof ParameterizedType && type instanceof Class<?>) {
+            return;
+        }
+
+        // When Envers provides the xproperty for an audit entity,
+        // JavaXMember.getJavaType() may return only the raw type
+        // (e.g. List.class) without generic type arguments.
+        // Recover the full generic signature from the entity's field.
+        if (type instanceof Class<?>
+                && (Collection.class.isAssignableFrom((Class<?>) type)
+                || Map.class.isAssignableFrom((Class<?>) type))) {
+
+            Type resolved = resolveGenericFieldType(
+                    parameters.getProperty(DynamicParameterizedType.ENTITY),
+                    parameters.getProperty(DynamicParameterizedType.PROPERTY)
+            );
+            if (resolved instanceof ParameterizedType) {
+                type = resolved;
+            }
+        }
+
         setPropertyClass(type);
+    }
+
+    private Type resolveGenericFieldType(String className, String fieldName) {
+        if (className == null || fieldName == null) return null;
+        try {
+            return ReflectionUtils.getClass(className)
+                    .getDeclaredField(fieldName)
+                    .getGenericType();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
@@ -220,6 +267,9 @@ public class JsonJavaTypeDescriptor extends AbstractClassJavaType<Object> implem
         try {
             return fromString(stringValue);
         } catch (HibernateException e) {
+            if (propertyClass == null || !propertyClass.isInstance(value)) {
+                throw e;
+            }
             stringValue = toString(value);
         }
 

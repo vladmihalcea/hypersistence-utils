@@ -88,7 +88,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * <pre><code>
  * SELECT seq_xxx.nextval
  * FROM dual
- * CONNECT BY rownum &lt;= ?
+ * CONNECT BY level &lt;= ?
  * </code></pre>
  *
  * <h3>SQL Server</h3>
@@ -240,7 +240,7 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
 
     private static String buildSelect(String nextValString, Dialect dialect) {
         if (dialect instanceof org.hibernate.dialect.OracleDialect) {
-            return "SELECT " + nextValString + " FROM dual CONNECT BY rownum <= ?";
+            return "SELECT " + nextValString + " FROM dual CONNECT BY level <= ?";
         }
         if (dialect instanceof org.hibernate.dialect.SQLServerDialect) {
             // No RECURSIVE

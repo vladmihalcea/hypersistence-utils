@@ -5,6 +5,7 @@ import io.hypersistence.utils.common.StringUtils;
 import io.hypersistence.utils.hibernate.type.basic.Iso8601MonthType;
 import io.hypersistence.utils.hibernate.type.basic.PostgreSQLHStoreType;
 import io.hypersistence.utils.hibernate.type.basic.PostgreSQLInetType;
+import io.hypersistence.utils.hibernate.type.basic.PostgreSQLMacAddressType;
 import io.hypersistence.utils.hibernate.type.interval.OracleIntervalDayToSecondType;
 import io.hypersistence.utils.hibernate.type.interval.PostgreSQLPeriodType;
 import io.hypersistence.utils.hibernate.type.json.JsonNodeStringType;
@@ -95,6 +96,7 @@ public class HibernateTypesContributor implements TypeContributor {
             /* Specific-types */
             contributeType(typeContributions, PostgreSQLHStoreType.INSTANCE, typeFilter);
             contributeType(typeContributions, PostgreSQLInetType.INSTANCE, typeFilter);
+            contributeType(typeContributions, PostgreSQLMacAddressType.INSTANCE, typeFilter);
             contributeType(typeContributions, PostgreSQLRangeType.INSTANCE, typeFilter);
 
             if(ReflectionUtils.getClassOrNull("com.google.common.collect.Range") != null) {

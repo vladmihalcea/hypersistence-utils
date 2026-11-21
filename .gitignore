@@ -16,3 +16,6 @@ hs_err_pid*
 .idea/
 target/
 *.iml
+# Jenesis: build caches, downloaded artifacts and the compiled engine (target/ is shared with Maven)
+.jenesis/
+target-cold/

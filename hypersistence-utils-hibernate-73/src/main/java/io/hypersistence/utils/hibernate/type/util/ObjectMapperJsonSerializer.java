@@ -4,6 +4,7 @@ import org.hibernate.internal.util.SerializationHelper;
 import tools.jackson.databind.JsonNode;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 /**
  * @author Vlad Mihalcea
@@ -17,6 +18,10 @@ public class ObjectMapperJsonSerializer implements JsonSerializer {
         }
         if (object instanceof JsonNode) {
             return (T) ((JsonNode) object).deepCopy();
+        }
+        if (object instanceof Optional) {
+            Optional<?> optional = (Optional<?>) object;
+            return (T) optional.map(this::clone);
         }
         try {
             if (object instanceof Serializable) {

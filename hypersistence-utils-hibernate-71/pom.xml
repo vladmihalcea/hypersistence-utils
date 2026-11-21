@@ -3,17 +3,33 @@
     <parent>
         <groupId>io.hypersistence</groupId>
         <artifactId>hypersistence-utils-parent</artifactId>
-        <version>3.15.3-SNAPSHOT</version>
+        <version>3.16.1-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>hypersistence-utils-hibernate-71</artifactId>
-    <version>3.15.3-SNAPSHOT</version>
+    <version>3.16.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>hypersistence-utils-hibernate-71</name>
     <description>Utilities for Spring and Hibernate ORM 7.1</description>
+
+    <!-- Jenesis breaks nearest-wins ties the other way, so these keep it on the versions Maven resolves -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>jakarta.activation</groupId>
+                <artifactId>jakarta.activation-api</artifactId>
+                <version>2.1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>net.bytebuddy</groupId>
+                <artifactId>byte-buddy</artifactId>
+                <version>1.17.8</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
 
@@ -217,7 +233,7 @@
         <maven.compiler.release>${jdk.version}</maven.compiler.release>
         <maven.compiler.testRelease>${jdk-test.version}</maven.compiler.testRelease>
 
-        <hibernate.version>7.2.0.Final</hibernate.version>
+        <hibernate.version>7.2.24.Final</hibernate.version>
         <!--<hibernate.version>7.1.11.Final</hibernate.version>-->
 
         <jackson-module.version>2.20.1</jackson-module.version>
@@ -229,8 +245,8 @@
 
         <hikari.version>5.0.1</hikari.version>
         <aspectj.version>1.9.20.1</aspectj.version>
-        <spring.version>7.0.0-M5</spring.version>
-        <spring-data.version>4.0.0-M3</spring-data.version>
+        <spring.version>7.0.2</spring.version>
+        <spring-data.version>4.0.0</spring-data.version>
         <jspecify.version>1.0.0</jspecify.version>
 
     </properties>

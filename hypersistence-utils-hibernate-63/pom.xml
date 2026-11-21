@@ -3,17 +3,33 @@
     <parent>
         <groupId>io.hypersistence</groupId>
         <artifactId>hypersistence-utils-parent</artifactId>
-        <version>3.15.3-SNAPSHOT</version>
+        <version>3.16.1-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>hypersistence-utils-hibernate-63</artifactId>
-    <version>3.15.3-SNAPSHOT</version>
+    <version>3.16.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>hypersistence-utils-hibernate-63</name>
     <description>Utilities for Spring and Hibernate ORM 6.3, 6.4, 6.5 and 6.6</description>
+
+    <!-- Jenesis breaks nearest-wins ties the other way, so these keep it on the versions Maven resolves -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>jakarta.activation</groupId>
+                <artifactId>jakarta.activation-api</artifactId>
+                <version>2.1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>net.bytebuddy</groupId>
+                <artifactId>byte-buddy</artifactId>
+                <version>1.17.8</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
 
@@ -213,7 +229,7 @@
         <!--<hibernate.version>6.3.2.Final</hibernate.version>-->
         <!--<hibernate.version>6.4.10.Final</hibernate.version>-->
         <!--<hibernate.version>6.5.3.Final</hibernate.version>-->
-        <hibernate.version>6.6.38.Final</hibernate.version>
+        <hibernate.version>6.6.55.Final</hibernate.version>
 
         <jackson-module.version>2.20.1</jackson-module.version>
         <guava.version>32.1.3-jre</guava.version>
@@ -224,7 +240,7 @@
 
         <hikari.version>5.0.1</hikari.version>
         <aspectj.version>1.9.20.1</aspectj.version>
-        <spring.version>6.1.2</spring.version>
+        <spring.version>6.1.20</spring.version>
         <spring-data.version>3.2.0</spring-data.version>
 
     </properties>

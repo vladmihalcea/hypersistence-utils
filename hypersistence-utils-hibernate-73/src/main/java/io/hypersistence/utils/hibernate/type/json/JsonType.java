@@ -30,8 +30,8 @@ import java.lang.reflect.Type;
  * like in the following example:
  * </p>
  * <pre>
- * {@code @Type(}JsonType.class)
- * {@code @Column(}columnDefinition = "VARCHAR2")
+ * {@code @Type(JsonType.class)}
+ * {@code @Column(columnDefinition = "VARCHAR2")}
  * </pre>
  * <p>
  * For more details about how to use the {@link JsonType}, check out <a href="https://vladmihalcea.com/how-to-map-json-objects-using-generic-hibernate-types/">this article</a> on <a href="https://vladmihalcea.com/">vladmihalcea.com</a>.
@@ -44,8 +44,8 @@ import java.lang.reflect.Type;
  * using the JPA {@link jakarta.persistence.Column#columnDefinition()} attribute, like this:
  * </p>
  * <pre>
- * {@code @Type(}JsonType.class)
- * {@code @Column(}columnDefinition = "BLOB")
+ * {@code @Type(JsonType.class)}
+ * {@code @Column(columnDefinition = "BLOB")}
  * </pre>
  * @author Vlad Mihalcea
  */

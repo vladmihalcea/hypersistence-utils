@@ -17,7 +17,7 @@ import java.util.Objects;
  *
  * @author Vlad Mihalcea
  */
-public class Inet implements Serializable {
+public class Inet implements Serializable, Comparable<Inet> {
 
     private final String address;
 
@@ -27,6 +27,21 @@ public class Inet implements Serializable {
 
     public String getAddress() {
         return address;
+    }
+
+    /**
+     * Compares the stored address strings lexicographically, without normalizing
+     * IP addresses or applying PostgreSQL network ordering. Null addresses sort first.
+     *
+     * @param other the Inet to compare to
+     * @return the comparison result
+     */
+    @Override
+    public int compareTo(Inet other) {
+        if (address == null) {
+            return other.address == null ? 0 : -1;
+        }
+        return other.address == null ? 1 : address.compareTo(other.address);
     }
 
     @Override

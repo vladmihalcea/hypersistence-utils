@@ -6,8 +6,10 @@ import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.boot.model.relational.Database;
 import org.hibernate.boot.model.relational.QualifiedName;
 import org.hibernate.boot.model.relational.QualifiedNameParser;
+import org.hibernate.boot.model.relational.QualifiedSequenceName;
 import org.hibernate.boot.model.relational.SqlStringGenerationContext;
 import org.hibernate.dialect.Dialect;
+import org.hibernate.engine.jdbc.env.spi.IdentifierHelper;
 import org.hibernate.engine.jdbc.env.spi.JdbcEnvironment;
 import org.hibernate.engine.jdbc.spi.JdbcCoordinator;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
@@ -16,14 +18,18 @@ import org.hibernate.id.BulkInsertionCapableIdentifierGenerator;
 import org.hibernate.id.Configurable;
 import org.hibernate.id.IdentifierGenerationException;
 import org.hibernate.id.PersistentIdentifierGenerator;
+import org.hibernate.id.enhanced.ImplicitDatabaseObjectNamingStrategy;
 import org.hibernate.id.enhanced.Optimizer;
 import org.hibernate.id.enhanced.SequenceStructure;
 import org.hibernate.internal.util.config.ConfigurationHelper;
+import org.hibernate.models.spi.TypeDetails;
+import org.hibernate.models.spi.TypeDetails.Kind;
+import org.hibernate.resource.jdbc.ResourceRegistry;
+import org.hibernate.service.ServiceRegistry;
+
+import static org.hibernate.id.IdentifierGeneratorHelper.getNamingStrategy;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.PreparedStatement;
@@ -85,7 +91,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * <pre><code>
  * SELECT seq_xxx.nextval
  * FROM dual
- * CONNECT BY rownum &lt;= ?
+ * CONNECT BY level &lt;= ?
  * </code></pre>
  *
  * <h3>SQL Server</h3>
@@ -139,7 +145,10 @@ import java.util.concurrent.locks.ReentrantLock;
 public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGenerator, PersistentIdentifierGenerator, Configurable {
 
     /**
-     * Indicates the name of the sequence to use, mandatory.
+     * Indicates the name of the sequence to use, optional.
+     * <p>
+     * If omitted (empty or {@code null} then {@link ImplicitDatabaseObjectNamingStrategy}
+     * is used to derive the name.
      * 
      * @deprecated use {@link BatchSequence}
      */
@@ -175,49 +184,53 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
 
     private IdentifierPool identifierPool;
 
+    private BatchSequence annotation;
+
+    private GeneratorCreationContext context;
+
     /**
      * Called when {@link BatchSequence} is used.
      * 
      * @param annotation meta annotation for configuration
      */
     public BatchSequenceGenerator(BatchSequence annotation,
-                    Member annotatedMember,
                     GeneratorCreationContext context) {
-      JdbcEnvironment jdbcEnvironment = context.getServiceRegistry().getService(JdbcEnvironment.class);
-      this.sequenceName = determineSequenceName(annotation, jdbcEnvironment);
-      this.fetchSize = annotation.fetchSize();
-      
-      Class<?> type = getType(annotatedMember);
-      this.identifierExtractor = IdentifierExtractor.getIdentifierExtractor(type);
-      this.sequenceStructure = this.buildSequenceStructure(type, sequenceName);
+        this.annotation = annotation;
+        this.context = context;
     }
 
     @Override
     public void configure(GeneratorCreationContext creationContext, Properties params)
                     throws MappingException {
 
-        if (this.sequenceName == null) {
+        ServiceRegistry serviceRegistry = creationContext.getServiceRegistry();
+        JdbcEnvironment jdbcEnvironment = serviceRegistry.getService(JdbcEnvironment.class);
+        Class<?> type;
+        if (this.annotation == null) {
             // not initialized in constructor
-            JdbcEnvironment jdbcEnvironment = creationContext.getServiceRegistry().getService(JdbcEnvironment.class);
-            
-            this.sequenceName = determineSequenceName(params, jdbcEnvironment);
+            this.sequenceName = determineSequenceName(params, serviceRegistry, jdbcEnvironment);
             this.fetchSize = determineFetchSize(params);
 
-            Class<?> numberType = creationContext.getType().getReturnedClass();
-            this.identifierExtractor = IdentifierExtractor.getIdentifierExtractor(numberType);
-            this.sequenceStructure = this.buildSequenceStructure(numberType, sequenceName);
-
+            type = creationContext.getType().getReturnedClass();
+        } else {
+            // annotation constructor used
+            this.sequenceName = determineSequenceName(params, annotation, serviceRegistry, jdbcEnvironment);
+            this.fetchSize = annotation.fetchSize();
+            
+            type = getType(context);
         }
+        this.identifierExtractor = IdentifierExtractor.getIdentifierExtractor(type);
+        this.sequenceStructure = this.buildSequenceStructure(type, sequenceName);
     }
 
-    private static Class<?> getType(Member annotatedMember) {
-        if (annotatedMember instanceof Field) {
-            return ((Field) annotatedMember).getType();
-        } else if (annotatedMember instanceof Method) {
-            return ((Method) annotatedMember).getReturnType();
-        } else {
-            throw new IllegalArgumentException("unknown member type: " + annotatedMember);
-        }
+    private static Class<?> getType(GeneratorCreationContext context) {
+        TypeDetails associatedType = context.getMemberDetails().getAssociatedType();
+        Kind typeKind = associatedType.getTypeKind();
+        return switch (typeKind) {
+            case PRIMITIVE -> associatedType.asPrimitiveType().getClassDetails().toJavaClass();
+            case CLASS -> associatedType.asClassType().getClassDetails().toJavaClass();
+            default -> throw new IllegalArgumentException("@BatchSequence not supported on members of kind: " + typeKind);
+        };
     }
 
 	@Override
@@ -237,7 +250,7 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
 
     private static String buildSelect(String nextValString, Dialect dialect) {
         if (dialect instanceof org.hibernate.dialect.OracleDialect) {
-            return "SELECT " + nextValString + " FROM dual CONNECT BY rownum <= ?";
+            return "SELECT " + nextValString + " FROM dual CONNECT BY level <= ?";
         }
         if (dialect instanceof org.hibernate.dialect.SQLServerDialect) {
             // No RECURSIVE
@@ -290,45 +303,53 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
 	 * @return The sequence name
 	 */
 	private static QualifiedName determineSequenceName(
-			Properties params, JdbcEnvironment jdbcEnv) {
+			Properties params, ServiceRegistry serviceRegistry, JdbcEnvironment jdbcEnv) {
         String sequenceName = params.getProperty(SEQUENCE_PARAM);
-        if (sequenceName == null) {
-            throw new MappingException("no sequence name specified");
-        }
 
-		final Identifier catalog = jdbcEnv.getIdentifierHelper().toIdentifier(params.getProperty(CATALOG));
-		final Identifier schema =  jdbcEnv.getIdentifierHelper().toIdentifier(params.getProperty(SCHEMA));
-
-        if(sequenceName.contains(".")) {
+        if(sequenceName != null && sequenceName.contains(".")) {
             return QualifiedNameParser.INSTANCE.parse(sequenceName);
         }
 
-        return new QualifiedNameParser.NameParts(
-            catalog,
-            schema,
-            jdbcEnv.getIdentifierHelper().toIdentifier( sequenceName )
-            );
+        final IdentifierHelper identifierHelper = jdbcEnv.getIdentifierHelper();
+        final Identifier catalog = identifierHelper.toIdentifier(params.getProperty(CATALOG));
+        final Identifier schema =  identifierHelper.toIdentifier(params.getProperty(SCHEMA));
+
+        if (sequenceName != null && !sequenceName.isEmpty()) {
+            // we have an explicit name, use it
+            return new QualifiedSequenceName(
+                catalog,
+                schema,
+                identifierHelper.toIdentifier( sequenceName )
+                );
+        } else {
+            // otherwise, determine an implicit name to use
+            return getNamingStrategy(params, serviceRegistry).determineSequenceName(catalog, schema, params, serviceRegistry);
+        }
     }
 
     private static QualifiedName determineSequenceName(
-                    BatchSequence annotation, JdbcEnvironment jdbcEnv) {
+                    Properties params, BatchSequence annotation, ServiceRegistry serviceRegistry, JdbcEnvironment jdbcEnv) {
         String sequenceName = annotation.name();
-        if (sequenceName == null) {
-            throw new MappingException("no sequence name specified");
-        }
 
-        final Identifier catalog = jdbcEnv.getIdentifierHelper().toIdentifier(annotation.catalog());
-        final Identifier schema =  jdbcEnv.getIdentifierHelper().toIdentifier(annotation.schema());
-
-        if(sequenceName.contains(".")) {
+        if(sequenceName != null && sequenceName.contains(".")) {
             return QualifiedNameParser.INSTANCE.parse(sequenceName);
         }
 
-        return new QualifiedNameParser.NameParts(
-                        catalog,
-                        schema,
-                        jdbcEnv.getIdentifierHelper().toIdentifier( sequenceName )
-                        );
+        final IdentifierHelper identifierHelper = jdbcEnv.getIdentifierHelper();
+        final Identifier catalog = identifierHelper.toIdentifier(annotation.catalog());
+        final Identifier schema =  identifierHelper.toIdentifier(annotation.schema());
+
+        if (sequenceName != null && !sequenceName.isEmpty()) {
+            // we have an explicit name, use it
+            return new QualifiedSequenceName(
+                catalog,
+                schema,
+                identifierHelper.toIdentifier( sequenceName )
+                );
+        } else {
+            // otherwise, determine an implicit name to use
+            return getNamingStrategy(params, serviceRegistry).determineSequenceName(catalog, schema, params, serviceRegistry);
+        }
     }
 
     private static int determineFetchSize(Properties params) {
@@ -375,17 +396,29 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
                     throws HibernateException {
         JdbcCoordinator coordinator = session.getJdbcCoordinator();
         List<Serializable> identifiers = new ArrayList<>(this.fetchSize);
-        try (PreparedStatement statement = coordinator.getStatementPreparer().prepareStatement(this.select)) {
+        PreparedStatement statement = coordinator.getStatementPreparer().prepareStatement(this.select);
+        ResourceRegistry registry = coordinator.getLogicalConnection().getResourceRegistry();
+        try {
             statement.setFetchSize(this.fetchSize);
             statement.setInt(1, this.fetchSize);
-            try (ResultSet resultSet = coordinator.getResultSetReturn().extract(statement, this.select)) {
+            ResultSet resultSet = coordinator.getResultSetReturn().extract(statement, this.select);
+            try {
                 while (resultSet.next()) {
                     identifiers.add(this.identifierExtractor.extractIdentifier(resultSet));
+                }
+            } finally {
+                try {
+                    registry.release(resultSet, statement);
+                } catch (Throwable ignore) {
+                    // intentionally empty
                 }
             }
         } catch (SQLException e) {
             throw session.getJdbcServices().getSqlExceptionHelper().convert(
                             e, "could not get next sequence value", this.select);
+        } finally {
+            registry.release(statement);
+            coordinator.afterStatementExecution();
         }
         if (identifiers.size() != this.fetchSize) {
             throw new IdentifierGenerationException("expected " + this.fetchSize + " values from " + this.getSequenceName()

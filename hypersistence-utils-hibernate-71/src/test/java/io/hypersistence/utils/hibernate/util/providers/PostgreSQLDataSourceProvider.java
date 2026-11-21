@@ -54,5 +54,6 @@ public class PostgreSQLDataSourceProvider extends AbstractContainerDataSourcePro
     @Override
     public JdbcDatabaseContainer newJdbcDatabaseContainer() {
         return new PostgreSQLContainer("postgres:15.3");
+
     }
 }
